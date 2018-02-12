@@ -1,0 +1,33 @@
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  char *pt=NULL;
+  ThumbNail **th;
+
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  SX2 = (DIX *)kgGetNamedWidget(Tmp,(char *)"CutList");
+  n = B->nx*B->ny;
+  switch(butno) {
+    case 1:  
+      if ((pt=RunGetSinfo(Tmp)) != NULL)  {
+          th = AddItemtoClist(pt);
+          if(th != NULL) {
+            kgFreeThumbNails((ThumbNail **)kgGetList(SX2));
+            kgSetList(SX2,(void **)th);
+            kgUpdateWidget(SX2);
+            kgUpdateOn(Tmp);
+          }
+      }
+      break;
+      case 2:
+      th = (ThumbNail **) kgGetList(SX2);
+      if(th==NULL) break;
+      if(th[0]==NULL) break;
+      th = DeleteItemsfromClist();
+      kgFreeThumbNails((ThumbNail **)kgGetList(SX2));
+      kgSetList(SX2,(void **)th);
+      kgUpdateWidget(SX2);
+      kgUpdateOn(Tmp);
+      break;
+  }
+  return ret;

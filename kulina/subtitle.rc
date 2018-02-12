@@ -1,0 +1,23 @@
+D      //GUI dimensions xo,yo,xl,yl,lw,rw,tw,bw,df,bor_type,bkup
+10 10 525 231
+4 4 4 4
+0 4 1 0 1 1 0 0 0 0 1 0 0.000000 0 100 100 0
+//Button Box
+n
+n     //code
+196 130  //x1,y1
+326 164  //x2,y2
+2 2  //xgap,ygap
+120 //length 
+24 //Width 
+1 1  //Nx,Ny,
+1 //status
+"<select subtitle>" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-255162162 //back ground color
+S //keyboard code
+5 0.150000 0  //type,fac
+0 0 //hide
+"subtitleWidget1"

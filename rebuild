@@ -1,0 +1,15 @@
+export X11_CFLAGS=`pkg-config --cflags x11`
+export X11_LIBS=`pkg-config --libs x11`
+echo "X11_CFLAGS=$X11_CFLAGS">OpenSource/config.mak
+echo "X11_LIBS=$X11_LIBS">>OpenSource/config.mak
+echo "KULINA=$PWD">>OpenSource/config.mak
+PKG_CONFIG_PATH_OLD=$PKG_CONFIG_PATH
+PKG_CONFIG_PATH=$PWD/lib
+PATH=$PWD/bin:$PATH
+make -C OpenSource
+make -C OpenSource install
+PKG_CONFIG_PATH=$PWD/lib:$PKG_CONFIG_PATH_OLD
+./configure --prefix=/usr --enable-pulse --enable-vm --disable-gui --disable-mencoder --enable-runtime-cpudetection   --enable-ffmepg_a --disable-ffmpeg_so --disable-relocatable --disable-gnutls   --disable-gif --disable-fontconfig --disable-speex --disable-gl --enable-ass-internal
+echo "X11_CFLAGS=$X11_CFLAGS">>config.mak
+echo "X11_LIBS=$X11_LIBS">>config.mak
+make -j4

@@ -1,0 +1,56 @@
+This is full source code for 'kgmplayer' and includes all necessary
+dependencies including 'kglib' and OpenSource components including the
+necessary CD libraries and tools.
+
+Though it includes the 'Mplayer' source also, some modifications are
+there.
+Hence copying another version of 'Mplayer' source may not work unless
+corresponding modifications are made in the new 'Mplayer' source. All the 
+modifications are marked with '#ifdef D_KULINA'.
+
+Just a make will build a statically linked 'kgmplayer'. 
+'make install' (as superuser or with sudo) will install 'kgmplayer'
+under /usr/bin. It will also create a link to 'kgMplayer' (note the
+uppercase 'M' in kgMplayer). In case you face any problem in the
+on-screen
+menu in the fullscreen mode (due to Window Manager issues) one can
+use 'kgMplayer'.
+
+'kgmplayer' identifies any HDMI connections and try to use it. Please
+remember to restart 'kgmplayer' (or kgMplayer) after making any HDMI
+connections. If an HDMI connection is available(and identified) audio
+will also be directed to the HDMI by default, which may be changed the
+user..
+
+If 'pulswaudio' is available (and HDMI is not connected) pulseaudio will
+be used for audio, since in the new version of Bluez pulseaudio is needed for
+bluetooth speaker.
+
+In Version 3.0, a media tool box is added, which can be used for editing media
+file. Following tools are available.
+1. Converting audio from a media file to mp3. 
+   The media can be any supported media file, video or audio. It also
+   allows to select a range, quality and volume enhancement.
+2. Convert video to mp4.
+   Again selecting a range is avalable. Options to select quality,
+   change of aspect ratio and scaling are also available.
+3. Joining video files to a mp4 file.
+   Input files can be any video of supported format.
+4. Joing audio from a number of media files to mp3.
+   Input files can be any media file of supported format.
+5. Changing or adding audio to video file.
+   Audio can be from any media file of supported format. Input video
+   also can be any supported format. However output will be mp4.
+6. Mixing audio to a media file.
+   Audio input can be any media file of supported format. The second
+   media can be a video or audio file. Output is mp4, however
+   if the second input is audio only, the output will also be audio.
+   
+Ver 4.0  supports subtitle and an option to play all media files
+in a folder.
+
+Installed programs.
+
+1. kgmplayer
+2. kgMplayer - a link to kgmplayer and can be used in case of any
+on-screen menu issues.

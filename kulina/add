@@ -1,0 +1,83 @@
+int ConvertToMp4( CONVDATA *cn) {
+  int pid,status;
+  int len;
+  CONVDATA Cn;
+  Cn= *cn;
+  Ssec= Cn.VStartSec;
+  Esec= Cn.VEndSec;
+  if(!CheckMedia(Cn.infile)){
+       return 0;
+  }
+ 
+  Cn.OldAsp = Minfo.AspectNu/Minfo.AspectDe;
+  if(Esec < 0) {
+    Cn.VEndSec = Minfo.TotSec +Esec;
+    Esec= Cn.VEndSec;
+  }
+  if(Esec > Minfo.TotSec) {
+    Cn.VEndSec = Minfo.TotSec ;
+    Esec= Cn.VEndSec;
+  }
+  if(Esec==0.0) {
+     Esec= Minfo.TotSec ;
+  }
+  
+  strcpy(GrabFileName,Cn.outfile);
+  if ((pid=fork())==0) {
+    char command[500],Fifo[100],options[300],
+         options1[300],options2[300];
+      options[0] ='\0';
+      if(Cn.FullRange != 1) {
+        int sh,sm,ss,smil,secs,eh,em,es,emil;
+        float frac;
+        if(Cn.VEndSec > 0) {
+          sprintf(options," -ss %-lf  -t %-lf ",
+              Cn.VStartSec,(Cn.VEndSec-Cn.VStartSec));
+        }
+        else {
+          sprintf(options," -ss %-lf ",
+              Cn.VStartSec);
+        }
+      }
+      options1[0]='\0';
+// In fact formats other tham mp4 can be tried but not opened
+      strcpy(options1,(char *)"-f mp4 -vcodec libx264 ");
+      switch(Cn.VQuality) {
+        case 1:
+          strcat(options1,"  -b:v 3000K -aq 0 -c:a libmp3lame ");
+          break;
+        case 2:
+          strcat(options1,"  -b:v 1500K -aq 0 -c:a libmp3lame ");
+          break;
+        case 3:
+          strcat(options1,"  -b:v 700K -aq 2 -c:a libmp3lame ");
+          break;
+      }
+      len = strlen(options1);
+      if(Cn.ChngAsp) {
+        sprintf(options1+len," -aspect 16:%-d ",
+                     (int)(16./Cn.NewAsp+0.5));
+      }
+      else Cn.NewAsp= Cn.OldAsp;
+      options2[0]='\0';
+      len = strlen(options1);
+      if(Cn.Scale) {
+        Cn.Ysize = Cn.Xsize/Cn.NewAsp+0.1;
+        Cn.Ysize = (Cn.Ysize/4)*4;
+        
+        sprintf(options1+len," -s %-dx%-d ", Cn.Xsize,Cn.Ysize);
+      }
+      else {Cn.Xsize = Minfo.Rxres; Cn.Ysize= Minfo.Ryres;}
+
+      sprintf(command,"kgffmpeg %-s -i \"%-s\" -y %-s \"%-s\"",
+             options,Cn.infile,options1,Cn.outfile);
+//      printf("%s\n",command);
+      runfunction(command,ProcessMp4Conversion,kgffmpeg);
+//      close(open(Fifo,O_RDONLY));
+//      fprintf(stderr,"Removing Fifo\n");
+    exit(0);
+  }
+  else {
+     waitpid(pid,&status,0);
+  }
+}

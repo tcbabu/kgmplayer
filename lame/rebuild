@@ -1,0 +1,2 @@
+./configure --prefix=$KULINA --enable-static --disable-shared
+make -j4

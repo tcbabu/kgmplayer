@@ -1,0 +1,4 @@
+tar xf libpng-1.6.9.tar.xz
+cd libpng-1.6.9
+./configure --prefix=$KULINA --enable-static --disable-shared --with-zlib-prefix=$KULINA CFLAGS=-I$KULINA/include LDFLAGS=-L$KULINA/lib >out
+make   >out

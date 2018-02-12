@@ -1,0 +1,270 @@
+PREFIX=/home/babu/BUILD/kgmplayer-4.2.2
+KULINA=/home/babu/BUILD/kgmplayer-4.2.2
+export X11_CFLAGS="-I/home/babu/BUILD/kgmplayer-4.2.2/include "
+export X11_LIBS="-L/usr/X11R76/lib -lX11 "
+export PKG_CONFIG_PATH=/home/babu/BUILD/kgmplayer-4.2.2/lib/pkgconfig:/usr/X11R76/lib/pkgconfig
+#export PKG_CONFIG_PATH=$KULINA/lib/pkgconfig
+export LD_CONFIG_PATH=$LD_CONFIG_PATH:$KULINA/lib
+export LDFLAGS=-L$KULINA/lib
+echo $LDFLAGS
+export CFLAGS=-I$KULINA/include
+export CPPFLAGS=-I$KULINA/include
+export ZLIBLIB=$KULINA/lib
+export ZLIBINC=$KULINA/include
+echo $CFLAGS
+echo $PKG_CONFIG_PATH
+echo "$X11_LIBS"
+echo "$X11_CFLAGS"
+tar xf xz-5.0.3.tar.gz
+cd xz-5.0.3
+./configure --prefix=$KULINA --enable-static --disable-shared >../out
+make -j4 >../out
+make -j4 install >../out
+cd ..
+rm -r -f xz-5.0.3
+echo "xz"
+tar xf bzip2-1.0.6.tar.gz
+cd bzip2-1.0.6
+#./configure --prefix=$KULINA --enable-static --disable-shared
+make -j4 >../out
+make -j4 install PREFIX=$KULINA >../out
+cd ..
+rm -rf bzip2-1.0.6
+echo "bzip2"
+tar xf zlib-1.2.8.tar.gz
+cd zlib-1.2.8
+./configure --prefix=$KULINA --static  >../out
+make -j4  >../out
+make -j4 install >../out
+cd ..
+rm -r -f zlib-1.2.8
+echo "zlib"
+tar xf gzip-1.6.tar.xz >../out
+cd gzip-1.6
+./configure --prefix=$KULINA  >../out
+make -j4 >../out
+make -j4 install  >../out
+cd ..
+rm -rf gzip-1.6 >../out
+echo "gzip"
+tar xf libpng-1.6.9.tar.xz
+cd libpng-1.6.9
+./configure --prefix=$KULINA --enable-static --disable-shared --with-zlib-prefix=$KULINA CFLAGS=-I$KULINA/include LDFLAGS=-L$KULINA/lib >../out
+make   >../out
+make  install >../out
+cd ..
+rm -r -f libpng-1.6.9
+echo "libpng"
+tar xf yasm-1.3.0.tar.gz >../out
+cd yasm-1.3.0 >../out
+./configure --prefix=$KULINA >../out
+make -j4 >../out
+make -j4 install >../out
+cd ..
+rm -rf yasm-1.3.0
+echo "yasm"
+tar xf freetype-2.4.8.tar.gz
+cd freetype-2.4.8
+./configure --prefix=$KULINA --enable-static --disable-shared >../out
+make -j4 >../out
+make -j4 install >../out
+cd ..
+rm -r -f freetype-2.4.8
+echo "freetype"
+tar xf harfbuzz-0.9.38.tar.gz
+cd harfbuzz-0.9.38
+./configure --prefix=$KULINA --enable-static --disable-shared --without-glib  > ../out;
+make -j1 > ../out;
+make install > ../out;
+cd ..
+rm -rf harfbuzz-0.9.38
+tar xf freetype-2.4.8.tar.gz > ../out;
+cd freetype-2.4.8
+./configure --prefix=$KULINA --enable-static --disable-shared > ../out;
+make -j4 > ../out;
+make -j4 install > ../out;
+cd ..
+rm -r -f freetype-2.4.8
+echo "freetype again"
+tar xf jpegsrc.v8c.tar.gz
+cd jpeg-8c
+./configure --prefix=$KULINA --enable-static --disable-shared > ../out
+make -j4 > ../out
+make -j4 install > ../out
+cd ..
+rm -r -f jpeg-8c
+echo "jpeg"
+tar xf jasper-1.900.1.tar.gz
+cd jasper-1.900.1
+./configure --prefix=$KULINA --enable-static --disable-shared >../out
+make -j4 >../out
+make -j4 install >../out
+cd ..
+rm -r -f jasper-1.900.1
+tar xf tiff-4.0.0.tar.gz
+cd tiff-4.0.0
+./configure --prefix=$KULINA --enable-static --disable-shared >../out
+make -j4 >../out
+make -j4 install >../out
+cd ..
+rm -r -f tiff-4.0.0
+echo "tiff"
+echo " Entering Graphic Magic"
+tar xf GraphicsMagick-1.3.21.tar.gz >../out
+cd GraphicsMagick-1.3.21 >../out
+#./configure --prefix=$KULINA --enable-static  --without-magick-plus-plus --without-perl   --without-lcms --without-lcms2 --without-trio --without-wmf --without-xml --x-libraries=/usr/X11R76/lib --x-includes=/usr/X11R76/include --disable-openmp --with-threads --without-x
+./configure --prefix=$KULINA --enable-static  --without-magick-plus-plus \
+--without-perl   --without-lcms --without-lcms2 --without-trio \
+--without-wmf --without-xml  --disable-openmp --with-threads --without-x >../out
+make -j4  >../out;
+make -j4 install >../out;
+cd ..
+rm -r -f GraphicsMagick-1.3.21  >../out;
+echo "Graphic Magic"
+rm libgm.a
+mkdir tmp
+cd tmp
+ar x $KULINA/lib/libharfbuzz-icu.a
+ar x $KULINA/lib/libharfbuzz.a
+ar x $KULINA/lib/libfreetype.a
+ar x $KULINA/lib/libz.a
+ar x $KULINA/lib/libbz2.a
+ar x $KULINA/lib/liblzma.a
+ar x $KULINA/lib/libjasper.a
+ar x $KULINA/lib/libjpeg.a
+ar x $KULINA/lib/libtiff.a
+ar x $KULINA/lib/libpng.a
+ar x $KULINA/lib/libGraphicsMagickWand.a
+ar x $KULINA/lib/libGraphicsMagick.a
+ar -r ../libgm.a *.o
+cd ..
+rm -r -f tmp
+cp libgm.a $KULINA/lib
+tar xf pcre-8.38.tar.bz2
+cd pcre-8.38
+./configure --prefix=$KULINA --enable-static --disable-shared >../out;
+make >../out;
+make install >../out;
+cd ..
+rm -rf pcre-8.38
+tar xf fribidi-0.19.7.tar.bz2
+cd fribidi-0.19.7
+./configure --prefix=$KULINA --enable-static --disable-shared >../out;
+make >../out;
+make install >../out;
+cd ..
+rm -rf fribidi-0.19.7
+tar xf libdvdread-5.0.2.tar.gz
+cd libdvdread-5.0.2
+./configure --prefix=$KULINA --enable-static --disable-shared >../out;
+make >../out;
+make install >../out;
+cd ..
+rm -rf libdvdread-5.0.2
+tar xf libdvdnav-5.0.3.tar.gz
+cd libdvdnav-5.0.3 >../out;
+./configure --prefix=$KULINA --enable-static --disable-shared >../out;
+make >../out;
+make install >../out;
+cd ..
+rm -rf libdvdnav-5.0.3
+tar xf libcdio-0.93.tar.gz
+cd libcdio-0.93
+./configure --prefix=$KULINA --enable-static --disable-shared  >../out;
+make -j4 >../out;
+make install >../out;
+cd ..
+rm -rf libcdio-0.93
+tar xf vcdimager-0.7.24.tar.gz
+cd vcdimager-0.7.24 >../out;
+./configure --prefix=$KULINA --enable-static --disable-shared  >../out;
+make -j4 >../out;
+make install >../out;
+cd ..
+rm -rf vcdimager-0.7.24 >../out;
+tar xf libvdpau-0.9.tar.gz >../out;
+cd libvdpau-0.9 >../out;
+./configure --prefix=$KULINA --enable-static --disable-shared >../out;
+make -j4 >../out;
+make -j4 install >../out;
+cd ..
+rm -rf libvdpau-0.9 >../out;
+tar xf gmp-6.1.0.tar.xz >../out;
+cd gmp-6.1.0 >../out;
+./configure --prefix=$KULINA --enable-static --disable-shared 
+make -j4 
+make  install >../out;
+cd ..
+rm -rf gmp-6.1.0 >../out;
+tar xf openssl-1.0.2h.tar.gz
+cd openssl-1.0.2h
+./config --prefix=$KULINA --openssldir=$KULINA/openssl no-shared
+make depend
+make -j4 
+make  install >../out;
+cd ..
+rm -rf openssl-1.0.2h >../out;
+tar xf nettle-3.2.tar.gz >../out;
+cd nettle-3.2 
+./configure --prefix=$KULINA --enable-static --disable-shared --disable-openssl 
+make -j4 
+make  install 
+cd ..
+rm -rf nettle-3.2 >../out;
+# will fail so must be last
+tar xf gnutls-3.5.0.tar.xz >../out;
+cd gnutls-3.5.0 
+./configure --prefix=$KULINA --with-included-libtasn1 --enable-static --disable-shared --without-p11-kit --disable-tests --disable-valgrind-tests
+make -j4 
+make  install 
+cd ..
+rm -rf gnutls-3.5.0 >../out;
+tar xf expat-2.2.0.tar.bz2
+cd expat-2.2.0
+./configure --prefix=$KULINA --enable-static --disable-shared
+make -j4
+make  install
+cd ..
+rm -rf expat-2.2.0
+tar xf fontconfig-2.12.1.tar.bz2 >../out
+cd fontconfig-2.12.1
+./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
+make -j4
+make  install
+cd ..
+rm -rf fontconfig-2.12.1
+tar xf libass-0.13.6.tar.xz >../out
+cd libass-0.13.6
+./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
+make -j4
+make  install
+cd ..
+rm -rf libass-0.13.6
+tar xf fdk-aac-0.1.5.tar.gz
+cd  fdk-aac-0.1.5
+./configure --prefix=$KULINA --enable-static --disable-shared
+make -j4
+make install
+cd ..
+rm -rf fdk-aac-0.1.5
+tar xf libmad-0.15.1b.tar.gz
+cd libmad-0.15.1b
+./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
+make -j4
+make  install
+cd ..
+rm -rf libmad-0.15.1b
+tar xf libogg-1.3.2.tar.xz
+cd libogg-1.3.2
+./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
+make -j4
+make  install
+cd ..
+rm -rf libogg-1.3.2
+tar xf libvorbis-1.3.5.tar.xz
+cd libvorbis-1.3.5
+./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
+make -j4
+make  install
+cd ..
+rm -rf libvorbis-1.3.5

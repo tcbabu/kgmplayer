@@ -1,0 +1,25 @@
+D      //GUI dimensions xo,yo,xl,yl,lw,rw,tw,bw,df,bor_type,bkup
+10 10 600 236
+4 4 4 4
+0 0 1 0 1 1 0 0 0 0 1 0 0.000000 0 100 100 0
+//Text Box
+t
+t     //code
+196 133  //x1,y1
+20 //Width 
+2 1  //Nx,Ny,
+//element formats
+"Start(sec)%10F"
+"End%10F"
+595 167  //x2,y2
+1 1 1 //Cursor Position
+18 9 0 //hide
+"RangeWidget10"
+//Message Box
+m
+m     //code
+257 169  //x1,y1
+"(Range can be determined by playing and stopping)"/Message
+557 185 //x2,y2
+0 0 //justification,hide
+"RangeWidget12"

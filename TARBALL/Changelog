@@ -1,0 +1,39 @@
+Ver 2.0 (Dated 2nd June)
+It is major release since it includes a 'URL' support.
+It is basically the support available in 'Mplayer' for streaming
+media. So it should support whatever 'Mplayer' supports for
+streaming media.
+Additionally there is a support for grabing 'YouTube' like
+media, using 'movgrab' by Colum Paget (Email: colums.projects@gmail.com
+Blog: http://idratherhack.blogspot.com) and its success is as good as
+the support by 'Movgrab'. There is an option to search for URLs using
+'Firefox'.
+
+Also it is compiled with the new version of 'Kulina Graphics (Ver 1.2)'
+It supports pasting  input boxes using Xlibs Primary and Clipboard 
+buffers ( what a pain it was).
+
+Ver 2.1 (Dated 10th June)
+Included support for mp3lame; it may not be of much use now, but will
+be useful for  future.
+Also GUI is redesigned.
+
+Ver 2.2 (Dated 18th June 2016)
+Support for libx264 from VideoLan (I believe I am not violating their
+licensing policy). This is also for future, but it is an excellent
+software, the best in its domain.
+Also 'Mplayer' source is moved to Ver 1.3 (the latest, hence new version
+of ffmpeg also).
+In case one needs to swich off video  an option is privided.
+Also provided is an option to  adjust audio timing.
+
+Ver 2.2.1 27th June 2016
+
+Fixed bug in kgmplayer crashing when the on-screen controls
+are on at end of playing. The problem was only with window
+manager had problem and the work arround was active.
+
+Ver 2.2.2 28th July 2016
+
+Introducing Media Tool Box with plans to add more and more tools.
+An mp3 tool to convert/extract audio to mp3.

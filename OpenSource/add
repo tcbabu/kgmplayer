@@ -1,0 +1,8 @@
+tar xf fdk-aac-0.1.5.tar.gz
+cd  fdk-aac-0.1.5
+./configure --prefix=$KULINA --enable-static --disable-shared
+make -j4
+make install
+cd ..
+rm -rf fdk-aac-0.1.5
+

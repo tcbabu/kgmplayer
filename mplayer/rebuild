@@ -1,0 +1,17 @@
+#PKG_CONFIG_PATH=$PWD/lib:$PKG_CONFIG_PATH_OLD
+#./configure --prefix=$KULINA  --disable-gui --disable-mencoder --enable-runtime-cpudetection   --disable-relocatable --disable-gnutls --disable-gif --disable-fontconfig --disable-speex --disable-gl --enable-alsa --enable-pulse --enable-vm --enable-ass-internal 
+#./configure --prefix=$KULINA  --disable-gui \
+#--enable-runtime-cpudetection   --disable-relocatable  --disable-gif \
+#--disable-fontconfig --disable-speex --disable-gl --enable-alsa \
+#--enable-pulse --enable-vm --enable-ass-internal --enable-gnutls \
+#--disable-mencoder --enable-mp3lame
+./configure --prefix=$KULINA  --disable-gui \
+--enable-runtime-cpudetection   --disable-relocatable  --disable-gif \
+--disable-speex --disable-gl --enable-alsa \
+--enable-pulse --enable-vm  --enable-gnutls \
+--disable-mencoder --enable-mp3lame --enable-freetype \
+--enable-fontconfig
+echo "X11_CFLAGS=$X11_CFLAGS">>config.mak
+echo "X11_LIBS=$X11_LIBS">>config.mak
+make -j 4
+make install

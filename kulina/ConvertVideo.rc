@@ -1,0 +1,159 @@
+D      //GUI dimensions xo,yo,xl,yl,lw,rw,tw,bw,df,bor_type,bkup
+10 10 599 240
+4 4 4 4
+10 0 1 0 1 1 0 0 0 0 1 0 0.000000 0 100 100 0
+//Text Box
+t
+t     //code
+190 5  //x1,y1
+20 //Width 
+1 1  //Nx,Ny,
+//element formats
+"Input%25s"
+509 35  //x2,y2
+1 1 0 //Cursor Position
+18 9 0 //hide
+"ConvertVideoWidget2"
+//Button Box
+n
+n     //code
+514 4  //x1,y1
+588 38  //x2,y2
+2 2  //xgap,ygap
+64 //length 
+24 //Width 
+1 1  //Nx,Ny,
+1 //status
+"Browse" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-1 //back ground color
+ //keyboard code
+5 0.150000 0  //type,fac
+0 0 //hide
+"ConvertVideoWidget3"
+//Text Box
+t
+t     //code
+181 42  //x1,y1
+20 //Width 
+1 1  //Nx,Ny,
+//element formats
+"Output%30s"
+556 72  //x2,y2
+1 1 0 //Cursor Position
+18 9 0 //hide
+"ConvertVideoWidget5"
+//Radio Button
+r
+r     //code
+263 74  //x1,y1
+574 101  //x2,y2
+8 0  //xgap, ygap
+80 25  //item length,Width 
+3     //ny 
+1 2  // offset, scroll width 
+0 0 1 0 0 // type,item hight,bordr,bkgr,hide 
+"Very Good" //item
+"Good" //item
+"Medium" //item
+"ConvertVideoWidget6"
+//Message Box
+m
+m     //code
+190 75  //x1,y1
+"Quality"/Message
+262 99 //x2,y2
+1 0 //justification,hide
+"ConvertVideoWidget7"
+//Radio Button
+r
+r     //code
+269 103  //x1,y1
+435 130  //x2,y2
+8 0  //xgap, ygap
+70 25  //item length,Width 
+2     //ny 
+1 2  // offset, scroll width 
+0 0 1 0 0 // type,item hight,bordr,bkgr,hide 
+"Original" //item
+"Change" //item
+"ConvertVideoWidget8"
+//Message Box
+m
+m     //code
+190 103  //x1,y1
+"Aspect Ratio"/Message
+268 127 //x2,y2
+1 0 //justification,hide
+"ConvertVideoWidget9"
+//Radio Button
+r
+r     //code
+248 133  //x1,y1
+402 160  //x2,y2
+8 0  //xgap, ygap
+60 25  //item length,Width 
+2     //ny 
+1 2  // offset, scroll width 
+0 0 1 0 0 // type,item hight,bordr,bkgr,hide 
+"No" //item
+"Yes" //item
+"ConvertVideoWidget10"
+//Message Box
+m
+m     //code
+188 134  //x1,y1
+"Scale"/Message
+246 158 //x2,y2
+1 0 //justification,hide
+"ConvertVideoWidget11"
+//Horiz bar
+h
+h     //code
+472 202  //x1,y1
+586 235  //x2,y2
+2 0  //xgap,ygap
+104 //length 
+25 //Width 
+1 1  //Nx,Ny,
+1 //status
+"Convert to mp4" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-132206206 //back ground color
+ //keyboard code
+2 0.500000 0  //type,fac
+0 0 //hide
+"ConvertVideoWidget13"
+//Radio Button
+r
+r     //code
+237 163  //x1,y1
+387 187  //x2,y2
+8 0  //xgap, ygap
+60 22  //item length,Width 
+2     //ny 
+1 2  // offset, scroll width 
+0 0 1 0 0 // type,item hight,bordr,bkgr,hide 
+"Full" //item
+"Select" //item
+"ConvertVideoWidget11"
+//Message Box
+m
+m     //code
+183 162  //x1,y1
+"Range"/Message
+236 187 //x2,y2
+1 0 //justification,hide
+"ConvertVideoWidget12"
+//Message Box
+m
+m     //code
+196 188  //x1,y1
+"!c01(Play and Stop to detemine range in secs)"/Message
+402 200 //x2,y2
+1 0 //justification,hide
+"ConvertVideoWidget13"

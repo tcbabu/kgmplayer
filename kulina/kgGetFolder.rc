@@ -1,0 +1,107 @@
+D      //GUI dimensions xo,yo,xl,yl,lw,rw,tw,bw,df,bor_type,bkup
+10 10 499 384
+4 4 4 4
+5 4 1 0 1 1 0 0 0 0 1 0 0.000000 0 100 100 0
+//Text Box
+t
+t     //code
+7 13  //x1,y1
+20 //Width 
+1 1  //Nx,Ny,
+//element formats
+"Folder%30s"
+384 47  //x2,y2
+1 1 1 //Cursor Position
+18 9 0 //hide
+"kgGetFolderWidget2"
+//Button Box
+n
+n     //code
+388 8  //x1,y1
+430 50  //x2,y2
+2 2  //xgap,ygap
+32 //length 
+32 //Width 
+1 1  //Nx,Ny,
+1 //status
+"" //title 
+/usr/share/icons/gnome/22x22/actions/up.png // XPM 
+NULL // XPM 
+NULL // XPM 
+-1 //back ground color
+ //keyboard code
+5 0.500000 0  //type,fac
+0 0 //hide
+"kgGetFolderWidget4"
+//Button Box
+n
+n     //code
+432 7  //x1,y1
+474 49  //x2,y2
+2 2  //xgap,ygap
+32 //length 
+32 //Width 
+1 1  //Nx,Ny,
+1 //status
+"" //title 
+/usr/share/icons/gnome/22x22/actions/gtk-home.png // XPM 
+NULL // XPM 
+NULL // XPM 
+-1 //back ground color
+ //keyboard code
+5 0.150000 0  //type,fac
+0 0 //hide
+"kgGetFolderWidget5"
+//Select Menu
+x
+x     //code
+5 51  //x1,y1
+228 325 //x2,y2
+10 2   //ygap
+185 25 //Width 
+32  //Ny,
+4 20  // offset, scroll width 
+2 1 1 1 0 // type,item hight,bordr,bkgr,hide 
+"kgGetFolderWidget6"
+//Horiz bar
+h
+h     //code
+185 326  //x1,y1
+295 379  //x2,y2
+2 0  //xgap,ygap
+48 //length 
+48 //Width 
+2 1  //Nx,Ny,
+1 //status
+"" //title 
+/usr/share/icons/CratOS_lion-icons/actions/scalable/application-exit.png // XPM 
+NULL // XPM 
+NULL // XPM 
+-1 //back ground color
+ //keyboard code
+1 //status
+"" //title 
+/usr/share/icons/default.kde4/32x32/actions/mail-mark-notjunk.png // XPM 
+NULL // XPM 
+NULL // XPM 
+-1 //back ground color
+ //keyboard code
+2 0.500000 0  //type,fac
+0 0 //hide
+"kgGetFolderWidget7"
+//Msg Scroll
+s
+s     //code
+228 50  //x1,y1
+6 //Size 
+NULL //prompt 
+" " //item
+" " //item
+" " //item
+" " //item
+" " //item
+" " //item
+NULL  //  
+494 327 //x2,y2
+0 //hide
+"kgGetFolderWidget7"

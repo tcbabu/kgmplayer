@@ -1,0 +1,15 @@
+'kgmplayer' is a Media Player for Linux and X Windows, based on
+'Mplayer' and built using Kulina Graphics Library ( 'kglib' and
+'kgdevelop'). It was originally developed as a frontend for 'Mplayer'
+for personal use. However, over the period of time lot of effort has  gone
+in and 'kgmplayer' became more than just a frontend to 'Mplayer'. Hence,
+it was felt that some others may also find it useful. It
+tries to hide the complex options of 'Mplayer' and  provide
+an effective and simple interface to user to play the media. It handles
+the input source like CD/DVD and  output connections like HDMI.
+'kgmplayer' tries to include all dependencies and the statically linked
+binary should run on any 64bit distribution like Debian, Ubuntu,Fedora
+etc. 'kgmplayer' is designed for a compositing window manager, but works
+without a compositor. Its on screen menu in fullscreen mode seems to
+fail with some window managers, in such case 'kgMplayer' ( upper case
+'M') may be used. 'kgMplayer' is just a link to 'kgmplayer'.

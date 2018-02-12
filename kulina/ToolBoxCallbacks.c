@@ -1,0 +1,313 @@
+#include <kulina.h>
+#include "ConvertData.h"
+extern int Tools;
+extern CONVDATA cndata;
+extern int AConGrp,RangeGrp,EnVoGrp,VConGrp,
+           VaspGrp,VsizeGrp,VrangeGrp,VJGrp,AJGrp,AddGrp,MixGrp,AmixGrp,
+           KarGrp,SilGrp,CutGrp;
+int  ToolBoxbrowser1callback(int item,int i,void *Tmp) {
+  /*********************************** 
+    item : selected item (1 to max_item)  not any specific relevence
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIRA *R;DIALOG *D;void *pt; 
+  ThumbNail **th; 
+  int ret=1; 
+  D = (DIALOG *)Tmp;
+  pt = D->pt;
+  R = (DIRA *)kgGetWidget(Tmp,i);
+  th = (ThumbNail **) R->list;
+  Tools=item -1;
+  switch(item) {
+    case 2:
+    kgSetGrpVisibility(Tmp,MixGrp,0);
+    kgSetGrpVisibility(Tmp,AmixGrp,0);
+    kgSetGrpVisibility(Tmp,KarGrp,0);
+    kgSetGrpVisibility(Tmp,SilGrp,0);
+    kgSetGrpVisibility(Tmp,CutGrp,0);
+    kgSetGrpVisibility(Tmp,AddGrp,0);
+    kgSetGrpVisibility(Tmp,VaspGrp,0);
+    kgSetGrpVisibility(Tmp,VrangeGrp,0);
+    kgSetGrpVisibility(Tmp,VsizeGrp,0);
+    kgSetGrpVisibility(Tmp,VConGrp,0);
+    kgSetGrpVisibility(Tmp,VJGrp,0);
+    kgSetGrpVisibility(Tmp,AJGrp,0);
+    kgSetGrpVisibility(Tmp,AConGrp,1);
+    kgSetGrpVisibility(Tmp,EnVoGrp,1);
+    cndata.Enhfac=1.0;
+    if(cndata.FullRange!=1) {
+      kgSetGrpVisibility(Tmp,RangeGrp,1);
+    }
+    break;
+    case 3:
+    kgSetGrpVisibility(Tmp,MixGrp,0);
+    kgSetGrpVisibility(Tmp,AmixGrp,0);
+    kgSetGrpVisibility(Tmp,KarGrp,0);
+    kgSetGrpVisibility(Tmp,SilGrp,0);
+    kgSetGrpVisibility(Tmp,CutGrp,0);
+    kgSetGrpVisibility(Tmp,AddGrp,0);
+    kgSetGrpVisibility(Tmp,EnVoGrp,0);
+    kgSetGrpVisibility(Tmp,RangeGrp,0);
+    kgSetGrpVisibility(Tmp,AConGrp,0);
+    kgSetGrpVisibility(Tmp,VJGrp,0);
+    kgSetGrpVisibility(Tmp,AJGrp,0);
+    kgSetGrpVisibility(Tmp,VConGrp,1);
+    if(cndata.ChngAsp) kgSetGrpVisibility(Tmp,VaspGrp,1);
+    if(cndata.Scale) kgSetGrpVisibility(Tmp,VsizeGrp,1);
+    if(cndata.VFullRange!=1) {
+      kgSetGrpVisibility(Tmp,VrangeGrp,1);
+    }
+    break;
+    case 4:
+    kgSetGrpVisibility(Tmp,MixGrp,0);
+    kgSetGrpVisibility(Tmp,AmixGrp,0);
+    kgSetGrpVisibility(Tmp,KarGrp,0);
+    kgSetGrpVisibility(Tmp,SilGrp,0);
+    kgSetGrpVisibility(Tmp,CutGrp,0);
+    kgSetGrpVisibility(Tmp,AddGrp,0);
+    kgSetGrpVisibility(Tmp,VaspGrp,0);
+    kgSetGrpVisibility(Tmp,VsizeGrp,0);
+    kgSetGrpVisibility(Tmp,VrangeGrp,0);
+    kgSetGrpVisibility(Tmp,VConGrp,0);
+    kgSetGrpVisibility(Tmp,AConGrp,0);
+    kgSetGrpVisibility(Tmp,EnVoGrp,0);
+    kgSetGrpVisibility(Tmp,RangeGrp,0);
+    kgSetGrpVisibility(Tmp,AJGrp,0);
+    kgSetGrpVisibility(Tmp,VJGrp,1);
+    break;
+    case 5:
+    kgSetGrpVisibility(Tmp,MixGrp,0);
+    kgSetGrpVisibility(Tmp,AmixGrp,0);
+    kgSetGrpVisibility(Tmp,KarGrp,0);
+    kgSetGrpVisibility(Tmp,SilGrp,0);
+    kgSetGrpVisibility(Tmp,CutGrp,0);
+    kgSetGrpVisibility(Tmp,AddGrp,0);
+    kgSetGrpVisibility(Tmp,VaspGrp,0);
+    kgSetGrpVisibility(Tmp,VsizeGrp,0);
+    kgSetGrpVisibility(Tmp,VrangeGrp,0);
+    kgSetGrpVisibility(Tmp,VConGrp,0);
+    kgSetGrpVisibility(Tmp,AConGrp,0);
+    kgSetGrpVisibility(Tmp,EnVoGrp,0);
+    kgSetGrpVisibility(Tmp,RangeGrp,0);
+    kgSetGrpVisibility(Tmp,VJGrp,0);
+    kgSetGrpVisibility(Tmp,AJGrp,1);
+    break;
+    case 6:
+    kgSetGrpVisibility(Tmp,VaspGrp,0);
+    kgSetGrpVisibility(Tmp,VsizeGrp,0);
+    kgSetGrpVisibility(Tmp,VrangeGrp,0);
+    kgSetGrpVisibility(Tmp,VConGrp,0);
+    kgSetGrpVisibility(Tmp,AConGrp,0);
+    kgSetGrpVisibility(Tmp,EnVoGrp,0);
+    kgSetGrpVisibility(Tmp,RangeGrp,0);
+    kgSetGrpVisibility(Tmp,VJGrp,0);
+    kgSetGrpVisibility(Tmp,AJGrp,0);
+    kgSetGrpVisibility(Tmp,MixGrp,0);
+    kgSetGrpVisibility(Tmp,AmixGrp,0);
+    kgSetGrpVisibility(Tmp,KarGrp,0);
+    kgSetGrpVisibility(Tmp,SilGrp,0);
+    kgSetGrpVisibility(Tmp,CutGrp,0);
+    kgSetGrpVisibility(Tmp,AddGrp,1);
+    break;
+    case 7:
+    kgSetGrpVisibility(Tmp,VaspGrp,0);
+    kgSetGrpVisibility(Tmp,VsizeGrp,0);
+    kgSetGrpVisibility(Tmp,VrangeGrp,0);
+    kgSetGrpVisibility(Tmp,VConGrp,0);
+    kgSetGrpVisibility(Tmp,AConGrp,0);
+    kgSetGrpVisibility(Tmp,EnVoGrp,0);
+    kgSetGrpVisibility(Tmp,RangeGrp,0);
+    kgSetGrpVisibility(Tmp,VJGrp,0);
+    kgSetGrpVisibility(Tmp,AJGrp,0);
+    kgSetGrpVisibility(Tmp,AddGrp,0);
+    kgSetGrpVisibility(Tmp,KarGrp,0);
+    kgSetGrpVisibility(Tmp,SilGrp,0);
+    kgSetGrpVisibility(Tmp,CutGrp,0);
+    kgSetGrpVisibility(Tmp,AmixGrp,0);
+    kgSetGrpVisibility(Tmp,MixGrp,1);
+    break;
+    case 8:
+    kgSetGrpVisibility(Tmp,VaspGrp,0);
+    kgSetGrpVisibility(Tmp,VsizeGrp,0);
+    kgSetGrpVisibility(Tmp,VrangeGrp,0);
+    kgSetGrpVisibility(Tmp,VConGrp,0);
+    kgSetGrpVisibility(Tmp,AConGrp,0);
+    kgSetGrpVisibility(Tmp,EnVoGrp,0);
+    kgSetGrpVisibility(Tmp,RangeGrp,0);
+    kgSetGrpVisibility(Tmp,VJGrp,0);
+    kgSetGrpVisibility(Tmp,AJGrp,0);
+    kgSetGrpVisibility(Tmp,AddGrp,0);
+    kgSetGrpVisibility(Tmp,MixGrp,0);
+    kgSetGrpVisibility(Tmp,KarGrp,0);
+    kgSetGrpVisibility(Tmp,SilGrp,0);
+    kgSetGrpVisibility(Tmp,CutGrp,0);
+    kgSetGrpVisibility(Tmp,AmixGrp,1);
+    break;
+    case 9:
+    kgSetGrpVisibility(Tmp,VaspGrp,0);
+    kgSetGrpVisibility(Tmp,VsizeGrp,0);
+    kgSetGrpVisibility(Tmp,VrangeGrp,0);
+    kgSetGrpVisibility(Tmp,VConGrp,0);
+    kgSetGrpVisibility(Tmp,AConGrp,0);
+    kgSetGrpVisibility(Tmp,EnVoGrp,0);
+    kgSetGrpVisibility(Tmp,RangeGrp,0);
+    kgSetGrpVisibility(Tmp,VJGrp,0);
+    kgSetGrpVisibility(Tmp,AJGrp,0);
+    kgSetGrpVisibility(Tmp,AddGrp,0);
+    kgSetGrpVisibility(Tmp,MixGrp,0);
+    kgSetGrpVisibility(Tmp,AmixGrp,0);
+    kgSetGrpVisibility(Tmp,SilGrp,0);
+    kgSetGrpVisibility(Tmp,CutGrp,0);
+    kgSetGrpVisibility(Tmp,KarGrp,1);
+    break;
+    case 10:
+    kgSetGrpVisibility(Tmp,VaspGrp,0);
+    kgSetGrpVisibility(Tmp,VsizeGrp,0);
+    kgSetGrpVisibility(Tmp,VrangeGrp,0);
+    kgSetGrpVisibility(Tmp,VConGrp,0);
+    kgSetGrpVisibility(Tmp,AConGrp,0);
+    kgSetGrpVisibility(Tmp,EnVoGrp,0);
+    kgSetGrpVisibility(Tmp,RangeGrp,0);
+    kgSetGrpVisibility(Tmp,VJGrp,0);
+    kgSetGrpVisibility(Tmp,AJGrp,0);
+    kgSetGrpVisibility(Tmp,AddGrp,0);
+    kgSetGrpVisibility(Tmp,MixGrp,0);
+    kgSetGrpVisibility(Tmp,AmixGrp,0);
+    kgSetGrpVisibility(Tmp,KarGrp,0);
+    kgSetGrpVisibility(Tmp,CutGrp,0);
+    kgSetGrpVisibility(Tmp,SilGrp,1);
+    break;
+    case 11:
+    kgSetGrpVisibility(Tmp,VaspGrp,0);
+    kgSetGrpVisibility(Tmp,VsizeGrp,0);
+    kgSetGrpVisibility(Tmp,VrangeGrp,0);
+    kgSetGrpVisibility(Tmp,VConGrp,0);
+    kgSetGrpVisibility(Tmp,AConGrp,0);
+    kgSetGrpVisibility(Tmp,EnVoGrp,0);
+    kgSetGrpVisibility(Tmp,RangeGrp,0);
+    kgSetGrpVisibility(Tmp,VJGrp,0);
+    kgSetGrpVisibility(Tmp,AJGrp,0);
+    kgSetGrpVisibility(Tmp,AddGrp,0);
+    kgSetGrpVisibility(Tmp,MixGrp,0);
+    kgSetGrpVisibility(Tmp,AmixGrp,0);
+    kgSetGrpVisibility(Tmp,KarGrp,0);
+    kgSetGrpVisibility(Tmp,SilGrp,0);
+    kgSetGrpVisibility(Tmp,CutGrp,1);
+    break;
+    default:
+    kgSetGrpVisibility(Tmp,MixGrp,0);
+    kgSetGrpVisibility(Tmp,AmixGrp,0);
+    kgSetGrpVisibility(Tmp,SilGrp,0);
+    kgSetGrpVisibility(Tmp,CutGrp,0);
+    kgSetGrpVisibility(Tmp,KarGrp,0);
+    kgSetGrpVisibility(Tmp,AddGrp,0);
+    kgSetGrpVisibility(Tmp,VaspGrp,0);
+    kgSetGrpVisibility(Tmp,VsizeGrp,0);
+    kgSetGrpVisibility(Tmp,VrangeGrp,0);
+    kgSetGrpVisibility(Tmp,VConGrp,0);
+    kgSetGrpVisibility(Tmp,AConGrp,0);
+    kgSetGrpVisibility(Tmp,EnVoGrp,0);
+    kgSetGrpVisibility(Tmp,RangeGrp,0);
+    kgSetGrpVisibility(Tmp,VJGrp,0);
+    kgSetGrpVisibility(Tmp,AJGrp,0);
+    break;
+  }
+  kgUpdateOn(Tmp);
+  return ret;
+}
+void  ToolBoxbrowser1init(DIRA *R,void *pt) {
+}
+int  ToolBoxsplbutton1callback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***************:wq********************/ 
+  DIALOG *D;DIL *B; 
+  int n,ret=1; 
+  D = (DIALOG *)Tmp;
+  B = (DIL *) kgGetWidget(Tmp,i);
+  n = B->nx;
+  switch(butno) {
+    case 1: 
+      break;
+  }
+  return ret;
+}
+void  ToolBoxsplbutton1init(DIL *B,void *pt) {
+}
+int ToolBoxinit(void *Tmp) {
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  /* you add any initialisation here */
+  int ret = 1;
+  DIALOG *D;void *pt;
+  D = (DIALOG *)Tmp;
+  pt = D->pt;
+  return ret;
+}
+int ToolBoxcleanup(void *Tmp) {
+  /* you add any cleanup/mem free here */
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  int ret = 1;
+  DIALOG *D;void *pt;
+  D = (DIALOG *)Tmp;
+  pt = D->pt;
+#if 0
+  if(cndata.Vlist != NULL) {
+    Dempty((Dlink *) (cndata.Vlist));
+    cndata.Vlist=NULL;
+  }
+  if(cndata.Alist != NULL) {
+    Dempty((Dlink *) (cndata.Alist));
+    cndata.Alist=NULL;
+  }
+#endif
+  return ret;
+}
+int ToolBoxCallBack(void *Tmp,void *tmp) {
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+    tmp :  Pointer to KBEVENT  
+   ***********************************/ 
+  int ret = 0;
+  DIALOG *D;
+  KBEVENT *kbe;
+  D = (DIALOG *)Tmp;
+  kbe = (KBEVENT *)tmp;
+  if(kbe->event ==1) {
+    if(kbe->button ==1) {
+    }
+  }
+  return ret;
+}
+int ToolBoxResizeCallBack(void *Tmp) {
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  int ret = 0;
+  int xres,yres,dx,dy;
+  DIALOG *D;
+  D = (DIALOG *)Tmp;
+  kgGetWindowSize(D,&xres,&yres);
+  dx = xres - D->xl;
+  dy = yres - D->yl;
+  /* extra code */
+  D->xl= xres;
+  D->yl= yres;
+  kgRedrawDialog(D);
+  return ret;
+}
+int ToolBoxWaitCallBack(void *Tmp) {
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+    Called while waiting for event  
+    return value 1 will close the the UI  
+   ***********************************/ 
+  int ret = 0;
+  return ret;
+}

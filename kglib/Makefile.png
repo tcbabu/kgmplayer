@@ -1,0 +1,5 @@
+makepng	:  makepng.o
+	 cc -o makepng  makepng.o $(PARAS)/lib/glibv8.a  $(PARAS)/lib/libgm.a -L/usr/X11R6/lib -lX11 -lXext -lm -lpthread -lz 
+
+makepng.o	: makepng.c 
+	 cc -c -I$(PARAS)/include makepng.c

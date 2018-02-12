@@ -1,0 +1,17 @@
+rm libgm.a
+mkdir tmp
+cd tmp
+ar x $KULINA/lib/libfreetype.a
+ar x $KULINA/lib/libz.a
+ar x $KULINA/lib/libbz2.a
+ar x $KULINA/lib/liblzma.a
+ar x $KULINA/lib/libjasper.a
+ar x $KULINA/lib/libjpeg.a
+ar x $KULINA/lib/libtiff.a
+ar x $KULINA/lib/libpng.a
+ar x $KULINA/lib/libGraphicsMagickWand.a
+ar x $KULINA/lib/libGraphicsMagick.a
+ar -r ../libgm.a *.o
+cd ..
+rm -r -f tmp
+cp libgm.a $KULINA/lib

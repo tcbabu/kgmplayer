@@ -1,0 +1,14 @@
+grep: ffmpeg/compat: Is a directory
+grep: ffmpeg/doc: Is a directory
+grep: ffmpeg/libavcodec: Is a directory
+grep: ffmpeg/libavdevice: Is a directory
+grep: ffmpeg/libavfilter: Is a directory
+grep: ffmpeg/libavformat: Is a directory
+grep: ffmpeg/libavresample: Is a directory
+grep: ffmpeg/libavutil: Is a directory
+grep: ffmpeg/libpostproc: Is a directory
+grep: ffmpeg/libswresample: Is a directory
+grep: ffmpeg/libswscale: Is a directory
+grep: ffmpeg/presets: Is a directory
+grep: ffmpeg/tests: Is a directory
+grep: ffmpeg/tools: Is a directory
