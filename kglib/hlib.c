@@ -2935,6 +2935,13 @@ static void win_txt_color( void)
   t_color= color;
   fprintf(TX_F,"Zc%d\n",t_color);
  }
+static t_txt_color(int color) {
+#ifdef MONO
+  if(color != 0 ) color =15;
+#endif
+  t_color= color;
+  fprintf(TX_F,"ZC col%3.3d s  n\n",color);
+}
 static void win_txt_fill( void)
  {
   int  color;
@@ -3733,6 +3740,11 @@ static void  win_txtwrt(void) {
                             i+=2;
                             t_txt_font((int)Nu);
                             change_size_font();
+                            break;
+                   case 'c':
+                            Nu= (txt[i+1] -'0')*10+(txt[i+2]-'0');
+                            i+=2;
+                            t_txt_color((int)Nu);
                             break;
                    case 'z':
                             Nu= (txt[i+1] -'0');
