@@ -89,7 +89,7 @@ HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = aclocal -I ORG_PREFIX/share/aclocal
+ACLOCAL = aclocal -I $XORG_PREFIX/share/aclocal
 ALLOCA = 
 AMTAR = ${SHELL} /home/babu/BUILD/kgmplayer/lame/missing --run tar
 AR = ar
@@ -99,7 +99,7 @@ AUTOMAKE = ${SHELL} /home/babu/BUILD/kgmplayer/lame/missing --run automake-1.11
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS =  -Wall -pipe -I/home/babu/BUILD/kgmplayer-4.3.0/include    
+CFLAGS =  -Wall -pipe -I/home/babu/BUILD/kgmplayer/include    
 CONFIG_DEFS = 
 CONFIG_MATH_LIB = -lm
 CPP = gcc -E
@@ -135,7 +135,7 @@ LDADD =  \
 	$(top_builddir)/libmp3lame/libmp3lame.la \
 	-lncurses   -lm
 
-LDFLAGS = -L/home/babu/BUILD/kgmplayer-4.3.0/lib   -static 
+LDFLAGS = -L/home/babu/BUILD/kgmplayer/lib   -static 
 LIBICONV = 
 LIBOBJS = 
 LIBS = 
@@ -169,7 +169,7 @@ PACKAGE_VERSION = 3.99.5
 PATH_SEPARATOR = :
 PKG_CONFIG = 
 PKG_CONFIG_LIBDIR = 
-PKG_CONFIG_PATH = /home/babu/BUILD/kgmplayer-4.3.0/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R76/lib/pkgconfig:/usr/X11R76/share/pkgconfig
+PKG_CONFIG_PATH = /home/babu/BUILD/kgmplayer/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R76/lib/pkgconfig:/usr/X11R76/share/pkgconfig
 RANLIB = ranlib
 RM_F = rm -f
 SED = /bin/sed
@@ -223,7 +223,7 @@ mandir = ${datarootdir}/man
 mkdir_p = /bin/mkdir -p
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /home/babu/BUILD/kgmplayer-4.3.0
+prefix = /home/babu/BUILD/kgmplayer
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin

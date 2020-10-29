@@ -151,6 +151,7 @@ lib/libx264.a	:  x264build
 		 make -C x264 install
 lib/libx265.a	:  x265build
 		 ./x265build
+		 make -C x265 install
 ffmpeg/libavdevice/libavdevice.a	:  lib/libmp3lame.a \
 		 lib/libx264.a lib/libx265.a ffmpegbuild
 		 ./ffmpegbuild
@@ -179,6 +180,7 @@ clean	:
 	$(MAKE) -C OpenSource clean
 	$(MAKE) -C lame clean
 	$(MAKE) -C x264  clean
+	rm -rf x265/build/*
 	$(MAKE) -C ffmpeg clean
 	$(MAKE) -C movgrab clean
 	$(MAKE) -C kglib clean

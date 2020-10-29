@@ -1,7 +1,0 @@
-/home/babu/BUILD/kgmplayer-4.3.0/lib/libx265.a
-/home/babu/BUILD/kgmplayer-4.3.0/include/x265.h
-/home/babu/BUILD/kgmplayer-4.3.0/include/x265_config.h
-/home/babu/BUILD/kgmplayer-4.3.0/lib/libx265.so.198
-/home/babu/BUILD/kgmplayer-4.3.0/lib/libx265.so
-/home/babu/BUILD/kgmplayer-4.3.0/lib/pkgconfig/x265.pc
-/home/babu/BUILD/kgmplayer-4.3.0/bin/x265
