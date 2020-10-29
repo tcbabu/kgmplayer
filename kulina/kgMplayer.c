@@ -707,9 +707,10 @@ int kgMplayer( void *parent,void **v,void *pt) {
 //     D.StackPos = 1; // you may need it
   }    /*  end of fullscreen mode */
 //  kgColorTheme(&D,80,90,80);    /*  set colors for gui*/
+#if 1
   kgColorTheme(&D,Thred,Thgreen,Thblue);   /*  set colors for gui*/
-//  kgColorTheme(&D,220,235,220);    /*  set colors for gui*/
   ModifykgMplayerGc(&(D.gc));    /*  set colors for gui*/
+#endif
   ret= kgUi(&D);
   kgCleanUi(&D);
   return ret;
