@@ -4,7 +4,7 @@
 #define S1CLR -69128181
 //#define S2CLR -230200050
 #define S2CLR -69128181
-char VER[]="Ver 4.2.1";
+char VER[]="Ver 4.3.0";
 //int Thred=15,Thgreen=17,Thblue=15;
 int Thred=165,Thgreen=177,Thblue=165;
 char urlstring[500];
@@ -159,11 +159,11 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
   menu2= GetDrives();
   char *prompt2 ; 
   prompt2=(char *)malloc(14);
-  strcpy(prompt2,(char *)"CD/DVD Device");
+  strcpy(prompt2,(char *)"Device");
   DIW w2 = { 
     'w',
-    89,42,  
-    345,71,   
+    60,38,  
+    210,68,   
     3,  
     (int *)v[1],
     prompt2 ,
@@ -184,8 +184,8 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
   butn3[0].butncode='f';
   DIN b3 = { 
     'n',
-    82,45,  
-    340,80,
+    82,35,  
+    340,70,
     2,2,  
     250, 
     24, 
@@ -310,10 +310,10 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
   butn13[1].butncode='';
   DIN b13 = { 
     'n',
-    126,68,
-    316,100,
-    10,2,  
-    84, 
+    215,34,
+    365,64,
+    4,2,  
+    64, 
     24, 
     2,1, 
     5,0.500000,0,1,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
@@ -479,8 +479,8 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
   ThumbNail **th4 ;
   DIRA r20 = { 
     'r',
-    107,103,  
-    347,130,   
+    107,128,  
+    347,154,   
     8,0,  
     110, 
     23, 
@@ -602,7 +602,7 @@ int kgMplayer( void *parent,void **v,void *pt) {
   DirGrp =MakeDirPlayGroup( &D,NULL);
   HAGrp =MakeHdmiAudioGroup( &D,NULL);
   StoffGrp = MakeSubtitleoffGroup( &D,NULL);
-  kgShiftGrp(&D,StoffGrp,20,-10);
+  kgShiftGrp(&D,StoffGrp,20,-30);
   kgSetGrpVisibility(&D,UrlGrp,0);
   kgSetGrpVisibility(&D,DirGrp,0);
   kgSetGrpVisibility(&D,HAGrp,0);
@@ -612,7 +612,7 @@ int kgMplayer( void *parent,void **v,void *pt) {
   kgShiftWidget(&D,16,-40,-25);
   AudioGrp = MakeAudioTimeGroup(&D,NULL);
   SubGrp = MakesubtitleGroup(&D,NULL);
-  kgShiftGrp(&D,SubGrp,0,-15);
+  kgShiftGrp(&D,SubGrp,0,-35);
   kgShiftGrp(&D,HAGrp,30,5);
   kgShiftGrp(&D,AudioGrp,-150,-10);
   kgShiftGrp(&D,UrlGrp,30,0);

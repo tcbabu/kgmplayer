@@ -24,7 +24,10 @@ int Mplayer(int,char **);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int ProcessToPipe(int pip0,int pip1,int Pid) ;
 void *RunMonitorJoin(void *arg);
+void *Runmonitor(void *arg);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
+int GetBaseIndex(char *s);
+int FileStat(char *flname);
 
 
 int MakeOutputFile(char *Infile,char *Outfile,char *ext) {
@@ -69,15 +72,15 @@ int  AudioConverttextbox1callback(int cellno,int i,void *Tmp) {
   int ret=1;
   D = (DIALOG *)Tmp;
   DIT *T,*TO;
-  T = (DIT *)kgGetNamedWidget(Tmp,"InputWidget");
-  TO = (DIT *)kgGetNamedWidget(Tmp,"OutputWidget");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"InputWidget");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"OutputWidget");
   strcpy(FileName,kgGetString(T,0));
 #if 0
   sprintf(OutFile,"%-s/Music/",getenv("HOME"));
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp3");
 #else
   sprintf(OutFile,"%-s/Music",getenv("HOME"));
-  MakeFileInFolder(FileName,OutFile,OutFile,"mp3");
+  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp3");
 #endif
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(T);
@@ -99,8 +102,8 @@ int  AudioConvertbutton1callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   DIT *T,*TO;
-  T = (DIT *)kgGetNamedWidget(Tmp,"InputWidget");
-  TO = (DIT *)kgGetNamedWidget(Tmp,"OutputWidget");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"InputWidget");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"OutputWidget");
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
@@ -139,8 +142,8 @@ int  AudioConverttextbox2callback(int cellno,int i,void *Tmp) {
   int ret=1;
   D = (DIALOG *)Tmp;
   DIT *T,*TO;
-  T = (DIT *)kgGetNamedWidget(Tmp,"InputWidget");
-  TO = (DIT *)kgGetNamedWidget(Tmp,"OutputWidget");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"InputWidget");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"OutputWidget");
   strcpy(OutFile,kgGetString(TO,0));
   strcpy(cndata.outfile,OutFile);
   return ret;
@@ -231,7 +234,7 @@ int ProcessMp3Conversion(int pip0,int pip1,int Pid) {
          }
      }
 #else
-     Runmonitor();
+     Runmonitor(NULL);
 #endif
 //     fprintf(stderr,"mplayer over\n");
      return 1;
@@ -475,9 +478,9 @@ int  AudioConvertsplbutton1callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   DIT *T,*TO,*TR;
-  T = (DIT *)kgGetNamedWidget(Tmp,"InputWidget");
-  TO = (DIT *)kgGetNamedWidget(Tmp,"OutputWidget");
-  TR = (DIT *)kgGetNamedWidget(Tmp,"RangeWidget");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"InputWidget");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"OutputWidget");
+  TR = (DIT *)kgGetNamedWidget(Tmp,(char *)"RangeWidget");
   strcpy(cndata.outfile,kgGetString(TO,0));
   strcpy(cndata.infile,kgGetString(T,0));
   n=0;
@@ -496,6 +499,8 @@ int  AudioConvertsplbutton1callback(int butno,int i,void *Tmp) {
        cndata.VolEnh,cndata.Enhfac,cndata.FullRange,
        cndata.StartSec,cndata.EndSec);
   write(ToTools[1],buff,strlen(buff));
+  kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
+  ret = 0;
   return ret;
 }
 void  AudioConvertsplbutton1init(DIL *B,void *pt) {

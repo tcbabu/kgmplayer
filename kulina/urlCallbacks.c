@@ -1,8 +1,12 @@
 #include <kulina.h>
 extern int ToGrab[2],FromGrab[2];
 extern int Quality;
+
 int runjob(char *job,int (*ProcessOut)(int,int,int));
 int changejob(char *job);
+int GetLine(int pip0,char *buff);
+int GetBaseIndex(char *s);
+
 extern void *Dia;
 extern char FileName[500];
 int GRABING=0;
@@ -35,7 +39,7 @@ int  urlbrowser1callback(int item,int i,void *Tmp) {
   R = (DIRA *)kgGetWidget(Tmp,i);
   th = (ThumbNail **) R->list;
   Quality = kgGetSelection(R);
-  kgSetCurrentWidget(D,kgGetWidgetId(D,kgGetNamedWidget(D,"url")));
+  kgSetCurrentWidget(D,kgGetWidgetId(D,kgGetNamedWidget(D,(char *)"url")));
   return ret;
 }
 void  urlbrowser1init(DIRA *R,void *pt) {
@@ -50,15 +54,15 @@ char *GetUrlCopy (void) {
    char *res=NULL;
    char buff[500],*url,*pt;
    int pos;
-   pt  = (char *)kgGetString(kgGetNamedWidget(Dia,"url"),0);
+   pt  = (char *)kgGetString(kgGetNamedWidget(Dia,(char *)"url"),0);
    strcpy(buff,pt);
    url = buff;
-   pos = kgSearchString(url,"www.");
+   pos = kgSearchString(url,(char *)"www.");
    if(pos >= 0)  {
      int i=0;
      while(url[i]==' ') i++;
      url= url+i;
-     pos = kgSearchString(url,"http");
+     pos = kgSearchString(url,(char *)"http");
      res= (char *)malloc(sizeof(char)*(strlen(url)+8));
      res[0]='\0';
      if(pos < 0) {
@@ -67,9 +71,9 @@ char *GetUrlCopy (void) {
      strcat(res,url);
    }
    else {
-     pos = kgSearchString(url,"http");
+     pos = kgSearchString(url,(char *)"http");
      if(pos>= 0) {
-       pos = kgSearchString(url,"://");
+       pos = kgSearchString(url,(char *)"://");
        if(pos>=0) {
          int ch;
          pos +=3;
@@ -90,7 +94,7 @@ char *GetUrlCopy (void) {
      }
    }
    if(res==NULL) {
-      WriteMessage("!z32Sorry!!!!!! Invalid URL");
+      WriteMessage((char *)"!z32Sorry!!!!!! Invalid URL");
       kgUpdateOn(Dia);
    }
    return res;
@@ -98,10 +102,10 @@ char *GetUrlCopy (void) {
 static float get_mbsize(char *pt) {
    float sz =0.0;
    int pos;
-   pos = kgSearchString(pt,"(");
+   pos = kgSearchString(pt,(char *)"(");
    if(pos >=0) {
      pt +=(pos+1);
-     pos = kgSearchString(pt,"M");
+     pos = kgSearchString(pt,(char *)"M");
      if (pos >=0) {
        pt[pos]=' ';
        sscanf(pt,"%f",&sz);
@@ -125,13 +129,13 @@ char *GetFormatSize(char *buff,int Qly,int *size) {
      while(buff[i]>=' ') i++;
      buff[i]='\0';
      pt1=buff;
-     pos = kgSearchString(pt1,",");
+     pos = kgSearchString(pt1,(char *)",");
      while(pos>=0) {
        pt2= pt1+pos+1;
        pt1[pos]='\0';
        Dadd(L,(void *)pt1);
        pt1=pt2;
-       pos = kgSearchString(pt1,",");
+       pos = kgSearchString(pt1,(char *)",");
      }
      count = Dcount(L);
      if(count > 0) {
@@ -168,7 +172,7 @@ char *GetFormatSize(char *buff,int Qly,int *size) {
 int CheckFileExists(char *folder,char *file) {
    int ret=0,i=0;
    char **m=NULL;
-   m = (char **)kgFileMenu(folder,"*");
+   m = (char **)kgFileMenu(folder,(char *)"*");
    if(m != NULL) {
      i=0;
      while(m[i]!= NULL) {
@@ -186,7 +190,7 @@ char *GetGrabFile(char *buff,char *fmt) {
     int ver=0,off=0;
     int pos,ch;
     if(fmt != NULL) {
-      pos= kgSearchString(buff,"Size:");
+      pos= kgSearchString(buff,(char *)"Size:");
       i=0;
       while(buff[i]==' ') i++;
       j=0;
@@ -211,7 +215,7 @@ char *GetGrabFile(char *buff,char *fmt) {
        off=4;
        strcat(Word,vstr);
       }
-      pos= kgSearchString(fmt,":");
+      pos= kgSearchString(fmt,(char *)":");
       if(pos>=0) {
         fmt[pos]='\0';
         strcat(Word,fmt);
@@ -245,7 +249,7 @@ int TryGrabing(void) {
   url = GetUrlCopy();
   GRABING=0;
   if(url != NULL) {
-    WriteMessage("!z43Trying movgrab");
+    WriteMessage((char *)"!z43Trying movgrab");
     switch(Quality) {
       case 1:
        strcpy(buff,"chkgrab -f flv,3gp,webm,mp4 -o /tmp/new.mp4 ");
@@ -263,19 +267,19 @@ int TryGrabing(void) {
     strcat(buff,url);
     strcat(buff," \n");
 //    printf("%s",buff);
-    WriteMessage("!z43Waiting for Grab response");
+    WriteMessage((char *)"!z43Waiting for Grab response");
     write(ToGrab[1],buff,strlen(buff));
 //    read(FromGrab[0],reply,500);
     Id =kgOpenBusy(Dia,200,100);
     if((ch=GetLine(FromGrab[0],reply))<=0) {
 //      printf("reply: %s",reply);
       kgCloseBusy(Id);
-      WriteMessage("!z43GRAB FAILED");
+      WriteMessage((char *)"!z43GRAB FAILED");
       free(url);return 0;
     }
 //    printf("reply: %s",reply);
     kgCloseBusy(Id);
-    if(kgSearchString(reply,"OKAY:") >=0) {
+    if(kgSearchString(reply,(char *)"OKAY:") >=0) {
       char *flname=NULL;
 //      read(FromGrab[0],reply,500);
       if((ch=GetLine(FromGrab[0],reply))<=0) {
@@ -309,8 +313,8 @@ int TryGrabing(void) {
     }
     else {
 //      printf("Got Failed\n");
-      if(kgSearchString(reply,"FAILED:") >=0) WriteMessage("FAILED TO GRAB");
-      else WriteMessage("UNKNOWN RESPONSE");
+      if(kgSearchString(reply,(char *)"FAILED:") >=0) WriteMessage((char *)"FAILED TO GRAB");
+      else WriteMessage((char *)"UNKNOWN RESPONSE");
     }
     free(url);
   }
@@ -329,14 +333,14 @@ int  urlbutton1callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
-//  url = (char *)kgGetString(kgGetNamedWidget(D,"url"),0);
+//  url = (char *)kgGetString(kgGetNamedWidget(D,(char *)"url"),0);
 #if 1
   TryGrabing();
 #else
   url = GetUrlCopy();
   GRABING=0;
   if(url != NULL) {
-    WriteMessage("!c04!z43Trying movgrab");
+    WriteMessage((char *)"!c04!z43Trying movgrab");
     switch(Quality) {
       case 1:
        strcpy(buff,"chkgrab -f flv,3gp,webm,mp4 -o /tmp/new.mp4 ");
@@ -354,10 +358,10 @@ int  urlbutton1callback(int butno,int i,void *Tmp) {
     strcat(buff,url);
     strcat(buff," \n");
 //    printf("%s",buff);
-    WriteMessage("!c04!z43Waiting for Grab response");
+    WriteMessage((char *)"!c04!z43Waiting for Grab response");
     write(ToGrab[1],buff,strlen(buff));
     read(FromGrab[0],reply,500);
-    if(kgSearchString(reply,"OKAY:") >=0) {
+    if(kgSearchString(reply,(char *)"OKAY:") >=0) {
       char *flname;
       read(FromGrab[0],reply,500);
 //      printf("%s\n",reply);
@@ -381,12 +385,12 @@ int  urlbutton1callback(int butno,int i,void *Tmp) {
     }
     else {
 //      printf("Got Failed\n");
-      WriteMessage("!c04FAILED TO GRAB");
+      WriteMessage((char *)"!c04FAILED TO GRAB");
     }
     free(url);
   }
 #endif
-  kgSetCurrentWidget(D,kgGetWidgetId(D,kgGetNamedWidget(D,"url")));
+  kgSetCurrentWidget(D,kgGetWidgetId(D,kgGetNamedWidget(D,(char *)"url")));
   switch(butno) {
     case 1: 
       break;
@@ -406,7 +410,7 @@ int  urlbutton2callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
-  kgSetCurrentWidget(D,kgGetWidgetId(D,kgGetNamedWidget(D,"url")));
+  kgSetCurrentWidget(D,kgGetWidgetId(D,kgGetNamedWidget(D,(char *)"url")));
   switch(butno) {
     case 1: 
       break;
@@ -428,14 +432,14 @@ int  urlbutton3callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
-  brw = kgWhich("firefox");
-  if(brw==NULL) kgWhich("chrome");
+  brw = kgWhich((char *)"firefox");
+  if(brw==NULL) kgWhich((char *)"chrome");
   if(brw== NULL) return ret;
-  kgSetCurrentWidget(D,kgGetWidgetId(D,kgGetNamedWidget(D,"url")));
+  kgSetCurrentWidget(D,kgGetWidgetId(D,kgGetNamedWidget(D,(char *)"url")));
   strcpy(Command,brw);
   strcat(Command," https://www.google.com/search?q=");
   free(brw);
-  url = (char *)kgGetString(kgGetNamedWidget(D,"url"),0);
+  url = (char *)kgGetString(kgGetNamedWidget(D,(char *)"url"),0);
   if(url[0]=='\0') return ret;
   n=0;
   l = strlen(Command);
@@ -447,8 +451,8 @@ int  urlbutton3callback(int butno,int i,void *Tmp) {
   Command[l]='\0';
 //  printf("%s\n",Command);
 //  system(Command);
-  kgSetString(kgGetNamedWidget(D,"url"),0,"");
-  kgUpdateWidget(kgGetNamedWidget(D,"url"));
+  kgSetString(kgGetNamedWidget(D,(char *)"url"),0,(char *)"");
+  kgUpdateWidget(kgGetNamedWidget(D,(char *)"url"));
 //  runjob(Command,NULL);
   if(fork()==0) {
    changejob(Command); 

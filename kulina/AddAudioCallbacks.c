@@ -105,9 +105,16 @@ int AddAudioToVideo( CONVDATA *cn) {
     write(Jpipe[1],options,strlen(options));
     sprintf(options,"Adding audio and Converting to mp4\n");
     write(Jpipe[1],options,strlen(options));
+    if(Cn.Quality==1) {
+    sprintf(command,"kgffmpeg -vn -i %-s/F%-4.4d.wav -an -i \"%-s\" "
+        " -y -f mp4 -vcodec libx265 "
+        "  -t %lf \"%-s\" ", Folder,id ,Cn.infile,Esec,Cn.outfile);
+    }
+    else {
     sprintf(command,"kgffmpeg -vn -i %-s/F%-4.4d.wav -an -i \"%-s\" "
         " -y -f mp4 -vcodec libx264 "
         " -b:v %-s -t %lf \"%-s\" ", Folder,id ,Cn.infile,Qstr,Esec,Cn.outfile);
+    }
 //        printf("%s\n",command);
     runfunction(command,ProcessToPipe,kgffmpeg);
     kgCleanDir(Folder);
@@ -230,6 +237,9 @@ int  AddAudiosplbutton1callback(int butno,int i,void *Tmp) {
   sprintf(buff,"%d \"%-s\" \"%-s\" \"%-s\" %d \n",
        cndata.code, cndata.audiofile,cndata.infile,cndata.outfile,Qty);
   write(ToTools[1],buff,strlen(buff));
+  
+  kgSplashMessage(NULL,100,100,300,40,"Send for Processing",1,0,15);
+  ret =0;
 
   return ret;
 }

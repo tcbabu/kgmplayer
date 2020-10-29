@@ -1,10 +1,49 @@
+#define D_HELPGRP
 #include <kulina.h>
 #include "ConvertData.h"
+#include "images2videos.h"
+#include "ToolGroup.h"
+extern void *HelperImg;
+char *HelperMsg;
+extern IMGS2VDATA is2vdata;
+
 extern int Tools;
 extern CONVDATA cndata;
 extern int AConGrp,RangeGrp,EnVoGrp,VConGrp,
            VaspGrp,VsizeGrp,VrangeGrp,VJGrp,AJGrp,AddGrp,MixGrp,AmixGrp,
-           KarGrp,SilGrp,CutGrp;
+           KarGrp,SilGrp,CutGrp,Is2vGrp;
+
+extern int ToolHelpGrp,HelpButnGrp,ImageBoxGrp;
+
+extern TOOLGRP ToolList[];
+
+int SetGrpVis(DIALOG *Tmp,TOOLGRP *T,int item) {
+  int k,id;
+  id = item- 2;
+  kgSetGrpVisibility(Tmp,HelpButnGrp,0);
+  k=0;
+  while(T[k].MakeGroup != NULL){
+//   if(k != id) kgSetGrpVisibility(Tmp,T[k].GrpId,0);
+   kgSetGrpVisibility(Tmp,T[k].GrpId,0);
+   k++;
+  }
+  kgSetGrpVisibility(Tmp,ImageBoxGrp,0);
+  kgSetGrpVisibility(Tmp,ImageBoxGrp,1);
+  if((id >= 0) &&(id < k )) {
+//        HelperMsg= (char **) T[id].MsgImg;
+#if 0
+     if(T[id].RunHelp != NULL) {
+        if(T[id].flag==1) T[id].RunHelp(NULL);
+        else           T[id].RunHelp(Tmp);
+        T[id].RunHelp = NULL;
+     }
+#endif
+     kgSetGrpVisibility(Tmp,T[id].GrpId,1);
+     kgSetGrpVisibility(Tmp,HelpButnGrp,1);
+  }
+  return 1;
+}
+
 int  ToolBoxbrowser1callback(int item,int i,void *Tmp) {
   /*********************************** 
     item : selected item (1 to max_item)  not any specific relevence
@@ -19,201 +58,41 @@ int  ToolBoxbrowser1callback(int item,int i,void *Tmp) {
   R = (DIRA *)kgGetWidget(Tmp,i);
   th = (ThumbNail **) R->list;
   Tools=item -1;
+#ifdef D_HELPGRP
+  kgSetGrpVisibility(D,ToolHelpGrp,0);
+#endif
+  kgSetGrpVisibility(D,HelpButnGrp,0);
+  kgSetGrpVisibility(D,EnVoGrp,0);
+  kgSetGrpVisibility(D,RangeGrp,0);
+  kgSetGrpVisibility(D,VaspGrp,0);
+  kgSetGrpVisibility(D,VsizeGrp,0);
+  kgSetGrpVisibility(D,VrangeGrp,0);
   switch(item) {
     case 2:
-    kgSetGrpVisibility(Tmp,MixGrp,0);
-    kgSetGrpVisibility(Tmp,AmixGrp,0);
-    kgSetGrpVisibility(Tmp,KarGrp,0);
-    kgSetGrpVisibility(Tmp,SilGrp,0);
-    kgSetGrpVisibility(Tmp,CutGrp,0);
-    kgSetGrpVisibility(Tmp,AddGrp,0);
-    kgSetGrpVisibility(Tmp,VaspGrp,0);
-    kgSetGrpVisibility(Tmp,VrangeGrp,0);
-    kgSetGrpVisibility(Tmp,VsizeGrp,0);
-    kgSetGrpVisibility(Tmp,VConGrp,0);
-    kgSetGrpVisibility(Tmp,VJGrp,0);
-    kgSetGrpVisibility(Tmp,AJGrp,0);
-    kgSetGrpVisibility(Tmp,AConGrp,1);
-    kgSetGrpVisibility(Tmp,EnVoGrp,1);
+    SetGrpVis(D,ToolList,item);
+    kgSetGrpVisibility(D,EnVoGrp,1);
+
     cndata.Enhfac=1.0;
     if(cndata.FullRange!=1) {
-      kgSetGrpVisibility(Tmp,RangeGrp,1);
+      kgSetGrpVisibility(D,RangeGrp,1);
     }
     break;
     case 3:
-    kgSetGrpVisibility(Tmp,MixGrp,0);
-    kgSetGrpVisibility(Tmp,AmixGrp,0);
-    kgSetGrpVisibility(Tmp,KarGrp,0);
-    kgSetGrpVisibility(Tmp,SilGrp,0);
-    kgSetGrpVisibility(Tmp,CutGrp,0);
-    kgSetGrpVisibility(Tmp,AddGrp,0);
-    kgSetGrpVisibility(Tmp,EnVoGrp,0);
-    kgSetGrpVisibility(Tmp,RangeGrp,0);
-    kgSetGrpVisibility(Tmp,AConGrp,0);
-    kgSetGrpVisibility(Tmp,VJGrp,0);
-    kgSetGrpVisibility(Tmp,AJGrp,0);
-    kgSetGrpVisibility(Tmp,VConGrp,1);
-    if(cndata.ChngAsp) kgSetGrpVisibility(Tmp,VaspGrp,1);
-    if(cndata.Scale) kgSetGrpVisibility(Tmp,VsizeGrp,1);
+    SetGrpVis(D,ToolList,item);
+    if(cndata.ChngAsp) kgSetGrpVisibility(D,VaspGrp,1);
+    if(cndata.Scale) kgSetGrpVisibility(D,VsizeGrp,1);
     if(cndata.VFullRange!=1) {
-      kgSetGrpVisibility(Tmp,VrangeGrp,1);
+      kgSetGrpVisibility(D,VrangeGrp,1);
     }
     break;
-    case 4:
-    kgSetGrpVisibility(Tmp,MixGrp,0);
-    kgSetGrpVisibility(Tmp,AmixGrp,0);
-    kgSetGrpVisibility(Tmp,KarGrp,0);
-    kgSetGrpVisibility(Tmp,SilGrp,0);
-    kgSetGrpVisibility(Tmp,CutGrp,0);
-    kgSetGrpVisibility(Tmp,AddGrp,0);
-    kgSetGrpVisibility(Tmp,VaspGrp,0);
-    kgSetGrpVisibility(Tmp,VsizeGrp,0);
-    kgSetGrpVisibility(Tmp,VrangeGrp,0);
-    kgSetGrpVisibility(Tmp,VConGrp,0);
-    kgSetGrpVisibility(Tmp,AConGrp,0);
-    kgSetGrpVisibility(Tmp,EnVoGrp,0);
-    kgSetGrpVisibility(Tmp,RangeGrp,0);
-    kgSetGrpVisibility(Tmp,AJGrp,0);
-    kgSetGrpVisibility(Tmp,VJGrp,1);
-    break;
-    case 5:
-    kgSetGrpVisibility(Tmp,MixGrp,0);
-    kgSetGrpVisibility(Tmp,AmixGrp,0);
-    kgSetGrpVisibility(Tmp,KarGrp,0);
-    kgSetGrpVisibility(Tmp,SilGrp,0);
-    kgSetGrpVisibility(Tmp,CutGrp,0);
-    kgSetGrpVisibility(Tmp,AddGrp,0);
-    kgSetGrpVisibility(Tmp,VaspGrp,0);
-    kgSetGrpVisibility(Tmp,VsizeGrp,0);
-    kgSetGrpVisibility(Tmp,VrangeGrp,0);
-    kgSetGrpVisibility(Tmp,VConGrp,0);
-    kgSetGrpVisibility(Tmp,AConGrp,0);
-    kgSetGrpVisibility(Tmp,EnVoGrp,0);
-    kgSetGrpVisibility(Tmp,RangeGrp,0);
-    kgSetGrpVisibility(Tmp,VJGrp,0);
-    kgSetGrpVisibility(Tmp,AJGrp,1);
-    break;
-    case 6:
-    kgSetGrpVisibility(Tmp,VaspGrp,0);
-    kgSetGrpVisibility(Tmp,VsizeGrp,0);
-    kgSetGrpVisibility(Tmp,VrangeGrp,0);
-    kgSetGrpVisibility(Tmp,VConGrp,0);
-    kgSetGrpVisibility(Tmp,AConGrp,0);
-    kgSetGrpVisibility(Tmp,EnVoGrp,0);
-    kgSetGrpVisibility(Tmp,RangeGrp,0);
-    kgSetGrpVisibility(Tmp,VJGrp,0);
-    kgSetGrpVisibility(Tmp,AJGrp,0);
-    kgSetGrpVisibility(Tmp,MixGrp,0);
-    kgSetGrpVisibility(Tmp,AmixGrp,0);
-    kgSetGrpVisibility(Tmp,KarGrp,0);
-    kgSetGrpVisibility(Tmp,SilGrp,0);
-    kgSetGrpVisibility(Tmp,CutGrp,0);
-    kgSetGrpVisibility(Tmp,AddGrp,1);
-    break;
-    case 7:
-    kgSetGrpVisibility(Tmp,VaspGrp,0);
-    kgSetGrpVisibility(Tmp,VsizeGrp,0);
-    kgSetGrpVisibility(Tmp,VrangeGrp,0);
-    kgSetGrpVisibility(Tmp,VConGrp,0);
-    kgSetGrpVisibility(Tmp,AConGrp,0);
-    kgSetGrpVisibility(Tmp,EnVoGrp,0);
-    kgSetGrpVisibility(Tmp,RangeGrp,0);
-    kgSetGrpVisibility(Tmp,VJGrp,0);
-    kgSetGrpVisibility(Tmp,AJGrp,0);
-    kgSetGrpVisibility(Tmp,AddGrp,0);
-    kgSetGrpVisibility(Tmp,KarGrp,0);
-    kgSetGrpVisibility(Tmp,SilGrp,0);
-    kgSetGrpVisibility(Tmp,CutGrp,0);
-    kgSetGrpVisibility(Tmp,AmixGrp,0);
-    kgSetGrpVisibility(Tmp,MixGrp,1);
-    break;
-    case 8:
-    kgSetGrpVisibility(Tmp,VaspGrp,0);
-    kgSetGrpVisibility(Tmp,VsizeGrp,0);
-    kgSetGrpVisibility(Tmp,VrangeGrp,0);
-    kgSetGrpVisibility(Tmp,VConGrp,0);
-    kgSetGrpVisibility(Tmp,AConGrp,0);
-    kgSetGrpVisibility(Tmp,EnVoGrp,0);
-    kgSetGrpVisibility(Tmp,RangeGrp,0);
-    kgSetGrpVisibility(Tmp,VJGrp,0);
-    kgSetGrpVisibility(Tmp,AJGrp,0);
-    kgSetGrpVisibility(Tmp,AddGrp,0);
-    kgSetGrpVisibility(Tmp,MixGrp,0);
-    kgSetGrpVisibility(Tmp,KarGrp,0);
-    kgSetGrpVisibility(Tmp,SilGrp,0);
-    kgSetGrpVisibility(Tmp,CutGrp,0);
-    kgSetGrpVisibility(Tmp,AmixGrp,1);
-    break;
-    case 9:
-    kgSetGrpVisibility(Tmp,VaspGrp,0);
-    kgSetGrpVisibility(Tmp,VsizeGrp,0);
-    kgSetGrpVisibility(Tmp,VrangeGrp,0);
-    kgSetGrpVisibility(Tmp,VConGrp,0);
-    kgSetGrpVisibility(Tmp,AConGrp,0);
-    kgSetGrpVisibility(Tmp,EnVoGrp,0);
-    kgSetGrpVisibility(Tmp,RangeGrp,0);
-    kgSetGrpVisibility(Tmp,VJGrp,0);
-    kgSetGrpVisibility(Tmp,AJGrp,0);
-    kgSetGrpVisibility(Tmp,AddGrp,0);
-    kgSetGrpVisibility(Tmp,MixGrp,0);
-    kgSetGrpVisibility(Tmp,AmixGrp,0);
-    kgSetGrpVisibility(Tmp,SilGrp,0);
-    kgSetGrpVisibility(Tmp,CutGrp,0);
-    kgSetGrpVisibility(Tmp,KarGrp,1);
-    break;
-    case 10:
-    kgSetGrpVisibility(Tmp,VaspGrp,0);
-    kgSetGrpVisibility(Tmp,VsizeGrp,0);
-    kgSetGrpVisibility(Tmp,VrangeGrp,0);
-    kgSetGrpVisibility(Tmp,VConGrp,0);
-    kgSetGrpVisibility(Tmp,AConGrp,0);
-    kgSetGrpVisibility(Tmp,EnVoGrp,0);
-    kgSetGrpVisibility(Tmp,RangeGrp,0);
-    kgSetGrpVisibility(Tmp,VJGrp,0);
-    kgSetGrpVisibility(Tmp,AJGrp,0);
-    kgSetGrpVisibility(Tmp,AddGrp,0);
-    kgSetGrpVisibility(Tmp,MixGrp,0);
-    kgSetGrpVisibility(Tmp,AmixGrp,0);
-    kgSetGrpVisibility(Tmp,KarGrp,0);
-    kgSetGrpVisibility(Tmp,CutGrp,0);
-    kgSetGrpVisibility(Tmp,SilGrp,1);
-    break;
-    case 11:
-    kgSetGrpVisibility(Tmp,VaspGrp,0);
-    kgSetGrpVisibility(Tmp,VsizeGrp,0);
-    kgSetGrpVisibility(Tmp,VrangeGrp,0);
-    kgSetGrpVisibility(Tmp,VConGrp,0);
-    kgSetGrpVisibility(Tmp,AConGrp,0);
-    kgSetGrpVisibility(Tmp,EnVoGrp,0);
-    kgSetGrpVisibility(Tmp,RangeGrp,0);
-    kgSetGrpVisibility(Tmp,VJGrp,0);
-    kgSetGrpVisibility(Tmp,AJGrp,0);
-    kgSetGrpVisibility(Tmp,AddGrp,0);
-    kgSetGrpVisibility(Tmp,MixGrp,0);
-    kgSetGrpVisibility(Tmp,AmixGrp,0);
-    kgSetGrpVisibility(Tmp,KarGrp,0);
-    kgSetGrpVisibility(Tmp,SilGrp,0);
-    kgSetGrpVisibility(Tmp,CutGrp,1);
+    case 1:
+    SetGrpVis(D, ToolList,-1);
     break;
     default:
-    kgSetGrpVisibility(Tmp,MixGrp,0);
-    kgSetGrpVisibility(Tmp,AmixGrp,0);
-    kgSetGrpVisibility(Tmp,SilGrp,0);
-    kgSetGrpVisibility(Tmp,CutGrp,0);
-    kgSetGrpVisibility(Tmp,KarGrp,0);
-    kgSetGrpVisibility(Tmp,AddGrp,0);
-    kgSetGrpVisibility(Tmp,VaspGrp,0);
-    kgSetGrpVisibility(Tmp,VsizeGrp,0);
-    kgSetGrpVisibility(Tmp,VrangeGrp,0);
-    kgSetGrpVisibility(Tmp,VConGrp,0);
-    kgSetGrpVisibility(Tmp,AConGrp,0);
-    kgSetGrpVisibility(Tmp,EnVoGrp,0);
-    kgSetGrpVisibility(Tmp,RangeGrp,0);
-    kgSetGrpVisibility(Tmp,VJGrp,0);
-    kgSetGrpVisibility(Tmp,AJGrp,0);
+    SetGrpVis(D, ToolList,item);
     break;
   }
-  kgUpdateOn(Tmp);
+  kgUpdateOn(D);
   return ret;
 }
 void  ToolBoxbrowser1init(DIRA *R,void *pt) {
@@ -267,6 +146,8 @@ int ToolBoxcleanup(void *Tmp) {
     cndata.Alist=NULL;
   }
 #endif
+  Dempty((Dlink *)is2vdata.List);
+  is2vdata.List= NULL;
   return ret;
 }
 int ToolBoxCallBack(void *Tmp,void *tmp) {

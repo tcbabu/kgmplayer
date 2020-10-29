@@ -148,3 +148,11 @@ Ver: 4.2.2 Dated 2nd Sept 17
 
 Subtilte optiond for CD/DVD also.
 GUI modified.
+
+Ver: 4.3.0 Dated 29th October 2020
+
+Added support for libx265, since it is in C++ now cmake
+is required and few other corrections are made. The final linking
+is forced with g++ due to this reason. 
+
+Many tools are added to the media tool kit and plans to extend further.

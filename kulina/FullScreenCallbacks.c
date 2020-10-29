@@ -5,8 +5,8 @@ extern int sig[2],rsig[2],rsig1[2],Pip0;
 int RunControls(void *arg) ;
 int BRK=0;
 void KillDisplay(void) {
-  kgPushBackEvent(Dia);
-  kgPushBackEvent(Dia);
+  kgPushBackEvent((DIALOG *) Dia);
+  kgPushBackEvent((DIALOG *)Dia);
 //  printf("Pushed Back\n");
 }
 int FullScreeninit(void *Tmp) {
@@ -87,7 +87,7 @@ int FullScreenCallBack(void *Tmp,void *tmp) {
      kgHideCursor(D);
     }
   }
-  kgSkipEvents(Tmp);
+  kgSkipEvents((DIALOG *)Tmp);
   return ret;
 }
 int FullScreenResizeCallBack(void *Tmp) {

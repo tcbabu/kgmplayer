@@ -222,6 +222,8 @@ int  MakeKaraokesplbutton1callback(int butno,int i,void *Tmp) {
   sprintf(buff,"%d \"%-s\" \"%-s\" \"%-s\" %d \n",
        cndata.code, cndata.audiofile,cndata.infile,cndata.outfile,Qty);
   write(ToTools[1],buff,strlen(buff));
+  kgSplashMessage(NULL,100,100,300,40,"Send for Processing",1,0,15);
+  ret =0;
   return ret;
 }
 void  MakeKaraokesplbutton1init(DIL *B,void *pt) {

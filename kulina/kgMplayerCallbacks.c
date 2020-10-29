@@ -36,18 +36,16 @@ int WMEntry=0;
 int Chapters=1;
 int AllTracks=0;
 int first,last;
-int kgLame(int,char **);
-int kgffmpeg(int,char **);
-int Mplayer(int,char **);
-
 int ResetSubTitle(MEDIAINFO *Minfo);
 int DirPlayinit(void *Tmp);
 int subtitleinit(void *Tmp);
+int imgs2vinit(void *Tmp);
 int cd_info(int,char **);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int RunFunction(char *job,int (*ProcessOut)(void *,int,int,int),int
 (*function)(int,char **),void *);
 void * RunControls(void *);
+int runjob(char *job,int (*ProcessOut)(int,int,int));
 extern int BRK;
 extern Dlink *Plink;
 extern int WMErr;
@@ -59,7 +57,7 @@ int Vstep=10;
 int AudioDelay=0;
 unsigned long MWIN=0,RWIN=0;
 int FULLSCREEN=1;
-char *environ[2];
+char *envrn[2];
 char CurPlayList[200];
 void *RunRip(void *arg);
 void *RunFullScreen(void *arg);
@@ -659,7 +657,7 @@ int ProcessMplayer(int pip0,int pip1,int Pid) {
                  }
                  pthread_mutex_unlock(&Mlock);
                  if(CheckString(buff,(char *)"B: 1")){ // esc press
-                   ProcessCode("q"); // stop playing
+                   ProcessCode((char *)"q"); // stop playing
                  }
                }
               }
@@ -1164,7 +1162,7 @@ int runjobpe(char *job,int (*ProcessOut)(int,int,int)){
      open("/dev/null",O_WRONLY|O_CREAT,0777);
      /*dup(pip[1]);*/
      close(pip[1]);
-     execvpe(pgrpath,args,environ);
+     execvpe(pgrpath,args,envrn);
      fprintf(stderr,"Failed to execute aplay\n");
      sleep(5);
      exit(1);
@@ -1381,6 +1379,7 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
    char *args[100],buff[1000],pt[300];
    char *pgrpath=NULL;
    int i=0,pos=0;
+//   printf("Job= %s\n",job);
    if(job==NULL) return 0;
    if( pipe(pip) < 0) return 0;
    if( pipe(pip2) < 0) return 0;
@@ -1417,7 +1416,7 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
      }
      pos++;
      while(buff[pos]==' ') pos++;
-//     printf("%s ",args[i-1]);
+ //    printf("%s ",args[i-1]);
    }
 //   printf("\n");
    args[i]=NULL;
@@ -1638,8 +1637,8 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
 //         fflush(stdout);
          if(ch< 0) continue;
          if( SearchString(buff,(char *)"VIDEO:")>=0) {
-               if(SearchString(buff,"fps")>0) {
-                 pos = SearchString(buff,"bpp");
+               if(SearchString(buff,(char *)"fps")>0) {
+                 pos = SearchString(buff,(char *)"bpp");
                  if(pos>0) {
                     pt = buff+pos+4;
                     sscanf(pt,"%f",&fps);
@@ -2165,7 +2164,7 @@ int GetMedia(char *media) {
       else {
 //        url = GetUrlCopy();
         if(url != NULL) {
-          if(kgSearchString(url,"youtube.")>=0 ) {
+          if(kgSearchString(url,(char *)"youtube.")>=0 ) {
              if(!TryGrabing()) break;
              else { free(url);url=FileName;}
           }
@@ -2234,17 +2233,17 @@ int SetMplayer(void){
    if(HDMI&&HDMIAUDIO) {
 //        setenv((char *)"ALSADEV","hw:0,3",1);
           printf("HDMI identified: Setting ALSADEV\n");
-          sprintf(environ[0],"ALSADEV=hw:%-d,%-d",Card,Device);  
-          putenv(environ[0]);
+          sprintf(envrn[0],"ALSADEV=hw:%-d,%-d",Card,Device);  
+          putenv(envrn[0]);
           printf("ALSADEV: %s\n",getenv("ALSADEV"));
           sprintf(media,"amixer sset IEC958  on");
           runjob(media,NULL);
    }
    else {
-    environ[0][0]='\0';
+    envrn[0][0]='\0';
     Device=0;
-    sprintf(environ[0],"ALSADEV=hw:%-d,%-d",Card,Device);  
-    putenv(environ[0]);
+    sprintf(envrn[0],"ALSADEV=hw:%-d,%-d",Card,Device);  
+    putenv(envrn[0]);
     printf("ALSADEV: %s\n",getenv("ALSADEV"));
     if(!PULSE) {
           sprintf(media,"amixer sset IEC958  on");
@@ -2351,7 +2350,7 @@ int SetMplayer(void){
       else {
 //        url = GetUrlCopy();
         if(url != NULL) {
-          if(kgSearchString(url,"youtube.")>=0 ) {
+          if(kgSearchString(url,(char *)"youtube.")>=0 ) {
              if(!TryGrabing()) break;
              else { free(url);url=FileName;}
           }
@@ -2464,7 +2463,7 @@ int SetMplayer(void){
    }
    break;
    } //switch
-//   printf("%s\n",environ[0]);
+//   printf("%s\n",envrn[0]);
 //   printf("Line: %s\n",Line);
    if(Three2Two) {
 //     strcat(Line,"-vo gl:stereo=3");
@@ -2554,7 +2553,7 @@ int PlayFolder(void *Tmp,char *Folder) {
    char buff[500];
    if(Folder==NULL) return 0;
    if(Folder[0]=='\0') return 0;
-   Files =  kgFileMenu(Folder,"*");
+   Files =  kgFileMenu(Folder,(char *)"*");
    if(Files==NULL) return 0;
    Plink=Dopen();
    i=0;
@@ -2633,7 +2632,7 @@ int PlayFolder(void *Tmp,char *Folder) {
           for(i=0;i<items;i++) {
             Resetlink(Clist);
             Dposition(Clist,getrandom(items-i));
-            pt = Dpick(Clist);
+            pt = (char *)Dpick(Clist);
             Dadd(Rlist,pt);
           }
           Dfree(Clist);
@@ -2683,7 +2682,7 @@ int  kgMplayersplbutton1callback(int butno,int i,void *Tmp) {
     case 1: 
       Play=1,Mute=0;Speed=1;
       HDMIO=HDMI;
-      runjob("xrandr",ProcessXrandr);
+      runjob((char *)"xrandr",ProcessXrandr);
 //      PrintDevlist();
 #if 1
       if(HDMI ) {
@@ -2693,17 +2692,17 @@ int  kgMplayersplbutton1callback(int butno,int i,void *Tmp) {
          kgUpdateWidget(B16);
          kgSetGrpVisibility(Tmp,HAGrp,1);
          kgUpdateOn(Tmp);
-         runjob("aplay -l",ProcessAplay);
+         runjob((char *)"aplay -l",ProcessAplay);
          return 0;
        }
-       else runjob("aplay -l",ProcessAplay);
+       else runjob((char *)"aplay -l",ProcessAplay);
 //        printf("Card: %-d Device: %-d\n",Card,Device);
       }
       else {
-        runjob("aplay -l",ProcessAplay);
+        runjob((char *)"aplay -l",ProcessAplay);
       }
 #else
-      runjob("aplay -l",ProcessAplay);
+      runjob((char *)"aplay -l",ProcessAplay);
 #endif
       Xs = (float)kgGetSlideValue(Wsld)/100.0;
       Ys = (float)kgGetSlideValue(Hsld)/100.0;
@@ -2786,7 +2785,7 @@ int  kgMplayersplbutton1callback(int butno,int i,void *Tmp) {
           for(i=0;i<items;i++) {
             Resetlink(Clist);
             Dposition(Clist,getrandom(items-i));
-            pt = Dpick(Clist);
+            pt = (char *)Dpick(Clist);
             Dadd(Rlist,pt);
           }
           Dfree(Clist);
@@ -2886,7 +2885,7 @@ int  kgMplayersplbutton1callback(int butno,int i,void *Tmp) {
     case 2: 
       break;
   }
-  kgSkipEvents(Tmp);
+  kgSkipEvents((DIALOG *)Tmp);
   return ret;
 }
 void  kgMplayersplbutton1init(DIL *B,void *pt) {
@@ -2999,7 +2998,7 @@ int  kgMplayerbrowser1callback(int item,int i,void *Tmp) {
       kgUpdateWidget(C19);
       kgSetGrpVisibility(Tmp,UrlGrp,1);
 //      kgSetCurrentWidget(D,kgGetWidgetId(D,kgGetNamedWidget(D,"url")));
-      WriteMessage("may play all media files in Folder");
+      WriteMessage((char *)"may SEARCH for URL using string in url");
 //      kgUpdateGrp(Tmp,UrlGrp);
       break;
     case 5:  // URL
@@ -3020,8 +3019,8 @@ int  kgMplayerbrowser1callback(int item,int i,void *Tmp) {
       kgUpdateWidget(B17);
       kgUpdateWidget(C19);
       kgSetGrpVisibility(Tmp,DirGrp,1);
-      kgSetCurrentWidget(D,kgGetWidgetId(D,kgGetNamedWidget(D,"url")));
-      WriteMessage("may SEARCH for URL using string in url");
+      kgSetCurrentWidget(D,kgGetWidgetId(D,kgGetNamedWidget(D,(char *)"url")));
+      WriteMessage((char *)"may play all media files in Folder");
 //      kgUpdateGrp(Tmp,UrlGrp);
       break;
   }
@@ -3058,7 +3057,7 @@ int  kgMplayerbutton1callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
-  if(kgFolderBrowser(NULL,100,100,FileName,"*")) {
+  if(kgFolderBrowser(NULL,100,100,FileName,(char *)"*")) {
       ResetSubTitle(&Minfo);
       index = GetBaseIndex(FileName);
       kgTruncateString(FileName+index,40);
@@ -3187,8 +3186,8 @@ int kgMplayerinit(void *Tmp) {
   D = (DIALOG *)Tmp;
   pt = D->pt;
   FileName[0]='\0';
-  environ[1]=NULL;
-  environ[0]=(char *)malloc(100);
+  envrn[1]=NULL;
+  envrn[0]=(char *)malloc(100);
   UrlOld[0]='\0';
   Minfo.SubTitle=0;
   Minfo.SubFile[0]='\0';
@@ -3201,11 +3200,13 @@ int kgMplayerinit(void *Tmp) {
   B13 = kgGetWidget(Tmp,13);
   B16 = kgGetWidget(Tmp,16);
   B17 = kgGetWidget(Tmp,17);
-  C19 = kgGetNamedWidget(Tmp,"kgMplayerWidget20");
+  C19 = kgGetNamedWidget(Tmp,(char *)"kgMplayerWidget20");
   R20 = kgGetWidget(Tmp,20);
   Dia = Tmp;
   DirPlayinit(Tmp);
   subtitleinit(Tmp);
+  imgs2vinit(Tmp);
+
 #ifdef D_PULSE
   CheckPulse();
 #endif
@@ -3224,7 +3225,7 @@ int kgMplayerinit(void *Tmp) {
   runjob(Line,NULL);
   sprintf(Line,"amixer set Speaker playback %-d",65536);
   runjob(Line,NULL);
-  runjob("xrandr",ProcessXrandr);
+  runjob((char *)"xrandr",ProcessXrandr);
   if(HDMI) {
     ResetHdmi();
     kgSetWidgetVisibility(B16,1);
@@ -3290,39 +3291,6 @@ int kgMplayerResizeCallBack(void *Tmp) {
   kgRedrawDialog(D);
   return ret;
 }
-int RipToMp4(char *command,char *OutFile) {
-   int pid,status;
-   if ((pid=fork())==0) {
-    char Fifo[100];
-    sprintf(Fifo,"/tmp/Fifo%-d",getpid());
-    mkfifo(Fifo,0600);
-    if ((pid=fork())!=0) {
-     strcat(command,"-dumpstream -dumpfile ");
-     strcat(command,Fifo);
-     printf("%s\n",command);
-     runmplayer(command,NULL);
-     exit(0);
-    }
-    else {
-      char buff[500];
-      sleep(5);
-      sprintf(buff,"kgffmpeg -i %-s -f mp4 -vcodec libx264 -b:v 3000K -aq 0 "
-       " -c:a libmp3lame -y  \"%-s\"",Fifo,OutFile);
-//      runfunction(command,ProcessMp4Conversion,kgffmpeg);
-      printf("%s\n",buff);
-      runfunction(buff,NULL,kgffmpeg);
-      printf("kgffmpeg over\n");
-      remove(Fifo);
-      waitpid(pid,&status,0);
-      exit(0);
-    }
-  }
-  else {
-     waitpid(pid,&status,0);
-  }
-  return 1;
-
-}
 int  kgMplayerbutton2callback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
@@ -3333,7 +3301,6 @@ int  kgMplayerbutton2callback(int butno,int i,void *Tmp) {
   int n,ret =0,chnl; 
   char buff[500],FileName[200];
   char *cdrom;
-  int rpipe[2];
   cdrom = kgGetSelectedString(Brw);
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
@@ -3365,13 +3332,12 @@ int  kgMplayerbutton2callback(int butno,int i,void *Tmp) {
          sprintf(buff,(char *)"Select output file(.mpg) for Track:%d",Track);
          WriteMessage((char *)buff);
          kgUpdateOn(Dia);
-         if(kgFolderBrowser(NULL,100,100,FileName,"*")) {
-          sprintf(buff,"mplayer_kg -cdrom-device %s  vcd://%-d ",
-                  cdrom,chnl);
+         if(kgFolderBrowser(NULL,100,100,FileName,(char *)"*")) {
+          sprintf(buff,"mplayer_kg -cdrom-device %s -dumpstream -dumpfile %s vcd://%-d -ss %d",
+                  cdrom,FileName,chnl,(int)StartSec);
 //          printf("%s\n",buff);
           
-//          runmplayer(buff,ProcessRip);
-            RipToMp4(buff,FileName);
+          runmplayer(buff,ProcessRip);
          }
          if(!AllTracks) {BRK=0;break;}
          if(BRK) break;
@@ -3387,12 +3353,11 @@ int  kgMplayerbutton2callback(int butno,int i,void *Tmp) {
          sprintf(buff,(char *)"Select output file(.mpg) for Track:%d",Track);
          WriteMessage((char *)buff);
          kgUpdateOn(Dia);
-         if(kgFolderBrowser(NULL,100,100,FileName,"*")) {
-          sprintf(buff,"mplayer_kg -dvd-device %s dvd://%-d ",
-                  cdrom,chnl);
+         if(kgFolderBrowser(NULL,100,100,FileName,(char *)"*")) {
+          sprintf(buff,"mplayer_kg -dvd-device %s -dumpstream -dumpfile %s dvd://%-d -ss %d",
+                  cdrom,FileName,chnl,(int)StartSec);
 //          printf("%s\n",buff);
-//          runmplayer(buff,ProcessRip);
-            RipToMp4(buff,FileName);
+          runmplayer(buff,ProcessRip);
          }
          if(!AllTracks) {BRK=0;break;}
          if(BRK) break;
@@ -3431,7 +3396,7 @@ int  kgMplayerbutton3callback(int butno,int i,void *Tmp) {
          sprintf(buff,"xrandr --output %-s --auto",HdmiDev);
          runjob(buff,NULL);
           RunManage(Tmp);
-          runjob("xrandr",ProcessXrandr);
+          runjob((char *)"xrandr",ProcessXrandr);
       }
       break;
   }
@@ -3506,9 +3471,9 @@ int  kgMplayerbrowser6callback(int item,int i,void *Tmp) {
 void  kgMplayerbrowser6init(DIRA *R,void *pt) {
 }
 void *logo(int l,int w){
-  void *fid;
+  DIG *fid;
   void *logoimg=NULL;
-  fid = kgInitImage(l,w,8);
+  fid = (DIG *)kgInitImage(l,w,8);
   kgUserFrame(fid,0.,0.,(float)l,(float)w);
   kgChangeColor(fid,40,70,70,70);
 //  kgRoundedRectangleFill(fid,l*0.5,w*0.5,(float)l-1.,(float)w-1.,0,40,0.1);

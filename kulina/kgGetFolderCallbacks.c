@@ -105,7 +105,7 @@ int  kgGetFoldertextbox1callback(int cellno,int i,void *Tmp) {
   strcpy(arg[1],buff);
   S->menu = ProcessFileMenu(buff);
   kgFreeThumbNails((ThumbNail**)(X->list));
-  X->list = (void **)kgFolderThumbNails((void *)buff);
+  X->list = (void **)kgFolderThumbNails((char *)buff);
   X->pt= X->list;
   kgUpdateWidget(S);
   kgUpdateWidget(X);
@@ -145,7 +145,7 @@ int  kgGetFolderbutton1callback(int butno,int i,void *Tmp) {
   strcpy(arg[1],buff);
   S->menu = ProcessFileMenu(buff);
   kgFreeThumbNails((ThumbNail**)(X->list));
-  X->list = (void **)kgFolderThumbNails((void *)buff);
+  X->list = (void **)kgFolderThumbNails((char *)buff);
   X->pt= X->list;
   kgUpdateWidget(S);
   kgUpdateWidget(X);
@@ -185,7 +185,7 @@ int  kgGetFolderbutton2callback(int butno,int i,void *Tmp) {
   strcpy(arg[1],buff);
   S->menu = ProcessFileMenu(buff);
   kgFreeThumbNails((ThumbNail**)(X->list));
-  X->list = (void **)kgFolderThumbNails((void *)buff);
+  X->list = (void **)kgFolderThumbNails((char *)buff);
   X->pt= X->list;
   kgUpdateWidget(S);
   kgUpdateWidget(X);
@@ -223,7 +223,7 @@ int  kgGetFolderbrowser1callback(int item,int i,void *Tmp) {
   strcpy(arg[1],buff);
   S->menu = ProcessFileMenu(buff);
   kgFreeThumbNails((ThumbNail**)(X->list));
-  X->list = (void **)kgFolderThumbNails((void *)buff);
+  X->list = (void **)kgFolderThumbNails((char *)buff);
   X->pt= X->list;
   kgUpdateWidget(S);
   kgUpdateWidget(X);
@@ -240,7 +240,7 @@ void  kgGetFolderbrowser1init(DIX *X,void *pt) {
  // if it need to be freed set it as X->pt also
    char **arg;
    arg = (char **)pt;
-   X->list = (void **)kgFolderThumbNails((void *)arg[1]);
+   X->list = (void **)kgFolderThumbNails((char *)arg[1]);
    X->pt= X->list;
 }
 int  kgGetFoldersplbutton1callback(int butno,int i,void *Tmp) {

@@ -234,7 +234,7 @@ int MakeMakeKaraokeGroup(DIALOG *D,void *arg) {
    void *pt=NULL; /* pointer to send any extra information */
    pt = MakeKaraokeFile();
    v1[0] = '\0';
-   strcpy(v1,pt);
+   strcpy(v1,(const char *)pt);
    GrpId = MakeKaraokeGroup(D,v,pt);
    Gpt = kgGetWidgetGrp(D,GrpId);
    Gpt->arg= v; // kulina will double free this; you may modify

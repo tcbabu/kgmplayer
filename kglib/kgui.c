@@ -6935,6 +6935,7 @@ int kgSetGrpVisibility(void *Tmp,int grpid,int val) {
  Resetlink(Gpt);
  if(val == 0) hide =1;
  else hide=0;
+// if((pt->hide == 1) && (hide==1)) return 0;
  pt->hide=hide;
  while ((x = (DIX *)Getrecord(Gpt))!= NULL) {
   if(x==NULL) continue;

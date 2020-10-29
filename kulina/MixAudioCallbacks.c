@@ -266,7 +266,7 @@ int MixAudioToVideo( CONVDATA *cn) {
     sprintf(options,"Converting to mp4\n");
     write(Jpipe[1],options,strlen(options));
     sprintf(command,"kgffmpeg -vn -i %-s/F%-4.4d.wav -an -i \"%-s\" "
-        " -y -f mp4 -vcodec libx264 -c:a libmp3lame -ac 2 "
+        " -y -f mp4 -vcodec libx265 -c:a libmp3lame -ac 2 "
         " -b:v %-s -t %lf \"%-s\" ", Folder,id ,Cn.infile,Qstr,Esec,Cn.outfile);
 //    printf("%s\n",command);
     runfunction(command,ProcessToPipe,kgffmpeg);
@@ -536,6 +536,8 @@ int  MixAudiosplbutton1callback(int butno,int i,void *Tmp) {
   sprintf(buff,"%d \"%-s\" \"%-s\" \"%-s\" %d \n",
        cndata.code, cndata.audiofile,cndata.infile,cndata.outfile,Qty);
   write(ToTools[1],buff,strlen(buff));
+  kgSplashMessage(NULL,100,100,300,40,"Send for Processing",1,0,15);
+  ret =0;
   return ret;
 }
 void  MixAudiosplbutton1init(DIL *B,void *pt) {

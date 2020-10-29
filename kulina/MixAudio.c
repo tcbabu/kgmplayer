@@ -19,7 +19,7 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
   T_ELMT *e0  ; 
   e0 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e0[0].fmt = (char *)malloc(16);
-  strcpy(e0[0].fmt,(char *)"Audio Media%20s");
+  strcpy(e0[0].fmt,(const char *)"Audio Media%20s");
   e0[0].v=(void *)v[0];
   e0[0].sw=1;
   e0[0].noecho=0;
@@ -33,14 +33,14 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
     1,1,
     NULL,MixAudiotextbox1callback,0,0,18,9 /* args,Call back */
   };
-  strcpy(t0.Wid,(char *)"MixTbox1");
+  strcpy(t0.Wid,(const char *)"MixTbox1");
   t0.pt=NULL;
   t0.type = 0;
   t0.item = -1;
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"Browse");
+  strcpy(butn1[0].title,(const char *)"Browse");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
@@ -60,12 +60,12 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
     MixAudiobutton1callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(b1.Wid,(char *)"MixAudioWidget3");
+  strcpy(b1.Wid,(const char *)"MixAudioWidget3");
   b1.item = -1;
   T_ELMT *e2  ; 
   e2 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e2[0].fmt = (char *)malloc(11);
-  strcpy(e2[0].fmt,(char *)"Output%30s");
+  strcpy(e2[0].fmt,(const char *)"Output%30s");
   e2[0].v=(void *)v[1];
   e2[0].sw=1;
   e2[0].noecho=0;
@@ -79,7 +79,7 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
     1,1,
     NULL,MixAudiotextbox2callback,0,0,18,9 /* args,Call back */
   };
-  strcpy(t2.Wid,(char *)"MixTbox2");
+  strcpy(t2.Wid,(const char *)"MixTbox2");
   t2.pt=NULL;
   t2.type = 0;
   t2.item = -1;
@@ -113,7 +113,7 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
    };
   th0 = (ThumbNail **)kgStringToThumbNails((char **)menu3);
   r3.list=(void **)th0;
-  strcpy(r3.Wid,(char *)"MixQty");
+  strcpy(r3.Wid,(const char *)"MixQty");
   r3.item = -1;
   DIM m4 = { 
     'm',
@@ -122,12 +122,12 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
     1,0  
   };
   strncpy(m4.msg,(char *)"Quality",499);
-  strcpy(m4.Wid,(char *)"MixAudioWidget7");
+  strcpy(m4.Wid,(const char *)"MixAudioWidget7");
   m4.item = -1;
   BUT_STR  *butn5=NULL; 
   butn5= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn5[0].sw=1;
-  strcpy(butn5[0].title,(char *)"Mix Audio");
+  strcpy(butn5[0].title,(const char *)"Mix Audio");
   butn5[0].xpmn=NULL;
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
@@ -147,12 +147,12 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
     MixAudiosplbutton1callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(h5.Wid,(char *)"MixAudioWidget13");
+  strcpy(h5.Wid,(const char *)"MixAudioWidget13");
   h5.item = -1;
   T_ELMT *e6  ; 
   e6 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e6[0].fmt = (char *)malloc(16);
-  strcpy(e6[0].fmt,(char *)"2nd   Media%20s");
+  strcpy(e6[0].fmt,(const char *)"2nd   Media%20s");
   e6[0].v=(void *)v[3];
   e6[0].sw=1;
   e6[0].noecho=0;
@@ -166,14 +166,14 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
     1,1,
     NULL,MixAudiotextbox3callback,1,0,18,9 /* args,Call back */
   };
-  strcpy(t6.Wid,(char *)"MixTbox3");
+  strcpy(t6.Wid,(const char *)"MixTbox3");
   t6.pt=NULL;
   t6.type = 0;
   t6.item = -1;
   BUT_STR  *butn7=NULL; 
   butn7= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn7[0].sw=1;
-  strcpy(butn7[0].title,(char *)"Browse");
+  strcpy(butn7[0].title,(const char *)"Browse");
   butn7[0].xpmn=NULL;
   butn7[0].xpmp=NULL;
   butn7[0].xpmh=NULL;
@@ -193,7 +193,7 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
     MixAudiobutton2callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(b7.Wid,(char *)"MixAudioWidget9");
+  strcpy(b7.Wid,(const char *)"MixAudioWidget9");
   b7.item = -1;
   DIM m8 = { 
     'm',
@@ -202,7 +202,7 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
     0,0  
   };
   strncpy(m8.msg,(char *)"Mixing audio from first to audio of second media(audio/video)",499);
-  strcpy(m8.Wid,(char *)"MixAudioWidget10");
+  strcpy(m8.Wid,(const char *)"MixAudioWidget10");
   m8.item = -1;
   DIM m9 = { 
     'm',
@@ -211,7 +211,7 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
     0,0  
   };
   strncpy(m9.msg,(char *)"Output format is MP4",499);
-  strcpy(m9.Wid,(char *)"MixAudioWidget12");
+  strcpy(m9.Wid,(const char *)"MixAudioWidget12");
   m9.item = -1;
   dtmp = D->d;
   i=0;
@@ -281,7 +281,7 @@ int MakeMixAudioGroup(DIALOG *D,void *arg) {
    v1 = (char *)malloc(sizeof(char)*500);
    pt = MakeMixFile();
    v1[0] = '\0';
-   strcpy(v1,pt);
+   strcpy(v1,(const char *)pt);
    free(pt);
 
    int  *v2 ;
@@ -570,7 +570,7 @@ int MakeAmixAudioGroup(DIALOG *D,void *arg) {
    v1 = (char *)malloc(sizeof(char)*500);
    pt = MakeAudioMixFile();
    v1[0] = '\0';
-   strcpy(v1,pt);
+   strcpy(v1,(const char *)pt);
    free(pt);
 
    int  *v2 ;

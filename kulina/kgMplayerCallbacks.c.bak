@@ -39,6 +39,7 @@ int first,last;
 int ResetSubTitle(MEDIAINFO *Minfo);
 int DirPlayinit(void *Tmp);
 int subtitleinit(void *Tmp);
+int imgs2vinit(void *Tmp);
 int cd_info(int,char **);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int RunFunction(char *job,int (*ProcessOut)(void *,int,int,int),int
@@ -1377,6 +1378,7 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
    char *args[100],buff[1000],pt[300];
    char *pgrpath=NULL;
    int i=0,pos=0;
+//   printf("Job= %s\n",job);
    if(job==NULL) return 0;
    if( pipe(pip) < 0) return 0;
    if( pipe(pip2) < 0) return 0;
@@ -1413,7 +1415,7 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
      }
      pos++;
      while(buff[pos]==' ') pos++;
-//     printf("%s ",args[i-1]);
+ //    printf("%s ",args[i-1]);
    }
 //   printf("\n");
    args[i]=NULL;
@@ -3202,6 +3204,8 @@ int kgMplayerinit(void *Tmp) {
   Dia = Tmp;
   DirPlayinit(Tmp);
   subtitleinit(Tmp);
+  imgs2vinit(Tmp);
+
 #ifdef D_PULSE
   CheckPulse();
 #endif

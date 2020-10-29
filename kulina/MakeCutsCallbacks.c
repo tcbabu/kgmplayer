@@ -74,7 +74,7 @@ int MakeAudioCuts( CONVDATA *cn) {
     }
     close(Jpipe[0]);
     close(Jstat[1]);
-    L = Cn.Cutlist;
+    L = (Dlink *)Cn.Cutlist;
     Resetlink(L);
     id=0;
     sprintf(options,"!c01"
@@ -269,7 +269,7 @@ int  MakeCutsbutton1callback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   switch(butno) {
     case 1:  
-      if ((pt=RunGetSinfo(Tmp)) != NULL)  {
+      if ((pt=(char *)RunGetSinfo(Tmp)) != NULL)  {
           th = AddItemtoClist(pt);
           if(th != NULL) {
             kgFreeThumbNails((ThumbNail **)kgGetList(SX3));
@@ -335,7 +335,7 @@ int  MakeCutssplbutton1callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
-  T = (DIT *)kgGetNamedWidget(Tmp,"CutOutput");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"CutOutput");
   Of = kgGetString(T,0);
   strcpy(cndata.outfile,Of);
   Mif = GetMediaInfo(cndata.infile);
@@ -378,6 +378,9 @@ int  MakeCutssplbutton1callback(int butno,int i,void *Tmp) {
     case 1: 
       break;
   }
+
+  kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
+  ret = 0;
   return ret;
 }
 void  MakeCutssplbutton1init(DIL *B,void *pt) {
@@ -409,8 +412,8 @@ int  MakeCutsbutton2callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   DIT *T,*TO;
-  T = (DIT *)kgGetNamedWidget(Tmp,"CutInput");
-  TO = (DIT *)kgGetNamedWidget(Tmp,"CutOutput");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"CutInput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"CutOutput");
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
@@ -418,7 +421,7 @@ int  MakeCutsbutton2callback(int butno,int i,void *Tmp) {
   kgSetString(T,0,FileName);
   sprintf(OutFile,"%-s/Music",getenv("HOME"));
 //  MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp3");
-  MakeFileInFolder(FileName,OutFile,OutFile,"mp3");
+  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp3");
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(T);
   kgUpdateWidget(TO);

@@ -4,7 +4,7 @@
 #define S1CLR -69128181
 //#define S2CLR -230200050
 #define S2CLR -69128181
-char VER[]="Ver 4.2.3";
+char VER[]="Ver 4.3.0";
 //int Thred=15,Thgreen=17,Thblue=15;
 int Thred=165,Thgreen=177,Thblue=165;
 char urlstring[500];
@@ -14,6 +14,7 @@ int DirGrp;
 int HAGrp;
 int StoffGrp;
 int Kuclr=9;
+int FillClr=15;
 float AudioTiming=0;
 extern int AllTracks;
 extern int SoftVol;
@@ -32,6 +33,7 @@ int MakeaudiodelayGroup(DIALOG *D,void *arg);
 int MakeAudioTimeGroup(DIALOG *D,void *arg);
 int MakesubtitleGroup(DIALOG *D,void *arg);
 int MakeMakeKaraokeGroup(DIALOG *D,void *arg);
+int MakeSubtitleoffGroup(DIALOG *D,void *arg);
 int SetTheme(void) {
   FILE *fp=NULL;
   sprintf(urlstring,"%-s/.kgMplayer/Theme",HomeDir);
@@ -67,6 +69,7 @@ void ModifykgMplayerGc(Gclr *gc) {
    gc->GuiFontSize =9;
    gc->but_char = 9;
    Kuclr = gc->SplashCharColor;
+   FillClr = gc->fill_clr;
 }
 
 

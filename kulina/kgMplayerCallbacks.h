@@ -11,6 +11,8 @@ int  kgMplayerdslide3callback(int val,int i,void *Tmp) ;
 int  kgMplayerdslide4callback(int val,int i,void *Tmp) ;
 int  kgMplayerbutton2callback(int butno,int i,void *Tmp) ;
 void  kgMplayerbutton2init(DIN *B,void *pt) ;
+int  kgMplayerbutton3callback(int butno,int i,void *Tmp) ;
+void  kgMplayerbutton3init(DIN *B,void *pt) ;
 int  kgMplayerbrowser3callback(int item,int i,void *Tmp) ;
 void  kgMplayerbrowser3init(DICH *C,void *pt) ;
 int kgMplayerinit(void *Tmp) ;

@@ -755,9 +755,9 @@ kgmplayer$(EXESUF): $(MPLAYER_DEPS)
 kgmplayer$(EXESUF): EXTRALIBS += $(EXTRALIBS_MPLAYER) \
  ffmpeg/libavdevice/libavdevice.a \
 -L$(KULINA)/lib -lkulina -lgm -lcdio -lvcdinfo -liso9660 -lmp3lame \
- $(KULINA)/lib/libx264.a -lnettle -lhogweed -lgmp -lfdk-aac
+ $(KULINA)/lib/libx264.a $(KULINA)/lib/libx265.a -lnettle -lhogweed -lgmp -lfdk-aac
 kgmplayer$(EXESUF):
-	$(CC) -o $@ $^ $(EXTRALIBS)
+	g++ -o $@ $^ $(EXTRALIBS)
 
 codec-cfg-test$(EXESUF): HOSTCFLAGS := $(HOSTCFLAGS) -DTESTING
 codec-cfg$(EXESUF) codecs2html$(EXESUF):  HOSTCFLAGS := $(HOSTCFLAGS) -DCODECS2HTML

@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "mediainfo.h"
+#include "kgutils.h"
 
 extern MEDIAINFO Minfo;
 extern CONVDATA cndata;
@@ -49,9 +50,9 @@ int ProcessToAudioPipe(int pip0,int pip1,int Pid) {
          if(!GetTimedLine(StatusGrab[0],work,300)) break;
          if(!GetTimedLine(Jstat[0],work,300)) break;
          if(ch< 0) continue;
-         if((pos=SearchString(buff,"%"))>=0)  {
+         if((pos=SearchString(buff,(char *)"%"))>=0)  {
              buff[pos]=' ';
-             pos = SearchString(buff,"(");
+             pos = SearchString(buff,(char *)"(");
              if(pos>=0) {
                pt = buff+pos+1;
                sscanf(pt,"%f",&per);
@@ -60,13 +61,13 @@ int ProcessToAudioPipe(int pip0,int pip1,int Pid) {
          //////////////////      printf("%s",work);
              }
          }
-         if(SearchString(buff,"size=")>=0)  {
-             pos = SearchString(buff,"time=");
+         if(SearchString(buff,(char *)"size=")>=0)  {
+             pos = SearchString(buff,(char *)"time=");
              if(pos>=0) {
                pt = buff+pos+5;
-               pos= kgSearchString(pt,":");
+               pos= kgSearchString(pt,(char *)":");
                pt[pos]=' ';
-               pos= kgSearchString(pt,":");
+               pos= kgSearchString(pt,(char *)":");
                pt[pos]=' ';
                sscanf(pt,"%f%f%f",&h,&m,&s);
                s += (h*3600+m*60);
@@ -192,7 +193,7 @@ int JoinToMp3( CONVDATA *cn) {
     }
     close(Jpipe[0]);
     close(Jstat[1]);
-    L = Cn.Alist;
+    L = (Dlink *)Cn.Alist;
     Resetlink(L);
     id=0;
     sprintf(options,"!c01"
@@ -460,7 +461,7 @@ int  AudioJoinsplbutton1callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
-  T = (DIT *)kgGetNamedWidget(Tmp,"AjoinOut");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"AjoinOut");
   Of = kgGetString(T,0);
   strcpy(cndata.outfile,Of);
   L = (Dlink *)cndata.Alist;
@@ -488,8 +489,10 @@ int  AudioJoinsplbutton1callback(int butno,int i,void *Tmp) {
  
   switch(butno) {
     case 1: 
+      ret=0;
       break;
   }
+  kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
   return ret;
 }
 void  AudioJoinsplbutton1init(DIL *B,void *pt) {

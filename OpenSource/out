@@ -1,241 +1,241 @@
-make[2]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h'
+make[2]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h'
 making all in crypto...
-make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto'
+make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto'
 making all in crypto/objects...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/objects'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/objects'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/objects'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/objects'
 making all in crypto/md4...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/md4'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/md4'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/md4'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/md4'
 making all in crypto/md5...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/md5'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/md5'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/md5'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/md5'
 making all in crypto/sha...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/sha'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/sha'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/sha'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/sha'
 making all in crypto/mdc2...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/mdc2'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/mdc2'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/mdc2'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/mdc2'
 making all in crypto/hmac...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/hmac'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/hmac'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/hmac'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/hmac'
 making all in crypto/ripemd...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ripemd'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ripemd'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ripemd'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ripemd'
 making all in crypto/whrlpool...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/whrlpool'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/whrlpool'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/whrlpool'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/whrlpool'
 making all in crypto/des...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/des'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/des'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/des'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/des'
 making all in crypto/aes...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/aes'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/aes'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/aes'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/aes'
 making all in crypto/rc2...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rc2'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rc2'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rc2'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rc2'
 making all in crypto/rc4...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rc4'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rc4'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rc4'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rc4'
 making all in crypto/idea...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/idea'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/idea'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/idea'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/idea'
 making all in crypto/bf...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/bf'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/bf'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/bf'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/bf'
 making all in crypto/cast...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/cast'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/cast'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/cast'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/cast'
 making all in crypto/camellia...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/camellia'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/camellia'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/camellia'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/camellia'
 making all in crypto/seed...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/seed'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/seed'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/seed'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/seed'
 making all in crypto/modes...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/modes'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/modes'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/modes'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/modes'
 making all in crypto/bn...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/bn'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/bn'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/bn'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/bn'
 making all in crypto/ec...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ec'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ec'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ec'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ec'
 making all in crypto/rsa...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rsa'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rsa'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rsa'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rsa'
 making all in crypto/dsa...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/dsa'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/dsa'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/dsa'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/dsa'
 making all in crypto/ecdsa...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ecdsa'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ecdsa'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ecdsa'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ecdsa'
 making all in crypto/dh...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/dh'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/dh'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/dh'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/dh'
 making all in crypto/ecdh...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ecdh'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ecdh'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ecdh'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ecdh'
 making all in crypto/dso...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/dso'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/dso'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/dso'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/dso'
 making all in crypto/engine...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/engine'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/engine'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/engine'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/engine'
 making all in crypto/buffer...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/buffer'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/buffer'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/buffer'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/buffer'
 making all in crypto/bio...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/bio'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/bio'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/bio'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/bio'
 making all in crypto/stack...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/stack'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/stack'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/stack'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/stack'
 making all in crypto/lhash...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/lhash'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/lhash'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/lhash'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/lhash'
 making all in crypto/rand...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rand'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rand'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rand'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rand'
 making all in crypto/err...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/err'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/err'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/err'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/err'
 making all in crypto/evp...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/evp'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/evp'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/evp'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/evp'
 making all in crypto/asn1...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/asn1'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/asn1'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/asn1'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/asn1'
 making all in crypto/pem...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pem'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pem'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pem'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pem'
 making all in crypto/x509...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/x509'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/x509'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/x509'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/x509'
 making all in crypto/x509v3...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/x509v3'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/x509v3'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/x509v3'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/x509v3'
 making all in crypto/conf...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/conf'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/conf'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/conf'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/conf'
 making all in crypto/txt_db...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/txt_db'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/txt_db'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/txt_db'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/txt_db'
 making all in crypto/pkcs7...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pkcs7'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pkcs7'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pkcs7'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pkcs7'
 making all in crypto/pkcs12...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pkcs12'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pkcs12'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pkcs12'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pkcs12'
 making all in crypto/comp...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/comp'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/comp'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/comp'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/comp'
 making all in crypto/ocsp...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ocsp'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ocsp'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ocsp'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ocsp'
 making all in crypto/ui...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ui'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ui'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ui'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ui'
 making all in crypto/krb5...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/krb5'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/krb5'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/krb5'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/krb5'
 making all in crypto/cms...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/cms'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/cms'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/cms'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/cms'
 making all in crypto/pqueue...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pqueue'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pqueue'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pqueue'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pqueue'
 making all in crypto/ts...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ts'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ts'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ts'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ts'
 making all in crypto/srp...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/srp'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/srp'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/srp'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/srp'
 making all in crypto/cmac...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/cmac'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/cmac'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/cmac'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/cmac'
 if [ -n "" ]; then \
 	(cd ..; make libcrypto.so.1.0.0); \
 fi
-make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto'
+make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto'
 making all in engines...
-make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/engines'
+make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/engines'
 echo 
 
 making all in engines/ccgost...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/engines/ccgost'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/engines/ccgost'
 make[4]: Nothing to be done for 'all'.
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/engines/ccgost'
-make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/engines'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/engines/ccgost'
+make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/engines'
 making all in ssl...
-make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/ssl'
+make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/ssl'
 if [ -n "" ]; then \
 	(cd ..; make libssl.so.1.0.0); \
 fi
-make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/ssl'
+make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/ssl'
 making all in apps...
-make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/apps'
+make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/apps'
 make[3]: Nothing to be done for 'all'.
-make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/apps'
+make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/apps'
 making all in test...
-make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/test'
+make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/test'
 make[3]: Nothing to be done for 'all'.
-make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/test'
+make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/test'
 making all in tools...
-make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/tools'
+make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/tools'
 make[3]: Nothing to be done for 'all'.
-make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/tools'
+make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/tools'
 installing man1/CA.pl.1
 installing man1/asn1parse.1
 installing man1/c_rehash.1
@@ -1834,179 +1834,179 @@ installing man3/d2i_SSL_SESSION.3
 i2d_SSL_SESSION.3 => d2i_SSL_SESSION.3
 installing man3/ssl.3
 SSL.3 => ssl.3
-created directory `/home/babu/BUILD/kgmplayer-4.2.2/lib64/engines'
-created directory `/home/babu/BUILD/kgmplayer-4.2.2/include/openssl'
+created directory `/home/babu/BUILD/kgmplayer-4.3.0/lib64/engines'
+created directory `/home/babu/BUILD/kgmplayer-4.3.0/include/openssl'
 making install in crypto...
-make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto'
+make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto'
 making install in crypto/objects...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/objects'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/objects'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/objects'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/objects'
 making install in crypto/md4...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/md4'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/md4'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/md4'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/md4'
 making install in crypto/md5...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/md5'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/md5'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/md5'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/md5'
 making install in crypto/sha...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/sha'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/sha'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/sha'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/sha'
 making install in crypto/mdc2...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/mdc2'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/mdc2'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/mdc2'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/mdc2'
 making install in crypto/hmac...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/hmac'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/hmac'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/hmac'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/hmac'
 making install in crypto/ripemd...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ripemd'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ripemd'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ripemd'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ripemd'
 making install in crypto/whrlpool...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/whrlpool'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/whrlpool'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/whrlpool'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/whrlpool'
 making install in crypto/des...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/des'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/des'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/des'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/des'
 making install in crypto/aes...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/aes'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/aes'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/aes'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/aes'
 making install in crypto/rc2...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rc2'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rc2'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rc2'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rc2'
 making install in crypto/rc4...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rc4'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rc4'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rc4'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rc4'
 making install in crypto/idea...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/idea'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/idea'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/idea'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/idea'
 making install in crypto/bf...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/bf'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/bf'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/bf'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/bf'
 making install in crypto/cast...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/cast'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/cast'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/cast'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/cast'
 making install in crypto/camellia...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/camellia'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/camellia'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/camellia'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/camellia'
 making install in crypto/seed...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/seed'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/seed'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/seed'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/seed'
 making install in crypto/modes...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/modes'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/modes'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/modes'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/modes'
 making install in crypto/bn...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/bn'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/bn'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/bn'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/bn'
 making install in crypto/ec...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ec'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ec'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ec'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ec'
 making install in crypto/rsa...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rsa'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rsa'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rsa'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rsa'
 making install in crypto/dsa...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/dsa'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/dsa'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/dsa'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/dsa'
 making install in crypto/ecdsa...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ecdsa'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ecdsa'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ecdsa'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ecdsa'
 making install in crypto/dh...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/dh'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/dh'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/dh'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/dh'
 making install in crypto/ecdh...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ecdh'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ecdh'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ecdh'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ecdh'
 making install in crypto/dso...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/dso'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/dso'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/dso'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/dso'
 making install in crypto/engine...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/engine'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/engine'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/engine'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/engine'
 making install in crypto/buffer...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/buffer'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/buffer'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/buffer'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/buffer'
 making install in crypto/bio...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/bio'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/bio'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/bio'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/bio'
 making install in crypto/stack...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/stack'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/stack'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/stack'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/stack'
 making install in crypto/lhash...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/lhash'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/lhash'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/lhash'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/lhash'
 making install in crypto/rand...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rand'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/rand'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rand'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/rand'
 making install in crypto/err...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/err'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/err'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/err'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/err'
 making install in crypto/evp...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/evp'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/evp'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/evp'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/evp'
 making install in crypto/asn1...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/asn1'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/asn1'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/asn1'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/asn1'
 making install in crypto/pem...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pem'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pem'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pem'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pem'
 making install in crypto/x509...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/x509'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/x509'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/x509'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/x509'
 making install in crypto/x509v3...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/x509v3'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/x509v3'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/x509v3'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/x509v3'
 making install in crypto/conf...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/conf'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/conf'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/conf'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/conf'
 making install in crypto/txt_db...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/txt_db'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/txt_db'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/txt_db'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/txt_db'
 making install in crypto/pkcs7...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pkcs7'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pkcs7'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pkcs7'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pkcs7'
 making install in crypto/pkcs12...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pkcs12'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pkcs12'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pkcs12'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pkcs12'
 making install in crypto/comp...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/comp'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/comp'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/comp'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/comp'
 making install in crypto/ocsp...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ocsp'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ocsp'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ocsp'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ocsp'
 making install in crypto/ui...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ui'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ui'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ui'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ui'
 making install in crypto/krb5...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/krb5'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/krb5'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/krb5'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/krb5'
 making install in crypto/cms...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/cms'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/cms'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/cms'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/cms'
 making install in crypto/pqueue...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pqueue'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/pqueue'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pqueue'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/pqueue'
 making install in crypto/ts...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ts'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/ts'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ts'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/ts'
 making install in crypto/srp...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/srp'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/srp'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/srp'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/srp'
 making install in crypto/cmac...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/cmac'
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto/cmac'
-make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/crypto'
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/cmac'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto/cmac'
+make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/crypto'
 making install in ssl...
-make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/ssl'
-make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/ssl'
+make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/ssl'
+make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/ssl'
 making install in engines...
-make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/engines'
+make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/engines'
 making install in engines/ccgost...
-make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/engines/ccgost'
-[ -n "/home/babu/BUILD/kgmplayer-4.2.2" ] # should be set by top Makefile...
+make[4]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/engines/ccgost'
+[ -n "/home/babu/BUILD/kgmplayer-4.3.0" ] # should be set by top Makefile...
 if [ -n "" ]; then \
 	set -e; \
 	echo installing gost; \
 	pfx=lib; \
 	if expr "linux-x86_64" : "Cygwin" >/dev/null; then \
 		sfx=".so"; \
-		cp cyggost.dll /home/babu/BUILD/kgmplayer-4.2.2/lib64/engines/${pfx}gost$sfx.new; \
+		cp cyggost.dll /home/babu/BUILD/kgmplayer-4.3.0/lib64/engines/${pfx}gost$sfx.new; \
 	else \
 		case "-I../../include -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -Wa,--noexecstack -m64 -DL_ENDIAN -O3 -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM -DECP_NISTZ256_ASM" in \
 		*DSO_BEOS*) sfx=".so";; \
@@ -2015,33 +2015,33 @@ if [ -n "" ]; then \
 		*DSO_WIN32*) sfx="eay32.dll"; pfx=;; \
 		*) sfx=".bad";; \
 		esac; \
-		cp ${pfx}gost$sfx /home/babu/BUILD/kgmplayer-4.2.2/lib64/engines/${pfx}gost$sfx.new; \
+		cp ${pfx}gost$sfx /home/babu/BUILD/kgmplayer-4.3.0/lib64/engines/${pfx}gost$sfx.new; \
 	fi; \
-	chmod 555 /home/babu/BUILD/kgmplayer-4.2.2/lib64/engines/${pfx}gost$sfx.new; \
-	mv -f /home/babu/BUILD/kgmplayer-4.2.2/lib64/engines/${pfx}gost$sfx.new /home/babu/BUILD/kgmplayer-4.2.2/lib64/engines/${pfx}gost$sfx; \
+	chmod 555 /home/babu/BUILD/kgmplayer-4.3.0/lib64/engines/${pfx}gost$sfx.new; \
+	mv -f /home/babu/BUILD/kgmplayer-4.3.0/lib64/engines/${pfx}gost$sfx.new /home/babu/BUILD/kgmplayer-4.3.0/lib64/engines/${pfx}gost$sfx; \
 fi
-make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/engines/ccgost'
-make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/engines'
+make[4]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/engines/ccgost'
+make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/engines'
 making install in apps...
-make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/apps'
+make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/apps'
 installing openssl
 installing CA.sh
 installing CA.pl
 installing tsget
-make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/apps'
+make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/apps'
 making install in test...
-make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/test'
+make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/test'
 make[3]: Nothing to be done for 'install'.
-make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/test'
+make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/test'
 making install in tools...
-make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/tools'
-make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h/tools'
+make[3]: Entering directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/tools'
+make[3]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h/tools'
 installing libcrypto.a
 installing libssl.a
-cp libcrypto.pc /home/babu/BUILD/kgmplayer-4.2.2/lib64/pkgconfig
-chmod 644 /home/babu/BUILD/kgmplayer-4.2.2/lib64/pkgconfig/libcrypto.pc
-cp libssl.pc /home/babu/BUILD/kgmplayer-4.2.2/lib64/pkgconfig
-chmod 644 /home/babu/BUILD/kgmplayer-4.2.2/lib64/pkgconfig/libssl.pc
-cp openssl.pc /home/babu/BUILD/kgmplayer-4.2.2/lib64/pkgconfig
-chmod 644 /home/babu/BUILD/kgmplayer-4.2.2/lib64/pkgconfig/openssl.pc
-make[2]: Leaving directory '/home/babu/BUILD/kgmplayer-4.2.2/OpenSource/openssl-1.0.2h'
+cp libcrypto.pc /home/babu/BUILD/kgmplayer-4.3.0/lib64/pkgconfig
+chmod 644 /home/babu/BUILD/kgmplayer-4.3.0/lib64/pkgconfig/libcrypto.pc
+cp libssl.pc /home/babu/BUILD/kgmplayer-4.3.0/lib64/pkgconfig
+chmod 644 /home/babu/BUILD/kgmplayer-4.3.0/lib64/pkgconfig/libssl.pc
+cp openssl.pc /home/babu/BUILD/kgmplayer-4.3.0/lib64/pkgconfig
+chmod 644 /home/babu/BUILD/kgmplayer-4.3.0/lib64/pkgconfig/openssl.pc
+make[2]: Leaving directory '/home/babu/BUILD/kgmplayer-4.3.0/OpenSource/openssl-1.0.2h'

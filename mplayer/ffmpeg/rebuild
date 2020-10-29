@@ -3,7 +3,8 @@
 --disable-doc --enable-libmp3lame  \
 --enable-runtime-cpudetect  --enable-indev=x11grab \
 --enable-version3 --enable-gmp --enable-gnutls \
---disable-libxcb --disable-logging --enable-libx264 --enable-x11grab \
+--disable-libxcb --disable-logging --enable-libx264 --enable-libx265 \
+--enable-x11grab \
 --disable-vaapi \
 --enable-nonfree  \
 --enable-libfdk-aac \

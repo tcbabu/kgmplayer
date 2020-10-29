@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "mediainfo.h"
+#include "kgutils.h"
 
 extern MEDIAINFO Minfo;
 extern CONVDATA cndata;
@@ -73,7 +74,7 @@ int InsertSilences( CONVDATA *cn) {
     }
     close(Jpipe[0]);
     close(Jstat[1]);
-    L = Cn.Slist;
+    L = (Dlink *)Cn.Slist;
     Resetlink(L);
     id=0;
     sprintf(options,"!c01"
@@ -274,7 +275,7 @@ int  AddSilencebutton1callback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   switch(butno) {
     case 1:  
-      if ((pt=RunGetSinfo(Tmp)) != NULL)  {
+      if ((pt=(char *)RunGetSinfo(Tmp)) != NULL)  {
           th = AddItemtoSlist(pt);
           if(th != NULL) {
             kgFreeThumbNails((ThumbNail **)kgGetList(SX2));
@@ -338,7 +339,7 @@ int  AddSilencesplbutton1callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
-  T = (DIT *)kgGetNamedWidget(Tmp,"SilOutput");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"SilOutput");
   Of = kgGetString(T,0);
   strcpy(cndata.outfile,Of);
   Mif = GetMediaInfo(cndata.infile);
@@ -375,6 +376,8 @@ int  AddSilencesplbutton1callback(int butno,int i,void *Tmp) {
   }
   Dempty(L);
   cndata.Slist=NULL;
+  kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
+  ret=0;
   
  
   switch(butno) {
@@ -442,16 +445,16 @@ int  AddSilencebutton2callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   DIT *T,*TO;
-  T = (DIT *)kgGetNamedWidget(Tmp,"SilInput");
-  TO = (DIT *)kgGetNamedWidget(Tmp,"SilOutput");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"SilInput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"SilOutput");
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-  kgFolderBrowser(NULL,100,100,FileName,"*");
+  kgFolderBrowser(NULL,100,100,FileName,(char *)"*");
   kgSetString(T,0,FileName);
   sprintf(OutFile,"%-s/Music",getenv("HOME"));
 //  MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp3");
-  MakeFileInFolder(FileName,OutFile,OutFile,"mp3");
+  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp3");
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(T);
   kgUpdateWidget(TO);

@@ -19,6 +19,8 @@ int GetTimedLine(int pip0,char *buff,int usec);
 int GetLine(int pip0,char *buff);
 int kgLame(int,char **);
 int kgffmpeg(int,char **);
+int Mplayer(int,char **);
+int Mencoder(int,char **);
 void *RunkgMplayer(void *);
 void *Runmonitor(void *arg);
 int ConvertToMp3( CONVDATA *cn);
@@ -31,6 +33,7 @@ int MixAudioToVideo( CONVDATA *cn);
 int MixAudioToAudio( CONVDATA *cn);
 int InsertSilences( CONVDATA *cn);
 int MakeAudioCuts( CONVDATA *cn);
+int SearchString(char *s1,char *s2);
 
 char HomeDir[200],bname[200];
 int movgrab(int,char **);
@@ -79,19 +82,19 @@ int ProcessGrab(int pip0,int pip1,int Pid) {
 //         printf("%s\n",buff);
          if(!GetTimedLine(StatusGrab[0],connection,300)) break;
          if(ch< 0) continue;
-         if(!kgSearchString(buff,"ERROR:")) break;
-         if(!kgSearchString(buff,"FAILED TO GET DOCUMENT REFERENCE")) break;
-         if(!kgSearchString(buff,"Connection Refused")) break;
+         if(!kgSearchString(buff,(char *)"ERROR:")) break;
+         if(!kgSearchString(buff,(char *)"FAILED TO GET DOCUMENT REFERENCE")) break;
+         if(!kgSearchString(buff,(char *)"Connection Refused")) break;
 #if 1
-         if((pos=kgSearchString(buff,"Getting:"))>=0){
+         if((pos=kgSearchString(buff,(char *)"Getting:"))>=0){
 //           printf("Getting : calling Runmonitor\n");
 //           fflush(stdout);
            Runmonitor(NULL);
            break;
          }
 #else
-         if((pos=kgSearchString(buff,"Progress:"))>=0){
-           pos=kgSearchString(buff,":");
+         if((pos=kgSearchString(buff,(char *)"Progress:"))>=0){
+           pos=kgSearchString(buff,(char *)":");
            pt = buff+pos+1;
            while(pt[i]!='%') i++;
            pt[i]= '\0';
@@ -115,19 +118,19 @@ int ProcessGrabCheck(int pip0,int pip1,int Pid) {
      while((ch=GetLine(pip0,buff)) ) {
          if(!GetTimedLine(StatusGrab[0],connection,300)) break;
          if(ch< 0) continue;
-         if(!kgSearchString(buff,"ERROR:")) break;
-         if(!kgSearchString(buff,"FAILED TO GET DOCUMENT REFERENCE")) break;
-         if(!kgSearchString(buff,"Connection Refused")) break;
-         if((pos=kgSearchString(buff,"Formats available "
+         if(!kgSearchString(buff,(char *)"ERROR:")) break;
+         if(!kgSearchString(buff,(char *)"FAILED TO GET DOCUMENT REFERENCE")) break;
+         if(!kgSearchString(buff,(char *)"Connection Refused")) break;
+         if((pos=kgSearchString(buff,(char *)"Formats available "
               "for this Movie:"))>=0){
-           pos=kgSearchString(buff,":");
+           pos=kgSearchString(buff,(char *)":");
            strncpy(Formats,buff+pos+1,499);
          }
-         if((pos=kgSearchString(buff,"Getting:"))>=0){
-           pos=kgSearchString(buff,":");
+         if((pos=kgSearchString(buff,(char *)"Getting:"))>=0){
+           pos=kgSearchString(buff,(char *)":");
            strncpy(Selected,buff+pos+1,499);
          }
-         if((pos=kgSearchString(buff,"Progress:"))>=0){
+         if((pos=kgSearchString(buff,(char *)"Progress:"))>=0){
            OK+=1;
            if(OK==1) { ret=1; break;}
          }
@@ -169,12 +172,12 @@ int ForkGrab(void) {
      while((ch=GetLine(pip0,buff)) ) {
        if(ch< 0) continue;
 //       printf("buff: %s\n",buff);
-       sscanf(buff+kgSearchString(buff,"-o")+2,"%s",GrabFileName);
-       if(kgSearchString(buff,"chkgrab") >=0 ){
+       sscanf(buff+kgSearchString(buff,(char *)"-o")+2,"%s",GrabFileName);
+       if(kgSearchString(buff,(char *)"chkgrab") >=0 ){
 //         printf("Calling runfunction for check\n");
          runfunction(buff,ProcessGrabCheck,movgrab);
        }
-       else if(kgSearchString(buff,"movgrab") >=0 ){
+       else if(kgSearchString(buff,(char *)"movgrab") >=0 ){
 //         printf("Calling runfunction\n");
 #if 1
          if (fork()==0) {
@@ -198,22 +201,22 @@ int ReadConvertData(CONVDATA *cn,char *buff) {
    int pos,loc;
    char *pt;
    pt = buff;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pos++; loc=pos; pt = pt+loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
    strcpy(cn->infile,pt);
 //           printf("%s\n",cn->infile);
    pt +=loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
    pt +=loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
@@ -229,22 +232,22 @@ int ReadVConvertData(CONVDATA *cn,char *buff) {
    int pos,loc;
    char *pt;
    pt = buff;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pos++; loc=pos; pt = pt+loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
    strcpy(cn->infile,pt);
 //           printf("%s\n",cn->infile);
    pt +=loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
    pt +=loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
@@ -264,10 +267,10 @@ int ReadVJoinData(CONVDATA *cn,char *buff) {
    char *pt;
    MEDIAINFO *mpt;
    pt = buff;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pos++; loc=pos; pt = pt+loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
@@ -281,11 +284,11 @@ int ReadVJoinData(CONVDATA *cn,char *buff) {
    for(i=0;i<cn->Fcount;i++) {
      if((GetLine(pip0,buff)) ) {
        pt = buff;
-       pos = SearchString(pt,"\"");
+       pos = SearchString(pt,(char *)"\"");
        if(pos<0) {return 0;}
        pos++; loc=pos;
        pt +=loc;
-       pos = SearchString(pt,"\"");
+       pos = SearchString(pt,(char *)"\"");
        if(pos<0) {return 0;}
        pt[pos]='\0';
        pos++; loc=pos;
@@ -306,10 +309,10 @@ int ReadAJoinData(CONVDATA *cn,char *buff) {
    char *pt;
    MEDIAINFO *mpt;
    pt = buff;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pos++; loc=pos; pt = pt+loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
@@ -322,11 +325,11 @@ int ReadAJoinData(CONVDATA *cn,char *buff) {
    for(i=0;i<cn->Fcount;i++) {
      if((GetLine(pip0,buff)) ) {
        pt = buff;
-       pos = SearchString(pt,"\"");
+       pos = SearchString(pt,(char *)"\"");
        if(pos<0) {return 0;}
        pos++; loc=pos;
        pt +=loc;
-       pos = SearchString(pt,"\"");
+       pos = SearchString(pt,(char *)"\"");
        if(pos<0) {return 0;}
        pt[pos]='\0';
        pos++; loc=pos;
@@ -347,19 +350,19 @@ int ReadSilenceData(CONVDATA *cn,char *buff) {
    char *pt;
    char *mpt;
    pt = buff;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pos++; loc=pos; pt = pt+loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
    strcpy(cn->infile,pt);
    pt +=loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pos++; loc=pos; pt = pt+loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
@@ -386,19 +389,19 @@ int ReadCutsData(CONVDATA *cn,char *buff) {
    char *pt;
    char *mpt;
    pt = buff;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pos++; loc=pos; pt = pt+loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
    strcpy(cn->infile,pt);
    pt +=loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pos++; loc=pos; pt = pt+loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
@@ -425,28 +428,28 @@ int ReadAddData(CONVDATA *cn,char *buff) {
    char *pt;
    MEDIAINFO *mpt;
    pt = buff;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pos++; loc=pos; pt = pt+loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
    strcpy(cn->audiofile,pt);
    pt +=loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pos++; loc=pos; pt = pt+loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;
    strcpy(cn->infile,pt);
    pt +=loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pos++; loc=pos; pt = pt+loc;
-   pos = SearchString(pt,"\"");
+   pos = SearchString(pt,(char *)"\"");
    if(pos<0) {return 0;}
    pt[pos]='\0';
    pos++; loc=pos;

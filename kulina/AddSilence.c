@@ -171,11 +171,11 @@ int AddSilenceGroup( DIALOG *D,void **v,void *pt) {
   b6.item = -1;
   DIM m7 = { 
     'm',
-    213,233,  
-    479,257,  
+    263,243,  
+    488,267,  
     -1,0  
   };
-  strncpy(m7.msg,(char *)"!c01Note: Extension decides output format",499);
+  strncpy(m7.msg,(char *)"!c00Note: Extension decides output format",499);
   strcpy(m7.Wid,(char *)"AddSilenceWidget8");
   m7.item = -1;
   dtmp = D->d;
@@ -248,7 +248,7 @@ int MakeAddSilenceGroup(DIALOG *D,void *arg) {
    v[2]=(void *)(v2);
    void *pt=NULL; /* pointer to send any extra information */
    pt = MakeSilFile();
-   strcpy(v1,pt);
+   strcpy(v1,(const char *)pt);
    GrpId = AddSilenceGroup(D,v,pt);
    Gpt = kgGetWidgetGrp(D,GrpId);
    Gpt->arg= v; // kulina will double free this; you may modify

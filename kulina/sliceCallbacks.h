@@ -1,0 +1,12 @@
+int  slicetextbox1callback(int cellno,int i,void *Tmp);
+int  slicetextbox2callback(int cellno,int i,void *Tmp);
+int  slicebutton1callback(int butno,int i,void *Tmp) ;
+void  slicebutton1init(DIN *B,void *pt) ;
+int  slicesplbutton1callback(int butno,int i,void *Tmp) ;
+void  slicesplbutton1init(DIL *B,void *pt) ;
+int  slicetextbox3callback(int cellno,int i,void *Tmp);
+int sliceinit(void *Tmp) ;
+int slicecleanup(void *Tmp) ;
+int sliceCallBack(void *Tmp,void *tmp) ;
+int sliceResizeCallBack(void *Tmp) ;
+int sliceWaitCallBack(void *Tmp) ;

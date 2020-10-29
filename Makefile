@@ -105,6 +105,13 @@ x264build	:
 		 echo "cd x264" >> x264build
 		 echo "./rebuild" >> x264build
 		 chmod +x x264build
+x265build	:  
+		 echo "export KULINA=$(PWD)" > x265build
+		 echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:$(PKG_CONFIG_PATH_OLD)">>x265build
+	 	 echo "export PATH=\"$(PATHNEW)\"">>x265build
+		 echo "cd x265" >> x265build
+		 echo "./rebuild" >> x265build
+		 chmod +x x265build
 build	:  lib/kgmplayer.a 
 		 @echo "Dir = $(PWD)"
 		 @echo "KULINA=$(PWD)"
@@ -117,7 +124,8 @@ build	:  lib/kgmplayer.a
 		 echo "./rebuild" >> build
 		 chmod +x build
 bin/kgmplayer	: lib/libgm.a lib/libmovgrab.a lib/libmp3lame.a \
-		 lib/libx264.a ffmpeg/libavdevice/libavdevice.a  build
+		 lib/libx264.a lib/libx265.a ffmpeg/libavdevice/libavdevice.a \
+		  build
 #		 rm lib/libx264.so.148
 #		 rm lib/libx264.so
 		 ./build
@@ -141,8 +149,10 @@ lib/libx264.a	:  x264build
 		 ./x264build
 		 make -j4 -C x264
 		 make -C x264 install
+lib/libx265.a	:  x265build
+		 ./x265build
 ffmpeg/libavdevice/libavdevice.a	:  lib/libmp3lame.a \
-		 lib/libx264.a ffmpegbuild
+		 lib/libx264.a lib/libx265.a ffmpegbuild
 		 ./ffmpegbuild
 		 make -j4 -C ffmpeg
 		 rm ffmpeg/ffmpeg
@@ -163,7 +173,7 @@ install	: bin/kgmplayer
 
 clean	:
 	 rm -rf lib/* share/* bin/* man/* build grabmak ffmpegbuild \
-	 x264build lamebuild bin/movgrab sbin/* var/* \
+	 x264build x265build lamebuild bin/movgrab sbin/* var/* \
 	 etc/* include/* mplayer/kgmplayer
 
 	$(MAKE) -C OpenSource clean

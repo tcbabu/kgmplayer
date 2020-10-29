@@ -5,6 +5,8 @@
 
 #include "ConvertData.h"
 #include "mediainfo.h"
+#include "kgutils.h"
+
 extern CONVDATA cndata;
 extern int AConGrp,RangeGrp,EnVoGrp,VConGrp,VaspGrp,VsizeGrp,VrangeGrp;
 extern int ToTools[2],FromTools[2],StatusTools[2];
@@ -66,14 +68,14 @@ int  ConvertVideotextbox1callback(int cellno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   DIT *TO;
   T = (DIT *)kgGetWidget(Tmp,i);
-  TO = (DIT *)kgGetNamedWidget(Tmp,"VOutputWidget");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VOutputWidget");
   strcpy(FileName,kgGetString(T,0));
 #if 0
   sprintf(OutFile,"%-s/Video/",getenv("HOME"));
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp4");
 #else
   sprintf(OutFile,"%-s/Video",getenv("HOME"));
-  MakeFileInFolder(FileName,OutFile,OutFile,"mp4");
+  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp4");
 #endif
   id =1;
   while(FileStat(OutFile) ) {
@@ -101,20 +103,20 @@ int  ConvertVideobutton1callback(int butno,int i,void *Tmp) {
   int n,ret =0,id; 
   D = (DIALOG *)Tmp;
   DIT *T,*TO;
-  T = (DIT *)kgGetNamedWidget(Tmp,"VInputWidget");
-  TO = (DIT *)kgGetNamedWidget(Tmp,"VOutputWidget");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VInputWidget");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VOutputWidget");
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-  kgFolderBrowser(NULL,100,100,FileName,"*");
+  kgFolderBrowser(NULL,100,100,FileName,(char *)"*");
   kgSetString(T,0,FileName);
 #if 0
   sprintf(OutFile,"%-s/Video/",getenv("HOME"));
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp4");
 #else
   sprintf(OutFile,"%-s/Video",getenv("HOME"));
-  MakeFileInFolder(FileName,OutFile,OutFile,"mp4");
+  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp4");
 #endif
   id =1;
   while(FileStat(OutFile) ) {
@@ -144,8 +146,8 @@ int  ConvertVideotextbox2callback(int cellno,int i,void *Tmp) {
   int ret=1;
   D = (DIALOG *)Tmp;
   DIT *T,*TO;
-  T = (DIT *)kgGetNamedWidget(Tmp,"VInputWidget");
-  TO = (DIT *)kgGetNamedWidget(Tmp,"VOutputWidget");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VInputWidget");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VOutputWidget");
   strcpy(OutFile,kgGetString(TO,0));
   strcpy(cndata.outfile,OutFile);
   return ret;
@@ -261,7 +263,7 @@ int ProcessMp4Conversion(int pip0,int pip1,int Pid) {
          }
      }
 #else
-     Runmonitor();
+     Runmonitor(NULL);
 #endif
 //     fprintf(stderr,"mplayer over\n");
      return 1;
@@ -309,10 +311,13 @@ int ConvertToMp4( CONVDATA *cn) {
       }
       options1[0]='\0';
 // In fact formats other tham mp4 can be tried but not opened
+//      strcpy(options1,(char *)"-f mp4 -vcodec libx264 ");
       strcpy(options1,(char *)"-f mp4 -vcodec libx264 ");
       switch(Cn.VQuality) {
         case 1:
-          strcat(options1,"  -b:v 3000K -aq 0 -c:a libmp3lame ");
+          strcpy(options1,(char *)"-f mp4 -vcodec libx265 ");
+//          strcat(options1,"  -b:v 3000K -aq 0 -c:a libmp3lame ");
+          strcat(options1,"   -aq 0 -c:a libmp3lame ");
           break;
         case 2:
           strcat(options1,"  -b:v 1500K -aq 0 -c:a libmp3lame ");
@@ -362,12 +367,12 @@ int  ConvertVideosplbutton1callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   DIT *T,*TO,*TR1,*TR2,*TA,*TS;
-  T = (DIT *)kgGetNamedWidget(Tmp,"VInputWidget");
-  TO = (DIT *)kgGetNamedWidget(Tmp,"VOutputWidget");
-  TR1 = (DIT *)kgGetNamedWidget(Tmp,"VRangeWidget1");
-  TR2 = (DIT *)kgGetNamedWidget(Tmp,"VRangeWidget2");
-  TA = (DIT *)kgGetNamedWidget(Tmp,"VaspWidget");
-  TS = (DIT *)kgGetNamedWidget(Tmp,"VsizeWidget");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VInputWidget");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VOutputWidget");
+  TR1 = (DIT *)kgGetNamedWidget(Tmp,(char *)"VRangeWidget1");
+  TR2 = (DIT *)kgGetNamedWidget(Tmp,(char *)"VRangeWidget2");
+  TA = (DIT *)kgGetNamedWidget(Tmp,(char *)"VaspWidget");
+  TS = (DIT *)kgGetNamedWidget(Tmp,(char *)"VsizeWidget");
   strcpy(cndata.outfile,kgGetString(TO,0));
   strcpy(cndata.infile,kgGetString(T,0));
   n=0;
@@ -377,11 +382,11 @@ int  ConvertVideosplbutton1callback(int butno,int i,void *Tmp) {
   while(cndata.outfile[n]==' ') n++;
   if(cndata.outfile[n]< ' ') return 0;
   if(!CheckMedia(cndata.infile)){
-     if(!kgCheckMenu(Tmp,10,10,"Wrong Media, Modify?",0)) return 1;
+     if(!kgCheckMenu(Tmp,10,10,(char *)"Wrong Media, Modify?",0)) return 1;
      else  return 0;
   }
   if(FileStat(cndata.outfile)) {
-     if(!kgCheckMenu(Tmp,10,10,"File Exits, Overwrite ?",0)) return 0;
+     if(!kgCheckMenu(Tmp,10,10,(char *)"File Exits, Overwrite ?",0)) return 0;
   }
   n = B->nx;
   cndata.VStartSec= kgGetDouble(TR1,0);
@@ -395,6 +400,8 @@ int  ConvertVideosplbutton1callback(int butno,int i,void *Tmp) {
        cndata.NewAsp,cndata.Xsize,cndata.VFullRange,
        cndata.VStartSec,cndata.VEndSec,cndata.ChngAsp,cndata.Scale);
   write(ToTools[1],buff,strlen(buff));
+  kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
+  ret = 0;
 
   return ret;
 }

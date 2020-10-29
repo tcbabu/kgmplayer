@@ -192,12 +192,12 @@ int AudioConvertGroup( DIALOG *D,void **v,void *pt) {
 #if 1
   DIM m7 = { 
     'm',
-    16,246,  
-    406,266,  
+    56,246,  
+    438,266,  
     0,0  
   };
-  strncpy(m7.msg,(char *)"!c01Note:Select File Extension for output "
-       "format; .wav/.flac  preferable for CUT and JOIN",499);
+  strncpy(m7.msg,(char *)"!c00Select File Extension for output "
+       "format; .wav/.flac  preferable for lossless",499);
   strcpy(m7.Wid,(char *)"AudioConvertWidget10");
   m7.item = -1;
 #endif

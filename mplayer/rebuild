@@ -5,12 +5,12 @@
 #--disable-fontconfig --disable-speex --disable-gl --enable-alsa \
 #--enable-pulse --enable-vm --enable-ass-internal --enable-gnutls \
 #--disable-mencoder --enable-mp3lame
-./configure --prefix=$KULINA  --disable-gui \
+CXX=g++ ./configure --prefix=$KULINA  --disable-gui \
 --enable-runtime-cpudetection   --disable-relocatable  --disable-gif \
 --disable-speex --disable-gl --enable-alsa \
 --enable-pulse --enable-vm  --enable-gnutls \
 --disable-mencoder --enable-mp3lame --enable-freetype \
---enable-fontconfig
+--enable-fontconfig --disable-tv-v4l1  --cc=gcc
 echo "X11_CFLAGS=$X11_CFLAGS">>config.mak
 echo "X11_LIBS=$X11_LIBS">>config.mak
 make -j 4
