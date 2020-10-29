@@ -151,7 +151,6 @@ lib/libx264.a	:  x264build
 		 make -C x264 install
 lib/libx265.a	:  x265build
 		 ./x265build
-		 make -C x265 install
 ffmpeg/libavdevice/libavdevice.a	:  lib/libmp3lame.a \
 		 lib/libx264.a lib/libx265.a ffmpegbuild
 		 ./ffmpegbuild
