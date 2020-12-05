@@ -1,56 +1,3 @@
-Ver 2.0 (Dated 2nd June)
-It is major release since it includes a 'URL' support.
-It is basically the support available in 'Mplayer' for streaming
-media. So it should support whatever 'Mplayer' supports for
-streaming media.
-Additionally there is a support for grabing 'YouTube' like
-media, using 'movgrab' by Colum Paget (Email: colums.projects@gmail.com
-Blog: http://idratherhack.blogspot.com) and its success is as good as
-the support by 'Movgrab'. There is an option to search for URLs using
-'Firefox'.
-
-Also it is compiled with the new version of 'Kulina Graphics (Ver 1.2)'
-It supports pasting  input boxes using Xlibs Primary and Clipboard 
-buffers ( what a pain it was).
-
-Ver 2.1 (Dated 10th June)
-Included support for mp3lame; it may not be of much use now, but will
-be useful for  future.
-Also GUI is redesigned.
-
-Ver 2.2 (Dated 18th June 2016)
-Support for libx264 from VideoLan (I believe I am not violating their
-licensing policy). This is also for future, but it is an excellent
-software, the best in its domain.
-Also 'Mplayer' source is moved to Ver 1.3 (the latest, hence new version
-of ffmpeg also).
-In case one needs to swich off video  an option is provided.
-Also provided is an option to  adjust audio timing.
-
-Ver 2.2.1 27th June 2016
-
-Fixed bug in kgmplayer crashing when the on-screen controls
-are on at end of playing. The problem was only when window
-manager had problem and the work around was active, hence it took time
-to identify the problem..
-
-Ver 2.2.2 28th July 2016
-
-Introducing Media Tool Box with plans to add more and more tools.
-An mp3 tool to convert/extract audio to mp3.
-
-Ver 2.2.3 16th Aug 2016
-
-Introducing a tool to convert any media to 'mp4'. Rather than speed
-priority is given to quality, hence process is generally time consuming.
-One could have introduced an option for CD/DVD ripping also, however it is not
-done considering the time for conversion. Hence one has to Rip the media and then
-convert it to mp4. (In fact any format could have been introduced, but
-to make it simplified only mp4 support is open.) The tool provide option
-to scale or change the aspect ratio of the input file. Mp4 conversion
-can reduce the size of the file considerably without compromising much on
-quality.
-
 Ver 3.0 21st Sept 2016
 
 It could have been a version under 2.0 series, however the additions are
@@ -80,46 +27,22 @@ the problem. I once again went through the 'MPLAYER' code and could
 make a fix so the issue is resolved. Feeling very relieved.
  So a new Version for kgmplayer Ver 3.1
 
-Ver 3.1.1 (dated 14/12/16)
-
 A bug fix in Video Join. Audio was set undefined and it is set properly.
+Ver: 4.3.0 Dated 29th October 2020
 
-Ver 3.2 (dated 29th Dec 2016)
+Added support for libx265, since it is in C++ now cmake
+is required and few other corrections are made. The final linking
+is forced with g++ due to this reason. 
 
-May be a new year gift to me, added an option to play all media
-files in a folder. One can opt for a random selection and may put it
-in a loop.
+Many tools are added to the media tool kit and plans to extend further.
+Ver: 4.2.2 Dated 2nd Sept 17
 
-Ver 4.0 (dated 10 Jan 2017)
+Subtilte optiond for CD/DVD also.
+GUI modified.
 
-Option is added to select a subtitle file for playing a file. So GUI
-is modified. There is also an option to select audio output device when HDMI
-is connected. Earlier it was going to HDMI once there was a connection
-on HDMI port. Since 'kgmplayer' was also a demo for Kulina Graphics
-tools kit, GUI was bit colorfull, now it is made bit sober,
+Ver: 4.2.1 Dated 10th Aug 17
 
-Ver 4.0.1 (dated 28 Jan 2017)
-
-Cosmetic change in Rip GUI.
-Default delay of 0.625 sec for PulseAudio is removed, since
-it is not needed for some Versions od PulseAudio.
-
-
-Ver 4.1.0 (dated 12th Feb 2017 )
-
-Implemeted option to select '.sub' subtitle file. Also this can be used
-to swich off subtitle by selecting /usr/share/kgmplayer/empty.sub as the
-subtitle file. 
-
-Ver 4.1.1
-
-Attempt to include OpenSSL in ffmpeg but failed. However moved to gnutls and
-with few modifications in configuration 
-of ffmpeg and adding extra libraries in mplayer things became okay and working.
-
-Ver 4.1.2
-
-Option switch off Subtitle while playing a file.
+Added tool to make cuts in audio
 
 Ver 4.2.0 Dated 02th Aug 2017
 
@@ -140,19 +63,96 @@ a good try.
 3. A tool to insert silences in an audio. This may be useful in mixing
 audio files.
 
-Ver: 4.2.1 Dated 10th Aug 17
+Attempt to include OpenSSL in ffmpeg but failed. However moved to gnutls and
+with few modifications in configuration 
+of ffmpeg and adding extra libraries in mplayer things became okay and working.
 
-Added tool to make cuts in audio
+Ver 4.1.2
 
-Ver: 4.2.2 Dated 2nd Sept 17
+Ver 4.1.1
 
-Subtilte optiond for CD/DVD also.
-GUI modified.
+Option switch off Subtitle while playing a file.
 
-Ver: 4.3.0 Dated 29th October 2020
+Ver 4.1.0 (dated 12th Feb 2017 )
 
-Added support for libx265, since it is in C++ now cmake
-is required and few other corrections are made. The final linking
-is forced with g++ due to this reason. 
+Implemeted option to select '.sub' subtitle file. Also this can be used
+to swich off subtitle by selecting /usr/share/kgmplayer/empty.sub as the
+subtitle file. 
 
-Many tools are added to the media tool kit and plans to extend further.
+Ver 4.0.1 (dated 28 Jan 2017)
+
+Cosmetic change in Rip GUI.
+Default delay of 0.625 sec for PulseAudio is removed, since
+it is not needed for some Versions od PulseAudio.
+
+
+Ver 4.0 (dated 10 Jan 2017)
+
+Option is added to select a subtitle file for playing a file. So GUI
+is modified. There is also an option to select audio output device when HDMI
+is connected. Earlier it was going to HDMI once there was a connection
+on HDMI port. Since 'kgmplayer' was also a demo for Kulina Graphics
+tools kit, GUI was bit colorfull, now it is made bit sober,
+
+Ver 3.2 (dated 29th Dec 2016)
+
+May be a new year gift to me, added an option to play all media
+files in a folder. One can opt for a random selection and may put it
+in a loop.
+
+
+Ver 3.1.1 (dated 14/12/16)
+
+Ver 2.2.3 16th Aug 2016
+
+Introducing a tool to convert any media to 'mp4'. Rather than speed
+priority is given to quality, hence process is generally time consuming.
+One could have introduced an option for CD/DVD ripping also, however it is not
+done considering the time for conversion. Hence one has to Rip the media and then
+convert it to mp4. (In fact any format could have been introduced, but
+to make it simplified only mp4 support is open.) The tool provide option
+to scale or change the aspect ratio of the input file. Mp4 conversion
+can reduce the size of the file considerably without compromising much on
+quality.
+
+Ver 2.2.2 28th July 2016
+
+Introducing Media Tool Box with plans to add more and more tools.
+An mp3 tool to convert/extract audio to mp3.
+
+Ver 2.2.1 27th June 2016
+
+Fixed bug in kgmplayer crashing when the on-screen controls
+are on at end of playing. The problem was only when window
+manager had problem and the work around was active, hence it took time
+to identify the problem..
+
+Ver 2.2 (Dated 18th June 2016)
+Support for libx264 from VideoLan (I believe I am not violating their
+licensing policy). This is also for future, but it is an excellent
+software, the best in its domain.
+Also 'Mplayer' source is moved to Ver 1.3 (the latest, hence new version
+of ffmpeg also).
+In case one needs to swich off video  an option is provided.
+Also provided is an option to  adjust audio timing.
+
+Ver 2.1 (Dated 10th June)
+Included support for mp3lame; it may not be of much use now, but will
+be useful for  future.
+Also GUI is redesigned.
+
+Ver 2.0 (Dated 2nd June)
+It is major release since it includes a 'URL' support.
+It is basically the support available in 'Mplayer' for streaming
+media. So it should support whatever 'Mplayer' supports for
+streaming media.
+Additionally there is a support for grabing 'YouTube' like
+media, using 'movgrab' by Colum Paget (Email: colums.projects@gmail.com
+Blog: http://idratherhack.blogspot.com) and its success is as good as
+the support by 'Movgrab'. There is an option to search for URLs using
+'Firefox'.
+
+Also it is compiled with the new version of 'Kulina Graphics (Ver 1.2)'
+It supports pasting  input boxes using Xlibs Primary and Clipboard 
+buffers ( what a pain it was).
+
