@@ -110,6 +110,7 @@ x265build	:
 		 echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:$(PKG_CONFIG_PATH_OLD)">>x265build
 	 	 echo "export PATH=\"$(PATHNEW)\"">>x265build
 		 echo "cd x265" >> x265build
+		 echo "mkdir build" >> x265build
 		 echo "./rebuild" >> x265build
 		 chmod +x x265build
 build	:  lib/kgmplayer.a 
