@@ -263,7 +263,7 @@ int  normalizesplbutton1callback(int butno,int i,void *Tmp) {
         strcpy(infile,kgGetString(kgGetNamedWidget(Dia,"NomInputWidget"),0));
         strcpy(outfile,kgGetString(kgGetNamedWidget(Dia,"NomOutputWidget"),0));
         meanlevel = kgGetDouble(kgGetNamedWidget(Dia,"NomMeanWidget"),0);
-        sprintf(buff,"kgffmpeg -i %s -af \"volumedetect\" -vn -sn "
+        sprintf(buff,"kgffmpeg -i \"%s\" -af \"volumedetect\" -vn -sn "
           " -dn -f null /dev/null", infile);
         runfunction(buff,ProcessVolume,kgffmpeg);
 
@@ -276,7 +276,7 @@ int  normalizesplbutton1callback(int butno,int i,void *Tmp) {
         kgWrite(InfoBox,buff);
         kgUpdateOn(Dia);
 //        remove(outfile);
-        sprintf(buff,"kgffmpeg_ -i %s -af \"volume=%lfdB\" -y %s", 
+        sprintf(buff,"kgffmpeg_ -i \"%s\" -af \"volume=%lfdB\" -y \"%s\"", 
                       infile,corval,outfile);
 //        runfunction(buff,NULL,kgffmpeg);
         runfunctionbkgr(buff,ProcessToPipe,kgffmpeg_);
