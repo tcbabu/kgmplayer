@@ -222,6 +222,21 @@ int  normalizetextbox3callback(int cellno,int i,void *Tmp) {
   e = T->elmt;
   return ret;
 }
+int kgffmpeg_(int argc,char *argv[]){
+  char Tmpfile[500];
+  char buff[100];
+  char *outfile;
+  outfile = argv[argc-1];
+  strcpy(Tmpfile,outfile);
+  Tmpfile[GetBaseIndex(outfile)]='_';
+  Tmpfile[GetBaseIndex(outfile)+1]='\0';
+  strcat(Tmpfile,outfile+GetBaseIndex(outfile));
+  argv[argc-1]= Tmpfile;
+  kgffmpeg(argc,argv);
+  remove(outfile);
+  rename(Tmpfile,outfile);
+  return 1;
+}
 int  normalizesplbutton1callback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
@@ -260,11 +275,11 @@ int  normalizesplbutton1callback(int butno,int i,void *Tmp) {
         sprintf(buff,"Volume Correction = %lf\n",corval);
         kgWrite(InfoBox,buff);
         kgUpdateOn(Dia);
-        remove(outfile);
-        sprintf(buff,"kgffmpeg -i %s -af \"volume=%lfdB\" %s", 
+//        remove(outfile);
+        sprintf(buff,"kgffmpeg_ -i %s -af \"volume=%lfdB\" -y %s", 
                       infile,corval,outfile);
 //        runfunction(buff,NULL,kgffmpeg);
-        runfunctionbkgr(buff,ProcessToPipe,kgffmpeg);
+        runfunctionbkgr(buff,ProcessToPipe,kgffmpeg_);
       }
       ret=0;
       break;

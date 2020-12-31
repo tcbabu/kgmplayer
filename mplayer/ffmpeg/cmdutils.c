@@ -1,3 +1,4 @@
+#define D_KULINA
 /*
  * Various utilities for command line tools
  * Copyright (c) 2000-2003 Fabrice Bellard
@@ -118,8 +119,11 @@ void exit_program(int ret)
 {
     if (program_exit)
         program_exit(ret);
-
+#ifdef D_KULINA
+    return ret;
+#else
     exit(ret);
+#endif
 }
 
 double parse_number_or_die(const char *context, const char *numstr, int type,

@@ -35,7 +35,7 @@ int runfunctionbkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(int
     close(Jpipe[0]);
     close(Jstat[1]);
 #if 1  // modify as required
-     sprintf(buff,"Execiting... PLEASE WAIT\n");
+     sprintf(buff,"Executing... PLEASE WAIT\n");
      write(Jpipe[1],buff,strlen(buff));
      sprintf(buff,"PLEASE WAIT till the window closes\n");
      write(Jpipe[1],buff,strlen(buff));

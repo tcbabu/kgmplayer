@@ -28,13 +28,12 @@ uname -v = #5 SMP Sun Feb 11 19:41:47 IST 2018
 /bin/universe          = unknown
 
 PATH: /home/babu/BUILD/kgmplayer/bin
-PATH: /home/babu/.nvm/versions/node/v9.6.1/bin
+PATH: /home/babu/bin
 PATH: /usr/local/bin
 PATH: /bin
 PATH: /usr/bin
 PATH: /opt/jdk/bin
 PATH: /usr/X11R76/bin
-PATH: /home/babu/bin
 
 
 ## ----------- ##

@@ -4334,7 +4334,9 @@ int kgffmpeg(int argc, char **argv)
            decode_error_stat[0], decode_error_stat[1]);
     if ((decode_error_stat[0] + decode_error_stat[1]) * max_error_rate < decode_error_stat[1])
         exit_program(69);
-
-    exit_program(received_nb_signals ? 255 : main_return_code);
+#ifdef D_KULINA
     return main_return_code;
+#else
+    exit_program(received_nb_signals ? 255 : main_return_code);
+#endif
 }
