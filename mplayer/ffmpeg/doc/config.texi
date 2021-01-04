@@ -458,7 +458,7 @@
 @c @set config-libvpx no
 @c @set config-libwavpack no
 @c @set config-libwebp no
-@set config-libx264 yes
+@c @set config-libx264 no
 @set config-libx265 yes
 @c @set config-libxavs no
 @c @set config-libxcb no
@@ -1474,8 +1474,8 @@
 @c @set config-libwebp-anim-encoder no
 @c @set config-libwebp-encoder no
 @c @set config-libx262-encoder no
-@set config-libx264-encoder yes
-@set config-libx264rgb-encoder yes
+@c @set config-libx264-encoder no
+@c @set config-libx264rgb-encoder no
 @set config-libx265-encoder yes
 @c @set config-libxavs-encoder no
 @c @set config-libxvid-encoder no

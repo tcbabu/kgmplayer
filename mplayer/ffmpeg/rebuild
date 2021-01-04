@@ -1,14 +1,16 @@
 ./configure --prefix=/usr  --enable-static --disable-shared \
 --enable-gpl --enable-postproc \
+--enable-filter=volumedetect \
 --disable-doc --enable-libmp3lame  \
---enable-runtime-cpudetect  --enable-indev=x11grab \
 --enable-version3 --enable-gmp --enable-gnutls \
---disable-libxcb --disable-logging --enable-libx264 --enable-libx265 \
+--disable-libxcb   --enable-libx265 \
 --enable-x11grab \
 --disable-vaapi \
 --enable-nonfree  \
 --enable-libfdk-aac \
 --extra-libs="-lgnutls -lgnutlsxx -lnettle -lhogweed -lgmp -lfdk-aac" 
+#--disable-libxcb  --enable-libx264 --enable-libx265 \
 #--enable-nonfree --enable-openssl \
+#--enable-runtime-cpudetect  --enable-indev=x11grab \
 #make -j 4
 

@@ -1455,7 +1455,9 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
 #else
      if(function != NULL) function(argc,args);
 #endif
-     printf("END:\n");
+     fflush(stderr);
+     fflush(stdout);
+     fprintf(stderr,"END:\n");
      exit(0);
    }
    else {   /* parent process */

@@ -5,7 +5,7 @@
 static char infile[500]="",outfile[500]="";
 extern double meanlevel;
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
-double meanVol=0,maxVol=0,histVol=0,meanout,maxout,vrange;
+double meanVol=-20.0,maxVol=0,histVol=0,meanout,maxout,vrange;
 static int tcount,ttotal ;
 static double duration,hr,min,sec;
 static void *InfoBox=NULL,*Dia;
@@ -28,6 +28,7 @@ int ProcessVolume(int pip0,int pip1,int Pid) {
 
      ttotal = 0;
      duration =0;
+     meanVol = -25;
 //     close(pip1);
      InfoBox = kgGetNamedWidget(Dia,"NomInfoBox");
      while((ch=GetLine(pip0,buff)) ) {
@@ -49,13 +50,13 @@ int ProcessVolume(int pip0,int pip1,int Pid) {
            duration = duration*1000;
          }
          if((i=SearchString(buff,(char *)"mean_volume:"))>=0) {
-//           kgWrite(InfoBox,buff+i);
-//           kgUpdateOn(Dia);
+           kgWrite(InfoBox,buff+i);
+           kgUpdateOn(Dia);
            sscanf(buff+i,"%s%lf", dummy,&meanVol);
          }
          if((i=SearchString(buff,(char *)"max_volume:"))>=0) {
-//           kgWrite(InfoBox,buff+i);
-//           kgUpdateOn(Dia);
+           kgWrite(InfoBox,buff+i);
+           kgUpdateOn(Dia);
            sscanf(buff+i,"%s%lf", dummy,&maxVol);
          }
          if((i=SearchString(buff,(char *)"histogram_"))>=0) {
@@ -224,17 +225,24 @@ int  normalizetextbox3callback(int cellno,int i,void *Tmp) {
 }
 int kgffmpeg_(int argc,char *argv[]){
   char Tmpfile[500];
-  char buff[100];
+  char buff[200];
   char *outfile;
+  int pid,status;
   outfile = argv[argc-1];
   strcpy(Tmpfile,outfile);
   Tmpfile[GetBaseIndex(outfile)]='_';
   Tmpfile[GetBaseIndex(outfile)+1]='\0';
   strcat(Tmpfile,outfile+GetBaseIndex(outfile));
   argv[argc-1]= Tmpfile;
-  kgffmpeg(argc,argv);
-  remove(outfile);
-  rename(Tmpfile,outfile);
+  if( (pid=fork())==0) {
+    kgffmpeg(argc,argv);
+    exit(0);
+  }
+  else {
+    waitpid(pid,&status,0);
+    remove(outfile);
+    rename(Tmpfile,outfile);
+  }
   return 1;
 }
 int  normalizesplbutton1callback(int butno,int i,void *Tmp) {

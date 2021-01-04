@@ -111,9 +111,7 @@ const char program_name[] = "ffmpeg";
 const int program_birth_year = 2000;
 
 static FILE *vstats_file;
-#ifdef D_KULINA
 int kgffmpeg(int argc, char **argv);
-#endif
 
 const char *const forced_keyframes_const_names[] = {
     "n",
@@ -4281,7 +4279,6 @@ int kgffmpeg(int argc, char **argv)
 
     av_log_set_flags(AV_LOG_SKIP_REPEATED);
     parse_loglevel(argc, argv, options);
-
     if(argc>1 && !strcmp(argv[1], "-d")){
         run_as_daemon=1;
         av_log_set_callback(log_callback_null);
@@ -4334,9 +4331,5 @@ int kgffmpeg(int argc, char **argv)
            decode_error_stat[0], decode_error_stat[1]);
     if ((decode_error_stat[0] + decode_error_stat[1]) * max_error_rate < decode_error_stat[1])
         exit_program(69);
-#ifdef D_KULINA
-    return main_return_code;
-#else
     exit_program(received_nb_signals ? 255 : main_return_code);
-#endif
 }

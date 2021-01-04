@@ -240,7 +240,7 @@ hardcode_into_libs=yes
 sys_lib_search_path_spec="/usr/lib/gcc/x86_64-unknown-linux-gnu/4.8.2 /usr/lib64 /lib64 /usr/X11R76/lib "
 
 # Run-time system search path for libraries.
-sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib/qt5 /usr/local/lib /usr/X11R76/lib /opt/lib /opt/connect/libs "
+sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib/qt5 /usr/local/lib /usr/X11R76/lib /opt/lib /home/babu/BUILD/kgmplayer/lib /opt/connect/libs "
 
 # Whether dlopen is supported.
 dlopen_support=unknown
