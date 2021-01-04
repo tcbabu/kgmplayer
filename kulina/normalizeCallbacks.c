@@ -18,6 +18,7 @@ int SearchString(char *s1,char *s2);
 int runjob(char *job,int (*ProcessOut)(int,int,int));
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int runfunctionbkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
+int runnormalisebkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **),char *);
 int FileStat(char *flname);
 int kgffmpeg(int,char **);
 
@@ -223,7 +224,7 @@ int  normalizetextbox3callback(int cellno,int i,void *Tmp) {
   e = T->elmt;
   return ret;
 }
-int kgffmpeg_(int argc,char *argv[]){
+int kgffmpeg_o(int argc,char *argv[]){
   char Tmpfile[500];
   char buff[200];
   char *outfile;
@@ -245,6 +246,33 @@ int kgffmpeg_(int argc,char *argv[]){
   }
   return 1;
 }
+int kgffmpeg_(int argc,char *argv[]){
+  char Tmpfile[500];
+  char buff[200];
+  char *outfile;
+  int pid,status;
+  outfile = argv[argc-1];
+  strcpy(Tmpfile,outfile);
+  Tmpfile[GetBaseIndex(outfile)]='_';
+  Tmpfile[GetBaseIndex(outfile)+1]='\0';
+  strcat(Tmpfile,outfile+GetBaseIndex(outfile));
+  argv[argc-1]= Tmpfile;
+  kgffmpeg(argc,argv);
+  return 1;
+}
+
+int updateoutfile(char *outfile){
+  char Tmpfile[500];
+  char buff[200];
+  strcpy(Tmpfile,outfile);
+  Tmpfile[GetBaseIndex(outfile)]='_';
+  Tmpfile[GetBaseIndex(outfile)+1]='\0';
+  strcat(Tmpfile,outfile+GetBaseIndex(outfile));
+  remove(outfile);
+  rename(Tmpfile,outfile);
+  return 1;
+}
+
 int  normalizesplbutton1callback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
@@ -287,7 +315,8 @@ int  normalizesplbutton1callback(int butno,int i,void *Tmp) {
         sprintf(buff,"kgffmpeg_ -i \"%s\" -af \"volume=%lfdB\" -y \"%s\"", 
                       infile,corval,outfile);
 //        runfunction(buff,NULL,kgffmpeg);
-        runfunctionbkgr(buff,ProcessToPipe,kgffmpeg_);
+//        runfunctionbkgr(buff,ProcessToPipe,kgffmpeg_);
+        runnormalisebkgr(buff,ProcessToPipe,kgffmpeg_,outfile);
       }
       ret=0;
       break;
