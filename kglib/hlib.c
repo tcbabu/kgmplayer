@@ -1126,7 +1126,7 @@ static void win_boxfill()
   read_buf(&color,4);
 }
 
-static win_circle()
+static int win_circle()
 {
   float x1,y1,r;
   int xa,ya,rd;
@@ -1141,7 +1141,7 @@ static win_circle()
   return(0);
 }
 
-static win_circlefill()
+static int win_circlefill()
 {
   float x1,y1,r;
   unsigned char color;
@@ -1171,10 +1171,10 @@ static void win_poly_fill(void)
   int *x1,*y1;
   short i;
   read_buf(&n,4);
-  x = (float *)malloc(sizeof(float)*n);
-  y = (float *)malloc(sizeof(float)*n);
-  x1 = (int  *)malloc(sizeof(int )*n);
-  y1 = (int  *)malloc(sizeof(int )*n);
+  x = (float *)Malloc(sizeof(float)*n);
+  y = (float *)Malloc(sizeof(float)*n);
+  x1 = (int  *)Malloc(sizeof(int )*n);
+  y1 = (int  *)Malloc(sizeof(int )*n);
   read_buf(x,4*n);
   read_buf(y,4*n);
   read_buf(&flag,4);
@@ -1494,7 +1494,7 @@ static void initialise()
   for(i=0;i<10;i++) st_ptr[i]=0;
   ln_style=LN_STYL;
   m_style=M_STYL;
-  if (ENTRY==0) { RBUFF = (unsigned char *) malloc(B_max+100);
+  if (ENTRY==0) { RBUFF = (unsigned char *) Malloc(B_max+100);
                   ENTRY=1;};
   Entry =0;
   Byte=0,R_max=0,R_Byte=0;
@@ -1795,7 +1795,7 @@ static void win_3_draw()
     transfrm(x,y,z);
     projection(trnstr);
     if (ZBUFF == 1) {
-       lt = (LINE *) malloc(sizeof(LINE));
+       lt = (LINE *) Malloc(sizeof(LINE));
        lt->code ='l';
        if( Cz > newstr.zstr ) { lt->zmax = Cz; lt->zmin = newstr.zstr;}
        else { lt->zmin = Cz; lt->zmax = newstr.zstr;}
@@ -1810,8 +1810,8 @@ static void t_panel(float *x,float *y,int color,int flag,int n)
   int *x1,*y1;
   int xo,yo,xv,yv;
   short i,j=0;
-  x1 = (int *) malloc(sizeof(int)*(n+1));
-  y1 = (int *) malloc(sizeof(int)*(n+1));
+  x1 = (int *) Malloc(sizeof(int)*(n+1));
+  y1 = (int *) Malloc(sizeof(int)*(n+1));
   if( (y1==NULL) ){
     printf(" Error: Not enough buffer for polyfill..\n");
     exit(0);
@@ -1855,12 +1855,12 @@ static void win_3_polyfill()
      *(z+i) = newstr.zstr;
     } 
     if (ZBUFF == 1) {
-      pt = (POLY *) malloc(sizeof(POLY));
+      pt = (POLY *) Malloc(sizeof(POLY));
       pt->code = 'p';
       pt->n = n;
-      xt = (float *)malloc(sizeof(float)*n);
-      yt = (float *)malloc(sizeof(float)*n);
-      zt = (float *)malloc(sizeof(float)*n);
+      xt = (float *)Malloc(sizeof(float)*n);
+      yt = (float *)Malloc(sizeof(float)*n);
+      zt = (float *)Malloc(sizeof(float)*n);
       for(i=0;i<n;i++) {
         if(zmin > *(z+i) ) zmin = *(z+i);
         if(zmax < *(z+i) ) zmax = *(z+i);
@@ -1913,12 +1913,12 @@ static void win_3_boxfill()
    y2 = newstr.ystr;
    z2 = newstr.zstr;
    if (ZBUFF == 1) {
-      pt = (POLY *) malloc(sizeof(POLY));
+      pt = (POLY *) Malloc(sizeof(POLY));
       pt->code = 'p';
       pt->n = 4;
-      xt = (float *)malloc(sizeof(float)*4);
-      yt = (float *)malloc(sizeof(float)*4);
-      yt = (float *)malloc(sizeof(float)*4);
+      xt = (float *)Malloc(sizeof(float)*4);
+      yt = (float *)Malloc(sizeof(float)*4);
+      yt = (float *)Malloc(sizeof(float)*4);
       if( z1 >z2 ) { zmin = z2;zmax = z1;}
       else { zmin = z1;zmax = z2;}
       xt[0] = x1; yt[0] = y1; zt[0] = z1;
@@ -1970,13 +1970,13 @@ static void win_3_godrfill()
      *(z+i) = newstr.zstr;
    }
  if (ZBUFF == 1) {
-      st = (SHADE *) malloc(sizeof(SHADE));
+      st = (SHADE *) Malloc(sizeof(SHADE));
       st->code = 's';
       st->n = n;
-      xt = (float *)malloc(sizeof(float)*n);
-      yt = (float *)malloc(sizeof(float)*n);
-      zt = (float *)malloc(sizeof(float)*n);
-      vt = (float *)malloc(sizeof(float)*n);
+      xt = (float *)Malloc(sizeof(float)*n);
+      yt = (float *)Malloc(sizeof(float)*n);
+      zt = (float *)Malloc(sizeof(float)*n);
+      vt = (float *)Malloc(sizeof(float)*n);
       for(i=0;i<n;i++) {
         if(zmin > *(z+i) ) zmin = *(z+i);
         if(zmax < *(z+i) ) zmax = *(z+i);
@@ -2935,7 +2935,7 @@ static void win_txt_color( void)
   t_color= color;
   fprintf(TX_F,"Zc%d\n",t_color);
  }
-static t_txt_color(int color) {
+static void t_txt_color(int color) {
 #ifdef MONO
   if(color != 0 ) color =15;
 #endif
@@ -3604,7 +3604,7 @@ static void  win_txtwrt(void) {
   }
   font_o=t_font;
   read_buf(&nchr,4);
-  txt= (unsigned char *) malloc((nchr+1)*sizeof(unsigned char));
+  txt= (unsigned char *) Malloc((nchr+1)*sizeof(unsigned char));
   read_buf(txt,nchr);
   txt[nchr]='\0';
   bold=txt_bold;
@@ -3684,12 +3684,12 @@ static void  win_txtwrt(void) {
                             break;
                    case 'k':
                             if(FB_P==NULL) {
-                              FB_P=(B_K *) malloc((int)sizeof(B_K));
+                              FB_P=(B_K *) Malloc((int)sizeof(B_K));
                               O_P=FB_P;
                               O_P->Nx=NULL;O_P->Pr=NULL;
                             }
                             else {
-                              O_P->Nx=(B_K *) malloc((int)sizeof(B_K));
+                              O_P->Nx=(B_K *) Malloc((int)sizeof(B_K));
                               O_P->Nx->Pr=O_P;
                               O_P=O_P->Nx;
                               O_P->Nx=NULL;
@@ -3712,12 +3712,12 @@ static void  win_txtwrt(void) {
                    case 'O':
                    case 'U':
                             if(FO_L==NULL) {
-                              FO_L=(L_N *) malloc((int)sizeof(L_N));
+                              FO_L=(L_N *) Malloc((int)sizeof(L_N));
                               O_L=FO_L;
                               O_L->Nx=NULL;O_L->Pr=NULL;
                             }
                             else {
-                              O_L->Nx=(L_N *) malloc((int)sizeof(L_N));
+                              O_L->Nx=(L_N *) Malloc((int)sizeof(L_N));
                               O_L->Nx->Pr=O_L;
                               O_L=O_L->Nx;
                               O_L->Nx=NULL;
@@ -4686,7 +4686,7 @@ static void  win_clip_limit(void)
     read_buf(&y1,4);
     read_buf(&x2,4);
     read_buf(&y2,4);
-    temp = (CLIP *) malloc(sizeof(CLIP));
+    temp = (CLIP *) Malloc(sizeof(CLIP));
     if( temp ==NULL) {
                       printf(" Error: memory allocation in clip\n");
                       exit(0);

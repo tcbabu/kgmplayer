@@ -49,7 +49,7 @@ void *Loadfontstruct(void);
 static  void writetiff(char *flname,int sizex,int sizey);
 
 extern short  kgIcode[1024][3];
-static kgIcodeLoc[1024][3];
+static int kgIcodeLoc[1024][3];
 typedef struct 
 	{
 	  float x;
@@ -83,7 +83,7 @@ static  int InitBuff( int sizex, int sizey) {
 //        Bcolr=0xff000000|BkColor;
         Bcolr=BkColor;
         ln = (sizex+1)*(sizey+1);
-	buffer = (unsigned long *) malloc(ln*sizeof(unsigned long));
+	buffer = (unsigned long *) Malloc(ln*sizeof(unsigned long));
 	if ( buffer == NULL ) return(0);
         for(i=0;i<ln;i++) buffer[i]=Bcolr;
 	return (1);
@@ -165,25 +165,25 @@ static  void writetiff(char *flname,int sizex,int sizey)
   for(i=0;i<size;i++) {
     for(j=0;j<3;j++) {
       GetRGBA(buffer[k]);
-      fprintf(fp,"0x%2.2x,",r);
-      fprintf(fp,"0x%2.2x,",g);
-      fprintf(fp,"0x%2.2x,",b);
-      fprintf(fp,"0x%2.2x,",a);
+      fprintf(fp,"0x%2.2lx,",r);
+      fprintf(fp,"0x%2.2lx,",g);
+      fprintf(fp,"0x%2.2lx,",b);
+      fprintf(fp,"0x%2.2lx,",a);
       k++;
     }
     fprintf(fp,"\n  ");
   }
   for(j=0;j<rem;j++) {
       GetRGBA(buffer[k]);
-      fprintf(fp,"0x%2.2x,",b);
-      fprintf(fp,"0x%2.2x,",g);
-      fprintf(fp,"0x%2.2x,",r);
-      fprintf(fp,"0x%2.2x,",a);
+      fprintf(fp,"0x%2.2lx,",b);
+      fprintf(fp,"0x%2.2lx,",g);
+      fprintf(fp,"0x%2.2lx,",r);
+      fprintf(fp,"0x%2.2lx,",a);
       k++;
   }
   fprintf(fp,"   0x0 };\n");
   fprintf(fp,"  static PNGIMG  %-s_str = {\n","GRAF");
-  fprintf(fp,"    \"PNG\",1,\"%-s.png\", %d,%d,%d,%d,%-s_data \n  };\n","GRAF",sizex,sizey,sizex*4,4,"GRAF","GRAF");
+  fprintf(fp,"    \"PNG\",1,\"%-s.png\", %d,%d,%d,%d,%-s_data \n  };\n","GRAF",sizex,sizey,sizex*4,4,"GRAF");
   fprintf(fp,"#endif\n");
   fclose(fp);
   return ;
@@ -894,7 +894,7 @@ static void win_boxfill()
   read_buf(&color,4);
 }
 
-static win_circle()
+static int win_circle()
 {
   float x1,y1,r;
   int xa,ya,rd;
@@ -909,7 +909,7 @@ static win_circle()
   return(0);
 }
 
-static win_circlefill()
+static int win_circlefill()
 {
   float x1,y1,r;
   unsigned char color;
@@ -1201,7 +1201,7 @@ static void wait_for_printing(void)
    fscanf(Fp,"%s",buf);
    fscanf(Fp,"%s",buf);
    fclose(Fp);
-   sprintf(command,"lpstat -o %s>JoB_Fil 2>JoB_Fil\0",buf);
+   sprintf(command,"lpstat -o %s>JoB_Fil 2>JoB_Fil",buf);
    printf( "Waiting..\r");
    fflush(NULL);
    for(;;){
@@ -3095,11 +3095,12 @@ static void check_and_do_o(char ch)
 static void review_gph_file(char *str)
 {
   char ch;
+  int rval;
   float w[4];
   int x1,x2,y1,y2,color,flag,n;
   R_Byte=0;
   rbuf=open(str,O_RDWR|O_BINARY, S_IREAD|S_IWRITE);
-  read(rbuf,w,16);
+  rval = read(rbuf,w,16);
   user_cord(w[0],w[1],w[2],w[3]);
   read_file(rbuf); 
   R_max=Byte;

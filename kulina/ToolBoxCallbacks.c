@@ -4,7 +4,7 @@
 #include "images2videos.h"
 #include "ToolGroup.h"
 extern void *HelperImg;
-char *HelperMsg;
+extern char *HelperMsg;
 extern IMGS2VDATA is2vdata;
 
 extern int Tools;
@@ -30,7 +30,7 @@ int SetGrpVis(DIALOG *Tmp,TOOLGRP *T,int item) {
   kgSetGrpVisibility(Tmp,ImageBoxGrp,0);
   kgSetGrpVisibility(Tmp,ImageBoxGrp,1);
   if((id >= 0) &&(id < k )) {
-        HelperMsg= (char **) T[id].MsgImg;
+        HelperMsg= (char *) T[id].MsgImg;
 #if 0
      if(T[id].RunHelp != NULL) {
         if(T[id].flag==1) T[id].RunHelp(NULL);

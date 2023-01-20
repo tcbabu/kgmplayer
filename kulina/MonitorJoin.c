@@ -30,15 +30,15 @@ int MonitorJoinGroup( DIALOG *D,void **v,void *pt) {
   DII i1 = { 
     'i',
     24,42,  
-    588,117,  
+    588,217,  
     61,3,0   
   };
   strcpy(i1.Wid,(char *)"VJInfo");
   i1.item = -1;
   DIO o2 = { 
     'o',
-    45,130,  
-    565,148,  
+    45,230,  
+    565,248,  
     0,0,0,3,-1,0  
        //hide,percent,border,type,color,direction 
   };
@@ -55,8 +55,8 @@ int MonitorJoinGroup( DIALOG *D,void **v,void *pt) {
   butn3[0].butncode='';
   DIL h3 = { 
     'h',
-    240,148,  
-    322,181,
+    240,248,  
+    322,281,
     2,0,  
     72, 
     25, 
@@ -133,7 +133,7 @@ int MonitorJoin( void *parent,void **v,void *pt) {
   D.xo = 10;   /* Position of Dialog */ 
   D.yo = 10;
   D.xl = 610;    /*  Length of Dialog */
-  D.yl = 187;    /*  Width  of Dialog */
+  D.yl = 287;    /*  Width  of Dialog */
   D.Initfun = MonitorJoininit;    /*   init fuction for Dialog */
   D.Cleanupfun = MonitorJoincleanup;    /*   init fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
@@ -180,7 +180,7 @@ int MonitorJoin( void *parent,void **v,void *pt) {
   }    /*  end of fullscreen mode */
 //  kgColorTheme(&D,210,210,210);    /*  set colors for gui*/
 //  ModifyMonitorJoinGc(&(D.gc));    /*  set colors for gui*/
-  kgColorTheme(&D,Thred,Thgreen,Thblue);
+//  kgColorTheme(&D,Thred,Thgreen,Thblue);
   ret= kgUi(&D);
   kgCleanUi(&D);
   return ret;
@@ -190,8 +190,13 @@ void *RunMonitorJoin(void *arg) {
 
 
 *************************************************/
+	int *val;
    void **v=NULL;
    void *pt=NULL; /* pointer to send any extra information */
+   if(arg != NULL) {
+	   val = (int *)arg;
+	   MonPipe = *val;
+   }
    MonitorJoin(NULL,v,pt );
    return NULL;
 }

@@ -121,8 +121,10 @@ int video_id=-1;
 int dvdsub_id=-1;
 int vobsub_id=-1;
 #endif
-char* audio_lang=NULL;
-char* dvdsub_lang=NULL;
+//char* audio_lang=NULL;
+//char* dvdsub_lang=NULL;
+extern char* audio_lang;
+extern char* dvdsub_lang;
 
 static char** audio_codec_list=NULL;  // override audio codec
 static char** video_codec_list=NULL;  // override video codec
@@ -133,14 +135,14 @@ static int out_audio_codec=-1;
 static int out_video_codec=-1;
 
 int out_file_format=MUXER_TYPE_AVI;	// default to AVI
-int quiet=0;
-double video_time_usage=0;
-double vout_time_usage=0;
+extern int quiet;
+extern double video_time_usage;
+extern double vout_time_usage;
 double max_video_time_usage=0;
 double max_vout_time_usage=0;
 double cur_video_time_usage=0;
 double cur_vout_time_usage=0;
-int benchmark=0;
+extern int benchmark;
 
 // A-V sync:
 static float default_max_pts_correction=-1;//0.01f;
@@ -153,7 +155,7 @@ static float audio_delay=0.0;
 static int ignore_start=0;
 static int audio_density=2;
 
-double force_fps=0;
+extern double force_fps;
 static double force_ofps=0; // set to 24 for inverse telecine
 static int skip_limit=-1;
 #ifndef D_KULINA
@@ -183,14 +185,14 @@ static int play_n_frames=-1;
 static int play_n_frames_mf=-1;
 
 // sub:
-char *font_name=NULL;
-char *sub_font_name=NULL;
-char **sub_name=NULL;
-char **sub_paths = NULL;
-float sub_delay=0;
-float sub_fps=0;
-char *vobsub_name = NULL;
-int   subcc_enabled=0;
+extern char *font_name;
+extern char *sub_font_name;
+extern char **sub_name;
+extern char **sub_paths ;
+extern float sub_delay;
+extern float sub_fps;
+extern char *vobsub_name;
+extern int   subcc_enabled;
 
 int auto_expand=1;
 int encode_duplicates=1;

@@ -1,4 +1,4 @@
-#include "kulina.h"
+#include <kulina.h>
 void Mwingbox1init(int i,void *Tmp) {
   /*********************************** 
     int routine for grahics area 

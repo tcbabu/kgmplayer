@@ -5,6 +5,7 @@
 
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessPrint(int pip0,int pip1,int Pid);
 int ProcessToPipe(int pip0,int pip1,int Pid);
@@ -58,32 +59,32 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
      while (ssec < totsec) {
 #ifdef D_X264
        if(esec < totsec) {
-        sprintf(buff,"kgffmpeg -ss %-d -t %-d -i \"%-s\" "
+        sprintf(buff,"ffmpegfun -ss %-d -t %-d -i \"%-s\" "
            " -y -f mp4 -vcodec libx264  -b:v 3000K -aq 0 "
            " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
            ssec,tslice,flname,folder,n);
        }
        else {
-        sprintf(buff,"kgffmpeg -ss %-d  -i \"%-s\" "
+        sprintf(buff,"ffmpegfun -ss %-d  -i \"%-s\" "
            " -y -f mp4 -vcodec libx264  -b:v 3000K -aq 0 "
            " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
            ssec,flname,folder,n);
        }
 #else
        if(esec < totsec) {
-        sprintf(buff,"kgffmpeg -ss %-d -t %-d -i \"%-s\" "
+        sprintf(buff,"ffmpegfun -ss %-d -t %-d -i \"%-s\" "
            " -y -f mp4 -vcodec libx265  -aq 0 "
            " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
            ssec,tslice,flname,folder,n);
        }
        else {
-        sprintf(buff,"kgffmpeg -ss %-d  -i \"%-s\" "
+        sprintf(buff,"ffmpegfun -ss %-d  -i \"%-s\" "
            " -y -f mp4 -vcodec libx265  -aq 0 "
            " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
            ssec,flname,folder,n);
        }
 #endif
-       runfunction(buff,ProcessToPipe,kgffmpeg);
+       runfunction(buff,ProcessToPipe,ffmpegfun);
        ssec += tslice;
        esec += tslice;
      }

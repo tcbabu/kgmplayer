@@ -44,6 +44,7 @@ char * ui_mktmpdir(void);
 #define uiset_sup_clip_limits(wc,x1,y1,x2,y2) wc->s_v_x1=x1,wc->s_v_y1=y1,wc->s_v_x2=x2,wc->s_v_y2=y2
 #define uiset_clip_limits(wc,x1,y1,x2,y2) wc->c_v_x1=x1,wc->c_v_y1=y1,wc->c_v_x2=x2,wc->c_v_y2=y2
  Dlink *uiGetFontlist(void);
+ void * Loadfontstruct(void);
  void img_move(DIG *G,float x,float y);
  void img_draw(DIG *G,float x, float y);
  void img_marker(DIG *G,float x,float y);
@@ -81,13 +82,12 @@ char * ui_mktmpdir(void);
  void img_set_prtxt(DIG *G,int txt );
  void  img_sup_clip_limit(DIG *G,float x1,float y1,float x2,float y2);
  void img_chng_clr(DIG *G,int no,int ir,int ig,int ib);
+ void uiput_shade_pix3(DIG *G,int col,int row,int z,float illu);
+#if 1
 static pthread_mutex_t _Tmplock=PTHREAD_MUTEX_INITIALIZER;
 #define Lock pthread_mutex_lock(&_Tmplock)
 #define Unlock pthread_mutex_unlock(&_Tmplock)
-//static unsigned long BkColor=0x00000000;
-//static unsigned long BkColor=0x00000000;
-//static unsigned long *buffer=NULL; /* image buffer */
-//static  PixelPacket *pixels;
+#endif
 
 static void *IEEEtoPC(void *val);
 static void *IEEEtoPCs(void *val);
@@ -1622,7 +1622,7 @@ static void shade_line3(DIG *G,int xa,int xb,int y,int za,int zb,float pa,float 
   za=z_inter(xa,m,cons);zb=z_inter(xb,m,cons);
   for(i=xa;i<=xb;i++) {
     tempp=(pa+(i-xa)*pfac);
-    z=z_inter(i,m,cons);put_shade_pix3(G,i,yy,z,tempp);
+    z=z_inter(i,m,cons);uiput_shade_pix3(G,i,yy,z,tempp);
   }
 }
 
@@ -2929,12 +2929,12 @@ static    float get_val(char *ch)
                             break;
                    case 'k':
                             if(FB_P==NULL) {
-                              FB_P=(B_K *) malloc((int)sizeof(B_K));
+                              FB_P=(B_K *) Malloc((int)sizeof(B_K));
                               dc->O_P=FB_P;
                               dc->O_P->Nx=NULL;dc->O_P->Pr=NULL;
                             }
                             else {
-                              dc->O_P->Nx=(B_K *) malloc((int)sizeof(B_K));
+                              dc->O_P->Nx=(B_K *) Malloc((int)sizeof(B_K));
                               dc->O_P->Nx->Pr=dc->O_P;
                               dc->O_P=dc->O_P->Nx;
                               dc->O_P->Nx=NULL;
@@ -2957,12 +2957,12 @@ static    float get_val(char *ch)
                    case 'O':
                    case 'U':
                             if(FO_L==NULL) {
-                              FO_L=(L_N *) malloc((int)sizeof(L_N));
+                              FO_L=(L_N *) Malloc((int)sizeof(L_N));
                               dc->O_L=FO_L;
                               dc->O_L->Nx=NULL;dc->O_L->Pr=NULL;
                             }
                             else {
-                              dc->O_L->Nx=(L_N *) malloc((int)sizeof(L_N));
+                              dc->O_L->Nx=(L_N *) Malloc((int)sizeof(L_N));
                               dc->O_L->Nx->Pr=dc->O_L;
                               dc->O_L=dc->O_L->Nx;
                               dc->O_L->Nx=NULL;
@@ -3426,12 +3426,12 @@ static int  uistrlngth_loc(kgDC *dc,char *title,float *xdsp)
                         break;
                case 'k':
                         if(FB_P==NULL) {
-                          FB_P=(B_K *) malloc((int)sizeof(B_K));
+                          FB_P=(B_K *) Malloc((int)sizeof(B_K));
                           dc->O_P=FB_P;
                           dc->O_P->Nx=NULL;dc->O_P->Pr=NULL;
                         }
                         else {
-                          dc->O_P->Nx=(B_K *) malloc((int)sizeof(B_K));
+                          dc->O_P->Nx=(B_K *) Malloc((int)sizeof(B_K));
                           dc->O_P->Nx->Pr=dc->O_P;
                           dc->O_P=dc->O_P->Nx;
                           dc->O_P->Nx=NULL;
@@ -3664,6 +3664,7 @@ void *kgGetResizedImage(void *Gtmp) {
   png = G->img;
   MAG = G->MAG+0.000001;
   if(png==NULL) return NULL;
+  Lock;
   SyncImagePixels((Image *)(png->image));
   wc = G->wc;
   dc = G->dc;
@@ -3689,7 +3690,7 @@ void *kgGetResizedImage(void *Gtmp) {
           }
           else  {
             png  = uiHalfSizegmImage(png);
-            G->rzimg = uiChangeSizegmImage(png,V_x,V_y,1);
+            G->rzimg = uiChangeSizegmImage(png,V_x,V_y,9);
             kgFreeImage(png);
           }
 #else
@@ -3701,6 +3702,7 @@ void *kgGetResizedImage(void *Gtmp) {
 
 //  kgImage(D,png,D_x,D_y,png->image_width,png->image_height,0.0,1.0);
 //  uiWriteImage(G->img,"junk1.png");
+  Unlock;
   return (void *) png;
 }
 void *kgGetSharpImage(void *Gtmp) {
@@ -3793,7 +3795,9 @@ void _img_initialise(DIG *G)
   dc->bluebuf=NULL;
   dc->clrbuf=NULL;
   dc->DOUBLE=0;
-  dc->Fontlist= uiGetFontlist();
+// the Change is for thread safety 07/21
+//  dc->Fontlist= uiGetFontlist();
+  dc->Fontlist= (Dlink *)Loadfontstruct();
 //  dc->icpos = icposf0;dc->icxv=icxvf0;dc->icyv=icyvf0;dc->m_f=m_f0;
   count = Dcount(dc->Fontlist);
   font =0;
@@ -3857,24 +3861,25 @@ void _img_initialise(DIG *G)
 }
 void *kgInitImage(int width,int height,int mag) {
   int l,i;
-  static entry=0;
+  static int entry=0;
   char flname[200],reviewfile[200];
 
   DIG *G;
   kgDC *dc;
   kgWC *wc;
-  G = (DIG *) malloc(sizeof(DIG));
+  G = (DIG *) Malloc(sizeof(DIG));
   G->D=NULL;
-  dc = (kgDC *) malloc(sizeof(kgDC));
-  G->wc = (kgWC *)malloc(sizeof(kgWC));
+  dc = (kgDC *) Malloc(sizeof(kgDC));
+  G->wc = (kgWC *)Malloc(sizeof(kgWC));
   wc = G->wc;
   G->dc = dc;
   G->x1=G->y1=0;
   G->x2 = (int)(width-1);
   G->y2 = (int)(height-1);
   G->MAG=mag;
+  dc->Fontlist = NULL;
   _img_initialise(G);
-  wc->kgcolors=(kgColor *) malloc(sizeof(kgColor)*1024);
+  wc->kgcolors=(kgColor *) Malloc(sizeof(kgColor)*1024);
   for(i=0;i<1024;i++) {
     wc->kgcolors[i].red = kgIcode[i][0];
     wc->kgcolors[i].green = kgIcode[i][1];
@@ -3915,7 +3920,9 @@ void kgCloseImage(void *Gtmp) {
 //  if(G->rzimg != NULL) uiFreeImage(G->rzimg); //user should take care of this after use
   Dempty((Dlink *)(wc->Clip));
   Dempty((Dlink *)(wc->SBlist));
-  Dfree((Dlink *)(dc->Fontlist));
+// the change is for thread safety
+//  Dfree((Dlink *)(dc->Fontlist));
+  Dempty((Dlink *)(dc->Fontlist));
   free(wc->kgcolors);
   free(G->dc);
   free(G->wc);
@@ -3925,17 +3932,17 @@ void kgCloseImage(void *Gtmp) {
 void *kgInitGph(int width,int height) {
   int mag = 1;
   int l,i;
-  static entry=0;
+  static int entry=0;
   char flname[200],reviewfile[200];
 
   DIG *G;
   kgDC *dc;
   kgWC *wc;
   char *dir;
-  G = (DIG *) malloc(sizeof(DIG));
+  G = (DIG *) Malloc(sizeof(DIG));
   G->D=NULL;
-  dc = (kgDC *) malloc(sizeof(kgDC));
-  G->wc = (kgWC *)malloc(sizeof(kgWC));
+  dc = (kgDC *) Malloc(sizeof(kgDC));
+  G->wc = (kgWC *)Malloc(sizeof(kgWC));
   wc = G->wc;
   G->dc = dc;
   G->x1=G->y1=0;
@@ -3943,7 +3950,7 @@ void *kgInitGph(int width,int height) {
   G->y2 = (int)(height-1);
   G->MAG=mag;
   _img_initialise(G);
-  wc->kgcolors=(kgColor *) malloc(sizeof(kgColor)*1024);
+  wc->kgcolors=(kgColor *) Malloc(sizeof(kgColor)*1024);
   for(i=0;i<1024;i++) {
     wc->kgcolors[i].red = kgIcode[i][0];
     wc->kgcolors[i].green = kgIcode[i][1];
@@ -3978,7 +3985,7 @@ void *kgInitGph(int width,int height) {
 
   dc->ls_list=NULL;
   dc->No_of_lights=0;
-  G->Rbuff = (unsigned char  *) malloc(B_max+100);
+  G->Rbuff = (unsigned char  *) Malloc(B_max+100);
   G->hbuf =-1;
 
   return G;

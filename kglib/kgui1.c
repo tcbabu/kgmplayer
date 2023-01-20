@@ -1,4 +1,6 @@
-
+#define D_TH
+#include <unistd.h>
+#include <stdlib.h>
 #include "kulina.h"
 #include "gprivate.h"
 #include "dlink.h"
@@ -14,6 +16,11 @@
 #include <stdarg.h>
 #include "imageswarn.c"
 #include "images.c"
+#define RESIZE 5
+#define GETCWD(x,y) { \
+  void *ret; \
+  ret = getcwd(x,y); \
+}
 static int B_max=990000,B_min=989000;
 extern int TextSize,Ht,Wd,Gap,Bt;  // It is Okay For Thread;
 void *stop_xpm=&Stop_str;
@@ -84,6 +91,7 @@ int _check_menu(void *parent, int x0,int y0,char *qst,int df,void *xpm){
   d[1].p = &p1;
   d[2].b = &n2;
   d[3].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -97,6 +105,7 @@ int _check_menu(void *parent, int x0,int y0,char *qst,int df,void *xpm){
   D.yo = y0;
   D.xl = 500;    /*  Length of Dialog */
   D.yl = 102;    /*  Width  of Dialog */
+  D.VerId=1401010200;
   D.Initfun = NULL;    /*  Width  of Dialog */
   D.Deco=1;
   D.DrawBkgr=1;
@@ -269,9 +278,9 @@ int kgSplashDia( int xo,int yo,int xl,int yl,char  *xpm ,char *message,int font,
   msg.bkcolor   = bkcolor;
   d[0].p = &p0;
   d[1].t = NULL;
-  kgInitUi(&D);
   D.d = d;
   D.VerId=1401010000;
+  kgInitUi(&D);
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 0;
   D.df = 0;
@@ -361,7 +370,7 @@ int kgSplashMessageinit(void *Tmp) {
   if(msg->message != NULL) {
 //    fid = kgInitImage((int)(w_x2-w_x1)+10,(int)(w_y2-w_y1)+10,4);
 //    kgUserFrame(fid,w_x1-5,w_y1-5,w_x2+5,w_y2+5);
-    fid = kgInitImage((int)(w_x2-w_x1),(int)(w_y2-w_y1),4);
+    fid = kgInitImage((int)(w_x2-w_x1),(int)(w_y2-w_y1),RESIZE);
     kgUserFrame(fid,w_x1-3,w_y1-3,w_x2+3,w_y2+3);
     color = msg->bkcolor;
     if(color==-1) color = D->gc.fill_clr;
@@ -501,6 +510,7 @@ int kgSplashMessage( void *Parent,int xo,int yo,int xl,int yl,char *message,int 
   msg.bkcolor   = bkcolor;
   d[0].p = &p0;
   d[1].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -684,24 +694,85 @@ int kgMenu(void *parent,int xx1,int yy1,int pos,int df,char **menu,int size){
   }
   return(item);
  }
-int  kgFontListDiabrowser1callback(int key,int i,void *Tmp) {
-  DIA *D;DIE *B; 
+int  FontDiabrowser1callback(int item,int i,void *Tmp) {
+  /*********************************** 
+    item : selected item (1 to max_item)  not any specific relevence
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIRA *R;DIALOG *D;void *pt; 
+  ThumbNail **th; 
   int ret=1; 
-  D = ((DIALOG *)Tmp)->d;
-  B = D[i].e;
-  switch(key) {
+  D = (DIALOG *)Tmp;
+  pt = D->pt;
+  R = (DIRA *)kgGetWidget(Tmp,i);
+  th = (ThumbNail **) R->list;
+  return ret;
+}
+void  FontDiabrowser1init(DIRA *R,void *pt) {
+}
+int  FontDiasplbutton1callback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIL *B; 
+  int n,ret=1; 
+  D = (DIALOG *)Tmp;
+  B = (DIL *) kgGetWidget(Tmp,i);
+  n = B->nx;
+  switch(butno) {
     case 1: 
       break;
   }
   return ret;
 }
-int kgFontListDiainit(void *Tmp) {
+void  FontDiasplbutton1init(DIL *B,void *pt) {
+}
+int FontDiainit(void *Tmp) {
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  /* you add any initialisation here */
   int ret = 1;
-  DIALOG *D;
+  DIALOG *D;void *pt;
   D = (DIALOG *)Tmp;
+  pt = D->pt;
   return ret;
 }
-int kgFontListDiaCallBack(void *Tmp,void *tmp) {
+int FontDiacleanup(void *Tmp) {
+  /* you add any cleanup/mem free here */
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  int ret = 1;
+  DIALOG *D;void *pt;
+  D = (DIALOG *)Tmp;
+  pt = D->pt;
+  ThumbNail **Fonts;
+  Fonts =(ThumbNail **)pt;
+  kgFreeThumbNails(Fonts);
+  return ret;
+}
+int ModifyFontDia(void *Tmp,int GrpId) {
+  DIALOG *D;
+  D = (DIALOG *)Tmp;
+  DIA *d;
+  int i,n;
+  d = D->d;
+  i=0;while(d[i].t!= NULL) {;
+     i++;
+  };
+  n=1;
+  return GrpId;
+}
+
+int FontDiaCallBack(void *Tmp,void *tmp) {
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+    tmp :  Pointer to KBEVENT  
+   ***********************************/ 
   int ret = 0;
   DIALOG *D;
   KBEVENT *kbe;
@@ -713,92 +784,229 @@ int kgFontListDiaCallBack(void *Tmp,void *tmp) {
   }
   return ret;
 }
-int kgFontListDia( void *parent ,void *v0 ,int xo,int yo) {
-  int ret=1;
+int FontDiaResizeCallBack(void *Tmp) {
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  int ret = 0;
+  int xres,yres,dx,dy;
+  DIALOG *D;
+  D = (DIALOG *)Tmp;
+  kgGetWindowSize(D,&xres,&yres);
+  dx = xres - D->xl;
+  dy = yres - D->yl;
+  /* extra code */
+  D->xl= xres;
+  D->yl= yres;
+  kgRedrawDialog(D);
+  return ret;
+}
+int FontDiaWaitCallBack(void *Tmp) {
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+    Called while waiting for event  
+    return value 1 will close the the UI  
+   ***********************************/ 
+  int ret = 0;
+  return ret;
+}
+void ModifyFontDiaGc(Gclr *gc) {
+/*
+//  You may change default settings here 
+//  probably you can allow the user to create a config in $HOME
+//  and try to read that file (if exits); so dynamic configuration is possible
+   gc->FontSize =8;
+   gc->Font=23;
+*/
+}
+int FontDiaGroup( DIALOG *D,void **v,void *pt) {
+  int GrpId=0,oitems=0,i,j;
+  DIA *d=NULL,*dtmp;
+  ThumbNail **th0 ;
+  DIRA r0 = { 
+    'r',
+    10,7,  
+    315,360,   
+    8,0,  
+    260, 
+    25, 
+    1,18, 
+    1,13, 
+    (int *)v[0], 
+    NULL, 
+    NULL ,
+    NULL,FontDiabrowser1callback, /* *args, callback */
+    6,  /* Border Offset  */
+     22,  /* Scroll width  */
+     0,  /* Type  */
+     1, /* item highlight */
+    1, /* bordr */
+    0, /* bkgr */
+    0  /* =1 hide  */
+   };
+  r0.list=(void **)pt;
+  strcpy(r0.Wid,(char *)"FontList");
+  r0.item = -1;
+  BUT_STR  *butn1=NULL; 
+  butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn1[0].sw=1;
+  strcpy(butn1[0].title,(char *)"Okay");
+  butn1[0].xpmn=NULL;
+  butn1[0].xpmp=NULL;
+  butn1[0].xpmh=NULL;
+  butn1[0].bkgr=-1;
+  butn1[0].butncode='';
+  DIL h1 = { 
+    'h',
+    107,361,  
+    184,389,
+    2,0,  
+    72, 
+    25, 
+    1,1, 
+    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+ 
+    butn1, 
+    FontDiasplbutton1callback, /*  Callbak */
+      NULL  /* any args */
+  };
+  strcpy(h1.Wid,(char *)"Okay");
+  h1.item = -1;
+  dtmp = D->d;
+  i=0;
+  if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+3));
+  d =dtmp+i; 
+  d[2].t=NULL;
+  d[0].t = (DIT *)malloc(sizeof(DIRA));
+  *d[0].r = r0;
+  d[0].r->item = -1;
+  FontDiabrowser1init(d[0].r,pt) ;
+  d[1].t = (DIT *)malloc(sizeof(DIL));
+  *d[1].h = h1;
+  d[1].h->item = -1;
+  FontDiasplbutton1init(d[1].h,pt) ;
+  d[2].t = NULL;
+  GrpId=kgOpenGrp(D);
+  D->d = dtmp;
+  j=0;
+  while(d[j].t!=NULL){ kgAddtoGrp(D,GrpId,(void *)(d[j].t));j++;}
+  return GrpId;
+} 
+
+/* One can also use the following code to add Widgets to an existing Dialog */
+
+int MakeFontDiaGroup(DIALOG *D,void *arg) {
+   int GrpId;
+   WIDGETGRP *Gpt;
+/*************************************************
+
+    RadioButtons1  1 data value
+
+*************************************************/
+   int  *v0 ;
+   v0 = (int *)malloc(sizeof(int));
+   *v0 = 1;
+   void** v=(void **)malloc(sizeof(void*)*2);
+   v[1]=NULL;
+   v[0]=(void *)(v0);
+   void *pt=NULL; /* pointer to send any extra information */
+   GrpId = FontDiaGroup(D,v,pt);
+   Gpt = kgGetWidgetGrp(D,GrpId);
+   Gpt->arg= v; // kulina will double free this; you may modify
+   return GrpId;
+}
+
+int FontDia( void *parent,void **v,void *pt,int xo,int yo) {
+  int ret=1,GrpId,k;
   DIALOG D;
-  DIA d[2];
-  char *menu0[]  = { 
-    (char *)"",
-    NULL 
-  };
-  DIE e0 = { 
-    'e',
-    3,4,  
-    407,380,   
-    16,  
-    (int *)v0,
-    NULL,
-    menu0 ,
-    NULL,kgFontListDiabrowser1callback, /* *args, callback */
-    20,6,22,1,1,1,0
-  };
-  e0.menu = kgFontNames();
-  d[0].e = &e0;
-  d[1].t = NULL;
+  DIA *d=NULL;
+  D.VerId=2107030000;
   kgInitUi(&D);
+  D.d=NULL;
+#if 1
+  GrpId = FontDiaGroup(&D,v,pt);
+#else 
+  GrpId = MakeFontDiaGroup(&D,pt); // can try this also
+#endif 
+  d = D.d;
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 0;
+  D.df = 1;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
   D.rw = 4;
   D.xo = xo;   /* Position of Dialog */ 
   D.yo = yo;
-  D.xl = 411;    /*  Length of Dialog */
-  D.yl = 383;    /*  Width  of Dialog */
-  D.Initfun = kgFontListDiainit;    /*   init fuction for Dialog */
-  D.kbattn = 1;;    /*  1 for drawing keyborad attention */
-  D.butattn = 1;    /*  1 for drawing button attention */
+  D.xl = 323;    /*  Length of Dialog */
+  D.yl = 396;    /*  Width  of Dialog */
+  D.Initfun = FontDiainit;    /*   init fuction for Dialog */
+  D.Cleanupfun = FontDiacleanup;    /*   init fuction for Dialog */
+  D.kbattn = 0;    /*  1 for drawing keyborad attention */
+  D.butattn = 0;    /*  1 for drawing button attention */
   D.fullscreen = 0;    /*  1 for for fullscreen mode */
   D.Deco = 1;    /*  1 for Window Decorration */
-  D.transparency = .000000;    /*  float 1.0 for full transparency */
+  D.transparency = 0.000000;    /*  float 1.0 for full transparency */
   D.Newwin = 0;    /*  1 for new window not yet implemented */
   D.DrawBkgr = 1;    /*  1 for drawing background */
   D.Bkpixmap = NULL;    /*  background image */
   D.Sticky = 0;    /*  1 for stickyness */
-#if 0 
-  D.Callback = kgFontListDiaCallBack;    /*  default callback */
+  D.Resize = 0;    /*  1 for Resize option */
+  D.MinWidth = 100;    /*   for Resize option */
+  D.MinHeight = 100;    /*   for Resize option */
+#if 1 
+  D.Callback = FontDiaCallBack;    /*  default callback */
 #else 
   D.Callback = NULL;    
 #endif
+  D.ResizeCallback = FontDiaResizeCallBack;  /*  Resize callback */
+#if 0 
+  D.WaitCallback = NULL;  /*  Wait callback */
+#else 
+  D.WaitCallback = FontDiaWaitCallBack;  /*  Wait callback */
+#endif
   D.Fixpos = 1;    /*  1 for Fixing Position */
   D.NoTaskBar = 0;    /*  1 for not showing in task bar*/
-  D.StackPos = 1;    /* -1,0,1 for for Stack Position -1:below 0:normal 1:above*/
+  D.NoWinMngr = 0;    /*  1 for no Window Manager*/
+  D.StackPos = 0;    /* -1,0,1 for for Stack Position -1:below 0:normal 1:above*/
   D.Shapexpm = NULL;    /*  PNG/jpeg file for window shape;Black color will not be drawn */
   D.parent = parent;    /*  1 for not showing in task bar*/
-  D.pt = NULL;    /*  any data to be passed by user*/
-  strcpy(D.name,"Kulina Font List");    /*  Dialog name you may change */
+  D.pt = pt;    /*  any data to be passed by user*/
+//  strcpy(D.name,"Kulina Designer ver 1.0");    /*  Dialog name you may change */
   if(D.fullscreen!=1) {    /*  if not fullscreen mode */
      int xres,yres; 
-     GetDisplaySize(&xres,&yres); 
+     kgDisplaySize(&xres,&yres); 
       // D.xo=D.yo=0; D.xl = xres-10; D.yl=yres-80;
   }
   else {    // for fullscreen
      int xres,yres; 
-     GetDisplaySize(&xres,&yres); 
+     kgDisplaySize(&xres,&yres); 
      D.xo=D.yo=0; D.xl = xres; D.yl=yres;
+//     D.StackPos = 1; // you may need it
   }    /*  end of fullscreen mode */
-  kgDefaultGuiTheme(&(D.gc));    /*  set colors for gui*/
-  D.SearchList=NULL;
-  D.Resize=0;
-  D.ResizeCallback=NULL;
-  D.WaitCallback=NULL;
-  D.MinWidth=D.MinHeight=200;
+//  kgColorTheme(&D,210,210,210);    /*  set colors for gui*/
+//  ModifyFontDiaGc(&(D.gc));    /*  set colors for gui*/
+  ModifyFontDia(&D,GrpId);    /*  add extras to  gui*/
   ret= kgUi(&D);
-  kgFreeFontNames(e0.menu);
+  kgCleanUi(&D);
   return ret;
 }
 int kgGetFont(void *arg,int xo,int yo) {
 /*************************************************
 
-    Scrollmenu1  1 data value
+    RadioButtons1  1 data value
 
 *************************************************/
    int   v0 = 1;
-   kgFontListDia(arg ,&v0 ,xo,yo);
-   return v0-1;
+   void* v[1];
+   v[0]=(void *)(&v0);
+   void *pt=NULL; /* pointer to send any extra information */
+   pt = (void *)kgStringToThumbNails(kgFontNames());
+   FontDia(NULL,v,pt,xo,yo );
+//   fprintf(stderr,"Font : %d\n",v0-1);
+   return v0-1;;
 }
 int kgColorsDia( void *parent ,void *v0 ,int xo, int yo) {
   int ret=1;
@@ -855,6 +1063,7 @@ int kgColorsDia( void *parent ,void *v0 ,int xo, int yo) {
   };
   d[0].b = &n0;
   d[1].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -1344,6 +1553,7 @@ int _uiGetColor(void *parent,int xo,int yo, void *v1 ,void *v2 ,void *v3 ) {
   d[10].m = &m10;
   d[11].m = &m11;
   d[12].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -1531,7 +1741,7 @@ char ** _uiFolderMenu(char *d_name) {
      if(S_ISDIR(st.st_mode)) {
 //     if(((st.st_mode & S_IFMT)==S_IFDIR)) {
       ln = strlen(pt->d_name);
-      item = (char *)malloc(ln+5);
+      item = (char *)Malloc(ln+5);
       strcpy(item,pt->d_name);
       Dadd(L,item);
 //      printf("%s\n",item);
@@ -1539,7 +1749,7 @@ char ** _uiFolderMenu(char *d_name) {
     }
   }
   closedir(dp);
-  menu= (char **) malloc(sizeof(char *)*(nd+1));
+  menu= (char **) Malloc(sizeof(char *)*(nd+1));
   Resetlink(L);
   i=0;
   while( (item= (char *)Getrecord(L))!= NULL) {
@@ -1749,7 +1959,7 @@ static int uiGetDirFile(char *flname,char *folder) {
      if(i<0 ) break;
   }
   if(i< 0) {
-    getcwd(folder,499);
+    GETCWD(folder,499);
   }
   else {
     strcpy(folder,flname);
@@ -1942,6 +2152,7 @@ int kgFolderBrowser( void *parent,int xo,int yo,char *flname,char *fltr) {
   d[5].b = &n5;
   d[6].b = &n6;
   d[7].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -2031,7 +2242,7 @@ char ** _uiFileMenu(char *dir,char *filter) {
 #endif
        sprintf(buf,"%-s",pt->d_name);
        if(_filter_string(buf,filter)){
-            item= (char *)malloc(strlen(buf)+5);
+            item= (char *)Malloc(strlen(buf)+5);
             strcpy(item,buf);Dadd(L,item); 
             nf++;
        }
@@ -2046,7 +2257,7 @@ char ** _uiFileMenu(char *dir,char *filter) {
   nf = Dcount(L);
   Resetlink(L);
   n = (nf)+1;
-  m = (char **)malloc(sizeof(char *)*n);
+  m = (char **)Malloc(sizeof(char *)*n);
   j=0;
   while( (m[j]= (char *)Getrecord(L)) != NULL){ j++;}
   arrange(m,nf);
@@ -2067,7 +2278,7 @@ int  filebrowsertextbox1callback(int key,int i,void *Tmp) {
   m = (char **)((DIALOG *)Tmp)->pt;
   T = D[i].t;
   e = T->elmt;
-  getcwd(d_name,149);
+  GETCWD(d_name,149);
   filter = Dgetstring(Tmp,i,1);
   m = _uiFileMenu(d_name,filter);
 //  scr_recover();
@@ -2194,7 +2405,7 @@ int kgFileBrowser(void *parent,int x0,int y0,  char *v0, char *v1 ){
     NULL,filebrowserbrowser1callback, /* *args, callback */
     20,6,22,1,1,1,0
   };
-  getcwd(d_name,149);
+  GETCWD(d_name,149);
 //  printf("Dir: %s\n",d_name);
   strcpy(filter,v1);
   e0[1].v=filter;
@@ -2207,6 +2418,7 @@ int kgFileBrowser(void *parent,int x0,int y0,  char *v0, char *v1 ){
   d[1].H = &H1;
   d[2].e = &w2;
   d[3].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -2323,6 +2535,7 @@ int _ui_setattrib(void *parent,int xo,int yo,  void *v0, void *v1, void *v2, voi
   d[0].t = &t0;
   d[1].H = &H1;
   d[2].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -2958,6 +3171,7 @@ int kgAttibDia( void *parent ,void *v0 ,void *v1 ,void *v2 ,void *v3
   d[13].w = &w13;
   d[14].H = &H14;
   d[15].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -3107,6 +3321,7 @@ int get_intr_text( void *parent, void *v0 ){
   t0.type=0;
   d[0].t = &t0;
   d[1].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -3202,6 +3417,7 @@ int getfact(void *parent,  void *v0, void *v1, void *v2 ){
   d[0].t = &t0;
   d[1].H = &H1;
   d[2].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -3288,7 +3504,7 @@ void  kgDrawingTool(DIG *G)
       DIALOG *parent;
       kgDC *dc;
       dc= G->dc;
-      dc->cmds = (unsigned int *)malloc(sizeof(int)*1000L);
+      dc->cmds = (unsigned int *)Malloc(sizeof(int)*1000L);
       if(dc->cmds == NULL) {
         printf( "Error: In mem alloc. in m_int..\n");
         exit(0);
@@ -3579,6 +3795,7 @@ int ginitdia(void *parent,  int xres,int yres ) {
   };
   d[0].g = &g0;
   d[1].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 0; /* set to 1 for backup */
@@ -3623,7 +3840,7 @@ int uiTextMenu(void *parent,int x1,int y1,  int items,char **promt,char ** field
   DIA d[3];
   T_ELMT *e0;
   int butn2=1;
-  e0= (T_ELMT *)malloc(sizeof(T_ELMT)*items);
+  e0= (T_ELMT *)Malloc(sizeof(T_ELMT)*items);
   DIT t0 = { 
     't',
     130,85,  
@@ -3690,6 +3907,7 @@ int uiTextMenu(void *parent,int x1,int y1,  int items,char **promt,char ** field
   d[0].t = &t0;
   d[1].H = &H4;
   d[2].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -3745,7 +3963,7 @@ int get_lines_in_file(char ***m,File *fp) {
   int n,i;
   n = get_no_of_lines(fp)+1;
   if(n<=1) return 0;
-  *m = (char **)malloc(sizeof(char *)*n);
+  *m = (char **)Malloc(sizeof(char *)*n);
   M = *m;
   Resetlink(fp->L);
   i=0;
@@ -3854,6 +4072,7 @@ int uiShowFile( File *fp,char *butns[]) {
   
   d[1].H = &H1;
   d[2].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -3971,6 +4190,7 @@ int kgGetRootPos( int *xp,int *yp) {
   };
   d[0].g = &g0;
   d[1].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -4097,6 +4317,7 @@ int kgGetRootRect( int *x1,int *y1,int *x2,int *y2) {
   };
   d[0].g = &g0;
   d[1].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -4174,7 +4395,7 @@ void * kgUndoImage(int size,int red,int green,int blue) {
    size1= size*0.1;
    ri= size*0.5-2*size1;
    ro = ri+size1;
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    kgUserFrame(fid,-R,-R,+R,+R);
    kgChangeColor(fid,1001,red,green,blue);
    ang =(1+0.25)*3.14159265;
@@ -4221,7 +4442,7 @@ void * kgRedoImage(int size,int red,int green,int blue) {
    size1= size*0.1;
    ri= size*0.5-2*size1;
    ro = ri+size1;
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    kgUserFrame(fid,-R,-R,+R,+R);
    kgChangeColor(fid,1001,red,green,blue);
    ang =(-0.25)*3.14159265;
@@ -4262,7 +4483,7 @@ void * kgRightdirImage(int size,int red,int green,int blue) {
    count = 7;
    count1= count-1;
    R = size*0.501;
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    size1= size*0.4;
    size = (size)*0.475;
    kgUserFrame(fid,-R,-R,+R,+R);
@@ -4294,7 +4515,7 @@ void * kgLeftdirImage(int size,int red,int green,int blue) {
    count = 7;
    count1= count-1;
    R = size*0.501;
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    size1= size*0.4;
    size = (size)*0.475;
    kgUserFrame(fid,-R,-R,+R,+R);
@@ -4326,7 +4547,7 @@ void * kgUpdirImage(int size,int red,int green,int blue) {
    count = 7;
    count1= count-1;
    R = size*0.501;
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    size1= size*0.4;
    size = (size)*0.475;
    kgUserFrame(fid,-R,-R,+R,+R);
@@ -4358,7 +4579,7 @@ void * kgDowndirImage(int size,int red,int green,int blue) {
    count = 7;
    count1= count-1;
    R = size*0.501;
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    size1= size*0.4;
    size = (size)*0.475;
    kgUserFrame(fid,-R,-R,+R,+R);
@@ -4390,7 +4611,7 @@ void * kgRightImage(int size,int red,int green,int blue) {
    count = 3;
    count1= count-1;
    R = size*0.501;
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    size1= size*0.4;
    size = (size)*0.3;
    kgUserFrame(fid,-R,-R,+R,+R);
@@ -4414,7 +4635,7 @@ void * kgLeftImage(int size,int red,int green,int blue) {
    count = 3;
    count1= count-1;
    R = size*0.501;
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    size1= size*0.4;
    size = (size)*0.3;
    kgUserFrame(fid,-R,-R,+R,+R);
@@ -4438,7 +4659,7 @@ void * kgUpImage(int size,int red,int green,int blue) {
    count = 3;
    count1= count-1;
    R = size*0.501;
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    size1= size*0.4;
    size = (size)*0.3;
    kgUserFrame(fid,-R,-R,+R,+R);
@@ -4462,7 +4683,7 @@ void * kgDownImage(int size,int red,int green,int blue) {
    count = 3;
    count1= count-1;
    R = size*0.501;
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    size1= size*0.4;
    size = (size)*0.3;
    kgUserFrame(fid,-R,-R,+R,+R);
@@ -4486,7 +4707,7 @@ void * kgGoback1Image(int size,int red,int green,int blue) {
    count = 7;
    count1= count-1;
    R = size*0.501;
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    size1= size*0.20;
    size = (size)*0.4;
    kgUserFrame(fid,-R,-R*0.75,+R,+R*1.25);
@@ -4532,7 +4753,7 @@ void * kgGobackImage(int size,int red,int green,int blue) {
    R = size*0.48;
    dl = R* sin(0.125*3.14159265);
    size1= R*cos(0.125*3.14159265);
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    kgUserFrame(fid,-R,-R,+R,+R);
    kgChangeColor(fid,1001,red,green,blue);
    ang =0.0;
@@ -4568,7 +4789,7 @@ void * kgPowerdownImage(int size,int red,int green,int blue) {
    Dang = 300.0/(np-1);
    dang = Dang*3.14159265/180.0;
    R = size*0.501;
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    kgUserFrame(fid,-R,-R,+R,+R);
    size *=0.8;
    size1= size*0.1;
@@ -4609,7 +4830,7 @@ void * kgHomeImage(int size,int red,int green,int blue) {
    count = 11;
    count1= count-1;
    R = size*0.501;
-   fid = kgInitImage(size,size,4);
+   fid = kgInitImage(size,size,RESIZE);
    size1= size*0.4;
    size = (size)*0.5;
    kgUserFrame(fid,-R,-R,+R,+R);
@@ -4670,54 +4891,6 @@ void *uiMakeThumbNail(void *Tmp) {
   else pt->thImg=NULL;
   return NULL;
 }
-void **uiGetThumbnails_o(char *Dir,int size) {
-  GMIMG **thImgs=NULL;
-  char **flnames,name[500];
-  int i,k=0;
-  char *pt;
-  GMIMG *img;
-  flnames = kgFileMenu(Dir,"*.png *.jpg *.jpeg *.JPG");
-  if(flnames != NULL) {
-   i=0;while(flnames[i]!= NULL) i++;
-//   if(i> 0) {
-   {
-     thImgs=(GMIMG **)malloc(sizeof(GMIMG *)*(i+1));
-     for(k=0;k<=i;k++) thImgs[k]=NULL;
-     i=0;
-     k=0;
-     while(flnames[i]!=NULL) {
-       strcpy(name,Dir);
-       strcat(name,"/");
-       strcat(name,flnames[i]);
-       img = (GMIMG *)uiGetgmImage(name);
-//       printf("%s \n",flnames[i]);
-//       if(img==NULL) printf("%s is NULL\n",flnames[i]);
-       if(img != NULL) {
-         thImgs[k]= (GMIMG *)uiThumbnailgmImage(img,size,size);
-#if 0
-         sprintf(name,"(%5d,%5d): %s",img->image_width,img->image_height,flnames[i]);
-         strcpy(thImgs[k]->flname,name);
-#else
-         if((thImgs[k]->image_width>size)||(thImgs[k]->image_height>size)) {
-           printf("%s: %d:%d %d:%d\n",flnames[i],thImgs[k]->image_width,thImgs[k]->image_height,img->image_width,img->image_height);
-         }
-         thImgs[k]->image_width=img->image_width;
-         thImgs[k]->image_height=img->image_height;
-//         thImgs[k]->bkgrclr=15;
-         strcpy(thImgs[k]->flname,flnames[i]);
-#endif
-         uiFreeImage(img);
-         k++;
-       }
-       i++;
-     }
-     i=0;while(flnames[i]!= NULL) free(flnames[i++]);
-   }
-   free(flnames);
-  }
-//  printf("K= %d\n",k);
-  return (void **)thImgs;
-}
 void **uiGetThumbnails(char *Dir,int size) {
   GMIMG **thImgs=NULL;
   char **flnames,name[500];
@@ -4731,12 +4904,21 @@ void **uiGetThumbnails(char *Dir,int size) {
    n =i;
 //   if(i> 0) {
    {
-     thImgs=(GMIMG **)malloc(sizeof(GMIMG *)*(n+1));
-     pt = (MKTHUMB *)malloc(sizeof(MKTHUMB)*n);
+     thImgs=(GMIMG **)Malloc(sizeof(GMIMG *)*(n+1));
+     if(thImgs == NULL) {
+       fprintf(stderr,"Malloc failed\n");
+       exit(0);
+     }
+     pt = (MKTHUMB *)Malloc(sizeof(MKTHUMB)*n);
+     if(pt == NULL) {
+       fprintf(stderr,"Malloc failed\n");
+       exit(0);
+     }
      for(k=0;k<=n;k++) {
        thImgs[k]=NULL;
      }
-     ThInfo = OpenThreads(0);
+     ThInfo = OpenThreads(getCores());
+//     ThInfo = OpenThreads(1);
      k=0;
      while(flnames[k]!=NULL) {
        strcpy(name,Dir);
@@ -4750,7 +4932,11 @@ void **uiGetThumbnails(char *Dir,int size) {
        else pt[k].thImg=NULL;
        pt[k].size = size;
 //       uiMakeThumbNail((void *)(pt+k));
+#ifdef D_TH
        DoInAnyThread(ThInfo,uiMakeThumbNail,pt+k);
+#else
+       uiMakeThumbNail(pt+k);
+#endif
        k++;
      }
      WaitThreads(ThInfo);
@@ -4777,7 +4963,7 @@ char **uiGetMenu(void ** Thumbnails) {
       i++;
     }
     no=i+1;
-    menu = (char **) malloc(sizeof(char *)*no);
+    menu = (char **) Malloc(sizeof(char *)*no);
     if(menu == NULL) {fprintf(stderr,"Failed to alloc memory: uiGetMenu\n");exit(1);}
     menu[no-1]=NULL;
     for(i=0;i<(no-1);i++) {
@@ -4797,7 +4983,7 @@ int *uiGetSwitch(void ** Thumbnails) {
       i++;
     }
     no=i+1;
-    sw = (int *) malloc(sizeof(int)*no);
+    sw = (int *) Malloc(sizeof(int)*no);
     if(sw == NULL) {fprintf(stderr,"Failed to alloc memory: uiGetMenu\n");exit(1);}
     for(i=0;i<(no-1);i++) {
       sw[i]=0;
@@ -4836,13 +5022,13 @@ ThumbNail ** uiMakeThumbNails(char *dir,int size) {
   if(xpms != NULL) {
     i=0; while(xpms[i++]!= NULL);
     n=i;
-    tb = (ThumbNail **) malloc(sizeof(ThumbNail*)*n);
+    tb = (ThumbNail **) Malloc(sizeof(ThumbNail*)*n);
     tb[n-1]=NULL;
     for(i=0;i<(n-1);i++) {
-      tb[i]= (ThumbNail *) malloc(sizeof(ThumbNail));
+      tb[i]= (ThumbNail *) Malloc(sizeof(ThumbNail));
       img = xpms[i];
       tb[i]->img=img;
-      tb[i]->name=(char *)malloc(strlen(img->flname)+1);
+      tb[i]->name=(char *)Malloc(strlen(img->flname)+1);
       strcpy(tb[i]->name,img->flname);
       tb[i]->sw=0;
       tb[i]->id=i;
@@ -4863,10 +5049,10 @@ ThumbNail ** uiFolderThumbNails(char *dir) {
   if(m != NULL) {
     i=0; while(m[i++]!= NULL);
     n=i;
-    tb = (ThumbNail **) malloc(sizeof(ThumbNail*)*n);
+    tb = (ThumbNail **) Malloc(sizeof(ThumbNail*)*n);
     tb[n-1]=NULL;
     for(i=0;i<(n-1);i++) {
-      tb[i]= (ThumbNail *) malloc(sizeof(ThumbNail));
+      tb[i]= (ThumbNail *) Malloc(sizeof(ThumbNail));
       tb[i]->img=NULL;
       tb[i]->name=m[i];
       tb[i]->sw=0;
@@ -4888,10 +5074,10 @@ ThumbNail ** uiFileThumbNails(char *dir,char *filter) {
   if(m != NULL) {
     i=0; while(m[i++]!= NULL);
     n=i;
-    tb = (ThumbNail **) malloc(sizeof(ThumbNail*)*n);
+    tb = (ThumbNail **) Malloc(sizeof(ThumbNail*)*n);
     tb[n-1]=NULL;
     for(i=0;i<(n-1);i++) {
-      tb[i]= (ThumbNail *) malloc(sizeof(ThumbNail));
+      tb[i]= (ThumbNail *) Malloc(sizeof(ThumbNail));
       tb[i]->img=NULL;
       tb[i]->name=m[i];
       tb[i]->sw=0;
@@ -4938,7 +5124,7 @@ int kgBusyinit(void *Tmp) {
   yo=  r*sin(rang);
   pipe = *((int *)(D->pt)+0);
   while(!kgThreadWaitPipe(pipe,0,40000)) {
-    G = kgInitImage(D->xl,D->yl,3);
+    G = kgInitImage(D->xl,D->yl,RESIZE);
     kgUserFrame(G,-25.,-25.,25.,25.);
     kgChangeColor(G,1002,0,0,0);
     kgArcFill(G,xo,yo,3.0,0.,360.0,0,1002);
@@ -4979,6 +5165,7 @@ void * kgBusy( void *dummy) {
   dptr = (struct _doubleptr*) dummy;
   parent = dptr->parent;
   d[0].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -5043,8 +5230,8 @@ void * kgOpenBusy(void *arg,int xo,int yo) {
 
 *************************************************/
    int ch;
-   dptr = (struct _doubleptr *) malloc(sizeof(struct _doubleptr));
-   pipe(dptr->pipe);
+   dptr = (struct _doubleptr *) Malloc(sizeof(struct _doubleptr));
+   ch = pipe(dptr->pipe);
    dptr->parent=arg;
    dptr->xo = xo;
    dptr->yo=  yo;
@@ -5055,8 +5242,9 @@ void * kgOpenBusy(void *arg,int xo,int yo) {
 void kgCloseBusy(void * id) {
    struct _doubleptr{void *parent;int pipe[2];pthread_t Pth;int xo;int yo;} *dptr;
    char bf=0xff;
+   int rval;
    dptr = (struct _doubleptr *)id;
-   write(dptr->pipe[1],&bf,1);
+   rval = write(dptr->pipe[1],&bf,1);
 //   pthread_cancel(dptr->Pth);
    pthread_join(dptr->Pth,NULL);
    close(dptr->pipe[0]);
@@ -5070,12 +5258,12 @@ ThumbNail **uiStringToThumbNails(char **menu) {
      i=0;
      while(menu[i++]!= NULL);
      n=i;
-     th = (ThumbNail **) malloc(sizeof(ThumbNail*)*n);
+     th = (ThumbNail **) Malloc(sizeof(ThumbNail*)*n);
      th[n-1]=NULL;
      for(i=0;i<(n-1);i++) {
-      th[i]= (ThumbNail *) malloc(sizeof(ThumbNail));
+      th[i]= (ThumbNail *) Malloc(sizeof(ThumbNail));
       if(menu[i]!= NULL) {
-        th[i]->name=(char *)malloc(strlen(menu[i])+1);
+        th[i]->name=(char *)Malloc(strlen(menu[i])+1);
         strcpy(th[i]->name,menu[i]);
       }
       else th[i]->name=NULL;
@@ -5238,6 +5426,7 @@ int kgMenu1( void *parent,int xo,int yo,int df,char **menu,int size,int (*Fun)(i
   v1 =df;
   d[0].e = &e0;
   d[1].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -5442,8 +5631,9 @@ static int  PickImagehoribar1callback(int key,int i,void *Tmp) {
           if(strcmp(CurDir,"/")!=0) strcat(sflname,"/");
           strcat(sflname,flname);
           if(kgFolderBrowser(NULL,100,100,flname,"*jpg *.png")==1) {
+            int rval;
             sprintf(buf,"cp \"%s\" \"%s\"",sflname,flname);
-            system(buf);
+            rval = system(buf);
           }
           break;
          }
@@ -5634,7 +5824,7 @@ int kgPickImage( void *parent,int xo,int yo,void *pt) {
   };
   xpm2[0]=kgHomeImage(24,250,250,220);
   xpm2[1]=kgUpdirImage(24,250,250,220);
-  getcwd(CurDir,999);
+  GETCWD(CurDir,999);
   strcpy(HomeDir,CurDir);
   menu0=kgFolderMenu(CurDir);
   e0.menu=menu0;
@@ -5654,6 +5844,7 @@ int kgPickImage( void *parent,int xo,int yo,void *pt) {
   PickImagehbutton1init(&H3,pt) ;
   d[4].i = &i4;
   d[5].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -5857,7 +6048,7 @@ int kgSelectImage( void *parent,int xo,int yo,int ThSize,void *pt) {
   };
   xpm2[0]=kgHomeImage(24,250,250,220);
   xpm2[1]=kgUpdirImage(24,250,250,220);
-  getcwd(CurDir,999);
+  GETCWD(CurDir,999);
   strcpy(HomeDir,CurDir);
   menu0=kgFolderMenu(CurDir);
   e0.menu=menu0;
@@ -5877,6 +6068,7 @@ int kgSelectImage( void *parent,int xo,int yo,int ThSize,void *pt) {
   PickImagehbutton1init(&H3,pt) ;
   d[4].i = &i4;
   d[5].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
@@ -5969,13 +6161,13 @@ int  gscanf(void *parent,void *unknown,...){
   cpt = wrk;
   while( *cpt != '\0'){ if(*cpt=='%')item++;cpt++;}
   if(item==0 ) return 0;
-  T = (DIT *)malloc(sizeof(DIT));
+  T = (DIT *)Malloc(sizeof(DIT));
   T->item=-1;
   Tmp.Wid[0]='\0';
   *T = Tmp;
   T->x1 = 5;
   T->y1 = 5;
-  e = (T_ELMT *)malloc(sizeof(T_ELMT)*item);
+  e = (T_ELMT *)Malloc(sizeof(T_ELMT)*item);
   cpt = wrk;
   pt = cpt;
   it=0;
@@ -5999,7 +6191,7 @@ int  gscanf(void *parent,void *unknown,...){
     }
     *cpt='\0';
     ln = strlen(pt)+2;
-    e[it].fmt = (char *)malloc(ln);
+    e[it].fmt = (char *)Malloc(ln);
     strcpy(e[it].fmt,pt);
     e[it].sw=1;
     cpt++;
@@ -6055,12 +6247,13 @@ int  gscanf(void *parent,void *unknown,...){
   T->y2 =T->y1+width;
   D.VerId=1401010200;
   kgInitUi(&D);
-  D.d = (DIA *)malloc(sizeof(DIA)*3);
+  D.d = (DIA *)Malloc(sizeof(DIA)*3);
   d = D.d;
   H = kgCreateHButtons(T->x1+lngth/2-30,T->y2+4,1,60,25,titles,NULL);
   d[0].t =T;
   d[1].t = (DIT *)H;
   d[2].t =NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
   D.xo= 100;
   D.yo= 100;
@@ -6139,15 +6332,15 @@ DIT * kgCreateTable(int xo,int yo,int nrows,char **colformats,char *name) {
    if(nrows>ny) ny=nrows;
    Tmp.nx = nx;
    Tmp.ny=ny;
-   T = (DIT *)malloc(sizeof(DIT));
+   T = (DIT *)Malloc(sizeof(DIT));
    Tmp.Wid[0]='\0';
    Tmp.pt=NULL;
    *T = Tmp;
    if(name != NULL) strcpy(T->Wid,name);
    it = nx*ny;
-   E = (T_ELMT *)malloc(sizeof(T_ELMT)*nx*ny);
+   E = (T_ELMT *)Malloc(sizeof(T_ELMT)*nx*ny);
    for(i=0;i<(nx*ny) ;i++) {
-     E[i].fmt = (char *)malloc(150);
+     E[i].fmt = (char *)Malloc(150);
    }
    T->elmt = E;
    width = (ny)*T->width;
@@ -6167,22 +6360,22 @@ DIT * kgCreateTable(int xo,int yo,int nrows,char **colformats,char *name) {
        switch(ch) {
          case 'f':
          case 'g':
-           ftmp = (float *)malloc(sizeof(float));
+           ftmp = (float *)Malloc(sizeof(float));
            *ftmp =0.;
            E[i].v = (void *)ftmp;
            break;
          case 'F':
-           dtmp = (double *)malloc(sizeof(double));
+           dtmp = (double *)Malloc(sizeof(double));
            *dtmp =0.;
            E[i].v = (void *)dtmp;
            break;
          case 'd':
-           itmp = (int *)malloc(sizeof(int));
+           itmp = (int *)Malloc(sizeof(int));
            *itmp = 0;
            E[i].v = (void *)itmp;
            break;
          case 's':
-           ctmp = (char *)malloc(500);
+           ctmp = (char *)Malloc(500);
            ctmp[0]='\0';
            E[i].v = (void *) ctmp;
            break;
@@ -6206,7 +6399,7 @@ DIT * kgCreateTable(int xo,int yo,int nrows,char **colformats,char *name) {
    T->y2 = y2;
    T->col = 1;
    T->row = 1;
-   pt = (void **)malloc(sizeof(void *)*(it+1));
+   pt = (void **)Malloc(sizeof(void *)*(it+1));
    for(i=0;i<it;i++) {
      pt[i]=(void *)E[i].v;
    }
@@ -6220,7 +6413,7 @@ DIT * kgCreateTable(int xo,int yo,int nrows,char **colformats,char *name) {
 
 void *kgCreateUi(int length,int width,int (*Initfun)(void *),int (*CallBack)(void *,void *),int (*Cleanupfun) (void *),char *name) {
   DIALOG *D;
-  D = (DIALOG *)malloc(sizeof(DIALOG));
+  D = (DIALOG *)Malloc(sizeof(DIALOG));
   D->VerId=1401010100;
   kgInitUi(D);
   D->d = NULL;
@@ -6298,14 +6491,14 @@ DIW * kgCreatePulldownBrowser(int xo,int yo,char *prompt,char **menu,char *name)
    int msize=0;
    float x1,y1,x2,y2;
    DIW Wtmp ={'w',10L,10L,0,0,5,NULL,NULL,NULL,NULL,NULL,0};
-   W = (DIW *)malloc(sizeof(DIW));
+   W = (DIW *)Malloc(sizeof(DIW));
    Wtmp.Wid[0]='\0';
    *W = Wtmp;
    if(name != NULL) strcpy(W->Wid,name);
    W->prompt=NULL;
    if(prompt!= NULL) {
      n = strlen(prompt);
-     W->prompt = (char *)malloc(n+1);
+     W->prompt = (char *)Malloc(n+1);
      strcpy(W->prompt,prompt);
    }
    max= 0;
@@ -6316,12 +6509,12 @@ DIW * kgCreatePulldownBrowser(int xo,int yo,char *prompt,char **menu,char *name)
    if(W->size > max ) W->size=max; 
    W->df = (int *)(&(W->val));
    *((int *)(W->df)) = 1;
-   W->menu = (char **)malloc(sizeof(char *)*(max+1));
+   W->menu = (char **)Malloc(sizeof(char *)*(max+1));
    W->menu[max]= NULL;
    msize =0;
    for(i=0;i<max;i++){
     ln = strlen(menu[i]);
-    W->menu[i]= (char *)malloc(ln+1);
+    W->menu[i]= (char *)Malloc(ln+1);
     strcpy(W->menu[i],menu[i]);
     if(msize < ln ) msize=ln;
    }
@@ -6344,7 +6537,7 @@ DIE * kgCreateBrowser(int xo,int yo,char **menu,char *name) {
    int msize=0;
    float x1,y1,x2,y2;
    DIE Wtmp ={'e',10L,10L,0,0,5,NULL,NULL,NULL,NULL,NULL,20,6,22,1,1,1,0};
-   W = (DIE *)malloc(sizeof(DIE));
+   W = (DIE *)Malloc(sizeof(DIE));
    Wtmp.Wid[0]='\0';
    *W = Wtmp;
    if(name != NULL) strcpy(W->Wid,name);
@@ -6358,13 +6551,13 @@ DIE * kgCreateBrowser(int xo,int yo,char **menu,char *name) {
    W->size = min;
    W->df = (int *)(&(W->val));
    *((int *)(W->df)) = 1;
-   W->menu = (char **)malloc(sizeof(char *)*(max+1));
+   W->menu = (char **)Malloc(sizeof(char *)*(max+1));
    W->menu[max]= NULL;
    msize=5;
    for(i=0;i<max;i++){
     min=strlen(menu[i]);
     if(msize<min) msize=min;
-    W->menu[i]= (char *)malloc(min+1);
+    W->menu[i]= (char *)Malloc(min+1);
     strcpy(W->menu[i],menu[i]);
    }
    w = (msize*9+30);
@@ -6386,7 +6579,7 @@ DIS * kgCreateMessageScroll(int xo,int yo,int nlines,int maxchar,char *name) {
    int msize=0;
    float x1,y1,x2,y2;
    DIS Wtmp ={'s',10L,10L,0,0,5,NULL,NULL,NULL,NULL,NULL,20,6,22,0,1,1,0};
-   W = (DIS *)malloc(sizeof(DIS));
+   W = (DIS *)Malloc(sizeof(DIS));
    Wtmp.Wid[0]='\0';
    *W = Wtmp;
    if(name != NULL) strcpy(W->Wid,name);
@@ -6414,7 +6607,7 @@ DIHB * kgCreateHorizSlide(int xo,int yo,int length,int min,int max,int val,char 
    int msize=0;
    float x1,y1,x2,y2;
    DIHB Wtmp ={'P',0,100,0,0,0,100,101,NULL,NULL,NULL,NULL};
-   W = (DIHB *)malloc(sizeof(DIHB));
+   W = (DIHB *)Malloc(sizeof(DIHB));
    Wtmp.Wid[0]='\0';
    *W = Wtmp;
    if(name != NULL) strcpy(W->Wid,name);
@@ -6444,7 +6637,7 @@ DID * kgCreateIntSlide(int xo,int yo,int length,int min,int max,int val,char *na
    float x1,y1,x2,y2;
    DID Wtmp ={'d',0,100,0,0,0,100,101,NULL,NULL,NULL,NULL};
 
-   W = (DID *)malloc(sizeof(DID));
+   W = (DID *)Malloc(sizeof(DID));
    Wtmp.Wid[0]='\0';
    *W = Wtmp;
    if(name != NULL) strcpy(W->Wid,name);
@@ -6475,7 +6668,7 @@ DIF * kgCreateDoubleSlide(int xo,int yo,int length,double min,double max,double 
    float x1,y1,x2,y2;
    DIF Wtmp ={'f',0,100,0,0,1,100,100,NULL,NULL,NULL,NULL};
 
-   W = (DIF *)malloc(sizeof(DIF));
+   W = (DIF *)Malloc(sizeof(DIF));
    Wtmp.Wid[0]='\0';
    *W = Wtmp;
    if(name != NULL) strcpy(W->Wid,name);
@@ -6502,7 +6695,7 @@ DIX * kgCreateSelectMenu(int xo,int yo,int length,int width,int itemlength,int t
    float x1,y1,x2,y2;
    DIX Wtmp = {'x',0L,0L,150,120,8,2,120,25,1,4,1,1,NULL,NULL,NULL,
            NULL,NULL,6,22,0,1,1,1,0};
-   W = (DIX *)malloc(sizeof(DIX));
+   W = (DIX *)Malloc(sizeof(DIX));
    Wtmp.Wid[0]='\0';
    *W = Wtmp;
    if(name != NULL) strcpy(W->Wid,name);
@@ -6532,7 +6725,7 @@ DIRA * kgCreateRadioButtons(int xo,int yo,int length,int width,int itemlength,ch
    DIRA Wtmp = {'r',0L,0L,150,120,0,0,90,25,1,4,1,1,NULL,NULL,NULL,
            NULL,NULL,6,22,0,0,1,0,0};
    int type=2;
-   W = (DIRA *)malloc(sizeof(DIRA));
+   W = (DIRA *)Malloc(sizeof(DIRA));
    Wtmp.Wid[0]='\0';
    *W = Wtmp;
    if(name != NULL) strcpy(W->Wid,name);
@@ -6565,7 +6758,7 @@ DICH * kgCreateCheckBox(int xo,int yo,int length,int width,int itemlength,char *
    DICH Wtmp = {'c',0L,0L,150,120,0,0,90,25,1,4,1,1,NULL,NULL,NULL,
            NULL,NULL,6,22,0,0,1,0,0};
    int type=2;
-   W = (DICH *)malloc(sizeof(DICH));
+   W = (DICH *)Malloc(sizeof(DICH));
    Wtmp.Wid[0]='\0';
    *W = Wtmp;
    if(name != NULL) strcpy(W->Wid,name);
@@ -6592,7 +6785,7 @@ DIY * kgCreateThumbnailBrowser(int xo,int yo,int length,int width,int nailsize,i
    float x1,y1,x2,y2;
    DIY Wtmp = {'y',0L,0L,150,120,8,20,120,25,1,4,1,1,NULL,NULL,NULL,
            NULL,NULL,6,22,0,1,1,1,0};
-   W = (DIY *)malloc(sizeof(DIY));
+   W = (DIY *)Malloc(sizeof(DIY));
    Wtmp.Wid[0]='\0';
    *W = Wtmp;
    if(name != NULL) strcpy(W->Wid,name);

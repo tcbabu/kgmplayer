@@ -16,5 +16,7 @@ typedef struct _mediainfo {
   char SubFile[500];
   char *SubFolder;
   int SubTitleOff; // swich off subtitle
+  int vcodec;
+  float rotation;
 } MEDIAINFO;
 #endif

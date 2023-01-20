@@ -20,6 +20,7 @@ int DirPlayGroup( DIALOG *D,void **v,void *pt) {
   butn0[0].xpmp=NULL;
   butn0[0].xpmh=NULL;
   butn0[0].bkgr=-69128181;
+  butn0[0].bkgr=-1;
   butn0[0].butncode='s';
   DIN b0 = { 
     'n',

@@ -8,7 +8,7 @@ extern int ToGrab[2],FromGrab[2],StatusGrab[2];
 int GetTimedLine(int pip0,char *buff,int usec);
 int GetLine(int pip0,char *buff);
 int Oper;
-DII * Info;
+static DII * Info;
 int  MonitorJoinsplbutton1callback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
@@ -62,10 +62,12 @@ int MonitorJoinCallBack(void *Tmp,void *tmp) {
   KBEVENT *kbe;
   D = (DIALOG *)Tmp;
   kbe = (KBEVENT *)tmp;
+#if 1
   if(kbe->event ==1) {
     if(kbe->button ==1) {
     }
   }
+#endif
   return ret;
 }
 int MonitorJoinResizeCallBack(void *Tmp) {
@@ -108,20 +110,25 @@ int MonitorJoinWaitCallBack(void *Tmp) {
 //     close(pip1);
      O = (DIO *)kgGetNamedWidget(Tmp,"JoinBar");
      pip0 = MonPipe;
+     Esec =0.0;
      if((ch=GetTimedLine(pip0,buff,1000)) ) {
+#if 0
          if(!GetTimedLine(StatusGrab[0],connection,300)) kgSetExit(Tmp);
+#endif
          if(ch>= 0)  {
            if(ch==0) {kgSetExit(Tmp); return 1;}
            switch(Tools) {
              case 3:
              case 5:
              case 6:
+#if 0
                pos = kgSearchString(buff,"Esec:");
                if(pos>=0) {
                  sscanf(buff+pos+5,"%lf",&Esec);
 //                 printf("Esec : %lf\n",Esec);
                  break;
                }
+#endif
                pos = kgSearchString(buff,"Cur:");
                if(pos>=0) {
                  sscanf(buff+pos+4,"%f",&fac);
@@ -145,12 +152,14 @@ int MonitorJoinWaitCallBack(void *Tmp) {
                WriteInfo(buff);
                break;
              case 4:
+#if 0
                pos = kgSearchString(buff,"Esec:");
                if(pos>=0) {
                  sscanf(buff+pos+5,"%lf",&Esec);
 //                 printf("Esec : %lf\n",Esec);
                  break;
                }
+#endif
                pos = kgSearchString(buff,"Per:");
                if(pos>=0) {
                  sscanf(buff+pos+4,"%f",&per);
@@ -174,12 +183,14 @@ int MonitorJoinWaitCallBack(void *Tmp) {
                WriteInfo(buff);
                break;
              default:
+#if 0
                pos = kgSearchString(buff,"Esec:");
                if(pos>=0) {
                  sscanf(buff+pos+5,"%lf",&Esec);
 //                 printf("Esec : %lf\n",Esec);
                  break;
                }
+#endif
                pos = kgSearchString(buff,"Cur:");
                if(pos>=0) {
                  sscanf(buff+pos+4,"%f",&fac);

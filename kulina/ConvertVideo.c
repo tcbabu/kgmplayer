@@ -86,15 +86,16 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
     (char *)"Very Good",
     (char *)"Good",
     (char *)"Medium",
+    (char *)"Low",
     NULL 
   };
   ThumbNail **th0 ;
   DIRA r3 = { 
     'r',
-    263,74,  
-    574,101,   
+    243,74,  
+    594,101,   
     8,0,  
-    80, 
+    75, 
     25, 
     1,3, 
     0,1, 
@@ -116,8 +117,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   r3.item = -1;
   DIM m4 = { 
     'm',
-    190,75,  
-    262,99,  
+    170,75,  
+    240,99,  
     1,0  
   };
   strncpy(m4.msg,(char *)"Quality",499);
@@ -160,7 +161,7 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
     268,127,  
     1,0  
   };
-  strncpy(m6.msg,(char *)"Aspect Ratio",499);
+  strcpy(m6.msg,(char *)"Aspect Ratio");
   strcpy(m6.Wid,(char *)"ConvertVideoWidget9");
   m6.item = -1;
   char *menu7[]  = { 
@@ -270,12 +271,12 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   m11.item = -1;
   DIM m12 = { 
     'm',
-    196,188,  
-    452,200,  
+    166,188,  
+    482,205,  
     0,0  
   };
   strncpy(m12.msg,(char *)"!c01(Play and Stop to detemine range in secs)",499);
-  strcpy(m12.Wid,(char *)"ConvertVideoWidget13");
+  strcpy(m12.Wid,(char *)"ConvertMsg");
   m12.item = -1;
   dtmp = D->d;
   i=0;

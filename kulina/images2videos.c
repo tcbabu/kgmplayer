@@ -9,6 +9,7 @@
 
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessPrint(int pip0,int pip1,int Pid);
 int ProcessToPipe(int pip0,int pip1,int Pid);
@@ -51,13 +52,13 @@ int JoinImageVideos( IMGS2VDATA *cn,char *mylist) {
      sprintf(options,"Plese wait......\n");
      write(Jpipe[1],options,strlen(options));
 #ifdef D_X264
-     sprintf(command,"kgffmpeg -i %-s -y -f mp4 -vcodec libx264 "
+     sprintf(command,"ffmpegfun -i %-s -video_track_timescale 90k -y -f mp4 -vcodec libx264 "
         " -b:v %-s \"%-s\" ", Fifo ,Qstr,Cn.Outfile);
 #else
-     sprintf(command,"kgffmpeg -i %-s -y -f mp4 -vcodec libx265 "
+     sprintf(command,"ffmpegfun -i %-s -video_track_timescale 90k -y -f mp4 -vcodec libx265 "
         "  \"%-s\" ", Fifo ,Cn.Outfile);
 #endif
-     runfunction(command,ProcessToPipe,kgffmpeg);
+     runfunction(command,ProcessToPipe,ffmpegfun);
      remove(Fifo);
      strcpy(options,"Joinded Video Files\n");
      write(Jpipe[1],options,strlen(options));
@@ -118,7 +119,8 @@ int Imgs2Videos( IMGS2VDATA *is2vdata) {
   int status;
   Dlink *L,*Vlist=NULL;
   char *vnames=NULL;
-  MEDIAINFO *Minfo;
+  MEDIAINFO *Mpt;
+  extern MEDIAINFO Minfo;
 
   if( (pid =fork())!= 0) {
     kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
@@ -144,30 +146,33 @@ int Imgs2Videos( IMGS2VDATA *is2vdata) {
     strcpy(Qstr,"3000K");
      Resetlink(L);
      sprintf(Tmpimage,"%-s/Image.jpg",Folder);
+     sprintf(options,"Creating background Image\n");
+     write(Jpipe[1],options,strlen(options));
+     Minfo.TotSec = is2vdata->imagetime;
 #ifdef D_X264
-     sprintf(command,"kgffmpeg -f lavfi -i color=c=black:s=%-dx%-d  "
-         "-t %-5.2f "
+     sprintf(command,"ffmpegfun -f lavfi -i color=c=black:s=%-dx%-d  "
+         "-t %-5.2f -video_track_timescale 90k "
          " -y -f mp4 -b:v 3000K -vcodec libx264 \"%-s/%-d\"",
          is2vdata->Xsize,is2vdata->Ysize,is2vdata->imagetime, Folder,id);
 #else
-     sprintf(command,"kgffmpeg -f lavfi -i color=c=black:s=%-dx%-d  "
-         "-t %-5.2f "
+     sprintf(command,"ffmpegfun -f lavfi -i color=c=black:s=%-dx%-d  "
+         "-t %-5.2f -video_track_timescale 90k "
          " -y -f mp4 -vcodec libx265 \"%-s/%-d\"",
          is2vdata->Xsize,is2vdata->Ysize,is2vdata->imagetime, Folder,id);
 #endif
-     runfunction (command,ProcessSkip,kgffmpeg);
+     runfunction (command,ProcessToPipe,ffmpegfun);
      Vlist = Dopen();
-     while ( (Minfo= (MEDIAINFO *)Getrecord(L)) != NULL) {
+     while ( (Mpt= (MEDIAINFO *)Getrecord(L)) != NULL) {
        sprintf(Vname,"%-s/Img%-5.5d.mp4",Folder,vid);
-       sprintf(options,"Processing: %s\n",Minfo->Flname);
-       write(Jpipe[1],options,strlen(options));
        sprintf(options,"Esec: %lf\n",vid*is2vdata->imagetime);
+       write(Jpipe[1],options,strlen(options));
+       sprintf(options,"Processing: %s\n",Mpt->Flname);
        write(Jpipe[1],options,strlen(options));
    
        vnames = (char *) malloc(strlen(Vname)+1);
        strcpy(vnames,Vname);
        Dadd(Vlist,vnames);
-       Img = (GMIMG *)kgGetImage(Minfo->Flname);
+       Img = (GMIMG *)kgGetImage(Mpt->Flname);
        xl = Img->image_width;
        yl = Img->image_height;
        dx=0,dy=0;
@@ -206,16 +211,17 @@ int Imgs2Videos( IMGS2VDATA *is2vdata) {
        kgFreeImage(Timg);
        kgWriteImage(Img, Tmpimage);
        kgFreeImage(Img);
+       Minfo.TotSec = is2vdata->imagetime;
 #ifdef D_X264
-       sprintf(command,"kgffmpeg -i \"%-s/%-d\" -i \"%s\" -filter_complex"
-        " overlay=%-d:%-d -f mp4 -b:v 3000K -vcodec libx264 -y \"%-s\" ",
+       sprintf(command,"ffmpegfun -i \"%-s/%-d\" -i \"%s\" -filter_complex"
+        " overlay=%-d:%-d -f mp4 -video_track_timescale 90k -b:v 3000K -vcodec libx264 -y \"%-s\" ",
          Folder,id,Tmpimage,dx,dy,Vname);
 #else
-       sprintf(command,"kgffmpeg -i \"%-s/%-d\" -i \"%s\" -filter_complex"
-        " overlay=%-d:%-d -f mp4 -vcodec libx265 -y \"%-s\" ",
+       sprintf(command,"ffmpegfun -i \"%-s/%-d\" -i \"%s\" -filter_complex"
+        " overlay=%-d:%-d -f mp4 -video_track_timescale 90k -vcodec libx265 -y \"%-s\" ",
          Folder,id,Tmpimage,dx,dy,Vname);
 #endif
-       runfunction (command,ProcessToPipe,kgffmpeg);
+       runfunction (command,ProcessToPipe,ffmpegfun);
        fprintf(myl,"file  \'%-s\'\n",Vname);
        fflush(myl);
        vid++;
@@ -224,7 +230,7 @@ int Imgs2Videos( IMGS2VDATA *is2vdata) {
      sprintf(Tmpimage,"%-s/%d",Folder,id+1);
      remove(Tmpimage);
      fclose(myl);
-      is2vdata->Vlist =Vlist;
+     is2vdata->Vlist =Vlist;
 
      sprintf(options,"JOINING and CONVERTING to mp4\n");
      write(Jpipe[1],options,strlen(options));
@@ -234,14 +240,15 @@ int Imgs2Videos( IMGS2VDATA *is2vdata) {
      write(Jpipe[1],options,strlen(options));
      sprintf(options,"Plese wait......\n");
      write(Jpipe[1],options,strlen(options));
+     Minfo.TotSec = vid*is2vdata->imagetime;
 #ifdef D_X264
-     sprintf(command,"kgffmpeg -f concat -i %-s -y -f mp4 -vcodec libx264 "
+     sprintf(command,"ffmpegfun -f concat -i %-s -video_track_timescale 90k -y -f mp4 -vcodec libx264 "
         " -b:v %-s \"%-s\" ", mylist ,Qstr,is2vdata->Outfile);
 #else
-     sprintf(command,"kgffmpeg -f concat -i %-s -y -f mp4 -vcodec libx265 "
+     sprintf(command,"ffmpegfun -f concat -i %-s -video_track_timescale 90k -y -f mp4 -vcodec libx265 "
         "  \"%-s\" ", mylist ,is2vdata->Outfile);
 #endif
-     runfunction(command,ProcessToPipe,kgffmpeg);
+     runfunction(command,ProcessToPipe,ffmpegfun);
 
      Dempty(Vlist);
      Vlist=NULL;

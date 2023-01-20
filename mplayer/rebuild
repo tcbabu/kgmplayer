@@ -13,5 +13,5 @@ CXX=g++ ./configure --prefix=$KULINA  --disable-gui \
 --enable-fontconfig --disable-tv-v4l1  --cc=gcc
 echo "X11_CFLAGS=$X11_CFLAGS">>config.mak
 echo "X11_LIBS=$X11_LIBS">>config.mak
-make -j 4
+make -j2
 make install

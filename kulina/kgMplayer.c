@@ -1,10 +1,12 @@
-#include "kulina.h"
+#include <kulina.h>
 #include "kgMplayerCallbacks.h"
 //#define S1CLR -60220200
-#define S1CLR -69128181
+//#define S1CLR -69128181
+#define S1CLR -1
 //#define S2CLR -230200050
-#define S2CLR -69128181
-char VER[]="Ver 4.3.0";
+//#define S2CLR -69128181
+#define S2CLR -1
+char VER[]="Ver 4.4.0";
 //int Thred=15,Thgreen=17,Thblue=15;
 int Thred=165,Thgreen=177,Thblue=165;
 char urlstring[500];
@@ -83,15 +85,16 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
   butn0[0].xpmn=(void *)(&play_str);
   butn0[0].xpmp=NULL;
   butn0[0].xpmh=NULL;
-  butn0[0].bkgr=-160230160;
-  butn0[0].bkgr=-69128181;
+  butn0[0].bkgr=-100120100;
+//  butn0[0].bkgr=-1;
   butn0[0].butncode='p';
   butn0[1].sw=1;
   strcpy(butn0[1].title,(char *)"");
   butn0[1].xpmn=kgPowerdownImage(36,147,0,0);
   butn0[1].xpmp=NULL;
   butn0[1].xpmh=NULL;
-  butn0[1].bkgr=-169180173;
+  butn0[1].bkgr=-100120100;
+//  butn0[1].bkgr=-1;
   butn0[1].butncode='c';
 #if 0
   DIL h0 = { 
@@ -129,7 +132,7 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
     (char *)"File",
     (char *)"CD",
     (char *)"List",
-    (char *)"URL",
+//    (char *)"URL",
     (char *) "Dir",
     NULL 
   };
@@ -151,7 +154,7 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
      2,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
-    1, /* bordr */
+    0, /* bordr */
     0, /* bkgr */
     0  /* =1 hide  */
    };
@@ -184,6 +187,7 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
   butn3[0].xpmh=NULL;
   butn3[0].bkgr=-122176170;
   butn3[0].bkgr=-69128181;
+  butn3[0].bkgr=-1;
   butn3[0].butncode='f';
   DIN b3 = { 
     'n',
@@ -310,6 +314,7 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
   butn13[1].xpmh=NULL;
   butn13[1].bkgr=-232146250;
   butn13[1].bkgr=S2CLR;
+  butn13[1].bkgr=-1;
   butn13[1].butncode='';
   DIN b13 = { 
     'n',
@@ -372,6 +377,7 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
   butn16[0].xpmh=NULL;
   butn16[0].bkgr=-232146150;
   butn16[0].bkgr=S1CLR;
+  butn16[0].bkgr=-1;
   butn16[0].butncode='m';
   DIN b16 = {
     'n',
@@ -398,6 +404,7 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
   butn17[0].bkgr=-34172211;
   butn17[0].bkgr=-127207149;
   butn17[0].bkgr=-69128181;
+  butn17[0].bkgr=-1;
   butn17[0].butncode='s';
   DIN b17 = {
     'n',
@@ -437,7 +444,7 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
      2,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
-    1, /* bordr */
+    0, /* bordr */
     0, /* bkgr */
     0  /* =1 hide  */
    };
@@ -497,7 +504,7 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
      2,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
-    1, /* bordr */
+    0, /* bordr */
     0, /* bkgr */
     1  /* =1 hide  */
    };
@@ -708,9 +715,10 @@ int kgMplayer( void *parent,void **v,void *pt) {
   }    /*  end of fullscreen mode */
 //  kgColorTheme(&D,80,90,80);    /*  set colors for gui*/
 #if 1
-  kgColorTheme(&D,Thred,Thgreen,Thblue);   /*  set colors for gui*/
-  ModifykgMplayerGc(&(D.gc));    /*  set colors for gui*/
+//  kgColorTheme(&D,Thred,Thgreen,Thblue);   /*  set colors for gui*/
+//  ModifykgMplayerGc(&(D.gc));    /*  set colors for gui*/
 #endif
+  FillClr = D.gc.fill_clr;
   ret= kgUi(&D);
   kgCleanUi(&D);
   return ret;

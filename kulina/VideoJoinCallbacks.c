@@ -16,6 +16,7 @@ extern int MonPipe;
 extern double Ssec,Esec;
 extern MEDIAINFO Minfo;
 extern int Tools;
+static char libvcodec[20];
 int Jpipe[2];
 int Jstat[2];
 
@@ -25,13 +26,15 @@ int CheckMedia(char *flname);
 int FileStat(char *);
 DIX *VX2=NULL;
 extern char GrabFileName[300];
-int Pval;
+extern int Pval;
 int kgLame(int,char **);
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int Mplayer(int,char **);
 int Mencoder(int,char **);
 void *RunMonitorJoin(void *arg);
 int WriteInfo(char *);
+MEDIAINFO * GetMediaInfo(char *flname);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int ProcessPrint(int pip0,int pip1,int Pid) {
      char buff[1000],connection[500],Formats[500],Selected[500];
@@ -43,8 +46,8 @@ int ProcessPrint(int pip0,int pip1,int Pid) {
      Selected[0]='\0';
 //     close(pip1);
      while((ch=GetLine(pip0,buff)) ) {
-         if(!GetTimedLine(StatusGrab[0],connection,300)) break;
-         if(!GetTimedLine(Jstat[0],connection,300)) break;
+//         if(!GetTimedLine(StatusGrab[0],connection,300)) break;
+//         if(!GetTimedLine(Jstat[0],connection,300)) break;
          if(ch< 0) continue;
          printf("%s",buff);
      }
@@ -60,25 +63,55 @@ int ProcessSkip(int pip0,int pip1,int Pid) {
      Selected[0]='\0';
 //     close(pip1);
      while((ch=GetLine(pip0,buff)) ) {
-         if(!GetTimedLine(StatusGrab[0],connection,300)) break;
-         if(!GetTimedLine(Jstat[0],connection,300)) break;
+//         if(!GetTimedLine(StatusGrab[0],connection,300)) break;
+//         if(!GetTimedLine(Jstat[0],connection,300)) break;
          if(ch< 0) continue;
 //         printf("%s",buff);
      }
      return ret;
 }
 int ProcessToPipe(int pip0,int pip1,int Pid) {
-     char buff[1000],work[100];
+     char buff[1000],work[1000];
      int ret =0;
-     int ch,i=0,j,pos,len,OK=0;
-     float per=0.0,csec,m,h,s;
+     int ch,i=0,j,pos,len,OK=0,line=0;
+     float per=0.0,csec,m,h,s,totsec;
      char *pt;
 //     close(pip1);
+     totsec = Minfo.TotSec;
      while((ch=GetLine(pip0,buff)) ) {
-         if(!GetTimedLine(StatusGrab[0],work,300)) break;
-         if(!GetTimedLine(Jstat[0],work,300)) break;
+         line++;
+#if 0
+         if(!GetTimedLine(StatusGrab[0],work,500)){
+		 printf("breaking got StatusGrab\n");
+		 fflush(stdout);
+		 break;
+	 }
+         if(!GetTimedLine(Jstat[0],work,500)) {
+		 printf("breaking got Jstat\n");
+		 fflush(stdout);
+		 break;
+	 }
+#endif
          if(ch< 0) continue;
          if(SearchString(buff,(char *)"frame=")>=0)  {
+             pos = SearchString(buff,(char *)"Duration:");
+             if(pos>=0) {
+		 int i= 0;
+		 int hr,mt;
+		 float sec;
+		 pt = buff+pos+10;
+		 sscanf(pt,"%s",work);
+		 while( (work[i]!=',')){
+			 if(work[i]==':') work[i]=' ';
+			 i++;
+		 } 
+		 work[i]='\0';
+//		 printf("%s\n",work);
+		 sscanf(work,"%d%d%f",&hr,&mt,&sec);
+                 totsec= hr*3600+mt*60+sec;
+//		 printf("Totsec = %f\n",totsec);
+//		 continue;
+	     }
              pos = SearchString(buff,(char *)"time=");
              if(pos>=0) {
                pt = buff+pos+5;
@@ -88,7 +121,7 @@ int ProcessToPipe(int pip0,int pip1,int Pid) {
                pt[pos]=' ';
                sscanf(pt,"%f%f%f",&h,&m,&s);
                s += (h*3600+m*60);
-               per = s;
+               per = s*100/totsec;
                sprintf(work,"Cur: %f \n",per);
                write(Jpipe[1],work,strlen(work));
 //      printf("%s",work);
@@ -105,15 +138,80 @@ int ProcessToPipe(int pip0,int pip1,int Pid) {
                pt[pos]=' ';
                sscanf(pt,"%f%f%f",&h,&m,&s);
                s += (h*3600+m*60);
-               per = s;
+               per = s*100/totsec;
+               sprintf(work,"Cur: %f \n",per);
+               write(Jpipe[1],work,strlen(work));
+               continue;
+             }
+         }
+     }
+     return ret;
+}
+int ProcessData(int pip0,int pip1,int Pid) {
+     char buff[1000],work[1000];
+     int ret =0;
+     int ch,i=0,j,pos,len,OK=0,line=0;
+     float per=0.0,csec,m,h,s,totsec;
+     char *pt;
+//     close(pip1);
+     totsec = Minfo.TotSec;
+     printf("Inside ProcessTo Pipe\n");
+     fflush(stdout);
+     while((ch=GetLine(pip0,buff)) ) {
+         line++;
+#if 0
+         if(!GetTimedLine(StatusGrab[0],work,500)){
+		 printf("breaking got StatusGrab\n");
+		 fflush(stdout);
+		 break;
+	 }
+         if(!GetTimedLine(Jstat[0],work,500)) {
+		 printf("breaking got Jstat\n");
+		 fflush(stdout);
+		 break;
+	 }
+#endif
+         if(ch< 0) continue;
+         if(SearchString(buff,(char *)"frame=")>=0)  {
+             pos = SearchString(buff,(char *)"time=");
+             if(pos>=0) {
+               pt = buff+pos+5;
+               pos= kgSearchString(pt,(char *)":");
+               pt[pos]=' ';
+               pos= kgSearchString(pt,(char *)":");
+               pt[pos]=' ';
+               sscanf(pt,"%f%f%f",&h,&m,&s);
+               s += (h*3600+m*60);
+               per = s*100/totsec;
                sprintf(work,"Cur: %f \n",per);
                write(Jpipe[1],work,strlen(work));
 //      printf("%s",work);
                continue;
              }
          }
-//         printf("%s",buff);
+         if(SearchString(buff,(char *)"size=")>=0)  {
+             pos = SearchString(buff,(char *)"time=");
+             if(pos>=0) {
+               pt = buff+pos+5;
+               pos= kgSearchString(pt,(char *)":");
+               pt[pos]=' ';
+               pos= kgSearchString(pt,(char *)":");
+               pt[pos]=' ';
+               sscanf(pt,"%f%f%f",&h,&m,&s);
+               s += (h*3600+m*60);
+               per = s*100/totsec;
+               sprintf(work,"Cur: %f \n",per);
+               write(Jpipe[1],work,strlen(work));
+      printf("%s",work);
+               continue;
+             }
+         }
+         printf("%s",buff);
+	 fflush(stdout);
      }
+     printf("Got %d \n",line);
+     printf("Exiting ProcessTo Pipe\n");
+     fflush(stdout);
      return ret;
 }
 int ProcessToInfo(int pip0,int pip1,int Pid) {
@@ -124,8 +222,8 @@ int ProcessToInfo(int pip0,int pip1,int Pid) {
      char *pt;
 //     close(pip1);
      while((ch=GetLine(pip0,buff)) ) {
-         if(!GetTimedLine(StatusGrab[0],work,300)) break;
-         if(!GetTimedLine(Jstat[0],work,300)) break;
+//         if(!GetTimedLine(StatusGrab[0],work,300)) break;
+//         if(!GetTimedLine(Jstat[0],work,300)) break;
          if(ch< 0) continue;
          if(SearchString(buff,(char *)"frame=")>=0)  {
              pos = SearchString(buff,(char *)"time=");
@@ -170,184 +268,9 @@ int ProcessToInfo(int pip0,int pip1,int Pid) {
      }
      return ret;
 }
-int JoinToMp4_o( CONVDATA *cn) {
-  int pid,status,id,Qty;
-  char Folder[500];
-  int Audio=1;
-  Dlink *L;
-  CONVDATA Cn;
-  MEDIAINFO *mpt;
-  Cn= *cn;
-  Audio =1;
-  L = (Dlink *)Cn.Vlist;
-  Resetlink(L);
-  while( (mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
-    if(mpt->Audio==0) Audio=0;
-  }
-  if ((pid=fork())==0) {
-    char command[10000],File[500],options[5000],Fifo[500],Qstr[100];
-    sprintf(Folder,"%-s/%-d",getenv("HOME"),getpid());
-    if(FileStat(Folder)) kgCleanDir(Folder);
-    mkdir(Folder,0700);
-    sprintf(Fifo,"/tmp/Fifo%-d",getpid());
-    mkfifo(Fifo,0600);
-    if(pipe(Jpipe) < 0) exit(0);
-    if(pipe(Jstat) < 0) exit(0);
-    sprintf(GrabFileName,"Joining Videos to : %-s\n",Cn.outfile);
-    MonPipe = Jpipe[0];
-    if( fork()==0) {
-      close(Jpipe[1]);
-      close(Jstat[0]);
-      RunMonitorJoin(NULL);
-      exit(0);
-    }
-    close(Jpipe[0]);
-    close(Jstat[1]);
-    switch(Cn.Quality) {
-      case 1:
-        strcpy(Qstr,"3000K");
-        break;
-      case 2:
-        strcpy(Qstr,"1000K");
-        break;
-      default:
-      case 3:
-        strcpy(Qstr,"500K");
-        break;
-    }
-    L = (Dlink *)Cn.Vlist;
-    Resetlink(L);
-    id=0;
-    sprintf(options,"!c01Importance is for QUALITY,"
-      " Video joining is a slow Process!! Pl. be patient...\n");
-    write(Jpipe[1],options,strlen(options));
-    if(!Audio) {
-      sprintf(options,"!c01Atleast one media is without audio"
-            " so NO AUDIO in output\n");
-      write(Jpipe[1],options,strlen(options));
-    }
-    while( (mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
-      Esec = mpt->TotSec;
-      sprintf(options,"Esec: %f\n",mpt->TotSec);
-      write(Jpipe[1],options,strlen(options));
-      sprintf(options,"fps = %f\n",Cn.fps);
-      write(Jpipe[1],options,strlen(options));
-      Cn.fps = 30;
-      sprintf(options,"New fps = %f\n",Cn.fps);
-      write(Jpipe[1],options,strlen(options));
-      
-#if 0
-      if(mpt->Process) {
-        sprintf(command,"kgffmpeg -i \"%s\" -f mp4 -b:v %-s -vcodec "
-         "libx264 -r %-7.3f -s %-dx%-d -aspect %-d:%-d -y %s/F%-4.4d ",
-         mpt->Flname,Qstr,Cn.fps,Cn.Xsize,Cn.Ysize,Cn.Xsize,Cn.Ysize, Folder,id);
-        printf("%s\n",command);
-        runfunction(command,ProcessSkip,kgffmpeg);
-      }
-      else {
-        sprintf(command,"cp \"%s\" %s/F%-4.4d",mpt->Flname,Folder,id);
-        printf("%s\n",command);
-        system(command);
-      }
-#else
-      if(Cn.Quality != 1) {
-       if(Audio) {
-        sprintf(command,"kgffmpeg -i \"%s\" -f mp4 -b:v %-s -vcodec "
-         "libx264 -r %-7.3f -s %-dx%-d -aspect %-d:%-d -y %s/F%-4.4d ",
-         mpt->Flname,Qstr,Cn.fps,Cn.Xsize,Cn.Ysize,Cn.Xsize,Cn.Ysize, Folder,id);
-       }
-       else {
-        sprintf(command,"kgffmpeg -i \"%s\" -an -f mp4 -b:v %-s -vcodec "
-         "libx264 -r %-7.3f -s %-dx%-d -aspect %-d:%-d -y %s/F%-4.4d ",
-         mpt->Flname,Qstr,Cn.fps,Cn.Xsize,Cn.Ysize,Cn.Xsize,Cn.Ysize, Folder,id);
-       }
-      }
-      else {
-       if(Audio) {
-        sprintf(command,"kgffmpeg -i \"%s\" -f mp4  -vcodec "
-         "libx265 -r %-7.3f -s %-dx%-d -aspect %-d:%-d -y %s/F%-4.4d ",
-         mpt->Flname,Cn.fps,Cn.Xsize,Cn.Ysize,Cn.Xsize,Cn.Ysize, Folder,id);
-       }
-       else {
-        sprintf(command,"kgffmpeg -i \"%s\" -an -f mp4  -vcodec "
-         "libx265 -r %-7.3f -s %-dx%-d -aspect %-d:%-d -y %s/F%-4.4d ",
-         mpt->Flname,Cn.fps,Cn.Xsize,Cn.Ysize,Cn.Xsize,Cn.Ysize, Folder,id);
-       }
-      }
-//        printf("%s\n",command);
-        sprintf(options,"Processing %-s\n",mpt->Flname);
-        write(Jpipe[1],options,strlen(options));
-        runfunction(command,ProcessToPipe,kgffmpeg);
-#endif
-//     printf("%s\n",command);
-      id++;
-    }
-    if(id==0) exit(0);
-    if((pid=fork())!=0) {
-     Esec= Cn.EndSec;
-     sprintf(options,"Esec: %lf\n",Cn.EndSec);
-     write(Jpipe[1],options,strlen(options));
-     sprintf(options,"Joining and Converting to mp4\n");
-     write(Jpipe[1],options,strlen(options));
-     if(Cn.Quality != 1) {
-     sprintf(command,"kgffmpeg -r %7.3f -i %-s -y -f mp4 -vcodec libx264 "
-        " -b:v %-s \"%-s\" ", Cn.fps,Fifo ,Qstr,Cn.outfile);
-     }
-     else {
-     sprintf(command,"kgffmpeg -r %7.3f -i %-s -y -f mp4 -vcodec libx265 "
-        " \"%-s\" ", Cn.fps,Fifo ,Cn.outfile);
-     }
-//        printf("%s\n",command);
-//     runfunction(command,ProcessToPipe,kgffmpeg);
-     runfunction(command,ProcessPrint,kgffmpeg);
-     remove(Fifo);
-//     kgCleanDir(Folder);
-     strcpy(options,"Joinded Video Files\n");
-     write(Jpipe[1],options,strlen(options));
-     close(Jpipe[1]);
-     exit(0);
-    }
-    else {
-      int id;
-      options[0] ='\0';
-#if 0
-      strcpy(command,"Mencoder ");
-      for(id=0;id<Cn.Fcount;id++) {
-        sprintf(options," \"%-s/F%-4.4d\" ",Folder,id);
-        strcat(command,options);
-      }
-      sprintf(options," -o %s -oac mp3lame -lameopts "
-          " q=0:aq=0 "
-          " -ovc copy -idx", Fifo);
-      strcat(command,options);
-//      printf("%s\n",command);
-      runfunction(command,ProcessSkip,Mencoder);
-#else
-      for(id=0;id<Cn.Fcount;id++) {
-        strcpy(command,"Mencoder ");
-        sprintf(options," \"%-s/F%-4.4d\" ",Folder,id);
-        strcat(command,options);
-        sprintf(options," -o %s -oac mp3lame -lameopts "
-          " q=0:aq=0 "
-          " -ovc copy -idx", Fifo);
-        strcat(command,options);
-//      printf("%s\n",command);
-        runfunction(command,ProcessPrint,Mencoder);
-      }
-#endif
-//      waitpid(pid,&status,0);
-      close(Jpipe[1]);
-      exit(0);
-    }
-  }
-  else {
-     waitpid(pid,&status,0);
-     sprintf(Folder,"%-s/%-d",getenv("HOME"),pid);
-     if(FileStat(Folder)) kgCleanDir(Folder);
-  }
-}
  
-int JoinToMp4( CONVDATA *cn) {
+int JoinToMp4( CONVDATA *cn)  {
+  int Process =0;
   int pid,status,id,Qty;
   char Folder[500];
   int Audio=1;
@@ -383,17 +306,22 @@ int JoinToMp4( CONVDATA *cn) {
     myl = fopen(options,"w");
     switch(Cn.Quality) {
       case 1:
-        strcpy(Qstr,"3000K");
+        sprintf(Qstr,"3000K -crf 20  -preset medium -vcodec %s ",libvcodec);
         break;
       case 2:
-        strcpy(Qstr,"1000K");
+        sprintf(Qstr,"2000K -crf 28 -preset fast -vcodec %s ",libvcodec);
         break;
       default:
       case 3:
-        strcpy(Qstr,"500K");
+        sprintf(Qstr,"1000K -crf 40 -preset superfast -vcodec %s ",libvcodec);
         break;
     }
     L = (Dlink *)Cn.Vlist;
+    Process=0;
+    Resetlink(L);
+    while ((mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
+      if(mpt->Process != 0 ) Process=1;
+    }
     Resetlink(L);
     id=0;
     sprintf(options,"!c01Importance is for QUALITY,"
@@ -410,34 +338,35 @@ int JoinToMp4( CONVDATA *cn) {
       write(Jpipe[1],options,strlen(options));
       sprintf(options,"fps = %f Xres: %d Yres: %d\n",Cn.fps,Cn.Xsize,Cn.Ysize);
       write(Jpipe[1],options,strlen(options));
-      if(Cn.Quality != 1 ) {
-       if(Audio) {
-        sprintf(command,"kgffmpeg -i \"%s\" -f mp4 -b:v %-s -vcodec "
-         "libx264 -r %-7.3f -s %-dx%-d -aspect %-d:%-d -y %s/F%-4.4d ",
-         mpt->Flname,Qstr,Cn.fps,Cn.Xsize,Cn.Ysize,Cn.Xsize,Cn.Ysize, Folder,id);
-       }
-       else {
-        sprintf(command,"kgffmpeg -i \"%s\" -an -f mp4 -b:v %-s -vcodec "
-         "libx264 -r %-7.3f -s %-dx%-d -aspect %-d:%-d -y %s/F%-4.4d ",
-         mpt->Flname,Qstr,Cn.fps,Cn.Xsize,Cn.Ysize,Cn.Xsize,Cn.Ysize, Folder,id);
-       }
-      }
-      else {
-       if(Audio) {
-        sprintf(command,"kgffmpeg -i \"%s\" -f mp4 -vcodec "
-         "libx265 -r %-7.3f -s %-dx%-d -aspect %-d:%-d -y %s/F%-4.4d ",
-         mpt->Flname,Cn.fps,Cn.Xsize,Cn.Ysize,Cn.Xsize,Cn.Ysize, Folder,id);
-       }
-       else {
-        sprintf(command,"kgffmpeg -i \"%s\" -an -f mp4 -vcodec "
-         "libx265 -r %-7.3f -s %-dx%-d -aspect %-d:%-d -y %s/F%-4.4d ",
-         mpt->Flname,Cn.fps,Cn.Xsize,Cn.Ysize,Cn.Xsize,Cn.Ysize, Folder,id);
-       }
-      }
-//        printf("%s\n",command);
+        printf ("mpt->Process = %d %s  fps=%f\n", mpt->Process,mpt->Flname,mpt->fps);
+	if(mpt->Process) {
+          if(Audio) {
+           sprintf(command,"ffmpegfun -r %-7.3f -i \"%s\" -f mp4 "
+           " -video_track_timescale 90k -c:a libmp3lame -b:v %-s "
+           " -s %-dx%-d -y %s/F%-4.4d ",
+            Cn.fps,mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize, Folder,id);
+	  }
+	  else {
+           sprintf(command,"ffmpegfun -r %-7.3f -i \"%s\" -f mp4 "
+           " -video_track_timescale 90k -an -b:v %-s "
+           " -s %-dx%-d -y %s/F%-4.4d ",
+            Cn.fps,mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize, Folder,id);
+	  }
+	} // if mpt->Process
+	else {
+	 if(Audio) {
+          sprintf(command,"ffmpegfun -i \"%s\" -f mp4  -c:a libmp3lame  -video_track_timescale 90k -c:v copy "
+           " -y %s/F%-4.4d ", mpt->Flname, Folder,id);
+	 }
+	 else {
+          sprintf(command,"ffmpegfun -i \"%s\" -f mp4  -an -video_track_timescale 90k -c:v copy "
+           " -y %s/F%-4.4d ", mpt->Flname, Folder,id);
+	 }
+	}  // else mpt->process
+        printf("%s\n",command);
         sprintf(options,"Processing %-s\n",mpt->Flname);
         write(Jpipe[1],options,strlen(options));
-        runfunction(command,ProcessToPipe,kgffmpeg);
+        runfunction(command,ProcessToPipe,ffmpegfun);
 //        system(command);
         fprintf(myl,"file \'%-s/F%-4.4d\'\n",Folder,id);
 //        printf("file \'%-s/F%-4.4d\'\n",Folder,id);
@@ -452,21 +381,20 @@ int JoinToMp4( CONVDATA *cn) {
      write(Jpipe[1],options,strlen(options));
      sprintf(options,"Joining and Converting to mp4\n");
      write(Jpipe[1],options,strlen(options));
-//        " -y -c copy -f mp4 -vcodec libx264 "
-     if(Cn.Quality !=1) {
-     sprintf(command,"kgffmpeg -f concat -safe 0 -i \"%-s/mylist.txt\" "
-        " -y  -f mp4 -b:v %-s -vcodec libx264 "
-        " \"%-s\" ", Folder ,Qstr,Cn.outfile);
-     }
-     else {
-     sprintf(command,"kgffmpeg -f concat -safe 0 -i \"%-s/mylist.txt\" "
-        " -y  -f mp4 -vcodec libx265 "
+     if(Audio) {
+       sprintf(command,"ffmpegfun -f concat -safe 0 -i \"%-s/mylist.txt\" "
+        " -y  -f mp4  -video_track_timescale 90k -c:a libmp3lame  -c:v copy  "
         " \"%-s\" ", Folder ,Cn.outfile);
      }
-//        printf("\n\n\n\n%s\n\n\n",command);
-     runfunction(command,ProcessToPipe,kgffmpeg);
-//     runfunction(command,ProcessPrint,kgffmpeg);
-//     kgCleanDir(Folder);
+     else {
+       sprintf(command,"ffmpegfun -f concat -safe 0 -i \"%-s/mylist.txt\" "
+        " -y  -f mp4  -video_track_timescale 90k -an  -c:v copy  "
+        " \"%-s\" ", Folder ,Cn.outfile);
+     }
+        printf("\n\n\n\n%s\n\n\n",command);
+     runfunction(command,ProcessToPipe,ffmpegfun);
+//     runfunction(command,ProcessPrint,ffmpegfun);
+     kgCleanDir(Folder);
      strcpy(options,"Joinded Video Files\n");
      write(Jpipe[1],options,strlen(options));
      close(Jpipe[1]);
@@ -475,7 +403,8 @@ int JoinToMp4( CONVDATA *cn) {
   else {
      waitpid(pid,&status,0);
      sprintf(Folder,"%-s/%-d",getenv("HOME"),pid);
-     if(FileStat(Folder)) kgCleanDir(Folder);
+     // TCB
+//     if(FileStat(Folder)) kgCleanDir(Folder);
   }
 }
  
@@ -659,6 +588,7 @@ int  VideoJoinsplbutton1callback(int butno,int i,void *Tmp) {
   int n,ret=1,Qty; 
   float TotSec=0.0;
   char *Of;
+  int vcodec;
   DIT *T;
   Dlink *L;
   MEDIAINFO *mpt;
@@ -669,39 +599,64 @@ int  VideoJoinsplbutton1callback(int butno,int i,void *Tmp) {
   Of = kgGetString(T,0);
   strcpy(cndata.outfile,Of);
   L = (Dlink *)cndata.Vlist;
-  Resetlink(L);
   cndata.Xsize = 0;
   cndata.Ysize = 0;
   cndata.fps=0.0;
   n=0;
   Qty = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"VJQuality"));
+  cndata.Quality = Qty;
+  Resetlink(L);
   while ((mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
     n++;
     TotSec += (mpt->TotSec);
-    mpt->Process=0;
-    if( mpt->Axres> cndata.Xsize) 
-          {cndata.Xsize = mpt->Axres;mpt->Process=1;}
-    if( mpt->Ayres> cndata.Ysize) 
-          {cndata.Ysize = mpt->Ayres;mpt->Process=1;}
-    if( mpt->Rxres> cndata.Xsize) 
-          {cndata.Xsize = mpt->Rxres;mpt->Process=1;}
-    if( mpt->Ryres> cndata.Ysize) 
-          {cndata.Ysize = mpt->Ryres;mpt->Process=1;}
     if( mpt->fps> cndata.fps) 
-          {cndata.fps = mpt->fps;mpt->Process=1;}
-    if( mpt->Rxres!= mpt->Axres) mpt->Process=1;
-    if( mpt->Ryres!= mpt->Ayres) mpt->Process=1;
-    if( mpt->Rxres!= cndata.Xsize) mpt->Process=1;
-    if( mpt->Ryres!= cndata.Ysize) mpt->Process=1;
+          {cndata.fps = mpt->fps;}
+    if( mpt->Axres> cndata.Xsize) 
+          {cndata.Xsize = mpt->Axres;}
+    if( mpt->Ayres> cndata.Ysize) 
+          {cndata.Ysize = mpt->Ayres;}
+  }
+  n=0;
+  Resetlink(L);
+  while ((mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
+	  vcodec = mpt->vcodec;
+	  if(vcodec != 2) break;
+  }
+  printf("======= vcodec = %d\n",vcodec);
+  fflush(stdout);
+  strcpy(libvcodec,(char *)"libx265");
+  if(vcodec ==2) { // to  process if th libx264 if all are h264
+    strcpy(libvcodec,(char *) "libx264");
+    Resetlink(L);
+    while ((mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
+      mpt->vcodec =1;
+    }
+  }
+  n=0;
+  Resetlink(L);
+  while ((mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
+    n++;
+    mpt->Process=0;
+    if( mpt->Axres != cndata.Xsize) {mpt->Process=1;}
+    if( mpt->Ayres != cndata.Ysize) {mpt->Process=1;}
+  //  if( mpt->Rxres != cndata.Xsize) {mpt->Process=1;}
+//    if( mpt->Ryres != cndata.Ysize) {mpt->Process=1;}
     if( (int)(mpt->fps*1000)!= (int)(cndata.fps*1000)) mpt->Process=1;
+    if(mpt->vcodec != 1) mpt->Process=1;
   }
 //  printf("fps = %f\n",cndata.fps);
   cndata.Fcount=n;
   cndata.EndSec=TotSec;
-#if 0  
+  if(vcodec ==2) { // putting it back
+    Resetlink(L);
+    while ((mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
+      mpt->vcodec =2;
+    }
+  }
+#if 1  
   Resetlink(L);
   while ((mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
-    printf("%s : %d\n",mpt->Flname,mpt->Process);
+    printf("=======>> %s : %d %d %d %f\n",mpt->Flname,mpt->Process,mpt->Rxres,mpt->Ryres,mpt->fps);
   }
   printf("%d %d %f\n",cndata.Xsize,cndata.Ysize,cndata.fps);
 #endif
@@ -710,6 +665,7 @@ int  VideoJoinsplbutton1callback(int butno,int i,void *Tmp) {
   sprintf(buff,"%d \"%-s\" %d %d %d %f %d %f\n",
        cndata.code, cndata.outfile,cndata.Xsize,
        cndata.Ysize,cndata.Fcount,cndata.fps,Qty,TotSec);
+#if 0
   write(ToTools[1],buff,strlen(buff));
   n=0;
   Resetlink(L);
@@ -718,13 +674,16 @@ int  VideoJoinsplbutton1callback(int butno,int i,void *Tmp) {
        mpt->Flname,mpt->Process,mpt->TotSec,mpt->Audio);
     write(StatusTools[1],buff,strlen(buff));
   }
+#else
+  JoinToMp4(&cndata);
+#endif
  
   switch(butno) {
     case 1: 
       ret=1;
       break;
   }
-  kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
+  kgSplashMessage(Tmp,100,100,300,40,(char *)"Send for Processing",1,0,15);
   ret=0;
   return ret;
 }

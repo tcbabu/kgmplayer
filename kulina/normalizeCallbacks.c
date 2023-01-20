@@ -21,6 +21,7 @@ int runfunctionbkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(int
 int runnormalisebkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **),char *);
 int FileStat(char *flname);
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 
 #if 1
 int ProcessVolume(int pip0,int pip1,int Pid) {
@@ -236,7 +237,7 @@ int kgffmpeg_o(int argc,char *argv[]){
   strcat(Tmpfile,outfile+GetBaseIndex(outfile));
   argv[argc-1]= Tmpfile;
   if( (pid=fork())==0) {
-    kgffmpeg(argc,argv);
+    ffmpegfun(argc,argv);
     exit(0);
   }
   else {
@@ -257,7 +258,7 @@ int kgffmpeg_(int argc,char *argv[]){
   Tmpfile[GetBaseIndex(outfile)+1]='\0';
   strcat(Tmpfile,outfile+GetBaseIndex(outfile));
   argv[argc-1]= Tmpfile;
-  kgffmpeg(argc,argv);
+  ffmpegfun(argc,argv);
   return 1;
 }
 
@@ -299,9 +300,9 @@ int  normalizesplbutton1callback(int butno,int i,void *Tmp) {
         strcpy(infile,kgGetString(kgGetNamedWidget(Dia,"NomInputWidget"),0));
         strcpy(outfile,kgGetString(kgGetNamedWidget(Dia,"NomOutputWidget"),0));
         meanlevel = kgGetDouble(kgGetNamedWidget(Dia,"NomMeanWidget"),0);
-        sprintf(buff,"kgffmpeg -i \"%s\" -af \"volumedetect\" -vn -sn "
+        sprintf(buff,"ffmpegfun -i \"%s\" -af \"volumedetect\" -vn -sn "
           " -dn -f null /dev/null", infile);
-        runfunction(buff,ProcessVolume,kgffmpeg);
+        runfunction(buff,ProcessVolume,ffmpegfun);
 
         sprintf(buff,"Duration = %lf  ttotal %d\n",duration,ttotal);
         kgWrite(InfoBox,buff);
@@ -312,10 +313,10 @@ int  normalizesplbutton1callback(int butno,int i,void *Tmp) {
         kgWrite(InfoBox,buff);
         kgUpdateOn(Dia);
 //        remove(outfile);
-        sprintf(buff,"kgffmpeg_ -i \"%s\" -af \"volume=%lfdB\" -y \"%s\"", 
+        sprintf(buff,"ffmpegfun_ -i \"%s\" -af \"volume=%lfdB\" -y \"%s\"", 
                       infile,corval,outfile);
-//        runfunction(buff,NULL,kgffmpeg);
-//        runfunctionbkgr(buff,ProcessToPipe,kgffmpeg_);
+//        runfunction(buff,NULL,ffmpegfun);
+//        runfunctionbkgr(buff,ProcessToPipe,ffmpegfun_);
         runnormalisebkgr(buff,ProcessToPipe,kgffmpeg_,outfile);
       }
       ret=0;

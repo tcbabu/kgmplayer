@@ -1,3 +1,4 @@
+#define D_TH
 /*
   Version 2.1
   Dated 22nd Oct 1998 Time 12:15
@@ -66,6 +67,7 @@
 #include "font34.h"
 #include "font35.h"
 #include "font36.h"
+#define  RESIZE 5
 /*
 #include "font37.h"
 #include "font38.h"
@@ -97,7 +99,7 @@ typedef struct {
   int  *icyv;
   float *m_f;
 } FONT;
-Dlink *Fontlist=NULL;
+//Dlink *Fontlist=NULL;
 static int Sldwd = 20,Sw=8,Sdpw=7;
 int TextSize=8,Ht=12,Wd=7,Gap=2,Bt=1;
 #define CHECKLIMITS(w) {\
@@ -219,7 +221,7 @@ static unsigned char BLUE[4]={0x00, 0x01, 0x08, 0x09 };
 static unsigned char GREEN[4]={0x00, 0x02, 0x10, 0x12 };
 static char Posfmt[200]={"%14.5g , %-14.5g"},
            Xfmt[7]={" 14.5g"},Yfmt[7]={"-14.5g"};
-union kbinp { short kbint; char kbc[2];} kb;
+static union kbinp { short kbint; char kbc[2];} kb;
 
 void *kgBorderedRectangle(int width,int height,int fillclr,float rfac);
 void *kgPressedRectangle(int width,int height,int fillclr,float rfac);
@@ -269,7 +271,7 @@ void uig_scroll_up(DIALOG *D,short x1,short y1,short x2,short y2,short jmp)
  short get_key(int t)
  {
    union kbinp { short kbint; char kbc[2];} kb;
-     if((kb.kbint=get_kb())>0) return(kb.kbint);
+     if((kb.kbint=ui_get_kb())>0) return(kb.kbint);
    return(0);
  }
 #if 0
@@ -281,7 +283,7 @@ void uig_scroll_up(DIALOG *D,short x1,short y1,short x2,short y2,short jmp)
    union kbinp { short kbint; char kbc[2];} kb;
    for(;;)
    {
-     if((kb.kbint=get_kb())>0) return(kb.kbint);
+     if((kb.kbint=ui_get_kb())>0) return(kb.kbint);
      if((key=GetPointer(&dx,&dy))>=0){
        yy=EVGAY-dy;
        if(key==1){
@@ -338,12 +340,18 @@ void uig_scroll_up(DIALOG *D,short x1,short y1,short x2,short y2,short jmp)
        }
    return(kb.kbint);
  }
+#if 0
 void uiMakeFontlist(void) {
   if(Fontlist == NULL ) Fontlist = (Dlink *)Loadfontstruct();
 }
+#endif
 Dlink *uiGetFontlist(void) {
+#if 0
   if(Fontlist == NULL ) Fontlist = (Dlink *)Loadfontstruct();
   return Dcopy(Fontlist);
+#else
+  return (Dlink *)Loadfontstruct();
+#endif
 }
 void ui_initialise(DIG *G)
 {
@@ -386,7 +394,8 @@ void ui_initialise(DIG *G)
   dc->bod_color=1;
   dc->DOUBLE=0;
 //  if(Fontlist == NULL ) Fontlist = (Dlink *)Loadfontstruct();
-  dc->Fontlist=uiGetFontlist(); // need further modification
+//  dc->Fontlist=uiGetFontlist(); // need further modification
+  dc->Fontlist=(Dlink *)Loadfontstruct();
   count = Dcount(dc->Fontlist);
   font =0;
   Dposition(dc->Fontlist,font+1);
@@ -2857,12 +2866,12 @@ void ui_txt_rot(DIG *G,float t)
                             break;
                    case 'k':
                             if(FB_P==NULL) {
-                              FB_P=(B_K *) malloc((int)sizeof(B_K));
+                              FB_P=(B_K *) Malloc((int)sizeof(B_K));
                               dc->O_P=FB_P;
                               dc->O_P->Nx=NULL;dc->O_P->Pr=NULL;
                             }
                             else {
-                              dc->O_P->Nx=(B_K *) malloc((int)sizeof(B_K));
+                              dc->O_P->Nx=(B_K *) Malloc((int)sizeof(B_K));
                               dc->O_P->Nx->Pr=dc->O_P;
                               dc->O_P=dc->O_P->Nx;
                               dc->O_P->Nx=NULL;
@@ -2885,12 +2894,12 @@ void ui_txt_rot(DIG *G,float t)
                    case 'O':
                    case 'U':
                             if(FO_L==NULL) {
-                              FO_L=(L_N *) malloc((int)sizeof(L_N));
+                              FO_L=(L_N *) Malloc((int)sizeof(L_N));
                               dc->O_L=FO_L;
                               dc->O_L->Nx=NULL;dc->O_L->Pr=NULL;
                             }
                             else {
-                              dc->O_L->Nx=(L_N *) malloc((int)sizeof(L_N));
+                              dc->O_L->Nx=(L_N *) Malloc((int)sizeof(L_N));
                               dc->O_L->Nx->Pr=dc->O_L;
                               dc->O_L=dc->O_L->Nx;
                               dc->O_L->Nx=NULL;
@@ -3021,8 +3030,8 @@ void ui_panel(DIG *G,float *x,float *y,int color,int flag,int n)
   kgWC *wc;
   dc = G->dc;
   wc = G->wc;
-  x1 = (int *) malloc(sizeof(int)*(n+1));
-  y1 = (int *) malloc(sizeof(int)*(n+1));
+  x1 = (int *) Malloc(sizeof(int)*(n+1));
+  y1 = (int *) Malloc(sizeof(int)*(n+1));
   if( (y1==NULL) ){
     normal();
     printf(" Error: Not enough buffer for polyfill..\n");
@@ -3186,156 +3195,157 @@ void transch(int c) {
 */
 void * Loadfontstruct(void) {
   FONT *pt;
+  Dlink *Fontlist=NULL;
   if(Fontlist==NULL) {
   Fontlist = Dopen();
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf0;
   pt->m_f = m_f0;
   pt->icxv = icxvf0;
   pt->icyv = icyvf0;
   pt->fontname = fontname0;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf1; pt->m_f = m_f1; pt->icxv = icxvf1;
   pt->icyv = icyvf1; pt->fontname = fontname1;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf2; pt->m_f = m_f2; pt->icxv = icxvf2;
   pt->icyv = icyvf2; pt->fontname = fontname2;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf3; pt->m_f = m_f3; pt->icxv = icxvf3;
   pt->icyv = icyvf3; pt->fontname = fontname3;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf4; pt->m_f = m_f4; pt->icxv = icxvf4;
   pt->icyv = icyvf4; pt->fontname = fontname4;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf5; pt->m_f = m_f5; pt->icxv = icxvf5;
   pt->icyv = icyvf5; pt->fontname = fontname5;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf6; pt->m_f = m_f6; pt->icxv = icxvf6;
   pt->icyv = icyvf6; pt->fontname = fontname6;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf7; pt->m_f = m_f7; pt->icxv = icxvf7;
   pt->icyv = icyvf7; pt->fontname = fontname7;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf8; pt->m_f = m_f8; pt->icxv = icxvf8;
   pt->icyv = icyvf8; pt->fontname = fontname8;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf9; pt->m_f = m_f9; pt->icxv = icxvf9;
   pt->icyv = icyvf9; pt->fontname = fontname9;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf10; pt->m_f = m_f10; pt->icxv = icxvf10;
   pt->icyv = icyvf10; pt->fontname = fontname10;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf11; pt->m_f = m_f11; pt->icxv = icxvf11;
   pt->icyv = icyvf11; pt->fontname = fontname11;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf12; pt->m_f = m_f12; pt->icxv = icxvf12;
   pt->icyv = icyvf12; pt->fontname = fontname12;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf13; pt->m_f = m_f13; pt->icxv = icxvf13;
   pt->icyv = icyvf13; pt->fontname = fontname13;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf14; pt->m_f = m_f14; pt->icxv = icxvf14;
   pt->icyv = icyvf14; pt->fontname = fontname14;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf15; pt->m_f = m_f15; pt->icxv = icxvf15;
   pt->icyv = icyvf15; pt->fontname = fontname15;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf16; pt->m_f = m_f16; pt->icxv = icxvf16;
   pt->icyv = icyvf16; pt->fontname = fontname16;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf17; pt->m_f = m_f17; pt->icxv = icxvf17;
   pt->icyv = icyvf17; pt->fontname = fontname17;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf18; pt->m_f = m_f18; pt->icxv = icxvf18;
   pt->icyv = icyvf18; pt->fontname = fontname18;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf19; pt->m_f = m_f19; pt->icxv = icxvf19;
   pt->icyv = icyvf19; pt->fontname = fontname19;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf20; pt->m_f = m_f20; pt->icxv = icxvf20;
   pt->icyv = icyvf20; pt->fontname = fontname20;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf21; pt->m_f = m_f21; pt->icxv = icxvf21;
   pt->icyv = icyvf21; pt->fontname = fontname21;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf22; pt->m_f = m_f22; pt->icxv = icxvf22;
   pt->icyv = icyvf22; pt->fontname = fontname22;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf23; pt->m_f = m_f23; pt->icxv = icxvf23;
   pt->icyv = icyvf23; pt->fontname = fontname23;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf24; pt->m_f = m_f24; pt->icxv = icxvf24;
   pt->icyv = icyvf24; pt->fontname = fontname24;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf25; pt->m_f = m_f25; pt->icxv = icxvf25;
   pt->icyv = icyvf25; pt->fontname = fontname25;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf26; pt->m_f = m_f26; pt->icxv = icxvf26;
   pt->icyv = icyvf26; pt->fontname = fontname26;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf27; pt->m_f = m_f27; pt->icxv = icxvf27;
   pt->icyv = icyvf27; pt->fontname = fontname27;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf28; pt->m_f = m_f28; pt->icxv = icxvf28;
   pt->icyv = icyvf28; pt->fontname = fontname28;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf29; pt->m_f = m_f29; pt->icxv = icxvf29;
   pt->icyv = icyvf29; pt->fontname = fontname29;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf30; pt->m_f = m_f30; pt->icxv = icxvf30;
   pt->icyv = icyvf30; pt->fontname = fontname30;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf31; pt->m_f = m_f31; pt->icxv = icxvf31;
   pt->icyv = icyvf31; pt->fontname = fontname31;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf32; pt->m_f = m_f32; pt->icxv = icxvf32;
   pt->icyv = icyvf32; pt->fontname = fontname32;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf33; pt->m_f = m_f33; pt->icxv = icxvf33;
   pt->icyv = icyvf33; pt->fontname = fontname33;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf34; pt->m_f = m_f34; pt->icxv = icxvf34;
   pt->icyv = icyvf34; pt->fontname = fontname34;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf35; pt->m_f = m_f35; pt->icxv = icxvf35;
   pt->icyv = icyvf35; pt->fontname = fontname35;
   Dadd(Fontlist,pt);
-  pt = (FONT *)malloc(sizeof(FONT));
+  pt = (FONT *)Malloc(sizeof(FONT));
   pt->icpos = icposf36; pt->m_f = m_f36; pt->icxv = icxvf36;
   pt->icyv = icyvf36; pt->fontname = fontname36;
   Dadd(Fontlist,pt);
@@ -3412,18 +3422,21 @@ char **t_fontnames(void) {
   FONT *pt;
   char **fnames;
   int count,i=0,ln;
-  if(Fontlist == NULL ) Loadfontstruct();
+  Dlink *Fontlist=NULL;
+  if(Fontlist == NULL ) Fontlist = Loadfontstruct();
   count = Dcount(Fontlist);
-  fnames = (char **)malloc(sizeof(char *)*(count+1));
+  fnames = (char **)Malloc(sizeof(char *)*(count+1));
   fnames[count]=NULL;
   Resetlink(Fontlist);
   while((pt=(FONT *)Getrecord(Fontlist))!= NULL) {
-    fnames[i]= (char *)malloc(strlen(pt->fontname)+20);
+    fnames[i]= (char *)Malloc(strlen(pt->fontname)+20);
     sprintf(fnames[i],"!f18%2.2d !f%-2.2d %-s",i,i,pt->fontname);
 //    fnames[i][strlen(fnames[i])]='\0';
 //    printf("%s\n",fnames[i]);
     i++;
   }
+  Dempty(Fontlist);
+  Fontlist=NULL;
   return fnames;
 }
 void ui_txt_font(DIG *G,int font)
@@ -3434,8 +3447,8 @@ void ui_txt_font(DIG *G,int font)
   kgWC *wc;
   dc = G->dc;
   wc = G->wc;
-//  if(Fontlist == NULL ) Loadfontstruct();
-  if(Fontlist == NULL ) dc->Fontlist=uiGetFontlist();
+//  if(Fontlist == NULL ) Fontlist = Loadfontstruct();
+  if(dc->Fontlist== NULL)  dc->Fontlist = Loadfontstruct();
   count = Dcount(dc->Fontlist);
   if(font >= count ) font =0;
   Dposition(dc->Fontlist,font+1);
@@ -3521,12 +3534,12 @@ int  uistrlngth(void *Gtmp,char *title,float *xdsp) {
                         break;
                case 'k':
                         if(FB_P==NULL) {
-                          FB_P=(B_K *) malloc((int)sizeof(B_K));
+                          FB_P=(B_K *) Malloc((int)sizeof(B_K));
                           dc->O_P=FB_P;
                           dc->O_P->Nx=NULL;dc->O_P->Pr=NULL;
                         }
                         else {
-                          dc->O_P->Nx=(B_K *) malloc((int)sizeof(B_K));
+                          dc->O_P->Nx=(B_K *) Malloc((int)sizeof(B_K));
                           dc->O_P->Nx->Pr=dc->O_P;
                           dc->O_P=dc->O_P->Nx;
                           dc->O_P->Nx=NULL;
@@ -3650,12 +3663,12 @@ int  uistrlngth_o(kgDC *dc,char *title,float *xdsp)
                         break;
                case 'k':
                         if(FB_P==NULL) {
-                          FB_P=(B_K *) malloc((int)sizeof(B_K));
+                          FB_P=(B_K *) Malloc((int)sizeof(B_K));
                           dc->O_P=FB_P;
                           dc->O_P->Nx=NULL;dc->O_P->Pr=NULL;
                         }
                         else {
-                          dc->O_P->Nx=(B_K *) malloc((int)sizeof(B_K));
+                          dc->O_P->Nx=(B_K *) Malloc((int)sizeof(B_K));
                           dc->O_P->Nx->Pr=dc->O_P;
                           dc->O_P=dc->O_P->Nx;
                           dc->O_P->Nx=NULL;
@@ -3967,7 +3980,7 @@ void uiBkup_clip_limits(kgWC *wc) {
   CLIP *tmp;
 //  printf("Backup\n");
   if (wc->Clip == NULL) wc->Clip = Dopen();
-  tmp = (CLIP *)malloc(sizeof(CLIP));
+  tmp = (CLIP *)Malloc(sizeof(CLIP));
   tmp->cx1 = wc->c_v_x1;
   tmp->cy1 = wc->c_v_y1;
   tmp->cy2 = wc->c_v_y2;
@@ -4511,7 +4524,7 @@ KBEVENT  kgSkipMouseMove(DIALOG *D) {
   }
   return kb;
 }
-int   kgGetTimedEvent(DIALOG *D,KBEVENT *e) {
+int   kgGetTimedEvent_o(DIALOG *D,KBEVENT *e) {
   int i,SKIP=20;
   KBEVENT kb,kbo;
   if(kgCheckEvent(D,&kbo)==0)  {
@@ -4521,12 +4534,31 @@ int   kgGetTimedEvent(DIALOG *D,KBEVENT *e) {
   }
   kb = kbo;
   for(i=0;i<SKIP;i++) {
+    kb = kbo;
     if((kbo.event==0)||(kbo.event==3)){
-      kb = kbo;
       if(kgCheckEvent(D,&kbo)==0) break;
       continue;
     }
-    else break;
+    else {  break;}
+  }
+  *e=kb;
+  return 1;
+}
+int   kgGetTimedEvent(DIALOG *D,KBEVENT *e) {
+  int i,SKIP=20;
+  KBEVENT kb,kbo;
+  if(kgCheckEvent(D,&kbo)==0)  {
+//    kgThreadSleep(0,250);
+    kgThreadSleep(0,2000);
+    if(kgCheckEvent(D,&kbo)==0) return 0;
+  }
+  kb = kbo;
+  i=0;
+  while((kbo.event==0)||(kbo.event==3)){
+      if(kgCheckEvent(D,&kbo)==0) break;
+      kb = kbo;
+      i++;
+      if(i==SKIP) break;
   }
   *e=kb;
   return 1;
@@ -5069,7 +5101,7 @@ char cross_getpointer(DIG *G,int *xx,int *yy)
   if(pointer==3){gcur_x=xpo,gcur_y=ypo, key='.';goto jump;};
 
 
-    kb.kbint = get_kb();
+    kb.kbint = ui_get_kb();
     ch=kb.kbc[0];
     key=ch;
     while ((ch!='\r')&&(kb.kbint>=0)&&(ch!='\n'))
@@ -5093,7 +5125,7 @@ char cross_getpointer(DIG *G,int *xx,int *yy)
 
        }
       }
-     kb.kbint = get_kb();
+     kb.kbint = ui_get_kb();
      ch=kb.kbc[0];
      key = ch;
     }
@@ -5660,7 +5692,7 @@ void uiMenuString(DIALOG *D,char *Str,int x,int y,int width,int height,int font,
    ln = width;
    if(Str==NULL) return;
 //   if(Str[0]=='\0') return;
-   fid = kgInitImage(width,height,8);
+   fid = kgInitImage(width,height,RESIZE);
    BxSize=FontSize*2;
    BxSize=FontSize*1.6;
    xp =height*0.5-FontSize*0.5;
@@ -5735,7 +5767,7 @@ void *uiMenuStringImage(DIALOG *D,char *Str,int width,int height,int font,int co
         BxSize=height;
         FontSize =(int)((float)BxSize/1.6+0.5);
    }
-   fid = kgInitImage(width,height,8);
+   fid = kgInitImage(width,height,RESIZE);
    yp =height*0.5-FontSize*0.5;
    width1 = width-FontSize;
    xp = FontSize*0.5;
@@ -5792,7 +5824,7 @@ void **uiMenuStringImages(DIALOG *D,char **Strs,int width,int height,int font,in
    item=0;
    while(Strs[item]!=NULL) item++;
    if(item==0) return NULL;
-   imgs = (void **)malloc(sizeof(void *)*(item+1));
+   imgs = (void **)Malloc(sizeof(void *)*(item+1));
    for(i=0;i<=item;i++) imgs[i]=NULL;
    BxSize=FontSize*1.6;
    if(BxSize> (height)) {
@@ -5861,7 +5893,7 @@ void **uiMenuNailImages(DIALOG *D,ThumbNail **Strs,int width,int height,int font
    item=0;
    while(Strs[item]!=NULL) item++;
    if(item==0) return NULL;
-   imgs = (void **)malloc(sizeof(void *)*(item+1));
+   imgs = (void **)Malloc(sizeof(void *)*(item+1));
    for(i=0;i<=item;i++) imgs[i]=NULL;
    BxSize=FontSize*1.6;
    if(BxSize> (height)) {
@@ -5931,7 +5963,7 @@ void *uiMakeXSymbol(DIX *w,int color,int FontSize,int status){
    BxSize=FontSize*1.6;
    tw = (float)FontSize;
    th = HFAC*tw;
-   fid = kgInitImage(width,height,4);
+   fid = kgInitImage(width,height,RESIZE);
    xp =height*0.5-BxSize*0.5;
    width1 = width*0.5-0.5*BxSize;
    if(fid != NULL ) {
@@ -5980,7 +6012,7 @@ void *uiMakeRSymbol(DIRA *w,int color,int FontSize,int status){
    BxSize=FontSize*2;
    tw = (float)FontSize;
    th = 1.25*tw;
-   fid = kgInitImage(width,height,8);
+   fid = kgInitImage(width,height,RESIZE);
    xp = 0.0;
    yp =height*0.5-FontSize*0.5;
    width1 = width*0.5-0.5*BxSize;
@@ -6020,7 +6052,7 @@ void *uiMakeCSymbol(DICH *w,int color,int FontSize,int status){
    BxSize=FontSize*2;
    tw = (float)FontSize;
    th = HFAC*tw;
-   fid = kgInitImage(width,height,8);
+   fid = kgInitImage(width,height,RESIZE);
    xp = 0.0;
    yp =height*0.5-FontSize*0.5;
    width1 = width*0.5-0.5*BxSize;
@@ -6060,7 +6092,7 @@ void uiCheckString(DIALOG *D,char *Str,int x,int y,int width,int height,int font
    ln = width;
    if(Str==NULL) return;
 //   if(Str[0]=='\0') return;
-   fid = kgInitImage(width,height,8);
+   fid = kgInitImage(width,height,RESIZE);
    BxSize=FontSize*2;
    xp =height*0.5-FontSize*0.5;
    width1 = width-2*BxSize;
@@ -6128,7 +6160,7 @@ void uiRadioString(DIALOG *D,char *Str,int x,int y,int width,int height,int font
    if(Str==NULL) return;
 //   if(Str[0]=='\0') return;
 //TCBTCB  
-   fid = kgInitImage(width,height,8);
+   fid = kgInitImage(width,height,RESIZE);
    BxSize=FontSize*2;
    xp =height*0.5-FontSize*0.5;
    width1 = width-2*BxSize;
@@ -6628,7 +6660,7 @@ void uiPutString(DIALOG *D,char *str,int x1,int y1,int char_clr,int Font,int Fon
    ysize = 1.80*FontSize;
    stmp[1]='\0';
 //   fid = kgInitImage((int)(xsize),ysize,2);
-   fid = kgInitImage((int)(xsize),ysize,3);
+   fid = kgInitImage((int)(xsize),ysize,RESIZE);
    kgUserFrame(fid,0.,0.,(float)xsize,(float)ysize);
    th = FontSize*1.1;
    tw = FontSize;
@@ -7241,7 +7273,7 @@ void * make_but_str(DIALOG *D,int x1,int y1,int xgap,int ygap,int nxb,int nyb,
    int i=0,k,x2,y2;
    int EVGAY;
    BUTS *ptr;
-   ptr = (BUTS *) malloc(sizeof(BUTS));
+   ptr = (BUTS *) Malloc(sizeof(BUTS));
    EVGAY= D->evgay;
    x2 = nxb*(b_w+xgap)+x1-xgap;
    y2 = nyb*(b_h+ygap)+y1-ygap;
@@ -7260,7 +7292,7 @@ void * make_but_str(DIALOG *D,int x1,int y1,int xgap,int ygap,int nxb,int nyb,
    ptr->xpm=xpm;
    ptr->bkgr=bkgr;
    if(sw==NULL) { 
-      ptr->sw = (int *) malloc(sizeof(int)*nxb*nyb);
+      ptr->sw = (int *) Malloc(sizeof(int)*nxb*nyb);
       for(k=0;k<(nxb*nyb);k++) ptr->sw[k]=1; 
    }
    else { 
@@ -7877,6 +7909,8 @@ void _dv_draw_button(void *tmp,int k,int state) {
    D= N->D;
    df = *(N->df);
    if(N->type==10) return;
+   xgap = N->xgap;
+   ygap = N->ygap;
    transparency = D->transparency;
    wc = WC(D);
    highli=0;
@@ -8279,10 +8313,12 @@ int _uiMake_N(void *tmp) {
   BUT_STR *buts;
   int ret=1,k,n,backgr;
   int x1,y1,x2,y2;
+  int xgap,ygap;
+  int xoff,yoff;
   DIALOG *D;
   kgWC *wc;
   b= (DIN *)tmp;
-  D=b->D;
+  D=b->D;  
   x1 = b->x1+D->xo;
   x2 = b->x2+D->xo;
   y1 = b->y1+D->yo;
@@ -8308,7 +8344,11 @@ int _uiMake_N(void *tmp) {
        if(buts[k].imgn== NULL) {
 //         _uiMakeButnImages(b,k);
 //         _uiMakeButnImages(buts+k);
+#ifdef D_TH
            DoInAnyThread(D->ThInfo,_uiMakeButnImages,buts+k);
+#else
+           _uiMakeButnImages(buts+k);
+#endif
            backgr=0;
        }
      }
@@ -8539,13 +8579,13 @@ void _ui_slidevalue(DIALOG *D,S_STR *pt) {
 //   _uirect_fill(wc,x,y+w,x+l,y+1,pt->fill_clr);
    if(pt->code=='f') {
      val = pt->df*pt->cf+pt->sh;
-     sprintf(buf,"%-lg\0",val);
+     sprintf(buf,"%-lg",val);
    }
    else {
      val = pt->df*pt->cf+pt->sh;
 //TCB
-//     sprintf(buf,"%-ld\0",(int)(val+0.5));
-     sprintf(buf,"%-d\0",(int)(val+0.5));
+//     sprintf(buf,"%-ld",(int)(val+0.5));
+     sprintf(buf,"%-d",(int)(val+0.5));
    }
    x = x +(l)/2;
    uiwrite_string(D,buf,x,EVGAY-pt->y+4,pt->char_clr);
@@ -8902,7 +8942,7 @@ void * _ui_setslide(void *tmp,int min,int max,int x,int y,int l,int df,
    gc = &(D->gc);
    if(min>=max) {
      normal();
-     printf("Error: Wrong slide-bar limits: min=%ld max=%ld\n",min,max);
+     printf("Error: Wrong slide-bar limits: min=%d max=%d\n",min,max);
      exit(0);
    }
    if((df-min)*(max-df)< 0) df = (max+min)/2;
@@ -9082,7 +9122,7 @@ void * _ui_sethbar(DIHB *B,int min,int max,int x,int y,int l,int df,
    gc = &(D->gc);
    if(min>=max) {
      normal();
-     printf("Error: Wrong slide-bar limits: min=%ld max=%ld\n",min,max);
+     printf("Error: Wrong slide-bar limits: min=%d max=%d\n",min,max);
      exit(0);
    }
    if((df-min)*(max-df)< 0) df = (max+min)/2;
@@ -9297,7 +9337,7 @@ static void _uiMakeSBarImages_o(DIHB *B) {
  }
  w =pt->Sw+of;
  l = pt->l+pt->Sldwd+of;
- fid = (DIG *)kgInitImage(l,w,8);
+ fid = (DIG *)kgInitImage(l,w,RESIZE);
  kgUserFrame(fid,-(float)l*0.5,-(float)w*0.5,(float)l*0.5,(float)w*0.5);
  kgRoundedRectangleFill(fid,(float).0,.0,(float)(l+of*0.5),(float)(w+of*0.5),0,D->gc.fill_clr,0.5);
  kgRoundedRectangleFill(fid,(float)1.0,-1.0,(float)(l-of),(float)(w-of),0,D->gc.   vbright,0.5);
@@ -9308,7 +9348,7 @@ static void _uiMakeSBarImages_o(DIHB *B) {
  kgCloseImage(fid);
  w = w;
  l = pt->Sldwd+of;
- fid = (DIG *)kgInitImage(l,w,8);
+ fid = (DIG *)kgInitImage(l,w,RESIZE);
  kgUserFrame(fid,-(float)l*0.5,-(float)w*0.5,(float)l*0.5,(float)w*0.5);
  fillcolor = color;
  xsize=(l-of)-0.5*of;ysize=(w-of)-0.5*of;
@@ -9390,7 +9430,7 @@ static void _uiMakeSBarImages(DIHB *B) {
  }
  w =pt->Sw+of;
  l = pt->l+pt->Sldwd+of;
- fid = (DIG *)kgInitImage(l,w,8);
+ fid = (DIG *)kgInitImage(l,w,RESIZE);
  kgUserFrame(fid,-(float)l*0.5,-(float)w*0.5,(float)l*0.5,(float)w*0.5);
  fillcolor = D->gc.fill_clr;
  if(fillcolor >=0 ) kgGetRGB((DIG *)fid,fillcolor,&r,&g,&b);
@@ -9416,7 +9456,7 @@ static void _uiMakeSBarImages(DIHB *B) {
  kgCloseImage(fid);
  w = w;
  l = pt->Sldwd+of;
- fid = (DIG *)kgInitImage(l,w,8);
+ fid = (DIG *)kgInitImage(l,w,RESIZE);
  kgUserFrame(fid,-(float)l*0.5,-(float)w*0.5,(float)l*0.5,(float)w*0.5);
  xsize=(l-of)-0.5*of;ysize=(w-of)-0.5*of;
  fillcolor = color;
@@ -9500,7 +9540,7 @@ static void _uiMakeSBarImagesType7(DIHB *B) {
  }
  w =3+of;
  l = pt->l+pt->Sldwd+of;
- fid = (DIG *)kgInitImage(l,w,8);
+ fid = (DIG *)kgInitImage(l,w,RESIZE);
  kgUserFrame(fid,-(float)l*0.5-0.1,-(float)w*0.5-0.1,(float)l*0.5+0.1,(float)w*0.5+0.1);
  fillcolor = color;
  if(fillcolor >=0 ) kgGetRGB((DIG *)fid,fillcolor,&r,&g,&b);
@@ -9523,7 +9563,7 @@ static void _uiMakeSBarImagesType7(DIHB *B) {
  w = pt->Sw+of;
  l = pt->Sldwd+of;
 #if 1
- fid = (DIG *)kgInitImage(l,w,4);
+ fid = (DIG *)kgInitImage(l,w,RESIZE);
  kgUserFrame(fid,-(float)l*0.5,-(float)w*0.5,(float)l*0.5,(float)w*0.5);
  xsize=(w-of)-.75*of;ysize=(w-of)-.75*of;
  fillcolor = color;
@@ -9614,7 +9654,7 @@ static void _uiMakeSBarImagesType0(DIHB *B) {
  }
  w =7+of;
  l = pt->l+pt->Sldwd+of;
- fid = (DIG *)kgInitImage(l,w,8);
+ fid = (DIG *)kgInitImage(l,w,RESIZE);
  kgUserFrame(fid,-(float)l*0.5,-(float)w*0.5,(float)l*0.5,(float)w*0.5);
  b = (30);
  g = (30);
@@ -9627,7 +9667,7 @@ static void _uiMakeSBarImagesType0(DIHB *B) {
  kgCloseImage(fid);
  w = pt->Sw+of;
  l = pt->Sldwd+of;
- fid = (DIG *)kgInitImage(l,w,8);
+ fid = (DIG *)kgInitImage(l,w,RESIZE);
  kgUserFrame(fid,-(float)l*0.5,-(float)w*0.5,(float)l*0.5,(float)w*0.5);
  xsize=(l)-.75*of;ysize=(w-of)-.75*of;
  fillcolor = color;
@@ -9694,7 +9734,7 @@ static void _uiMakeSBarImagesType1(DIHB *B) {
  }
  w =5+of;
  l = pt->l+pt->Sldwd+of;
- fid = (DIG *)kgInitImage(l,w,8);
+ fid = (DIG *)kgInitImage(l,w,RESIZE);
  kgUserFrame(fid,-(float)l*0.5,-(float)w*0.5,(float)l*0.5,(float)w*0.5);
  fillcolor = color;
  if(fillcolor >=0 ) kgGetRGB((DIG *)fid,fillcolor,&r,&g,&b);
@@ -9713,7 +9753,7 @@ static void _uiMakeSBarImagesType1(DIHB *B) {
  kgCloseImage(fid);
  w = pt->Sw+of;
  l = pt->Sldwd+of;
- fid = (DIG *)kgInitImage(l,w,8);
+ fid = (DIG *)kgInitImage(l,w,RESIZE);
  kgUserFrame(fid,-(float)l*0.5,-(float)w*0.5,(float)l*0.5,(float)w*0.5);
  xsize=(l)-.75*of;ysize=(w-of)-.75*of;
  fillcolor = color;
@@ -9841,7 +9881,7 @@ int Make_h_bar(DIHB *d) {
    }
    l = max;
    if(min>=max) {
-     printf("Error: Wrong slide-bar limits: min=%ld max=%ld\n",min,max);
+     printf("Error: Wrong slide-bar limits: min=%d max=%d\n",min,max);
      exit(0);
    }
    if((df-min)*(max-df)< 0) df = (max+min)/2;
@@ -10081,7 +10121,7 @@ void uiMakeEbrowserImages_o(DIE *w,int lng) {
    if(w->menu != NULL) {
      while((w->menu[i])!=NULL) i++;
      items =i;
-     w->imgs=(void **)malloc(sizeof(void *)*(i+1));
+     w->imgs=(void **)Malloc(sizeof(void *)*(i+1));
      w->imgs[i]=NULL;
      for(i=0;i<items;i++) {
        w->imgs[i]= (void *) kgStringToImage(w->menu[i],NULL,
@@ -10481,7 +10521,7 @@ void * make_menu_str(DIALOG *D,int xx1,int yy1,int pos,int df,char **menu,int si
    if(df>n) df=n;
    if(pos>=n ) pos=n-1;
    if(pos < 0) pos=0;
-   br=(BRW_STR *)malloc(sizeof(BRW_STR));
+   br=(BRW_STR *)Malloc(sizeof(BRW_STR));
    br->D=D;
    br->x1=xx1;
    br->y1=yy1;
@@ -10523,7 +10563,7 @@ void * make_dialog_menu_str(DIALOG *D,DIE *w,int pos,int df,char **menu,int size
    if(df>n) df=n;
    if(pos>=n ) pos=n-1;
    if(pos < 0) pos=0;
-   br=(BRW_STR *)malloc(sizeof(BRW_STR));
+   br=(BRW_STR *)Malloc(sizeof(BRW_STR));
    br->D=D;
    br->x1=w->x1;
    br->y1=w->y1;
@@ -10551,7 +10591,7 @@ void * make_dialog_newmenu_str(DIALOG *D,DIX *x,int pos,int df,char **menu,int s
    if(df>n) df=n;
    if(pos>=n ) pos=n-1;
    if(pos < 0) pos=0;
-   br=(BRW_STR *)malloc(sizeof(BRW_STR));
+   br=(BRW_STR *)Malloc(sizeof(BRW_STR));
    br->D=D;
    br->x1=x->x1;
    br->y1=x->y1;
@@ -10582,7 +10622,7 @@ void * make_dialog_y_str(DIALOG *D,DIY *y,int pos,int df,char **menu,int size)
    if(df>n) df=n;
    if(pos>=y->nitems ) pos=y->nitems-1;
    if(pos < 0) pos=0;
-   br=(BRW_STR *)malloc(sizeof(BRW_STR));
+   br=(BRW_STR *)Malloc(sizeof(BRW_STR));
    br->D=D;
    br->x1=y->x1;
    br->y1=y->y1;
@@ -10968,6 +11008,8 @@ int _uiMake_Y(DIY *y)
    bwsr->scroll=1;
    if(y->size==y->ny) {
          bwsr->scroll=0;
+	 //TCB
+         bwsr->pos=0;
    }
    bwsr->size=y->size;
    if(bwsr->df >n ) bwsr->df=1;
@@ -11551,7 +11593,7 @@ void uiDrawProgBartype0(DIO *o) {
    else {o->direction =0; lp = l*o->percent/100.0;}
    color = o->clr;
    if(color==-1) color = D->gc.ProgColor;
-   fid = kgInitImage(width,height,8);
+   fid = kgInitImage(width,height,RESIZE);
    if(fid != NULL ) {
       kgUserFrame(fid,-1.,-1.,(float)width+1.,(float)height+1.);
       bclr = o->bordr;
@@ -11621,7 +11663,7 @@ void uiDrawProgBartype2(DIO *o) {
    else {o->direction =0; lp = l*o->percent/100.0;}
    color = o->clr;
    if(color==-1) color = D->gc.ProgColor;
-   fid = kgInitImage(width,height,8);
+   fid = kgInitImage(width,height,RESIZE);
    if(fid != NULL ) {
       kgUserFrame(fid,-2.,-2.,(float)width+2,(float)height+2);
       bclr = o->bordr;
@@ -11699,7 +11741,7 @@ void uiDrawProgBartype3(DIO *o) {
    else {o->direction =0; lp = l*o->percent/100.0;}
    color = o->clr;
    if(color==-1) color = D->gc.ProgColor;
-   fid = kgInitImage(width,height,8);
+   fid = kgInitImage(width,height,RESIZE);
    if(fid != NULL ) {
       kgUserFrame(fid,-1.0,-1.0,(float)width+1.0,(float)height+1.0);
       bclr = o->bordr;
@@ -12864,8 +12906,8 @@ int _uiMake_P (DIP *p) {
    } // f transparency
    else {
   
-   kgRestoreImage(D,p->Bimg,x1,y1,w+1,l+1);
-   if(D->DrawBkgr!= 0) {
+    kgRestoreImage(D,p->Bimg,x1,y1,w+1,l+1);
+    if(D->DrawBkgr!= 0) {
      if(color >= 0) {
       _dvrect_fill_transparent(wc,x1,y1,x2,y2,(unsigned int) color,0.0);
      }
@@ -12876,13 +12918,13 @@ int _uiMake_P (DIP *p) {
       _dvrect_fill_transparent(wc,x1,y1,x2,y2,(unsigned int) color,D->transparency);
      }
 #endif
-   }
-   if(buf != NULL) {
+    }
+    if(buf != NULL) {
      if(!((pt[0]=='#')&&(pt[1]=='#')&&(pt[2]<=' '))){
          kgImage(D,p->xpm,x1,y1,w,l,D->transparency,1.0);
      }
-   }
-   switch(p->bordr) {
+    }
+    switch(p->bordr) {
       case 0:
         break;
       deafult:
@@ -12916,7 +12958,7 @@ int _uiMake_P (DIP *p) {
         offset=0;
         dvdraw_protru(D, x1-offset,y1-offset,x2+offset, y2+offset);
         break;
-   }
+    }
    }// else  transparency
    }
    else {
@@ -12976,7 +13018,7 @@ void * _uiput_txtwin(DIALOG *D,int ix,int iy,int x2,int y2) {
   lines = (y2-iy-2)/22;
   if(lines <1 ) lines=1;
    uiPressedBoxFill(D,ix,iy,(x2-ix),(y2-iy),D->gc.info_fill,D->gc.fill_clr,3,0.0);
-   Twin=(TWIN *)malloc(sizeof(TWIN));
+   Twin=(TWIN *)Malloc(sizeof(TWIN));
   Twin->xl=ix+5;Twin->yl=iy+4;Twin->xu=x2-2;
   y2=(22*lines+Twin->yl);
   Twin->yu=y2;Twin->w=0;
@@ -13046,7 +13088,7 @@ void _uiDrawI (DIALOG* D,int item) {
    I = D->d[item].i;
    I->D=D;
    I->item=item;
-   I->twin=(void *)malloc(sizeof(TWIN));
+   I->twin=(void *)Malloc(sizeof(TWIN));
    I->linewidth=22;
    I->Bimg=NULL;
    if(I->hide != 1)  _uiMake_I(I);
@@ -13098,7 +13140,7 @@ char *_ui_gethighlightstring(TX_STR *tx){
   if(end<0) return NULL;
   if(end>ln) end=ln;
   strl = (end-start+1);
-  pt = (char *)malloc(sizeof(char)*(strl+1));
+  pt = (char *)Malloc(sizeof(char)*(strl+1));
   for(i=0;i<strl;i++) pt[i]=df[start+i];
   pt[strl]='\0';
   return pt;
@@ -13122,7 +13164,7 @@ int _ui_cuthighlightstring(TX_STR *tx){
   if(end<0) return 0;
   if(end>ln) end=ln;
   strl = (end-start+1);
-  pt = (char *)malloc(sizeof(char)*(strl+1));
+  pt = (char *)Malloc(sizeof(char)*(strl+1));
   i=0;
   while(1) {
     df[start+i]=df[start+i+strl];
@@ -13209,7 +13251,7 @@ void _ui_drawtextcursor (TX_STR *tx) {
          uiSetNoechoFontSize(D,D->gc.InputFontSize/2);
          str = df;
          ln = strlen(str)+1;
-         stars= (char *)malloc(sizeof(char)*ln);
+         stars= (char *)Malloc(sizeof(char)*ln);
          for(i=0;i<(ln-1);i++){
            if(str[i]>' ') stars[i]='l';
            else stars[i]=' ';
@@ -13288,7 +13330,7 @@ void _ui_cleartexthigh (TX_STR *tx) {
      uiSetNoechoFontSize(D,D->gc.InputFontSize/2);
      str = df;
      ln = strlen(str)+1;
-     stars= (char *)malloc(sizeof(char)*ln);
+     stars= (char *)Malloc(sizeof(char)*ln);
      for(i=0;i<(ln-1);i++){
        if(str[i]>' ') stars[i]='l';
        else stars[i]=' ';
@@ -13388,7 +13430,7 @@ void _ui_cleantextcursor (TX_STR *tx) {
          uiSetNoechoFontSize(D,D->gc.InputFontSize/2);
          str = df;
          ln = strlen(str)+1;
-         stars= (char *)malloc(sizeof(char)*ln);
+         stars= (char *)Malloc(sizeof(char)*ln);
          for(i=0;i<(ln-1);i++){
            if(str[i]>' ') stars[i]='l';
            else stars[i]=' ';
@@ -13592,7 +13634,7 @@ int _ui_drawtextbox (DIALOG *D,DIT *T) {
          uiSetNoechoFontSize(D,D->gc.InputFontSize/2);
          str = elmt[k].df+elmt[k].startchar;
          ln = strlen(str)+1;
-         stars= (char *)malloc(sizeof(char)*ln);
+         stars= (char *)Malloc(sizeof(char)*ln);
          for(i=0;i<(ln-1);i++){
            if(str[i]>' ') stars[i]='l';
            else stars[i]=' ';
@@ -13734,7 +13776,11 @@ int _uiMake_Tx (DIT *T) {
          img = elmt[k].img;
          if(img==NULL) {
 //           _uiMakeTextBoxImage(tx);
+#ifdef D_TH
            DoInAnyThread(D->ThInfo,_uiMakeTextBoxImage,tx);
+#else
+           _uiMakeTextBoxImage(tx);
+#endif
          }
          break;
          default:
@@ -13828,7 +13874,7 @@ int _uiMake_Tx (DIT *T) {
          uiSetNoechoFontSize(D,D->gc.InputFontSize/2);
          str = elmt[k].df+elmt[k].startchar;
          ln = strlen(str)+1;
-         stars= (char *)malloc(sizeof(char)*ln);
+         stars= (char *)Malloc(sizeof(char)*ln);
          for(i=0;i<(ln-1);i++){
            if(str[i]>' ') stars[i]='l';
            else stars[i]=' ';
@@ -14195,7 +14241,7 @@ void uimake_telmt(T_ELMT *elmt) {
   int i,k=0,err=0,size=0,l;
   char *cpt;
   char *chpt;float *fpt;double *dpt;int *ipt;int *lpt;
-  char dfmt[10],ffmt[10],sfmt[10];
+  char dfmt[20],ffmt[20],sfmt[20];
   char prompt[MAXTPRMTLN],field[MAXTITEMLN];
   char wrk[1000];
   double val;
@@ -14379,7 +14425,7 @@ int _ui_updatetextbox (void *tmp){
          uiSetNoechoFontSize(D,D->gc.InputFontSize/2);
          str = elmt[k].df+elmt[k].startchar;
          ln = strlen(str)+1;
-         stars= (char *)malloc(sizeof(char)*ln);
+         stars= (char *)Malloc(sizeof(char)*ln);
          for(i=0;i<(ln-1);i++){
            if(str[i]>' ') stars[i]='l';
            else stars[i]=' ';
@@ -14603,7 +14649,7 @@ void _uiDrawTextBox (DIALOG* D,int item) {
      elmt[i].img =NULL;
      elmt[i].hlt=0;
    }
-   tx = (TX_STR *)malloc(sizeof(TX_STR));
+   tx = (TX_STR *)Malloc(sizeof(TX_STR));
    tx->elmt = elmt;
 //   tx->Nx=NULL;
    tx->nx=nx;
@@ -14653,7 +14699,7 @@ void _uiDrawTableBox (DIALOG* D,int item) {
    for(i=0;i<n;i++) {
      elmt[i].img =NULL;
    }
-   tx = (TX_STR *)malloc(sizeof(TX_STR));
+   tx = (TX_STR *)Malloc(sizeof(TX_STR));
    tx->elmt = elmt;
 //   tx->Nx=NULL;
    tx->x2=X1;
@@ -14795,7 +14841,7 @@ void _uiMakeButs(DIN *B) {
   }
 
 }
-void _uiInitButs(DIN *B) {
+void _uiInitButs_org(DIN *B) {
   BUT_STR *butns;
   int offset=4;
   float transparency;
@@ -14849,6 +14895,72 @@ void _uiInitButs(DIN *B) {
       if(D->butattn==0 ){butns[i].highli=0;highli=0;}
       x1 = x1+dx+xgap;
       x2 = x1+dx+3;
+      butns[i].x1 =x1;
+      butns[i].x2 =x2;
+      butns[i].y1 =y1;
+      butns[i].y2 =y2;
+      butns[i].butno=i;
+      bkgr = butns[i].bkgr;
+      if(bkgr < 0) {
+        if(bkgr==-1) bkgr=D->gc.fill_clr;
+      }
+      i++;
+    }
+  }
+
+}
+// TCB 0n 07/21
+void _uiInitButs(DIN *B) {
+  BUT_STR *butns;
+  int offset=3;
+  float transparency;
+  int n,i,j,k,ix,iy,nx,ny,type,mf=1,mfp=0;
+  int x1,y1,x2,y2,xgap,ygap,ln,wd,bkgr,highli=1,xo,yo,dx,dy;
+  void *xpm,*timg=NULL;
+  DIALOG *D;
+  kgWC *wc;
+  D = (DIALOG *)(B->D);
+  wc = WC(D);
+  nx= B->nx;
+  ny= B->ny;
+  n = nx*ny;
+  transparency = D->transparency;
+  butns = B->buts;
+  xgap = B->xgap;
+  ygap = B->ygap;
+  ln= B->lngth;
+  wd= B->width;
+  type = B->type;
+  if(butns==NULL) return;
+  if((type==0)||(type==9)) {
+        mf=1;
+        mfp=1;
+  }
+  else {
+        mf=1;
+        mfp=0;
+  }
+  xo = D->xo+B->x1+offset;
+  yo = D->yo+B->y1+offset;
+  dx =ln;
+  dy =wd;
+  y1 = yo-dy-ygap+mf*ygap/2;
+  i=0;
+  for(j=0;j<ny;j++) {
+    y1 = y1+dy+ygap;
+//    y2 = y1+dy-1+mfp;
+    y2 = y1+dy+mfp;
+    x1 = xo -dx-xgap+xgap/2;
+    for(k=0;k<nx;k++) {
+      butns[i].D=B->D;
+      butns[i].Widget=B;
+      butns[i].state=0;
+      butns[i].highli=0;
+      if(*(B->df) == (i+1) ) butns[i].highli=1;
+      if(D->butattn==0 ){butns[i].highli=0;highli=0;}
+      x1 = x1+dx+xgap;
+//      x2 = x1+dx-1+mfp;
+      x2 = x1+dx+mfp;
       butns[i].x1 =x1;
       butns[i].x2 =x2;
       butns[i].y1 =y1;
@@ -14973,19 +15085,26 @@ void *_uiMakeButnImages(void *buttmp){
   butns = B->buts;
   xgap = B->xgap;
   ygap = B->ygap;
+#if 0  // TCB 07/21 may have side effects
+  ln= ((B->lngth-1)/2)*2-1;
+  wd= ((B->width-1)/2)*2-1;
+#else
   ln= B->lngth;
   wd= B->width;
+#endif
+// mfp can be adjusted to adjust the size of drawing
   type = B->type;
   if(butns==NULL) return NULL;
   if(type==10) return NULL;
   if((type==0)||(type==9)) {
         mf=0;
-        mfp=3;
+        mfp=2;
   }
   else {
         mf=1;
         mfp=1;
   }
+  if(type==1)mfp=0;
   i=butno;
   x1 = butns[i].x1;
   y1 = butns[i].y1;
@@ -15038,12 +15157,16 @@ void _uiUpdateType0Buts(DIN *B) {
   butns = B->buts;
   xgap = B->xgap;
   ygap = B->ygap;
+//TCB 07/21
+  if(ygap < 5 ) return;
   ln= B->lngth;
   wd= B->width;
   if(butns==NULL) return;
   i=0;
   for(j=0;j<ny;j++) {
     for(k=0;k<nx;k++) {
+//TCB 07/21
+      if( (butns[i].title==NULL) || (butns[i].title[0]=='\0')) continue;
       x1 =butns[i].x1+2-xgap/2;
       x2 =butns[i].x2+xgap/2-2;
 //      y1 =butns[i].y1+ygap/2+5+wd;
@@ -15470,7 +15593,7 @@ void _uiDrawSlideFloat (DIALOG* D,int item) {
    f->D = D;
    f->Bimg=NULL;
 //   uiclean_gui_area(D,item,D->xo,D->yo,D->d);
-   sptr=(S_STR *) malloc(sizeof(S_STR));
+   sptr=(S_STR *) Malloc(sizeof(S_STR));
    f->sptr = sptr;
    f->item=item;
    sptr = f->sptr;
@@ -15508,7 +15631,7 @@ void _uiDrawSlideInteger (DIALOG* D,int item) {
    d->D = D;
    d->Bimg=NULL;
 //   uiclean_gui_area(D,item,D->xo,D->yo,D->d);
-   sptr=(S_STR *) malloc(sizeof(S_STR));
+   sptr=(S_STR *) Malloc(sizeof(S_STR));
    d->sptr = sptr;
    d->item=item;
    sptr = d->sptr;
@@ -15522,7 +15645,7 @@ void _uiDrawHbar (DIALOG* D,int item) {
    DIHB *B;
    B = D->d[item].B;
    B->D = D;
-   sptr=(S_STR *) malloc(sizeof(S_STR));
+   sptr=(S_STR *) Malloc(sizeof(S_STR));
    B->sptr = sptr;
    B->item=item;
    B->Bimg=NULL;
@@ -15549,7 +15672,7 @@ void _uiDrawBrowser (DIALOG* D,int item) {
    w->bkgr=1;
    w->item=item;
    w->imgs=NULL;
-   w->bwsr=(BRW_STR *)malloc(sizeof(BRW_STR));
+   w->bwsr=(BRW_STR *)Malloc(sizeof(BRW_STR));
    bwsr = (BRW_STR  *) w->bwsr;
    bwsr->D=D;
    bwsr->wid=w;
@@ -15583,7 +15706,7 @@ void _uiDrawNewMenuItem (DIALOG* D,int item) {
    if(x->offset < 4) x->offset=4;
    if(x->w < 2) x->w=2;
 //   x->bwsr = make_dialog_y_str(D,(DIY *)x,*(x->df),*(x->df),x->menu,x->size);
-   x->bwsr=(BRW_STR *)malloc(sizeof(BRW_STR));
+   x->bwsr=(BRW_STR *)Malloc(sizeof(BRW_STR));
    bwsr = (BRW_STR *)x->bwsr;
    bwsr->Widget=x;
    x->item = item;
@@ -15606,7 +15729,7 @@ void _uiDrawX (DIALOG* D,int item) {
    if(x->lngth >(ln+x->xgap)) x->lngth= ln-x->xgap;
    x->nx = ln/(x->lngth+x->xgap);
    if(x->nx< 1){ x->nx=1; }
-   x->bwsr=(BRW_STR *)malloc(sizeof(BRW_STR));
+   x->bwsr=(BRW_STR *)Malloc(sizeof(BRW_STR));
    bwsr = (BRW_STR *)x->bwsr;
    bwsr->Widget=x;
    if(x->hide!=1) _uiMake_X(x);
@@ -15633,7 +15756,7 @@ void _uiDrawE (DIALOG* D,int item) {
    if(e->offset < 4) e->offset=4;
    if(e->w < 2) e->w=2;
 //   x->bwsr = make_dialog_y_str(D,(DIY *)x,*(x->df),*(x->df),x->menu,x->size);
-   e->bwsr=(BRW_STR *)malloc(sizeof(BRW_STR));
+   e->bwsr=(BRW_STR *)Malloc(sizeof(BRW_STR));
    bwsr = (BRW_STR *)e->bwsr;
    bwsr->Widget=e;
    if(e->hide!=1) _uiMake_E(e);
@@ -15673,7 +15796,7 @@ void _uiDrawY (DIALOG* D,int item) {
    }
 #endif
    y->imgs=NULL;
-   y->bwsr=(BRW_STR *)malloc(sizeof(BRW_STR));
+   y->bwsr=(BRW_STR *)Malloc(sizeof(BRW_STR));
    bwsr = (BRW_STR *)y->bwsr;
    bwsr->Widget=y;
    bwsr->pos=0;
@@ -15699,7 +15822,7 @@ void _uiDrawRadioButton (DIALOG* D,int item) {
    if(y->nx<=1){ y->nx=1; }
    if(y->xgap < 0) y->xgap=0;
    y->imgs=NULL;
-   y->bwsr=(BRW_STR *)malloc(sizeof(BRW_STR));
+   y->bwsr=(BRW_STR *)Malloc(sizeof(BRW_STR));
    bwsr = (BRW_STR *)y->bwsr;
    bwsr->Widget=y;
    if(y->hide!= 1)_uiMake_RadioButton(y);
@@ -15722,7 +15845,7 @@ void _uiDrawCheckBox (DIALOG* D,int item) {
    if(y->nx<=1) y->nx=1;
    if(*(y->df) < 1) *(y->df)=1;
 //   y->bwsr = make_dialog_y_str(D,(DIY *)y,*(y->df),*(y->df),y->menu,y->size);
-   y->bwsr=(BRW_STR *)malloc(sizeof(BRW_STR));
+   y->bwsr=(BRW_STR *)Malloc(sizeof(BRW_STR));
    bwsr = (BRW_STR *)y->bwsr;
    bwsr->Widget=y;
    if(y->hide!= 1)_uiMake_CheckBox(y);
@@ -15735,7 +15858,7 @@ void _uiDrawScrollMsgItem (DIALOG* D,int item) {
    w->D=D;
    w->Bimg=NULL;
    w->item=item;
-   bwsr=(BRW_STR *)malloc(sizeof(BRW_STR));
+   bwsr=(BRW_STR *)Malloc(sizeof(BRW_STR));
    w->bwsr = bwsr;
    bwsr->D = D;
    bwsr->Widget =w;
@@ -20168,7 +20291,7 @@ void ui_txtwin(DIALOG *D,int ix,int iy,int chrs,int lines)
   _ui_draw_bound(D,(int)ix-1,(int)EVGAY-iy+1,(int)x2+1,(int)EVGAY-y2-1,D->gc.twin_bodr);
   _ui_draw_bound(D,(int)ix-2,(int)EVGAY-iy+2,(int)x2+2,(int)EVGAY-y2-2,D->gc.twin_bodr);
   _ui_draw_bound(D,(int)ix-3,(int)EVGAY-iy+3,(int)x2+3,(int)EVGAY-y2-3,D->gc.twin_bodr);
-  Twin=(TWIN *)malloc(sizeof(TWIN));
+  Twin=(TWIN *)Malloc(sizeof(TWIN));
   Twin->xl=ix;Twin->yl=iy;Twin->xu=x2;
   Twin->yu=y2;Twin->w=1;
   Twin->nchr=chrs;
@@ -20200,7 +20323,7 @@ void ui_txtwinnew(DIALOG *D,int ix,int iy,int chrs,int lines,int xbdr,int ybdr)
   _ui_draw_bound(D,(int)ix-1,(int)EVGAY-iy+1,(int)x2+1,(int)EVGAY-y2-1,D->gc.twin_bodr);
   _ui_draw_bound(D,(int)ix-2,(int)EVGAY-iy+2,(int)x2+2,(int)EVGAY-y2-2,D->gc.twin_bodr);
   _ui_draw_bound(D,(int)ix-3,(int)EVGAY-iy+3,(int)x2+3,(int)EVGAY-y2-3,D->gc.twin_bodr);
-  Twin=(TWIN *)malloc(sizeof(TWIN));
+  Twin=(TWIN *)Malloc(sizeof(TWIN));
   Twin->xl=ix;Twin->yl=iy;Twin->xu=x2;
   Twin->yu=y2;Twin->w=1;
   Twin->nchr=chrs;

@@ -3,7 +3,7 @@
 --enable-filter=volumedetect \
 --disable-doc --enable-libmp3lame  \
 --enable-version3 --enable-gmp --enable-gnutls \
---disable-libxcb   --enable-libx265 \
+--disable-libxcb   --enable-libx265 --enable-libx264 \
 --enable-x11grab \
 --disable-vaapi \
 --enable-nonfree  \
@@ -12,5 +12,5 @@
 #--disable-libxcb  --enable-libx264 --enable-libx265 \
 #--enable-nonfree --enable-openssl \
 #--enable-runtime-cpudetect  --enable-indev=x11grab \
-#make -j 4
+#make -j2
 

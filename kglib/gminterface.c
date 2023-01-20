@@ -6,79 +6,42 @@
 #include <string.h>
 #include <magick/api.h>
 #include <math.h>
-static   ImageInfo *image_info=NULL;
-static   ExceptionInfo exception;
+static void gmDummyImage(void) {
+   int xl=6,yl=6,fac=0;
+   int r=10,g=20,b=30;
+   void *Img,*fid,*Img1;
+   float h,s,v,rf,gf,bf,vm;
+   fid = kgInitImage(xl,yl,2);
+   kgUserFrame(fid,-2.,-2.,(float)xl+2,(float)yl+2);
+   kgChangeColor(fid,551,(int)r,(int)g,(int)b);
+   kgRoundedRectangleFill(fid,(float)xl*0.5,(float)yl*0.5,
+                        (float)xl+2,(float)yl+2,0,551,fac);
+   Img = kgGetSharpImage(fid);
+   kgCloseImage(fid);
+   kgFreeImage(Img);
+   return ;
+}
 void uiInitGm(void) {
-  if( image_info== NULL) {
+  static int entry=0;
+  static   ImageInfo *image_info=NULL;
+  static   ExceptionInfo exception;
+  if( entry==0 ) {
+//    fprintf(stderr,"Init GM\n");
+    entry=1;
     InitializeMagick(NULL);
     GetExceptionInfo(&exception);
     image_info=CloneImageInfo((ImageInfo *) NULL);
   }
   return;
 }
+void kgInitGm (void) {
+   uiInitGm;
+   gmDummyImage();
+   return;
+}
 void ProcessString(char *s) {
   int i=0;
   while(s[i]>=' ') {if(s[i]=='/') s[i]=':';i++;}
-}
-void *uiGetImage_o(char *flname) {
-  FILE *fp;
-  Image *image;
-  PixelPacket *pixels;
-  PNGIMG *png=NULL;
-  ExceptionInfo exception;
-  if( (fp=fopen(flname,"r"))== NULL) return NULL;
-  else fclose(fp);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-  }
-  GetExceptionInfo(&exception);
-  (void) strcpy(image_info->filename,flname);
-  image=ReadImage(image_info,&exception);
-  if(image==NULL){
-    GetImageInfo(image_info);
-    return NULL;
-  }
-  if (exception.severity != UndefinedException) {
-//     CatchException(&exception);
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
-     return NULL;
-  }
-  if( (image->columns*image->rows) == 0) return NULL;
-  pixels =GetImagePixels(image,0,0,image->columns,image->rows);
-  if(pixels==NULL) { 
-     png = NULL;
-     DestroyImagePixels(image);
-     DestroyImage(image);
-  }
-  else {
-    int i=0,j=0;
-    unsigned long *pt;
-    image->background_color.red=0;
-    image->background_color.blue=0;
-    image->background_color.green=0;
-    image->background_color.opacity=255;
-    png = (PNGIMG *)malloc(sizeof(PNGIMG));
-    png->image = image;
-    strcpy(png->Sign,"PNG");
-    png->incode=0;
-    png->image_width= image->columns;
-    png->image_height= image->rows;
-    if(image->matte==0) png->image_channels=3;
-    else png->image_channels=4;
-    png->image_rowbytes = png->image_width*png->image_channels;
-    png->image_data = (unsigned char *)malloc(png->image_width*(png->image_height+1)*png->image_channels);
-    for(i=0;i<(image->columns*image->rows);i++) {
-     png->image_data[j++]= pixels[i].red;
-     png->image_data[j++]= pixels[i].green;
-     png->image_data[j++]= pixels[i].blue;
-     if( png->image_channels==4) png->image_data[j++]= 255 - pixels[i].opacity;
-//     png->image_data[j++]=  pixels[i].opacity;
-    }
-  }
-  return png;
 }
 void *uiGetgmImage(char *tmp) {
 //void *uiGetgmImage(char *flname) {
@@ -87,10 +50,11 @@ void *uiGetgmImage(char *tmp) {
   int i=0;
   char flname[1000];
   char size[MaxTextExtent];
-  ImageInfo *Image_info=NULL;
-  ExceptionInfo Exception;
   PixelPacket *pixels;
   GMIMG *png=NULL;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   strncpy(flname,tmp,999);
   i = strlen(flname)-1;
   while((i>=0)&&(flname[i]<=' ')) flname[i--]='\0';
@@ -101,30 +65,24 @@ void *uiGetgmImage(char *tmp) {
         return NULL;
   }
   else fclose(fp);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&Exception);
+  uiInitGm();
   Image_info=CloneImageInfo((ImageInfo *) NULL);
   GetImageInfo(Image_info);
+  GetExceptionInfo(Exception);
   FormatString(size, "%dx%d", 0,0);
   (void) CloneString(&Image_info->size, size);
   (void) strcpy(Image_info->filename,flname);
-//  (void) CloneString(&Image_info->filename,flname);
-  image=ReadImage(Image_info,&Exception);
+  image=ReadImage(Image_info,Exception);
   if(image==NULL) {
-    printf("uiGetgmImage : NULL: %s \n",Image_info->filename);
     DestroyImageInfo(Image_info);
+    free(Exception);
     return NULL;
   }
 #if 1
-  if (Exception.severity != UndefinedException) {
-     printf("uiGetgmImage (exception):  %s \n",Image_info->filename);
-     Exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  if (Exception->severity != UndefinedException) {
      DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
 #endif
@@ -132,8 +90,11 @@ void *uiGetgmImage(char *tmp) {
   image->background_color.blue=0;
   image->background_color.green=0;
   image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
+  strcpy(png->Sign,"IMG");
   strcpy(png->Sign,"IMG");
   strncpy(png->flname,flname,499);
   png->image_width= image->columns;
@@ -143,53 +104,56 @@ void *uiGetgmImage(char *tmp) {
   png->yoffset=0;
   png->bkgrclr=-1;
   png->rzfac =1.0;
+  GetImageInfo(Image_info);
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
 //  png->image_channels=4;
   if(image->matte==0) png->image_channels=3;
   else png->image_channels=4;
   png->image_rowbytes = png->image_width*png->image_channels;
-  DestroyImageInfo(Image_info);
   return png;
 }
 void *kgGetInlineImage(char *blob,int length) {
   FILE *fp;
   Image *image;
   char size[MaxTextExtent];
-  ImageInfo *Image_Info=NULL;
-//  ExceptionInfo Exception;
   PixelPacket *pixels;
   GMIMG *png=NULL;
-  ExceptionInfo Exception;
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  Image_Info=CloneImageInfo((ImageInfo *) NULL);
-  GetImageInfo(Image_Info);
-  GetExceptionInfo(&exception);
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
+  uiInitGm();
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
+  GetExceptionInfo(Exception);
   FormatString(size, "%dx%d", 0,0);
-  (void) CloneString(&Image_Info->size, size);
-  (void) strcpy(Image_Info->filename,"inline");
-//  image=ReadInlineImage(image_info,data,&exception);
-  QueryColorDatabase("#ffffffff",&Image_Info->background_color, &exception);
-  image=BlobToImage(Image_Info,blob,length,&exception);
+  (void) CloneString(&Image_info->size, size);
+  (void) strcpy(Image_info->filename,"inline");
+  QueryColorDatabase("#ffffffff",&Image_info->background_color, Exception);
+  image=BlobToImage(Image_info,blob,length,Exception);
   if(image==NULL) {
-    printf("kgGetInlineImage : NULL: %s \n",Image_Info->filename);
-    DestroyImageInfo(Image_Info);
+    printf("kgGetInlineImage : NULL: %s \n",Image_info->filename);
+    DestroyImageInfo(Image_info);
+    DestroyExceptionInfo(Exception);
+    free(Exception);
     return NULL;
   }
-  if (exception.severity != UndefinedException) {
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
-     DestroyImageInfo(Image_Info);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   image->background_color.red=0;
   image->background_color.blue=0;
   image->background_color.green=0;
   image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
+  strcpy(png->Sign,"IMG");
   strcpy(png->Sign,"IMG");
   strcpy(png->flname,"inline");
   png->image_width= image->columns;
@@ -199,11 +163,13 @@ void *kgGetInlineImage(char *blob,int length) {
   png->yoffset=0;
   png->bkgrclr=-1;
   png->rzfac =1.0;
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
 //  png->image_channels=4;
   if(image->matte==0) png->image_channels=3;
   else png->image_channels=4;
   png->image_rowbytes = png->image_width*png->image_channels;
-  DestroyImageInfo(Image_Info);
   return png;
 }
 void *uiGetImage(char *flname) { return uiGetgmImage(flname);}
@@ -217,52 +183,38 @@ void *uiCreateCleangmImage_o(unsigned long xsize,unsigned long ysize,int bkred,i
   int i,j,k=0;
   unsigned long v;
   Image *image,*tmpimg;
-  ImageInfo *Image_Info=NULL;
   PixelPacket *pixels;
   char size[MaxTextExtent];
-  ExceptionInfo Exception;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   GMIMG *png=NULL;
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  Image_Info=CloneImageInfo((ImageInfo *) NULL);
-  GetImageInfo(Image_Info);
-  GetExceptionInfo(&exception);
+  uiInitGm();
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
+  GetExceptionInfo(Exception);
 #if 0
-  FormatString(size, "%dx%d", xsize,ysize);
-  (void) CloneString(&image_info->size, size);
-  tmpimg=AllocateImage(image_info);
-  if(tmpimg == NULL) {
-    GetImageInfo(image_info);
-    printf("uiCreateCleangmImage:Failed to Allocate Image\n");
-    return NULL;
-  }
-  SetImage(tmpimg,TrueColorMatteType);
-  image=tmpimg;
 #else
   tmpimg=AllocateImage((ImageInfo *) NULL);
   tmpimg->columns=xsize;
   tmpimg->rows=ysize;
   if(tmpimg == NULL) {
-    GetImageInfo(Image_Info);
-    printf("uiCreateCleangmImage:Failed to Allocate Image\n");
-    DestroyImageInfo(Image_Info);
+    fprintf(stderr,"uiCreateCleangmImage:Failed to Allocate Image\n");
+    DestroyImageInfo(Image_info);
+    DestroyExceptionInfo(Exception);
+    free(Exception);
     return NULL;
   }
   SetImage(tmpimg,TrueColorMatteType);
-  image = CloneImage(tmpimg,xsize,ysize,1,&exception);
-  if (exception.severity != UndefinedException) {
-     printf("uiCreateCleangmImage:Failed To create Image\n");
-     GetImageInfo(Image_Info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
-     DestroyImageInfo(Image_Info);
+  image = CloneImage(tmpimg,xsize,ysize,1,Exception);
+  if (Exception->severity != UndefinedException) {
+     fprintf(stderr,"uiCreateCleangmImage:Failed To create Image\n");
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
 
-  DestroyImagePixels(tmpimg);
   DestroyImage(tmpimg);
 #endif
 //TCB
@@ -273,14 +225,12 @@ void *uiCreateCleangmImage_o(unsigned long xsize,unsigned long ysize,int bkred,i
   image->matte = 1;
   pixels = SetImagePixels(image,0,0,xsize,ysize);
   if(pixels==NULL) {
-     printf("Failed to set pixels\n");
-     fflush(stdout);
+     fprintf(stderr,"Failed to set pixels\n");
      DestroyImage(image);
-     DestroyImageInfo(Image_Info);
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
-  }
-  if((image->columns != xsize) ||(image->rows!=ysize)) {
-     printf( "Size of Pixels :%d:%d %d:%d\n",image->columns,xsize,image->rows,ysize);
   }
     k=0;
     for(j=0;j<ysize;j++) {
@@ -293,8 +243,10 @@ void *uiCreateCleangmImage_o(unsigned long xsize,unsigned long ysize,int bkred,i
       }
     }
   SyncImagePixels(image);
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->image_width= image->columns;
   png->image_height= image->rows;
@@ -303,11 +255,13 @@ void *uiCreateCleangmImage_o(unsigned long xsize,unsigned long ysize,int bkred,i
   png->yoffset=0;
   png->bkgrclr=-1;
   png->rzfac =1.0;
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
   if(image->matte==0) png->image_channels=3;
   else png->image_channels=4;
   png->image_rowbytes = png->image_width*png->image_channels;
   pixels= GetImagePixels(image,0,0,xsize,ysize);
-  DestroyImageInfo(Image_Info);
   return png;
 }
 void *uiCreateCleangmImage(unsigned long xsize,unsigned long ysize,int bkred,int bkgreen,int bkblue,int opacity){
@@ -320,49 +274,31 @@ void *uiCreateCleangmImage(unsigned long xsize,unsigned long ysize,int bkred,int
   unsigned long v;
   Image *image,*tmpimg;
   PixelPacket *pixels;
-  ImageInfo *Image_Info=NULL;
   char size[MaxTextExtent];
   GMIMG *png=NULL;
-  ExceptionInfo Exception;
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  Image_Info=CloneImageInfo((ImageInfo *) NULL);
-  GetImageInfo(Image_Info);
-  GetExceptionInfo(&exception);
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
+  uiInitGm();
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
+//TCB 07/21
+  GetExceptionInfo(Exception);
 #if 1
-  FormatString(size, "%dx%d", xsize,ysize);
-  (void) CloneString(&Image_Info->size, size);
-  tmpimg=AllocateImage(Image_Info);
+  FormatString(size, "%ldx%ld", xsize,ysize);
+  (void) CloneString(&Image_info->size, size);
+  tmpimg=AllocateImage(Image_info);
   if(tmpimg == NULL) {
-    GetImageInfo(Image_Info);
-    printf("uiCreateCleangmImage:Failed to Allocate Image\n");
-    DestroyImageInfo(Image_Info);
+    GetImageInfo(Image_info);
+    fprintf(stderr,"uiCreateCleangmImage:Failed to Allocate Image\n");
+    DestroyImageInfo(Image_info);
+    DestroyExceptionInfo(Exception);
+    free(Exception);
     return NULL;
   }
   SetImage(tmpimg,TrueColorMatteType);
   image=tmpimg;
 #else
-  tmpimg=AllocateImage((ImageInfo *) NULL);
-  tmpimg->columns=xsize;
-  tmpimg->rows=ysize;
-  if(tmpimg == NULL) {
-    GetImageInfo(image_info);
-    printf("uiCreateCleangmImage:Failed to Allocate Image\n");
-    return NULL;
-  }
-  SetImage(tmpimg,TrueColorMatteType);
-  image = CloneImage(tmpimg,xsize,ysize,1,&exception);
-  if (exception.severity != UndefinedException) {
-     printf("uiCreateCleangmImage:Failed To create Image\n");
-     GetImageInfo(image_info);
-     return NULL;
-  }
-
-  DestroyImagePixels(tmpimg);
-  DestroyImage(tmpimg);
 #endif
 //TCB
   image->background_color.red=0;
@@ -372,14 +308,16 @@ void *uiCreateCleangmImage(unsigned long xsize,unsigned long ysize,int bkred,int
   image->matte = 1;
   pixels = SetImagePixels(image,0,0,xsize,ysize);
   if(pixels==NULL) {
-   printf("Failed to set pixels\n");
-   fflush(stdout);
+   fprintf(stderr,"Failed to set pixels\n");
+   fflush(stderr);
    DestroyImage(image);
-   DestroyImageInfo(Image_Info);
+   DestroyImageInfo(Image_info);
+   DestroyExceptionInfo(Exception);
+   free(Exception);
    return uiCreateCleangmImage_o(xsize,ysize,bkred,bkgreen,bkblue,opacity);
   }
   if((image->columns != xsize) ||(image->rows!=ysize)) {
-     printf( "Size of Pixels :%d:%d %d:%d\n",image->columns,xsize,image->rows,ysize);
+     fprintf(stderr, "Size of Pixels :%ld:%ld %ld:%ld\n",image->columns,xsize,image->rows,ysize);
   }
     k=0;
     for(j=0;j<ysize;j++) {
@@ -392,8 +330,10 @@ void *uiCreateCleangmImage(unsigned long xsize,unsigned long ysize,int bkred,int
       }
     }
   SyncImagePixels(image);
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->image_width= image->columns;
   png->image_height= image->rows;
@@ -402,11 +342,12 @@ void *uiCreateCleangmImage(unsigned long xsize,unsigned long ysize,int bkred,int
   png->yoffset=0;
   png->bkgrclr=-1;
   png->rzfac =1.0;
+  png->info = Image_info;
+  png->exce = Exception;
   if(image->matte==0) png->image_channels=3;
   else png->image_channels=4;
   png->image_rowbytes = png->image_width*png->image_channels;
   pixels= GetImagePixels(image,0,0,xsize,ysize);
-  DestroyImageInfo(Image_Info);
   return png;
 }
 void *kgCreateImage(int xsize,int ysize) {
@@ -424,38 +365,28 @@ void *uiCreategmImage(unsigned long *data,unsigned long xsize,unsigned long ysiz
   PixelPacket *pixels;
   char size[MaxTextExtent];
   GMIMG *png=NULL;
-  ExceptionInfo Exception;
-  ImageInfo *Image_Info=NULL;
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  Image_Info=CloneImageInfo((ImageInfo *) NULL);
-  GetImageInfo(Image_Info);
-  GetExceptionInfo(&exception);
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
+  uiInitGm();
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
+  GetExceptionInfo(Exception);
 //  tmpimg=AllocateImage((ImageInfo *) NULL);
-  FormatString(size, "%dx%d", xsize,ysize);
-  (void) CloneString(&Image_Info->size, size);
-  tmpimg=AllocateImage(Image_Info);
+  FormatString(size, "%ldx%ld", xsize,ysize);
+  (void) CloneString(&Image_info->size, size);
+  tmpimg=AllocateImage(Image_info);
   tmpimg->columns=xsize;
   tmpimg->rows=ysize;
   SetImage(tmpimg,TrueColorMatteType);
   if(tmpimg == NULL) {
-    GetImageInfo(Image_Info);
-    printf("Failed to Allocate Image\n");
-    DestroyImageInfo(Image_Info);
+    GetImageInfo(Image_info);
+    DestroyImageInfo(Image_info);
+    DestroyExceptionInfo(Exception);
+    free(Exception);
     return NULL;
   }
 #if 0
-  image = CloneImage(tmpimg,xsize,ysize,1,&exception);
-  if (exception.severity != UndefinedException) {
-     printf("uiCreategmImage:Failed To create Image\n");
-     GetImageInfo(image_info);
-     return NULL;
-  }
-  DestroyImagePixels(tmpimg);
-  DestroyImage(tmpimg);
 #else
   image=tmpimg;
 #endif
@@ -468,9 +399,6 @@ void *uiCreategmImage(unsigned long *data,unsigned long xsize,unsigned long ysiz
   pixels = SetImagePixels(image,0,0,xsize,ysize);
   SyncImagePixels(image);
   pixels =GetImagePixels(image,0,0,image->columns,image->rows);
-  if((image->columns != xsize) ||(image->rows!=ysize)) {
-     printf( "Size of Pixels :%d:%d %d:%d\n",image->columns,xsize,image->rows,ysize);
-  }
   xsize = image->columns;
   ysize = image->rows;
   if(data!= NULL) {
@@ -490,8 +418,10 @@ void *uiCreategmImage(unsigned long *data,unsigned long xsize,unsigned long ysiz
     }
   }
   SyncImagePixels(image);
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->image_width= image->columns;
   png->image_height= image->rows;
@@ -500,11 +430,13 @@ void *uiCreategmImage(unsigned long *data,unsigned long xsize,unsigned long ysiz
   png->yoffset=0;
   png->bkgrclr=-1;
   png->rzfac =1.0;
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
   if(image->matte==0) png->image_channels=3;
   else png->image_channels=4;
   png->image_rowbytes = png->image_width*png->image_channels;
   if(data==NULL) uiCleangmImage(png);
-  DestroyImageInfo(Image_Info);
   return png;
 }
 void *uiCreategmImage_1(unsigned long *data,unsigned long xsize,unsigned long ysize){
@@ -513,35 +445,28 @@ void *uiCreategmImage_1(unsigned long *data,unsigned long xsize,unsigned long ys
   Image *image,*tmpimg;
   PixelPacket *pixels;
   GMIMG *png=NULL;
-  ExceptionInfo Exception;
   ImageInfo *Image_info=NULL;
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
+  uiInitGm();
+  GetExceptionInfo(Exception);
   Image_info=CloneImageInfo((ImageInfo *) NULL);
   GetImageInfo(Image_info);
  (void) strcpy(Image_info->filename,"JUNK.png");
-  tmpimg=ReadImage(Image_info,&exception);
-  if (exception.severity != UndefinedException) {
-     GetImageInfo(Image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  tmpimg=ReadImage(Image_info,Exception);
+  if (Exception->severity != UndefinedException) {
      DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
-  image = CloneImage(tmpimg,xsize,ysize,1,&exception);
-  if (exception.severity != UndefinedException) {
-     GetImageInfo(Image_info);
-     printf("uiCreategmImage_1:Failed To create Image\n");
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  image = CloneImage(tmpimg,xsize,ysize,1,Exception);
+  if (Exception->severity != UndefinedException) {
      DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
-  DestroyImagePixels(tmpimg);
   DestroyImage(tmpimg);
   SetImage(image,TrueColorMatteType);
   image->background_color.red=0;
@@ -552,9 +477,6 @@ void *uiCreategmImage_1(unsigned long *data,unsigned long xsize,unsigned long ys
   pixels = SetImagePixels(image,0,0,xsize,ysize);
   SyncImagePixels(image);
   pixels =GetImagePixels(image,0,0,image->columns,image->rows);
-  if((image->columns != xsize) ||(image->rows=ysize)) {
-     printf( "Size of Pixels :%d:%d %d:%d\n",image->columns,xsize,image->rows,ysize);
-  }
   xsize = image->columns;
   ysize = image->rows;
   k=0;
@@ -572,8 +494,10 @@ void *uiCreategmImage_1(unsigned long *data,unsigned long xsize,unsigned long ys
     }
   }
   SyncImagePixels(image);
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->image_width= image->columns;
   png->image_height= image->rows;
@@ -582,11 +506,13 @@ void *uiCreategmImage_1(unsigned long *data,unsigned long xsize,unsigned long ys
   png->yoffset=0;
   png->bkgrclr=-1;
   png->rzfac =1.0;
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
 //  png->image_channels=4;
   if(image->matte==0) png->image_channels=3;
   else png->image_channels=4;
   png->image_rowbytes = png->image_width*png->image_channels;
-  DestroyImageInfo(Image_info);
   return png;
 }
 void *uiCopyPixelsgmImage(void * img,unsigned long *data){
@@ -596,13 +522,7 @@ void *uiCopyPixelsgmImage(void * img,unsigned long *data){
   PixelPacket *pixels;
   GMIMG *png=NULL;
   png = (GMIMG *)img;
-  ExceptionInfo Exception;
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
   image = png->image;
   pixels =GetImagePixels(image,0,0,image->columns,image->rows);
   k=0;
@@ -627,32 +547,28 @@ void *uiResizeImage(PNGIMG *png,float fac) {
   int w,h;
   Image *image,*resize_image=NULL;
   PixelPacket *pixels;
-  ExceptionInfo Exception;
   if(png== NULL) return NULL;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
+  GetExceptionInfo(Exception);
   w = image->columns*fac;
   h = image->rows*fac;
-//  resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,&exception);
-//  resize_image=ResizeImage(image,w,h,BlackmanFilter,1.0,&exception);
-//  resize_image=ResizeImage(image,w,h,BesselFilter,1.0,&exception);
-//  resize_image=ResizeImage(image,w,h,QuadraticFilter,1.0,&exception);
-  resize_image=ResizeImage(image,w,h,TriangleFilter,0.1,&exception);
-  if (exception.severity != UndefinedException){
-     CatchException(&exception);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+//  resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,Exception);
+//  resize_image=ResizeImage(image,w,h,BlackmanFilter,1.0,Exception);
+//  resize_image=ResizeImage(image,w,h,BesselFilter,1.0,Exception);
+//  resize_image=ResizeImage(image,w,h,QuadraticFilter,1.0,Exception);
+  resize_image=ResizeImage(image,w,h,TriangleFilter,0.1,Exception);
+  if (Exception->severity != UndefinedException){
+     CatchException(Exception);
+     GetExceptionInfo(Exception);
   }
   pixels =GetImagePixels(resize_image,0,0,
           resize_image->columns,resize_image->rows);
   if(pixels==NULL) { 
      png = NULL;
-     DestroyImagePixels(resize_image);
      DestroyImage(resize_image);
   }
   else {
@@ -662,7 +578,7 @@ void *uiResizeImage(PNGIMG *png,float fac) {
     resize_image->background_color.blue=0;
     resize_image->background_color.green=0;
     resize_image->background_color.opacity=255;
-    png = (PNGIMG *)malloc(sizeof(PNGIMG));
+    png = (PNGIMG *)Malloc(sizeof(PNGIMG));
     png->image = resize_image;
     strcpy(png->Sign,"PNG");
     png->incode=0;
@@ -672,7 +588,7 @@ void *uiResizeImage(PNGIMG *png,float fac) {
     if(resize_image->matte==0) png->image_channels=3;
     else png->image_channels=4;
     png->image_rowbytes = png->image_width*png->image_channels;
-    png->image_data = (unsigned char *)malloc(png->image_width*(png->image_height+1)*png->image_channels);
+    png->image_data = (unsigned char *)Malloc(png->image_width*(png->image_height+1)*png->image_channels);
     for(i=0;i<(resize_image->columns*resize_image->rows);i++) {
      png->image_data[j++]= pixels[i].red;
      png->image_data[j++]= pixels[i].green;
@@ -687,21 +603,14 @@ void *uiPixelsgmImage(GMIMG *png) {
   int w,h;
   Image *image;
   PixelPacket *pixels;
-  ExceptionInfo Exception;
   if(png== NULL) return NULL;
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
   w = image->columns;
   h = image->rows;
   pixels =GetImagePixels(image,0,0,
           image->columns,image->rows);
   if(pixels==NULL) { 
-     GetImageInfo(image_info);
      return NULL;
   }
   return pixels;
@@ -711,46 +620,51 @@ void *uiResizegmImage(GMIMG *png,float fac) {
   float rzfac;
   Image *image,*resize_image=NULL;
   PixelPacket *pixels;
-  ExceptionInfo Exception;
   if(png== NULL) return NULL;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception=NULL;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
+  GetExceptionInfo(Exception);
+ // Image_info=CloneImageInfo((ImageInfo *) NULL);
   w = image->columns*fac;
   h = image->rows*fac;
   xoffset = png->xoffset*fac;
   yoffset = png->yoffset*fac;
   bkgrclr = png->bkgrclr;
   rzfac   = png->rzfac;
-//  resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,&exception);
-//  resize_image=ResizeImage(image,w,h,BlackmanFilter,1.2,&exception);
-  if(fac> 1.0) 
-//    resize_image=ResizeImage(image,w,h,TriangleFilter,0.1,&exception);
-    resize_image=ResizeImage(image,w,h,BoxFilter,1.2,&exception);
-  else 
-    resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+//  resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,Exception);
+//  resize_image=ResizeImage(image,w,h,BlackmanFilter,1.2,Exception);
+  if(fac> 1.0) {
+//    resize_image=ResizeImage(image,w,h,TriangleFilter,0.1,Exception);
+    resize_image=ResizeImage(image,w,h,BoxFilter,1.2,Exception);
+  }
+  else  {
+    resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,Exception);
+  }
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   resize_image->background_color.red=0;
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = xoffset;
   png->yoffset = yoffset;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -765,16 +679,14 @@ void *uiThumbnailgmImage(GMIMG *png,unsigned long w,unsigned long h) {
   float rzfac,fac=1,wfac,hfac;
   Image *image,*resize_image=NULL;
   PixelPacket *pixels;
-  ExceptionInfo Exception;
   if(png== NULL) {printf("uiThumbnailgmImage:NULL Image\n");return NULL;}
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-//    printf("image_info==NULL");
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetExceptionInfo(Exception);
   xoffset = png->xoffset*fac;
   yoffset = png->yoffset*fac;
   bkgrclr = png->bkgrclr;
@@ -786,21 +698,23 @@ void *uiThumbnailgmImage(GMIMG *png,unsigned long w,unsigned long h) {
    if(hfac < fac ) fac = hfac;
 
   if((w>png->image_width)&&(h>png->image_height)) {
-       resize_image=ThumbnailImage(image,png->image_width,png->image_height,&exception);
+       resize_image=ThumbnailImage(image,png->image_width,png->image_height,Exception);
 //       printf("Copying Image:%d:%d  %d:%d\n",w,h,png->image_width,png->image_height);
 //       return kgCopyImage(png);
        
   }
   else{
-    resize_image=ThumbnailImage(image,(int)(png->image_width*fac),(int)(png->image_height*fac),&exception);
-//    resize_image=SampleImage(image,(int)(png->image_width*fac),(int)(png->image_height*fac),&exception);
-//      resize_image=ResizeImage(image,(int)(png->image_width*fac),(int)(png->image_height*fac),TriangleFilter,1.1,&exception);
+    resize_image=ThumbnailImage(image,(int)(png->image_width*fac),(int)(png->image_height*fac),Exception);
+//    resize_image=SampleImage(image,(int)(png->image_width*fac),(int)(png->image_height*fac),Exception);
+//      resize_image=ResizeImage(image,(int)(png->image_width*fac),(int)(png->image_height*fac),TriangleFilter,1.1,Exception);
   }
-//  else resize_image=ThumbnailImage(image,w,h,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+//  else resize_image=ThumbnailImage(image,w,h,Exception);
+  GetImageInfo(Image_info);
+  GetExceptionInfo(Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
 //  printf("Resized Image\n");
@@ -808,14 +722,18 @@ void *uiThumbnailgmImage(GMIMG *png,unsigned long w,unsigned long h) {
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = xoffset;
   png->yoffset = yoffset;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -832,16 +750,13 @@ void *uiChangeSizegmImage(GMIMG *png,unsigned long w,unsigned long h,int Fltr) {
   float rzfac,fac=1,wfac,hfac;
   Image *image,*resize_image=NULL;
   PixelPacket *pixels;
-  ExceptionInfo Exception;
   if(png== NULL) {printf("NULL Image\n");return NULL;}
+  ImageInfo * Image_info=NULL;
+  ExceptionInfo *Exception;
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    fprintf(stderr,"uiChangeSizegmImage:image_info==NULL File %s:Line %d\n",__FILE__,__LINE__);
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
+  GetExceptionInfo(Exception);
   xoffset = png->xoffset*fac;
   yoffset = png->yoffset*fac;
   bkgrclr = png->bkgrclr;
@@ -855,60 +770,60 @@ void *uiChangeSizegmImage(GMIMG *png,unsigned long w,unsigned long h,int Fltr) {
   if(fac < 1.0) {
     switch(Fltr) {
       case 1:
-      resize_image=ResizeImage(image,w,h,BlackmanFilter,1.2,&exception);
+      resize_image=ResizeImage(image,w,h,BlackmanFilter,1.2,Exception);
       break;
       case 2:
-      resize_image=ResizeImage(image,w,h,HermiteFilter,1.0,&exception);
+      resize_image=ResizeImage(image,w,h,HermiteFilter,1.0,Exception);
       break;
       case 3:
-      resize_image=ResizeImage(image,w,h,TriangleFilter,1.0,&exception);
+      resize_image=ResizeImage(image,w,h,TriangleFilter,1.0,Exception);
       break;
       case 4:
-      resize_image=ResizeImage(image,w,h,BoxFilter,1.2,&exception);
+      resize_image=ResizeImage(image,w,h,BoxFilter,1.2,Exception);
       break;
       case 5:
-      resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,&exception);
+      resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,Exception);
       break;
       case 6:
-      resize_image=ResizeImage(image,w,h,QuadraticFilter,1.2,&exception);
+      resize_image=ResizeImage(image,w,h,QuadraticFilter,1.2,Exception);
       break;
       case 7:
-      resize_image=ResizeImage(image,w,h,BesselFilter,1.2,&exception);
+      resize_image=ResizeImage(image,w,h,BesselFilter,1.2,Exception);
       break;
       case 8:
-      resize_image=ResizeImage(image,w,h,CubicFilter,1.0,&exception);
+      resize_image=ResizeImage(image,w,h,CubicFilter,1.0,Exception);
       break;
       default:
-      resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,&exception);
+      resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,Exception);
       break;
     }
   }
   else {
 #if 0
     if(fac < 2.0) {
-      resize_image=ResizeImage(image,w,h,TriangleFilter,1.0,&exception);
+      resize_image=ResizeImage(image,w,h,TriangleFilter,1.0,Exception);
     }
     else {
-//       resize_image=SampleImage(image,w,h,&exception);
-  resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,&exception);
+//       resize_image=SampleImage(image,w,h,Exception);
+  resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,Exception);
     }
 #else
-//      resize_image=ResizeImage(image,w,h,TriangleFilter,1.0,&exception);
-      resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,&exception);
+//      resize_image=ResizeImage(image,w,h,TriangleFilter,1.0,Exception);
+      resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,Exception);
 #endif
   }
 //  printf("Calling ResizeImage\n");
-//  resize_image=ResizeImage(image,w,h,HermiteFilter,1.0,&exception);
-//  resize_image=ResizeImage(image,w,h,BlackmanFilter,1.2,&exception);
-//  resize_image=ResizeImage(image,w,h,TriangleFilter,1.0,&exception);
-//  resize_image=ResizeImage(image,w,h,BoxFilter,1.2,&exception);
-//  resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,&exception);
-//  resize_image=ResizeImage(image,w,h,QuadraticFilter,1.2,&exception);
-//  resize_image=ResizeImage(image,w,h,BesselFilter,1.2,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+//  resize_image=ResizeImage(image,w,h,HermiteFilter,1.0,Exception);
+//  resize_image=ResizeImage(image,w,h,BlackmanFilter,1.2,Exception);
+//  resize_image=ResizeImage(image,w,h,TriangleFilter,1.0,Exception);
+//  resize_image=ResizeImage(image,w,h,BoxFilter,1.2,Exception);
+//  resize_image=ResizeImage(image,w,h,LanczosFilter,1.0,Exception);
+//  resize_image=ResizeImage(image,w,h,QuadraticFilter,1.2,Exception);
+//  resize_image=ResizeImage(image,w,h,BesselFilter,1.2,Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
 //  printf("Resized Image\n");
@@ -916,14 +831,20 @@ void *uiChangeSizegmImage(GMIMG *png,unsigned long w,unsigned long h,int Fltr) {
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = xoffset;
   png->yoffset = yoffset;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -945,37 +866,40 @@ void *uiHalfSizegmImage(GMIMG *png) {
   Image *image,*resize_image=NULL;
   PixelPacket *pixels;
   if(png== NULL) {printf("NULL Image\n");return NULL;}
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-//    printf("image_info==NULL");
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  GetExceptionInfo(Exception);
   xoffset = png->xoffset*fac;
   yoffset = png->yoffset*fac;
   bkgrclr = png->bkgrclr;
   rzfac   = png->rzfac;
-  resize_image=MinifyImage(image,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+//  fprintf(stderr,"Calling MinifyImage\n");
+  resize_image=MinifyImage(image,Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   resize_image->background_color.red=0;
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = xoffset;
   png->yoffset = yoffset;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -993,39 +917,42 @@ void *uiScalegmImage(GMIMG *png,float fac) {
   Image *image,*resize_image=NULL;
   PixelPacket *pixels;
   if(png== NULL) return NULL;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  GetExceptionInfo(Exception);
   w = image->columns*fac;
   h = image->rows*fac;
   xoffset = png->xoffset*fac;
   yoffset = png->yoffset*fac;
   bkgrclr = png->bkgrclr;
   rzfac   = png->rzfac;
-  resize_image=ScaleImage(image,w,h,&exception);
-//  resize_image=ThumbnailImage(image,w,h,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  resize_image=ScaleImage(image,w,h,Exception);
+//  resize_image=ThumbnailImage(image,w,h,Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   resize_image->background_color.red=0;
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = xoffset;
   png->yoffset = yoffset;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -1041,13 +968,12 @@ void *uiCropgmImage(GMIMG *png,int xl,int yl,int xu,int yu) {
   PixelPacket *pixels;
   RectangleInfo rect;
   if(png== NULL) return NULL;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  GetExceptionInfo(Exception);
   if(xl < xu) rect.x = xl;
   else rect.x =xu;
   if(yl < yu) rect.y = yl;
@@ -1067,26 +993,30 @@ void *uiCropgmImage(GMIMG *png,int xl,int yl,int xu,int yu) {
   
   bkgrclr = png->bkgrclr;
   rzfac   = png->rzfac;
-  resize_image=CropImage(image,&rect,&exception);
-//  resize_image=ThumbnailImage(image,w,h,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  resize_image=CropImage(image,&rect,Exception);
+//  resize_image=ThumbnailImage(image,w,h,Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   resize_image->background_color.red=0;
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = 0;
   png->yoffset = 0;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -1116,13 +1046,12 @@ void *uiRotateAboutgmImage(GMIMG *png,float angle,int xo,int yo) {
   float f,f1;
   RectangleInfo rect;
   if(png== NULL) return NULL;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   w = image->columns;
   h = image->rows;
   dl=((double)(xo*xo+yo*yo));
@@ -1253,40 +1182,43 @@ void *uiRotategmImage(GMIMG *png,float angle) {
   PixelPacket *pixels;
   RectangleInfo rect;
   if(png== NULL) return NULL;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   image = (Image *)(png->image);
   image->background_color.red=0;
   image->background_color.blue=0;
   image->background_color.green=0;
   image->background_color.opacity=255;
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  GetExceptionInfo(Exception);
   
   bkgrclr = png->bkgrclr;
   rzfac   = png->rzfac;
-  resize_image=RotateImage(image,(double)angle,&exception);
-//  resize_image=ThumbnailImage(image,w,h,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  resize_image=RotateImage(image,(double)angle,Exception);
+//  resize_image=ThumbnailImage(image,w,h,Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   resize_image->background_color.red=0;
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = 0;
   png->yoffset = 0;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  png->info = NULL;
+  png->exce = NULL;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -1307,37 +1239,41 @@ void *uiAppendgmImage(GMIMG *png1,GMIMG *png2) {
   RectangleInfo rect;
   if(png1== NULL) return NULL;
   if(png2== NULL) return NULL;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   image = (Image *)(png1->image);
 
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  GetExceptionInfo(Exception);
   image->next = (Image *)(png2->image);
   bkgrclr = png1->bkgrclr;
   rzfac   = png2->rzfac;
-  resize_image=AppendImages(image,1,&exception);
-//  resize_image=ThumbnailImage(image,w,h,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  resize_image=AppendImages(image,1,Exception);
+//  resize_image=ThumbnailImage(image,w,h,Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   resize_image->background_color.red=0;
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = 0;
   png->yoffset = 0;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -1355,35 +1291,39 @@ void *uiShadegmImage(GMIMG *png) {
   unsigned int gray=150;
   double azimuth=135.0,elevation=45.0;
   if(png== NULL) return NULL;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  GetExceptionInfo(Exception);
   bkgrclr = png->bkgrclr;
   rzfac   = png->rzfac;
-  resize_image=ShadeImage(image,gray,azimuth,elevation,&exception);
-//  resize_image=ThumbnailImage(image,w,h,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  resize_image=ShadeImage(image,gray,azimuth,elevation,Exception);
+//  resize_image=ThumbnailImage(image,w,h,Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   resize_image->background_color.red=0;
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = 0;
   png->yoffset = 0;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -1402,36 +1342,41 @@ void *uiReduceNoisegmImage(GMIMG *png) {
   PixelPacket *pixels;
   unsigned int gray=10;
   double azimuth=135.0,elvation=45.0;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   if(png== NULL) return NULL;
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  GetExceptionInfo(Exception);
   bkgrclr = png->bkgrclr;
   rzfac   = png->rzfac;
-  resize_image=ReduceNoiseImage(image,0.0,&exception);
-//  resize_image=ThumbnailImage(image,w,h,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  resize_image=ReduceNoiseImage(image,0.0,Exception);
+//  resize_image=ThumbnailImage(image,w,h,Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   resize_image->background_color.red=0;
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = 0;
   png->yoffset = 0;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  GetImageInfo(Image_info);
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -1450,36 +1395,41 @@ void *uiBlurgmImage(GMIMG *png) {
   PixelPacket *pixels;
   unsigned int gray=10;
   double radius=0.0,sigma=5.0;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   if(png== NULL) return NULL;
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  GetExceptionInfo(Exception);
   bkgrclr = png->bkgrclr;
   rzfac   = png->rzfac;
-  resize_image=BlurImage(image,radius,sigma,&exception);
-//  resize_image=ThumbnailImage(image,w,h,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  resize_image=BlurImage(image,radius,sigma,Exception);
+//  resize_image=ThumbnailImage(image,w,h,Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   resize_image->background_color.red=0;
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = 0;
   png->yoffset = 0;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  GetImageInfo(Image_info);
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -1498,36 +1448,40 @@ void *uiEmbossgmImage(GMIMG *png) {
   PixelPacket *pixels;
   unsigned int gray=255;
   double radius=0.0,sigma=200.0;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   if(png== NULL) return NULL;
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  GetExceptionInfo(Exception);
   bkgrclr = png->bkgrclr;
   rzfac   = png->rzfac;
-  resize_image=EmbossImage(image,radius,sigma,&exception);
-//  resize_image=ThumbnailImage(image,w,h,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  resize_image=EmbossImage(image,radius,sigma,Exception);
+//  resize_image=ThumbnailImage(image,w,h,Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   resize_image->background_color.red=0;
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = 0;
   png->yoffset = 0;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -1546,36 +1500,41 @@ void *uiSharpengmImage(GMIMG *png) {
   PixelPacket *pixels;
   unsigned int gray=10;
   double radius=0.0,sigma=5.0;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   if(png== NULL) return NULL;
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  GetExceptionInfo(Exception);
   bkgrclr = png->bkgrclr;
   rzfac   = png->rzfac;
-  resize_image=SharpenImage(image,radius,sigma,&exception);
-//  resize_image=ThumbnailImage(image,w,h,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  resize_image=SharpenImage(image,radius,sigma,Exception);
+//  resize_image=ThumbnailImage(image,w,h,Exception);
+  GetExceptionInfo(Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   resize_image->background_color.red=0;
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = 0;
   png->yoffset = 0;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -1594,36 +1553,43 @@ void *uiSpreadgmImage(GMIMG *png) {
   PixelPacket *pixels;
   unsigned int gray=10;
   double radius=0.0,sigma=5.0;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   if(png== NULL) return NULL;
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  GetExceptionInfo(Exception);
   bkgrclr = png->bkgrclr;
   rzfac   = png->rzfac;
-  resize_image=SpreadImage(image,radius,&exception);
-//  resize_image=ThumbnailImage(image,w,h,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  resize_image=SpreadImage(image,radius,Exception);
+//  resize_image=ThumbnailImage(image,w,h,Exception);
+  GetExceptionInfo(Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   resize_image->background_color.red=0;
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = 0;
   png->yoffset = 0;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  png->info = NULL;
+  png->exce = NULL;
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -1643,35 +1609,39 @@ void *uiEnhancegmImage(GMIMG *png) {
   unsigned int gray=10;
   double radius=0.0,sigma=5.0;
   if(png== NULL) return NULL;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  GetExceptionInfo(Exception);
   bkgrclr = png->bkgrclr;
   rzfac   = png->rzfac;
-  resize_image=EnhanceImage(image,&exception);
-//  resize_image=ThumbnailImage(image,w,h,&exception);
-  if (exception.severity != UndefinedException){
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  resize_image=EnhanceImage(image,Exception);
+//  resize_image=ThumbnailImage(image,w,h,Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyImageInfo(Image_info);
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
   resize_image->background_color.red=0;
   resize_image->background_color.blue=0;
   resize_image->background_color.green=0;
   resize_image->background_color.opacity=255;
-  png = (GMIMG *)malloc(sizeof(GMIMG));
+  png = (GMIMG *)Malloc(sizeof(GMIMG));
   png->image = resize_image;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
+  strcpy(png->Sign,"IMG");
   strcpy(png->Sign,"IMG");
   png->incode=0;
   png->xoffset = 0;
   png->yoffset = 0;
   png->bkgrclr = bkgrclr;
   png->rzfac = 1.0;
+  png->info = Image_info;
+  png->exce = Exception;
   png->image_width= resize_image->columns;
   png->image_height= resize_image->rows;
   png->image_channels=4;
@@ -1686,17 +1656,12 @@ void uiWriteImage(void *img,char *flname) {
   Image *image,*resize_image=NULL;
   png = (GMIMG *)img;
   if(png== NULL) return ;
+  ImageInfo *Image_info=NULL;
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-//  (void) strcpy(image_info->filename,flname);
+  uiInitGm();
+  Image_info = (ImageInfo *)png->info;
   (void) strcpy(image->filename,flname);
-  printf("WriteImage\n");
-  WriteImage(image_info,(Image *)(png->image));
+  WriteImage(Image_info,(Image *)(png->image));
   return ;
 }
 void *kgEnhanceImage(void *img) {
@@ -1706,30 +1671,39 @@ void uiWritegmImage(GMIMG *png,char *flname) {
   int w,h;
   Image *image,*resize_image=NULL;
   if(png== NULL) return ;
+  ImageInfo *Image_info=NULL;
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
+  uiInitGm();
+  Image_info = (ImageInfo *)png->info;
   (void) strcpy(image->filename,flname);
-  WriteImage(image_info,(Image *)(png->image));
+  WriteImage(Image_info,(Image *)(png->image));
   return ;
 }
 void kgWriteImage(void *img,char *flname) { uiWritegmImage((GMIMG *)img,flname);}
 void uiFreeGmImage(void *png) {
   GMIMG *img;
   img = (GMIMG *)png;
-  if( image_info== NULL) return;
-  DestroyImagePixels((Image *)(img->image));
+  uiInitGm();
+//TCB 07/21
+//  if( image_info== NULL) return;
+//  DestroyImagePixels((Image *)(img->image));
   DestroyImage((Image *)(img->image));
+  if(img->info!= NULL) DestroyImageInfo((ImageInfo *)img->info);
+  if(img->exce!= NULL) {
+     DestroyExceptionInfo((ExceptionInfo *)img->exce);
+     free(img->exce);
+  }
+  img->info = NULL;
+  img->exce = NULL;
+  return ;
 }
 void uiFreeFmgImage(void *png) {
   FMGIMG *img;
   img = (FMGIMG *)png;
-  if( image_info== NULL) return;
-  DestroyImagePixels((Image *)(img->image));
+  uiInitGm();
+//TCB 07/21
+//  if( image_info== NULL) return;
+//  DestroyImagePixels((Image *)(img->image));
   DestroyImage((Image *)(img->image));
 }
 void *uiShadowgmImage(GMIMG *png,int xoffset,int yoffset,GMIMG *shimg) {
@@ -1745,24 +1719,14 @@ void *uiShadowgmImage(GMIMG *png,int xoffset,int yoffset,GMIMG *shimg) {
   GMIMG *dpng=NULL;
   Image *image,*tmpimg,*dimage;
   PixelPacket *pixels,*spixels;
-  ExceptionInfo Exception;
   if(png== NULL) return NULL;
   if(shimg == NULL) return NULL;
   image = (Image *)(png->image);
   dimage = (Image *)(shimg->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
   w = image->columns;
   h = image->rows;
   pixels =GetImagePixels(dimage,0,0,dimage->columns,dimage->rows);
-  if((dimage->columns != w) ||(dimage->rows!=h)) {
-     printf( "Size of Pixels :%d:%d %d:%d\n",image->columns,w,image->rows,h);
-     return NULL;
-  }
   spixels =GetImagePixels(image,0,0,image->columns,image->rows);
   xsize =dimage->columns;
   ysize = dimage->rows;
@@ -1814,15 +1778,12 @@ void *uiShadowgmImage_o(GMIMG *png,int xoffset,int yoffset) {
   GMIMG *dpng=NULL;
   Image *image,*tmpimg,*dimage;
   PixelPacket *pixels,*spixels;
-  ExceptionInfo Exception;
   if(png== NULL) return NULL;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
   w = image->columns;
   h = image->rows;
   tmpimg=AllocateImage((ImageInfo *) NULL);
@@ -1830,19 +1791,16 @@ void *uiShadowgmImage_o(GMIMG *png,int xoffset,int yoffset) {
   tmpimg->rows=h;
   SetImage(tmpimg,TrueColorMatteType);
   if(tmpimg == NULL) {
-     GetImageInfo(image_info);
      printf("Failed to Allocate Image\n");
      return NULL;
   }
-  dimage = CloneImage(tmpimg,xsize,ysize,1,&exception);
-  if (exception.severity != UndefinedException) {
-     printf("Failed To create Image\n");
-     GetImageInfo(image_info);
-     exception.severity = UndefinedException;
-     GetExceptionInfo(&exception);
+  dimage = CloneImage(tmpimg,xsize,ysize,1,Exception);
+  if (Exception->severity != UndefinedException) {
+     DestroyExceptionInfo(Exception);
+     free(Exception);
      return NULL;
   }
-  DestroyImagePixels(tmpimg);
+//  DestroyImagePixels(tmpimg);
   DestroyImage(tmpimg);
   dimage->background_color.red=0;
   dimage->background_color.blue=0;
@@ -1853,7 +1811,7 @@ void *uiShadowgmImage_o(GMIMG *png,int xoffset,int yoffset) {
   SyncImagePixels(dimage);
   pixels =GetImagePixels(dimage,0,0,dimage->columns,dimage->rows);
   if((dimage->columns != w) ||(dimage->rows!=h)) {
-     printf( "Size of Pixels :%d:%d %d:%d\n",image->columns,w,image->rows,h);
+     printf( "Size of Pixels :%ld:%d %ld:%d\n",image->columns,w,image->rows,h);
   }
   spixels =GetImagePixels(image,0,0,image->columns,image->rows);
   tmpimg = dimage;
@@ -1885,8 +1843,11 @@ void *uiShadowgmImage_o(GMIMG *png,int xoffset,int yoffset) {
     }
   }
   SyncImagePixels(dimage);
-  dpng = (GMIMG *)malloc(sizeof(GMIMG));
+  dpng = (GMIMG *)Malloc(sizeof(GMIMG));
   dpng->image = dimage;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
+  strcpy(png->Sign,"IMG");
   strcpy(dpng->Sign,"IMG");
   dpng->image_width= dimage->columns;
   dpng->image_height= dimage->rows;
@@ -1895,6 +1856,9 @@ void *uiShadowgmImage_o(GMIMG *png,int xoffset,int yoffset) {
   dpng->yoffset=0;
   dpng->bkgrclr=-1;
   dpng->rzfac =1.0;
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
   if(dimage->matte==0) dpng->image_channels=3;
   else dpng->image_channels=4;
   dpng->image_rowbytes = dpng->image_width*dpng->image_channels;
@@ -1933,17 +1897,11 @@ void *uiMergeTransparentgmImage(GMIMG *png1,GMIMG *png2,int Xshft,int Yshft) {
   PixelPacket *pixels,*spixels,*opixels;
   unsigned char r,g,b,bg_r,bg_g,bg_b;
   unsigned int red,green,blue;
-  ExceptionInfo Exception;
   if(png1== NULL) return NULL;
   if(png2== NULL) return NULL;
   image = (Image *)(png1->image);
   dimage = (Image *)(png2->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
   pixels =GetImagePixels(dimage,0,0,dimage->columns,dimage->rows);
   spixels =GetImagePixels(image,0,0,image->columns,image->rows);
   w = image->columns;
@@ -2004,46 +1962,6 @@ void *uiMergeTransparentgmImage(GMIMG *png1,GMIMG *png2,int Xshft,int Yshft) {
   return png1;
 }
 #else
-/* Not Used */
-void *uiMergegmImages(GMIMG *png1,GMIMG *png2,int xsft,int ysft) {
-/*
-  First Picture is put on the second and the
-  pointer and new image is returned
-*/
-  int w,h,bkgrclr,xsize,ysize;
-  float rzfac;
-  int i,j,k=0,kk;
-  GMIMG *dpng=NULL;
-  Image *image,*tmpimg,*dimage;
-  PixelPacket *pixels,*spixels;
-  if(png1== NULL) return NULL;
-  if(png2== NULL) return NULL;
-  image = (Image *)(png1->image);
-  dimage = (Image *)(png2->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    GetExceptionInfo(&exception);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  image->next=dimage;
-  tmpimg = FlattenImages(image,&exception);
-  image->next=NULL;
-  dpng = (GMIMG *)malloc(sizeof(GMIMG));
-  dpng->image = tmpimg;
-  strcpy(dpng->Sign,"IMG");
-  dpng->image_width= tmpimg->columns;
-  dpng->image_height= tmpimg->rows;
-  dpng->incode=0;
-  dpng->xoffset=0;
-  dpng->yoffset=0;
-  dpng->bkgrclr=-1;
-  dpng->rzfac =1.0;
-  if(dimage->matte==0) dpng->image_channels=3;
-  else dpng->image_channels=4;
-  dpng->image_rowbytes = dpng->image_width*dpng->image_channels;
-  return dpng;
-}
 #endif
 void *kgMergeTransparentImage(void *png1,void *png2,int Xshft,int Yshft) {
    int w1,h1,w2,h2,h,w;
@@ -2079,20 +1997,21 @@ void *uiCopygmImage_o(GMIMG *png) {
   GMIMG *dpng=NULL;
   Image *image,*tmpimg;
   PixelPacket *pixels,*spixels;
-  ExceptionInfo Exception;
   if(png== NULL) return NULL;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
-  tmpimg = CloneImage(image,image->columns,image->rows,1,&exception);
+  uiInitGm();
+  GetExceptionInfo(Exception);
+  tmpimg = CloneImage(image,image->columns,image->rows,1,Exception);
   pixels = SetImagePixels(tmpimg,0,0,image->columns,image->rows);
   SyncImagePixels(tmpimg);
-  dpng = (GMIMG *)malloc(sizeof(GMIMG));
+  dpng = (GMIMG *)Malloc(sizeof(GMIMG));
   dpng->image = tmpimg;
+  Image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetImageInfo(Image_info);
+  strcpy(png->Sign,"IMG");
   strcpy(dpng->Sign,"IMG");
   dpng->image_width= tmpimg->columns;
   dpng->image_height= tmpimg->rows;
@@ -2101,6 +2020,9 @@ void *uiCopygmImage_o(GMIMG *png) {
   dpng->yoffset=0;
   dpng->bkgrclr=-1;
   dpng->rzfac =1.0;
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
   if(tmpimg->matte==0) dpng->image_channels=3;
   else dpng->image_channels=4;
   dpng->image_rowbytes = dpng->image_width*dpng->image_channels;
@@ -2116,22 +2038,23 @@ void *uiCopygmImage(GMIMG *png) {
   int i,j,k=0,kk;
   GMIMG *dpng=NULL;
   Image *image,*tmpimg;
-  ExceptionInfo Exception;
   PixelPacket *pixels,*spixels;
   if(png== NULL) return NULL;
+  ImageInfo *Image_info=NULL;
+  ExceptionInfo *Exception;
+  Exception = (ExceptionInfo *)malloc(sizeof(ExceptionInfo));
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
-  tmpimg = CloneImage(image,image->columns,image->rows,1,&exception);
+  uiInitGm();
+  GetExceptionInfo(Exception);
+  tmpimg = CloneImage(image,image->columns,image->rows,1,Exception);
   pixels = SetImagePixels(tmpimg,0,0,image->columns,image->rows);
   SyncImagePixels(tmpimg);
-  dpng = (GMIMG *)malloc(sizeof(GMIMG));
+  dpng = (GMIMG *)Malloc(sizeof(GMIMG));
   *dpng = *png;
   dpng->image = tmpimg;
+  GetExceptionInfo(Exception);
+  png->info = Image_info;
+  png->exce = Exception;
 //  uiCleangmImage(dpng);
 #if 1
 // Added as on 18th Jan 2018
@@ -2157,17 +2080,11 @@ void *uiCleangmImage(GMIMG *png) {
   int w,h,bkgrclr,xsize,ysize;
   float rzfac;
   int i,j,k=0,kk;
-  ExceptionInfo Exception;
   Image *image;
   PixelPacket *pixels;
   if(png== NULL) return NULL;
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
   pixels =GetImagePixels(image,0,0,image->columns,image->rows);
   xsize = image->columns;
   ysize = image->rows;
@@ -2196,19 +2113,13 @@ void *uiFlipgmImage(GMIMG *png) {
   int xoff,yoff;
   float f,f1;
   GMIMG *dpng=NULL;
-  ExceptionInfo Exception;
   Image *image,*tmpimg,*dimage,*oimage;
   PixelPacket *pixels,*spixels,*opixels;
   unsigned char r,g,b,bg_r,bg_g,bg_b;
   unsigned int red,green,blue;
   if(png== NULL) return NULL;
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
   pixels =GetImagePixels(image,0,0,image->columns,image->rows);
   w = image->columns;
   h = image->rows;
@@ -2253,19 +2164,13 @@ void *uiFlopgmImage(GMIMG *png) {
   int xoff,yoff;
   float f,f1;
   GMIMG *dpng=NULL;
-  ExceptionInfo Exception;
   Image *image,*tmpimg,*dimage,*oimage;
   PixelPacket *pixels,*spixels,*opixels;
   unsigned char r,g,b,bg_r,bg_g,bg_b;
   unsigned int red,green,blue;
   if(png== NULL) return NULL;
   image = (Image *)(png->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
   pixels =GetImagePixels(image,0,0,image->columns,image->rows);
   w = image->columns;
   h = image->rows;
@@ -2310,18 +2215,12 @@ void *uiMaskgmImage(GMIMG *png,GMIMG *mask) {
   GMIMG *dpng=NULL,*tmpimg;
   Image *image,*dimage;
   PixelPacket *pixels,*spixels;
-  ExceptionInfo Exception;
   if(png== NULL) return NULL;
   if(mask== NULL) return NULL;
   mask = uiScalegmImage(mask,1.0);
   image = (Image *)(png->image);
   dimage = (Image *)(mask->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
   tmpimg = uiChangeSizegmImage(png,dimage->columns,dimage->rows,1);
   image = (Image *)(tmpimg->image);
   pixels =GetImagePixels(image,0,0,image->columns,image->rows);
@@ -2362,7 +2261,7 @@ void *uiMaskgmImage(GMIMG *png,GMIMG *mask) {
   }
 #endif
   SyncImagePixels(dimage);
-  dpng = (GMIMG *)malloc(sizeof(GMIMG));
+  dpng = (GMIMG *)Malloc(sizeof(GMIMG));
   dpng->image = dimage;
   strcpy(dpng->Sign,"IMG");
   dpng->image_width= dimage->columns;
@@ -2372,6 +2271,8 @@ void *uiMaskgmImage(GMIMG *png,GMIMG *mask) {
   dpng->yoffset=0;
   dpng->bkgrclr=-1;
   dpng->rzfac =1.0;
+  dpng->info = NULL;
+  dpng->exce = NULL;
   if(dimage->matte==0) dpng->image_channels=3;
   else dpng->image_channels=4;
   dpng->image_rowbytes = dpng->image_width*dpng->image_channels;
@@ -2507,7 +2408,7 @@ void *uiMergegmImages(GMIMG *png1,GMIMG *png2,int Xshft,int Yshft) {
   int xoff,yoff;
   float f,f1;
   GMIMG *dpng=NULL;
-  ExceptionInfo Exception;
+  
   Image *image,*tmpimg,*dimage,*oimage;
   PixelPacket *pixels,*spixels,*opixels;
   unsigned char r,g,b,bg_r,bg_g,bg_b;
@@ -2516,12 +2417,7 @@ void *uiMergegmImages(GMIMG *png1,GMIMG *png2,int Xshft,int Yshft) {
   if(png2== NULL) return NULL;
   image = (Image *)(png1->image);
   dimage = (Image *)(png2->image);
-  if( image_info== NULL) {
-    InitializeMagick(NULL);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    GetImageInfo(image_info);
-  }
-  GetExceptionInfo(&exception);
+  uiInitGm();
   pixels =GetImagePixels(dimage,0,0,dimage->columns,dimage->rows);
   spixels =GetImagePixels(image,0,0,image->columns,image->rows);
   w = image->columns;

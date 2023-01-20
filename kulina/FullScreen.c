@@ -1,4 +1,4 @@
-#include "kulina.h"
+#include <kulina.h>
 #include "FullScreenCallbacks.h"
 extern int Volume;
 extern int Cxres,Cyres,Dxres,Dyres,Pxres,Pyres,Hxres,Hyres;

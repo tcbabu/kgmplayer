@@ -247,7 +247,7 @@ int blank( void *parent,void **v,int Loc) {
       break;
      }
   }
-  kgColorTheme(&D,10,10,10);    /*  set colors for gui*/
+//  kgColorTheme(&D,10,10,10);    /*  set colors for gui*/
 //  ModifyblankGc(&(D.gc));    /*  set colors for gui*/
   D.PWIN = &MWIN;
   ret= kgUi(&D);

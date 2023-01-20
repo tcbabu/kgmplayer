@@ -16,10 +16,11 @@ extern MEDIAINFO Minfo;
 extern int Tools;
 
 extern char GrabFileName[300];
-int Pval;
+extern int Pval;
 int CheckMedia(char *);
 int kgLame(int,char **);
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int Mplayer(int,char **);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 
@@ -70,6 +71,9 @@ int  ConvertVideotextbox1callback(int cellno,int i,void *Tmp) {
   T = (DIT *)kgGetWidget(Tmp,i);
   TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VOutputWidget");
   strcpy(FileName,kgGetString(T,0));
+  if(CheckMedia(FileName) == 0) {
+    return 0;
+  }
 #if 0
   sprintf(OutFile,"%-s/Video/",getenv("HOME"));
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp4");
@@ -98,18 +102,35 @@ int  ConvertVideobutton1callback(int butno,int i,void *Tmp) {
     i :  Index of Widget  (0 to max_widgets-1) 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
-  char FileName[500],OutFile[500];
+  char FileName[500],OutFile[500],buf[300];
   DIALOG *D;DIN *B; 
   int n,ret =0,id; 
+  DIM *Msg;
   D = (DIALOG *)Tmp;
   DIT *T,*TO;
   T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VInputWidget");
   TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VOutputWidget");
   B = (DIN *)kgGetWidget(Tmp,i);
+  Msg = (DIM *) kgGetNamedWidget(Tmp,(char *) "ConvertMsg");
+  if( Msg == NULL) printf("=============> Failed to get Message Box\n");
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
   kgFolderBrowser(NULL,100,100,FileName,(char *)"*");
+  if(CheckMedia(FileName) == 0) {
+    sprintf(buf," NOT A VIDEO FILE");
+    kgWrite(Msg,buf);
+    kgUpdateOn(Tmp);
+    return 0;
+  }
+  sprintf(buf," Video %dx%d fps: %f ",Minfo.Axres,Minfo.Ayres,Minfo.fps);
+  if(Minfo.vcodec == 1) strcat(buf," H265");
+  if(Minfo.vcodec == 2) strcat(buf," H264");
+  kgWrite(Msg,buf);
+  kgUpdateOn(Tmp);
+
+  cndata.Xsize = Minfo.Axres;
+  cndata.Ysize = Minfo.Ayres;
   kgSetString(T,0,FileName);
 #if 0
   sprintf(OutFile,"%-s/Video/",getenv("HOME"));
@@ -312,19 +333,24 @@ int ConvertToMp4( CONVDATA *cn) {
       options1[0]='\0';
 // In fact formats other tham mp4 can be tried but not opened
 //      strcpy(options1,(char *)"-f mp4 -vcodec libx264 ");
-      strcpy(options1,(char *)"-f mp4 -vcodec libx264 ");
       switch(Cn.VQuality) {
         case 1:
-          strcpy(options1,(char *)"-f mp4 -vcodec libx265 ");
 //          strcat(options1,"  -b:v 3000K -aq 0 -c:a libmp3lame ");
-          strcat(options1,"   -aq 0 -c:a libmp3lame ");
+          strcpy(options1,(char *)"-f mp4 -vcodec libx265 -crf 16 -preset medium  -video_track_timescale 90k");
+          strcat(options1,"   -b:v 3000K -aq 0 -c:a libmp3lame ");
           break;
         case 2:
-          strcat(options1,"  -b:v 1500K -aq 0 -c:a libmp3lame ");
+          strcpy(options1,(char *)"-f mp4 -vcodec libx265 -crf 24 -preset medium  -video_track_timescale 90k");
+          strcat(options1,"  -b:v 2000K -aq 0 -c:a libmp3lame ");
           break;
         case 3:
-          strcat(options1,"  -b:v 700K -aq 2 -c:a libmp3lame ");
+          strcpy(options1,(char *)"-f mp4 -vcodec libx264 -crf 28 -preset fast  -video_track_timescale 90k");
+          strcat(options1,"  -b:v 1000K -aq 2 -c:a libmp3lame ");
           break;
+	default:
+          strcpy(options1,(char *)"-f mp4 -vcodec libx264 -crf 32 -preset veryfast  -video_track_timescale 90k");
+          strcat(options1,"  -b:v 800K -aq 2 -c:a libmp3lame ");
+	  break;  
       }
       len = strlen(options1);
       if(Cn.ChngAsp) {
@@ -342,10 +368,10 @@ int ConvertToMp4( CONVDATA *cn) {
       }
       else {Cn.Xsize = Minfo.Rxres; Cn.Ysize= Minfo.Ryres;}
 
-      sprintf(command,"kgffmpeg %-s -i \"%-s\" -y %-s \"%-s\"",
+      sprintf(command,"ffmpegfun %-s -i \"%-s\" -y %-s \"%-s\"",
              options,Cn.infile,options1,Cn.outfile);
 //      printf("%s\n",command);
-      runfunction(command,ProcessMp4Conversion,kgffmpeg);
+      runfunction(command,ProcessMp4Conversion,ffmpegfun);
 //      close(open(Fifo,O_RDONLY));
 //      fprintf(stderr,"Removing Fifo\n");
     exit(0);
@@ -400,7 +426,7 @@ int  ConvertVideosplbutton1callback(int butno,int i,void *Tmp) {
        cndata.NewAsp,cndata.Xsize,cndata.VFullRange,
        cndata.VStartSec,cndata.VEndSec,cndata.ChngAsp,cndata.Scale);
   write(ToTools[1],buff,strlen(buff));
-  kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
+  kgSplashMessage(Tmp,100,100,300,40,(char *)"Send for Processing",1,0,15);
   ret = 0;
 
   return ret;

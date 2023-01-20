@@ -9,6 +9,7 @@
 
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessPrint(int pip0,int pip1,int Pid);
 int ProcessToPipe(int pip0,int pip1,int Pid);
@@ -34,7 +35,6 @@ int runjob(char *job,int (*ProcessOut)(int,int,int));
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int runfunctionbkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int FileStat(char *flname);
-int kgffmpeg(int,char **);
 int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessToPipe(int pip0,int pip1,int Pid);
 
@@ -81,7 +81,7 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
   int totsec=0;
   int ssec,esec;
   int n;
- 
+  float per=0;
 
   if( CheckMedia(flname) == 0 ) {
     kgSplashMessage(NULL,100,100,300,40,(char *)"Error: Not Video",1,0,15);
@@ -102,7 +102,7 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
     close(Jpipe[0]);
     close(Jstat[1]);
 #if 1  // modify as required
-     sprintf(buff,"Execiting... PLEASE WAIT\n");
+     sprintf(buff,"Executing... PLEASE WAIT\n");
      write(Jpipe[1],buff,strlen(buff));
      sprintf(buff,"PLEASE WAIT till the window closes\n");
      write(Jpipe[1],buff,strlen(buff));
@@ -116,37 +116,59 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
      while (ssec < totsec) {
        sprintf(buff,"  %-s/Frm%-5.5d\n",folder,n);
        write(Jpipe[1],buff,strlen(buff));
+       per = ssec*100.0/totsec;
+       sprintf(buff,"Cur: %f \n",per);
+       write(Jpipe[1],buff,strlen(buff));
 #ifdef D_X264
        if(esec < totsec) {
-        sprintf(buff,"kgffmpeg -ss %-d -t %-d -i \"%-s\" "
-           " -y -f mp4 -vcodec libx264  -b:v 3000K -aq 0 "
+        sprintf(buff,"ffmpegfun -ss %-d -t %-d -i \"%-s\" "
+           " -y -video_track_timescale 90k -f mp4 -vcodec libx264  -b:v 3000K -aq 0 "
            " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
            ssec,tslice,flname,folder,n);
        }
        else {
-        sprintf(buff,"kgffmpeg -ss %-d  -i \"%-s\" "
-           " -y -f mp4 -vcodec libx264  -b:v 3000K -aq 0 "
+        sprintf(buff,"ffmpegfun -ss %-d  -i \"%-s\" "
+           " -y -video_track_timescale 90k -f mp4 -vcodec libx264  -b:v 3000K -aq 0 "
            " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
            ssec,flname,folder,n);
        }
 #else
+#if 0
        if(esec < totsec) {
-        sprintf(buff,"kgffmpeg -ss %-d -t %-d -i \"%-s\" "
-           " -y -f mp4 -vcodec libx265 -aq 0 "
+        sprintf(buff,"ffmpegfun -ss %-d -t %-d -i \"%-s\" "
+           " -y -f mp4 -vcodec libx265 -aq 0  "
+//           " -y -f mp4 -c:v libx265 -crf 0 -preset medium -x265-params \"keyint=1:lossless=1\" -aq 0  "
            " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
            ssec,tslice,flname,folder,n);
+//           " -y -f mp4 -vcodec libx265 -aq 0 "
        }
        else {
-        sprintf(buff,"kgffmpeg -ss %-d  -i \"%-s\" "
-           " -y -f mp4 -vcodec libx265 -aq 0 "
+        sprintf(buff,"ffmpegfun -ss %-d  -i \"%-s\" "
+           " -y -f mp4 -vcodec libx265 -aq 0  "
+//           " -y -f mp4 -c:v libx265 -crf 0 -preset medium -x265-params \"keyint=1:lossless=1\" -aq 0  "
            " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
            ssec,flname,folder,n);
+#else
+       if(esec < totsec) {
+        sprintf(buff,"ffmpegfun -ss %-d -t %-d -i \"%-s\" "
+           " -y -f mp4 -video_track_timescale 90k -c:v copy  -aq 0  "
+           " -c:a copy \"%-s/Frm%-5.5d\"",
+           ssec,tslice,flname,folder,n);
+//           " -y -f mp4 -video_track_timescale 90k -c:v libx265 -crf 0 -preset medium -x265-params \"keyint=1:lossless=1\" -aq 0  "
+       }
+       else {
+        sprintf(buff,"ffmpegfun -ss %-d  -i \"%-s\" "
+           " -y -f mp4 -video_track_timescale 90k -c:v copy -aq 0  "
+           " -c:a copy  \"%-s/Frm%-5.5d\"",
+           ssec,flname,folder,n);
+#endif	
        }
 #endif
        n++;
-       runfunction(buff,ProcessToPipe,kgffmpeg);
+       runfunction(buff,ProcessToPipe,ffmpegfun);
        ssec += tslice;
        esec += tslice;
+
      }
 #endif 
      close(Jpipe[1]);

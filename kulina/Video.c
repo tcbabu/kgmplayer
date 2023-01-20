@@ -36,7 +36,7 @@ int VideoGroup( DIALOG *D,void **v,void *pt) {
      2,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
-    1, /* bordr */
+    0, /* bordr */
     0, /* bkgr */
     0  /* =1 hide  */
    };

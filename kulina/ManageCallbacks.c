@@ -1,4 +1,4 @@
-#include "kulina.h"
+#include <kulina.h>
 extern char PrimDev[50],HdmiDev[50];
 extern char **Plist,**Hlist;
 extern int PReso,HReso,PVis,HVis,Hpos;

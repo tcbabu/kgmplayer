@@ -62,6 +62,14 @@ TOOLGRP ToolList[ ] = {
       "of file size, but it is generally affordable.\n"
       " If there is a plan to edit further, opt for the best quality.\n"
       "\nThanks to libx264/265, generally a good job is done\n"
+      "\n Aspect value 1 means the original aspect ratio,\n"
+      "greater than (>) 1.0 means a decrease in y resolution\n"
+      "less thsn (<) 1.0 means an increase in y resolution\n"
+      "\n Aspect ratio is Xres/Yres and a factor 1.0 means\n"
+      " fac = (Xres/Yres)/(AspRatio) where AspRatio is original\n"
+      "aspect ratio, so a factor greater than 1.0 means a decrease\n"
+      "new Yres and a value < 1.0 means an increase in new Yres\n"
+      "So new Yres if adjusted to maintain the new aspect ratio\n"
   },
   { 0, MakeVideoJoinGroup,"Join Video Files",0,0 ,RunHelper,0,
       "\nMuliple video files can be joined together to a single one\n"
@@ -161,7 +169,7 @@ int InitConvertData(CONVDATA *cnd) {
   cnd->infile[0]='\0';
   cnd->outfile[0]='\0';
   cnd->Quality=2;
-  cnd->VQuality=2;
+  cnd->VQuality=4;
   cnd->VolEnh=3;
   cnd->Enhfac=1.0;
   cnd->FullRange=1;
@@ -174,9 +182,9 @@ int InitConvertData(CONVDATA *cnd) {
   cnd->Scale=0;
   cnd->OldAsp=1;
   cnd->NewAsp=1;
-  cnd->Xsize=640;
-  cnd->Ysize=480;
-  cnd->fps=24;
+  cnd->Xsize=1280;
+  cnd->Ysize=720;
+  cnd->fps=30;
   cnd->Vlist=NULL;
   cnd->Alist=NULL;
 }

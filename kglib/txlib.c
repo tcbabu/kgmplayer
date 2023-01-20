@@ -577,7 +577,7 @@ short key_press(int *c)
     return(keypress);
    }
 
- short get_kb(int t)
+short get_kb(int t)
  {
    int ch,ch1;
    int i;
@@ -2710,12 +2710,12 @@ void alloc_scrn_buffer(void)
  {
   SC_BUF *tmp;
   if(scpt==NULL){
-    scpt=(SC_BUF *)malloc(sizeof(SC_BUF));
+    scpt=(SC_BUF *)Malloc(sizeof(SC_BUF));
     scpt->nx=NULL;
     scpt->pv=NULL;
   }
   else {
-    tmp=(SC_BUF *)malloc(sizeof(SC_BUF));
+    tmp=(SC_BUF *)Malloc(sizeof(SC_BUF));
     tmp->nx=NULL;
     tmp->pv=scpt;
     scpt->nx=tmp;
@@ -3903,12 +3903,12 @@ void t_txt_rot(float t)
                             break;
                    case 'k':
                             if(FB_P==NULL) {
-                              FB_P=(B_K *) malloc((int)sizeof(B_K));
+                              FB_P=(B_K *) Malloc((int)sizeof(B_K));
                               O_P=FB_P;
                               O_P->Nx=NULL;O_P->Pr=NULL;
                             }
                             else {
-                              O_P->Nx=(B_K *) malloc((int)sizeof(B_K));
+                              O_P->Nx=(B_K *) Malloc((int)sizeof(B_K));
                               O_P->Nx->Pr=O_P;
                               O_P=O_P->Nx;
                               O_P->Nx=NULL;
@@ -3931,12 +3931,12 @@ void t_txt_rot(float t)
                    case 'O':
                    case 'U':
                             if(FO_L==NULL) {
-                              FO_L=(L_N *) malloc((int)sizeof(L_N));
+                              FO_L=(L_N *) Malloc((int)sizeof(L_N));
                               O_L=FO_L;
                               O_L->Nx=NULL;O_L->Pr=NULL;
                             }
                             else {
-                              O_L->Nx=(L_N *) malloc((int)sizeof(L_N));
+                              O_L->Nx=(L_N *) Malloc((int)sizeof(L_N));
                               O_L->Nx->Pr=O_L;
                               O_L=O_L->Nx;
                               O_L->Nx=NULL;
@@ -4165,8 +4165,8 @@ void t_panel(float *x,float *y,int color,int flag,int n)
   int *x1,*y1;
   int xo,yo,xv,yv;
   short i,j=0;
-  x1 = (int *) malloc(sizeof(int)*(n+1));
-  y1 = (int *) malloc(sizeof(int)*(n+1));
+  x1 = (int *) Malloc(sizeof(int)*(n+1));
+  y1 = (int *) Malloc(sizeof(int)*(n+1));
   if( (y1==NULL) ){
     normal();
     printf(" Error: Not enough buffer for polyfill..\n");
@@ -4601,12 +4601,12 @@ void t_circle(float x,float y,float r)
                         break;
                case 'k':
                         if(FB_P==NULL) {
-                          FB_P=(B_K *) malloc((int)sizeof(B_K));
+                          FB_P=(B_K *) Malloc((int)sizeof(B_K));
                           O_P=FB_P;
                           O_P->Nx=NULL;O_P->Pr=NULL;
                         }
                         else {
-                          O_P->Nx=(B_K *) malloc((int)sizeof(B_K));
+                          O_P->Nx=(B_K *) Malloc((int)sizeof(B_K));
                           O_P->Nx->Pr=O_P;
                           O_P=O_P->Nx;
                           O_P->Nx=NULL;
@@ -4732,7 +4732,7 @@ void  t_clip_limit(float x1,float y1,float x2,float y2)
   {
     int ix1,ix2,iy1,iy2;
     CLIP *temp;
-    temp = (CLIP *) malloc(sizeof(CLIP));
+    temp = (CLIP *) Malloc(sizeof(CLIP));
     if( temp ==NULL) {
                       setnormal();
                       printf(" Error: memory allocation in clip\n");

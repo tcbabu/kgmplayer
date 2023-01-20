@@ -100,7 +100,7 @@ int monitorWaitCallBack(void *Tmp) {
      O = (DIO *)kgGetNamedWidget(Tmp,"Bar");
      pip0 = MonPipe;
      if((ch=GetTimedLine(pip0,buff,1000)) ) {
-         if(!GetTimedLine(StatusGrab[0],connection,300)) kgSetExit(Tmp);
+//         if(!GetTimedLine(StatusGrab[0],connection,300)) kgSetExit(Tmp);
          if(ch>= 0)  {
            if(ch==0) {kgSetExit(Tmp); return 1;}
            switch(Tools) {

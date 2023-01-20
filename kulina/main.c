@@ -4,11 +4,13 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <fcntl.h>
 #include <kulina.h>
 #include "ConvertData.h"
 #include "mediainfo.h"
 extern MEDIAINFO Minfo;
 int Tools=0;
+int Forkid=0;
 extern int Kulina;
 int WMErr;
 char GrabFileName[300];
@@ -34,6 +36,7 @@ int MixAudioToAudio( CONVDATA *cn);
 int InsertSilences( CONVDATA *cn);
 int MakeAudioCuts( CONVDATA *cn);
 int SearchString(char *s1,char *s2);
+MEDIAINFO * GetMediaInfo(char *flname);
 
 char HomeDir[200],bname[200];
 int movgrab(int,char **);
@@ -158,6 +161,7 @@ int ProcessGrabCheck(int pip0,int pip1,int Pid) {
 //     printf("Function Finished\n");
      return ret;
 }
+#if 0
 int ForkGrab(void) {
    char buff[2000];
    int pip0,ch;
@@ -197,6 +201,7 @@ int ForkGrab(void) {
    }
    else return 1;
 }
+#endif
 int ReadConvertData(CONVDATA *cn,char *buff) {
    int pos,loc;
    char *pt;
@@ -462,12 +467,12 @@ int ReadAddData(CONVDATA *cn,char *buff) {
 }
 int ForkTools(void) {
    char buff[2000];
-   int pip0,ch;
+   int pip0,ch,pid;
    if( pipe(ToTools) < 0) return 0;
    if( pipe(FromTools) < 0) return 0;
    if( pipe(StatusTools) < 0) return 0;
    pip0 = ToTools[0];
-   if(fork() == 0) {
+   if((pid=fork()) == 0) {
      CONVDATA *cn;
      int pos,loc,code;
      char *pt;
@@ -602,7 +607,7 @@ int ForkTools(void) {
 //     printf("Closed pipe\n");
      exit(0);
    }
-   else return 1;
+   else return pid;
 }
 int main(int argc ,char **argv) {  
   FILE *fp;
@@ -619,19 +624,28 @@ int main(int argc ,char **argv) {
       return 1;
     }
   }
+  strcpy(HomeDir,getenv("HOME"));
+  chdir(HomeDir);
+  mkdir((char *)".kgMplayer",0700);
 #if 1
+#if 1
+  close(0);
+  open("/dev/null",O_RDONLY|O_CREAT|O_TRUNC,0777);
+  close(1);
+  open(".kgMplayer/Msg",O_WRONLY|O_CREAT|O_TRUNC,0777);
+  close(2);
+  dup(1);
+#endif 
   if(!kgCheckCompositor()){
      printf("No Compositing Manager\n");
      WMErr=1;
   }
   else printf("Compositing Manager Available\n");
+  fflush(stdout);
 #endif
-  strcpy(HomeDir,getenv("HOME"));
-  chdir(HomeDir);
-  mkdir((char *)".kgMplayer",0700);
   SetTheme();
-  ForkGrab();
-  ForkTools();
+//  ForkGrab();
+  Forkid = ForkTools();
   Kulina =1;
   if((fp=fopen(".kgMplayer/Playlist","r"))==NULL) {
      fp = fopen(".kgMplayer/Playlist","w");

@@ -23,6 +23,7 @@ int FileStat(char *);
 extern char GrabFileName[300];
 int kgLame(int,char **);
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int Mplayer(int,char **);
 int Mencoder(int,char **);
 void *RunMonitorJoin(void *arg);
@@ -96,27 +97,22 @@ int AddAudioToVideo( CONVDATA *cn) {
     sprintf(options,"Processing audio  file\n");
     write(Jpipe[1],options,strlen(options));
     id =0;
-    sprintf(command,"kgffmpeg -vn -i \"%s\" "
+    sprintf(command,"ffmpegfun -vn -i \"%s\" "
          " -vn -aq 2 -ac 2 -ar 44100 -acodec pcm_s32le -t %lf -y %s/F%-4.4d.wav ",
          Cn.audiofile,Esec,Folder,id);
 //        printf("%s\n",command);
-    runfunction(command,ProcessSkip,kgffmpeg);
-    sprintf(options,"Esec: %lf\n",Esec);
+    runfunction(command,ProcessSkip,ffmpegfun);
+//    sprintf(options,"Esec: %lf\n",Esec);
+//    write(Jpipe[1],options,strlen(options));
+    sprintf(options,"Media length: %lf(secs)\nAdding/ Changing  audio \n",Esec);
     write(Jpipe[1],options,strlen(options));
-    sprintf(options,"Adding audio and Converting to mp4\n");
-    write(Jpipe[1],options,strlen(options));
-    if(Cn.Quality==1) {
-    sprintf(command,"kgffmpeg -vn -i %-s/F%-4.4d.wav -an -i \"%-s\" "
-        " -y -f mp4 -vcodec libx265 "
-        "  -t %lf \"%-s\" ", Folder,id ,Cn.infile,Esec,Cn.outfile);
-    }
-    else {
-    sprintf(command,"kgffmpeg -vn -i %-s/F%-4.4d.wav -an -i \"%-s\" "
-        " -y -f mp4 -vcodec libx264 "
-        " -b:v %-s -t %lf \"%-s\" ", Folder,id ,Cn.infile,Qstr,Esec,Cn.outfile);
-    }
-//        printf("%s\n",command);
-    runfunction(command,ProcessToPipe,kgffmpeg);
+// Some problem	    , may be clash with libx265 so changed 265
+// need to sort out    
+    sprintf(command,"ffmpegfun -vn -i %-s/F%-4.4d.wav -an -i \"%-s\" "
+        " -y -f mp4 -c:v copy "
+        " -b:v %-s -aq 0 -c:a libmp3lame  -t %lf \"%-s\" ", Folder,id ,Cn.infile,Qstr,Esec,Cn.outfile);
+    printf("=====> %s\n",command);
+    runfunction(command,ProcessToPipe,ffmpegfun);
     kgCleanDir(Folder);
     close(Jpipe[1]);
     exit(0);
@@ -238,7 +234,7 @@ int  AddAudiosplbutton1callback(int butno,int i,void *Tmp) {
        cndata.code, cndata.audiofile,cndata.infile,cndata.outfile,Qty);
   write(ToTools[1],buff,strlen(buff));
   
-  kgSplashMessage(NULL,100,100,300,40,"Send for Processing",1,0,15);
+  kgSplashMessage(Tmp,100,100,300,40,"Send for Processing",1,0,15);
   ret =0;
 
   return ret;

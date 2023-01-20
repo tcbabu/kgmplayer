@@ -82,7 +82,7 @@ int  kgInitglWindow(void* Gtmp) {
 	    exit(1);
     }
 #endif
-    cMain = (GLXContext *)malloc(sizeof(GLXContext));
+    cMain = (GLXContext *)Malloc(sizeof(GLXContext));
     *cMain = glXCreateContext(xDisplay, vInfoMain, None,
 			       GL_TRUE);
     if (!(*cMain)) {

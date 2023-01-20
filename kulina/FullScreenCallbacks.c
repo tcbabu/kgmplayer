@@ -1,4 +1,4 @@
-#include "kulina.h"
+#include <kulina.h>
 static void *Dia;
 extern float StartSec,TotSec,CurSec;
 extern int sig[2],rsig[2],rsig1[2],Pip0;

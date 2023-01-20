@@ -26,9 +26,10 @@ int CheckMedia(char *flname);
 int FileStat(char *);
 DIX *AX2=NULL;
 extern char GrabFileName[300];
-int Pval;
+extern int Pval;
 int kgLame(int,char **);
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int Mplayer(int,char **);
 int Mencoder(int,char **);
 void *RunMonitorJoin(void *arg);
@@ -47,8 +48,8 @@ int ProcessToAudioPipe(int pip0,int pip1,int Pid) {
      char *pt;
 //     close(pip1);
      while((ch=GetLine(pip0,buff)) ) {
-         if(!GetTimedLine(StatusGrab[0],work,300)) break;
-         if(!GetTimedLine(Jstat[0],work,300)) break;
+//         if(!GetTimedLine(StatusGrab[0],work,300)) break;
+//         if(!GetTimedLine(Jstat[0],work,300)) break;
          if(ch< 0) continue;
          if((pos=SearchString(buff,(char *)"%"))>=0)  {
              buff[pos]=' ';
@@ -144,11 +145,11 @@ void * ProcessAudioInput_o(void *mtmp) {
   MEDIAINFO *mpt;
   char command[1000];
   mpt = (MEDIAINFO *)mtmp;
-  sprintf(command,"kgffmpeg -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
+  sprintf(command,"ffmpegfun -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
          "-acodec pcm_s32le -y %s/F%-4.4d.wav ",
          mpt->Flname, mpt->Folder,mpt->id);
 //  printf("%s\n",command);
-  runfunction(command,ProcessSkip,kgffmpeg);
+  runfunction(command,ProcessSkip,ffmpegfun);
   sprintf(command,"kgmplayer -ao pcm:file=%s/M%-4.4d.wav -vo null "
       " %s/F%-4.4d.wav " ,mpt->Folder,mpt->id,mpt->Folder,mpt->id);
   runfunction(command,ProcessSkip,Mplayer);
@@ -159,11 +160,11 @@ void * ProcessAudioInput(void *mtmp) {
   MEDIAINFO *mpt;
   char command[1000];
   mpt = (MEDIAINFO *)mtmp;
-  sprintf(command,"kgffmpeg -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
+  sprintf(command,"ffmpegfun -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
          "-acodec pcm_s32le -y %s/M%-4.4d.wav ",
          mpt->Flname, mpt->Folder,mpt->id);
 //  printf("%s\n",command);
-  runfunction(command,ProcessToPipe,kgffmpeg);
+  runfunction(command,ProcessToPipe,ffmpegfun);
   return NULL;
 }
 int JoinToMp3( CONVDATA *cn) {
@@ -209,11 +210,11 @@ int JoinToMp3( CONVDATA *cn) {
       sprintf(options,"Esec: %f\n",mpt->TotSec);
       write(Jpipe[1],options,strlen(options));
 #if 0
-      sprintf(command,"kgffmpeg -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
+      sprintf(command,"ffmpegfun -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
          "-acodec pcm_s32le -y %s/F%-4.4d.wav ",
          mpt->Flname, Folder,id);
         printf("%s\n",command);
-      runfunction(command,ProcessSkip,kgffmpeg);
+      runfunction(command,ProcessSkip,ffmpegfun);
       sprintf(command,"kgmplayer -ao pcm:file=%s/M%-4.4d.wav -vo null %s/F%-4.4d.wav " 
          ,Folder,id,Folder,id);
       runfunction(command,ProcessSkip,Mplayer);
@@ -255,10 +256,10 @@ int JoinToMp3( CONVDATA *cn) {
      if(kgSearchString(Cn.outfile,(char *)".mp3")>=0) {
        sprintf(Qstr," -c:a libmp3lame -aq 0  ");
      }
-     sprintf(command,"kgffmpeg    -i %-s/out.wav "
+     sprintf(command,"ffmpegfun    -i %-s/out.wav "
         " -ac 2 %s -y \"%-s\" ", Folder ,Qstr,Cn.outfile);
 //        printf("%s\n",command);
-     runfunction(command,ProcessToAudioPipe,kgffmpeg);
+     runfunction(command,ProcessToAudioPipe,ffmpegfun);
 #endif
      remove(Fifo);
      kgCleanDir(Folder);
@@ -492,7 +493,7 @@ int  AudioJoinsplbutton1callback(int butno,int i,void *Tmp) {
       ret=0;
       break;
   }
-  kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
+  kgSplashMessage(Tmp,100,100,300,40,(char *)"Send for Processing",1,0,15);
   return ret;
 }
 void  AudioJoinsplbutton1init(DIL *B,void *pt) {

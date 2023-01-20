@@ -666,9 +666,8 @@ MENCODER_DEPS = $(OBJS_MENCODER) $(OBJS_COMMON) $(COMMON_LIBS)
 MPLAYER_DEPS  = $(KULINA)/lib/kgmplayer.a \
   ffmpeg/libavdevice/libavdevice.a \
   $(OBJS_MPLAYER) $(OBJS_MENCODER) \
-  $(OBJS_COMMON) $(COMMON_LIBS) $(KULINA)/lib/libmovgrab.a \
-  $(KULINA)/lib/libUseful-2.0.a $(KULINA)/lib/libssl.a \
-  $(KULINA)/lib/libcrypto.a $(KULINA)/lib/libfontconfig.a \
+  $(OBJS_COMMON) $(COMMON_LIBS)  \
+  $(KULINA)/lib/libcrypto.a \
   $(KULINA)/lib/libexpat.a 
 
 DEP_FILES     = $(SRCS_COMMON) $(SRCS_MPLAYER) $(SRCS_MENCODER)
@@ -754,9 +753,10 @@ mencoder$(EXESUF): EXTRALIBS += $(EXTRALIBS_MENCODER)
 kgmplayer$(EXESUF): $(MPLAYER_DEPS)
 kgmplayer$(EXESUF): EXTRALIBS += $(EXTRALIBS_MPLAYER) \
  ffmpeg/libavdevice/libavdevice.a \
--L$(KULINA)/lib -lkulina -lgm -lcdio -lvcdinfo -liso9660 -lmp3lame \
- $(KULINA)/lib/libx264.a $(KULINA)/lib/libx265.a -lnettle -lhogweed -lgmp -lfdk-aac
+-L$(KULINA)/lib -lkulina -lgm -lcdio -lvcdinfo -liso9660 -lmp3lame -llzma -lz\
+ $(KULINA)/lib/libx264.a $(KULINA)/lib/libx265.a -lnettle -lhogweed -lgmp -lfdk-aac -lfontconfig
 kgmplayer$(EXESUF):
+	echo "g++ -o $@ $^ $(EXTRALIBS)" > makecmd
 	g++ -o $@ $^ $(EXTRALIBS)
 
 codec-cfg-test$(EXESUF): HOSTCFLAGS := $(HOSTCFLAGS) -DTESTING

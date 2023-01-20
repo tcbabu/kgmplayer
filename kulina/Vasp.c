@@ -24,8 +24,8 @@ int VaspGroup( DIALOG *D,void **v,void *pt) {
   e0[0].noecho=0;
   DIT t0 = { 
     't',
-    439,102,  
-    586,132,
+    454,117,  
+    576,147,
     20, 
     1,1, 
     e0,

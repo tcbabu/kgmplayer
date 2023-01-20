@@ -1,14 +1,15 @@
 #define D_PULSE
+#define _GNU_SOURCE
 #include <stdlib.h>
+#include <unistd.h>
 #include <math.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
 #include <cdio/cdio.h>
-#include "kulina.h"
+#include <kulina.h>
 #include "mediainfo.h"
-#define _GNU_SOURCE
 typedef struct _DevRec {
   char device[50];
   int hdmi;
@@ -16,7 +17,7 @@ typedef struct _DevRec {
   int pos;
   Dlink *Resolist;
 } DEVREC;
-MEDIAINFO Minfo;
+extern MEDIAINFO Minfo;
 extern int DLOOP,DRANDOM;
 extern char DirName[500];
 extern float AudioTiming;
@@ -44,6 +45,8 @@ int cd_info(int,char **);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int RunFunction(char *job,int (*ProcessOut)(void *,int,int,int),int
 (*function)(int,char **),void *);
+int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 void * RunControls(void *);
 int runjob(char *job,int (*ProcessOut)(int,int,int));
 extern int BRK;
@@ -866,7 +869,7 @@ int ProcessListMplayer(int pip0,int pip1,int Pid) {
      return 1;
 }
 int ProcessXrandr(int pip0,int pip1,int Pid) {
-     char buff[1000],device[20],connection[20],reso[30],*rpt;
+     char buff[1000],device[40],connection[20],reso[80],*rpt;
      int ch,i=0,j,found=0,Vis;
      Dlink *Resolist;
      DEVREC *dpt;
@@ -891,7 +894,7 @@ int ProcessXrandr(int pip0,int pip1,int Pid) {
              i=j;
              while((buff[i]!='\n')&&(buff[i]!='\r')) {if(!isdigit(buff[i])) buff[i]=' ';i++;}
              sscanf(buff+j,"%d %d",&Cxres,&Cyres);
-//             printf("Cxres:Cyres %d %d\n",Cxres,Cyres);
+             printf("Cxres:Cyres %d %d\n",Cxres,Cyres);
              Dxres=Cxres;
              Dyres=Cyres;
              if(Hxres==-1) {Hxres=Cxres;Hyres=Cyres;}
@@ -907,9 +910,11 @@ int ProcessXrandr(int pip0,int pip1,int Pid) {
            continue;
          }
          found=0;
-         if(ch=='\n') {
+//         if(ch=='\n') {
+         if(SearchString(buff,(char *)"connected")>= 0) {
            sscanf(buff,"%s%s%s",device,connection,reso);
-           if(strcmp(connection,(char *)"connected")==0) {
+//	   fprintf(stderr,"Got connection: %s %s %s\n" ,device,connection,reso);
+           if(strncmp(connection,(char *)"connected",9)==0) {
              found=1;
              dpt= (DEVREC *)malloc(sizeof(DEVREC));
              Resolist=Dopen();
@@ -925,12 +930,14 @@ int ProcessXrandr(int pip0,int pip1,int Pid) {
                }
                sscanf(reso,"%d%d",&Xres,&Yres);
              }
-             device[4]='\0';
+//             device[4]='\0';
              dpt->Xres=Xres;
              dpt->Yres=Yres;
              dpt->pos=0;
              dpt->hdmi=0;
-             if( strcmp(device,(char *)"HDMI")==0) {
+             if( (strncmp(device,(char *)"HDMI",4)==0)||
+	         (strncmp(device,(char *)"DisplayPort",11)==0)) {
+//		     fprintf(stderr,"Got HDMI: %s\n",device);
                HDMI=1;
                dpt->hdmi=1;
                if(Vis) {
@@ -1377,29 +1384,26 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
    FILE *fp,*fp1;
    int pip[2],pid,status,pip2[2],argc;
    char *args[100],buff[1000],pt[300];
+   char *ptr;
    char *pgrpath=NULL;
    int i=0,pos=0;
-//   printf("Job= %s\n",job);
-   if(job==NULL) return 0;
+   if(job==NULL){
+	   fprintf(stderr,"Job: NULL \n");
+           fflush(stdout);
+           fflush(stderr);
+	   return 0;
+   }
    if( pipe(pip) < 0) return 0;
    if( pipe(pip2) < 0) return 0;
    Mute=0;
+   fprintf(stderr,"Job= %s\n",job);
+   fflush(stdout);
+   fflush(stderr);
 //   pipew =pip2[1];
    while(job[i]==' ') i++;
    strcpy(buff,job+i);
    i=0;
    while ( sscanf(buff+pos,"%s",pt) > 0 ) {
-#if 0
-//     printf("%s\n",pt);
-     if(pt[0]=='\\') {
-      pos++;
-      args[i]=buff+pos;
-      while(buff[pos]!='\\')pos++;
-      buff[pos]='\0';
-      i++;
-     }
-     else 
-#endif
      if(pt[0]=='\"') {
       pos++;
       args[i]=buff+pos;
@@ -1416,48 +1420,43 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
      }
      pos++;
      while(buff[pos]==' ') pos++;
- //    printf("%s ",args[i-1]);
+     printf("%s \n ",args[i-1]);
+     fflush(stdout);
    }
-//   printf("\n");
+   printf("\n");
    args[i]=NULL;
-   if(i==0) return 0;
+   if(i==0){
+	   printf("i==0 Exiting\n");
+           fflush(stdout);
+	   return 0;
+   }
    argc=i;
-#if 0
-   pgrpath=kgWhich(args[0]);
-   if (pgrpath==NULL) return 0;
-#endif
-#if 1
    pid = fork();
    if(pid == 0) { /* child process */
 //     if(fork()!=0) exit(0); /* to avoid zombie */
+     for(i=0;i<argc;i++) {
+	   ptr = (char *)malloc(strlen(args[i])+1);
+			   strcpy(ptr,args[i]);
+			   args[i]=ptr;
+     }
+
+     close(pip2[1]);
+     close(pip[0]);
      close(0);
      dup(pip2[0]);
-     close(pip2[0]);
+//     close(pip2[0]);
+#if 1
      close(1);
-#if 0
-     dup(pip[1]);
-     close(2);
-     open("/dev/null",O_WRONLY|O_CREAT,0777);
-     /*dup(pip[1]);*/
-     close(pip[1]);
-#else
-#if 0
-//     open("/dev/null",O_WRONLY|O_CREAT,0777);
-#else
      dup(pip[1]);
 #endif
      close(2);
      dup(pip[1]);
-     close(pip[1]);
-#endif
-#if 0
-     execv(pgrpath,args);
-#else
+  //   close(pip[1]);
      if(function != NULL) function(argc,args);
-#endif
      fflush(stderr);
      fflush(stdout);
      fprintf(stderr,"END:\n");
+     fflush(stderr);
      exit(0);
    }
    else {   /* parent process */
@@ -1466,16 +1465,12 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
      close(pip[1]);
      if(ProcessOut != NULL){
         ret=ProcessOut(pip[0],pip2[1],pid);
-//        printf("Killing %d\n",pid);
+        printf("Killing %d\n",pid);
         kill(pid,9);
      }
      waitpid(pid,&status,0);
      return ret;
    }
-#else
-     Mplayer(argc,args);
-     return 1;
-#endif
 }
 int RunFunction(char *job,int (*ProcessOut)(void *,int,int,int),
                          int (*function)(int,char **),void *Arg){
@@ -1621,7 +1616,7 @@ int runjob_o(char *job,int (*ProcessOut)(int,int,int)){
    }
 }
 
-int ProcessMediaInfo(int pip0,int pip1,int Pid) {
+int ProcessMediaInfo_o(int pip0,int pip1,int Pid) {
      int ch,Asp;
      char buff[1000],work[100],CODE[10];
      char *pt;
@@ -1708,6 +1703,91 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
 //                   printf("Achnls= %d\n",Minfo.Achnls);
                  }
              }
+     }
+     if(!Asp) {
+       Minfo.AspectNu=Minfo.Rxres;
+       Minfo.AspectDe=Minfo.Ryres;
+     }
+     return 1;
+}
+int ProcessMediaInfo(int pip0,int pip1,int Pid) {
+     int ch,Asp;
+     char buff[1000],work[100],CODE[10];
+     char *pt;
+     float fps;
+     int pos;
+     Asp=0;
+     Minfo.Video=Minfo.Audio=0;
+     Minfo.TotSec=0;
+     Minfo.AspectNu=Minfo.AspectDe=1.0;
+     Minfo.Axres=Minfo.Ayres=1;
+     Minfo.Rxres=Minfo.Ryres=1;
+     Minfo.fps=0;
+     Minfo.rotation =0.0;
+     while((ch=GetLine(pip0,buff)) ) {
+//         printf("%s\n",buff);
+//         fflush(stdout);
+         if(ch< 0) continue;
+         if( (pos=SearchString(buff,(char *)"Duration:"))>=0) {
+		 int i= 0;
+		 int hr,mt;
+		 float sec;
+		 pt = buff+pos+10;
+		 sscanf(pt,"%s",work);
+		 while( (work[i]!=',')){
+			 if(work[i]==':') work[i]=' ';
+			 i++;
+		 } 
+		 work[i]='\0';
+//		 printf("%s\n",work);
+		 sscanf(work,"%d%d%f",&hr,&mt,&sec);
+                 Minfo.TotSec= hr*3600+mt*60+sec;
+//		 printf("Totsec = %f\n",Minfo.TotSec);
+	 }	 
+         if( (pos=SearchString(buff,(char *)"Video:"))>=0) {
+	       
+		 int i=0;
+	       pt= buff+pos+6;
+	       Minfo.Video=1;
+	       Minfo.vcodec =0;
+	       if( (pos=SearchString(buff,(char *)"hevc"))>=0) Minfo.vcodec =1;
+	       if( (pos=SearchString(buff,(char *)"h264"))>=0) Minfo.vcodec =2;
+                 pos = SearchString(pt,(char *)"yuv");
+		 pt = pt+pos+1;
+//		 printf("%s\n",pt);
+                 pos = SearchString(pt,(char *)"),");
+		 if(pos < 0) pos = SearchString(pt,(char *)", ");
+		 pt = pt+pos+2;
+//		 printf("%s\n",pt);
+		 sscanf(pt,"%s",work);
+		 while( (work[i]!=' ')){
+			 if(work[i]=='x') work[i]=' ';
+			 i++;
+		 } 
+		 work[i]='\0';
+		 sscanf(work,"%d%d",&Minfo.Axres,&Minfo.Ayres);
+		 Minfo.Rxres = Minfo.Axres;
+		 Minfo.Ryres = Minfo.Ayres;
+//		 printf(" Res: %d %d \n",Minfo.Axres,Minfo.Ayres);
+                 pos = SearchString(pt,(char *)",");
+		 pt = pt+pos+1;
+//		 printf("%s\n",pt);
+                 pos = SearchString(pt,(char *)"fps,");
+		 pt = pt+pos+5;
+//		 printf("%s\n",pt);
+                 sscanf(pt,"%f",&fps);
+                 Minfo.fps = fps;
+
+         }
+         if( (pos=SearchString(buff,(char *)"rotate"))>=0) {
+		 pos=SearchString(buff,(char *)":");
+		 sscanf(buff+pos+1,"%f",&Minfo.rotation);
+		 printf("========>Rotate  %f\n",Minfo.rotation);
+	 }
+         if( (pos=SearchString(buff,(char *)"Audio:"))>=0) {
+	       Minfo.Audio=1;
+
+	 }
      }
      if(!Asp) {
        Minfo.AspectNu=Minfo.Rxres;
@@ -1802,7 +1882,11 @@ int ProcessCdrom(int pip0,int pip1,int Pid) {
 int CheckPulse(void){
    char buff[500],dummy[30];
    int i=0;
+#if 0
    sprintf(buff,"aplay -L");
+#else
+   sprintf(buff,"ps -e");
+#endif
    runjob(buff,ProcessPulse);             
    if(!PULSE){
           fprintf(stderr,"Pulseaudio daemon not running...\n");
@@ -1853,13 +1937,14 @@ int CheckVideo(char *flname) {
 //   printf("%s\n",buff);
 //   runjob(buff,ProcessCheckVideo);
 //   runmplayer(buff,ProcessCheckVideo);
-   runfunction(buff,ProcessMediaInfo,Mplayer);
+   runfunction(buff,ProcessMediaInfo_o,Mplayer);
    VIDEO=Minfo.Video;
    Vxres = Minfo.Axres;
    Vyres = Minfo.Ayres;
    return VIDEO;
 }
 int CheckMedia(char *flname) {
+#if 0
    char buff[500];
    int i;
    i=0; while(flname[i]==' ')i++;
@@ -1867,15 +1952,36 @@ int CheckMedia(char *flname) {
     sprintf(buff,"Mplayer  -endpos 0 -vo null -ao null %s",flname);
    else sprintf(buff,"Mplayer  -endpos 0 -vo null -ao null \"%s\"",flname);
 //   printf("%s\n",buff);
-   runfunction(buff,ProcessMediaInfo,Mplayer);
+   runfunction(buff,ProcessMediaInfo_o,Mplayer);
    VIDEO=Minfo.Video;
    Vxres = Minfo.Axres;
    Vyres = Minfo.Ayres;
 //   printf("%s:  %d %d \n",flname,Minfo.Video,Minfo.Audio);
    if((!Minfo.Audio)&&(!Minfo.Video)) return 0;
    else return 1;
+#else
+   char buff[500];
+   MEDIAINFO *mpt,mtmp;
+   int i;
+   mtmp = Minfo;
+   Minfo.TotSec=500;
+   i=0; while(flname[i]==' ')i++;
+   if(flname[i]=='\"') 
+    sprintf(buff,"kgmffpeg  -i %s",flname);
+   else sprintf(buff,"ffmpegfun  -i  \"%s\"",flname);
+//   printf("%s\n",buff);
+   runfunction(buff,ProcessMediaInfo,ffmpegfun);
+   VIDEO=Minfo.Video;
+   Minfo.Rxres = Minfo.Axres;
+   Minfo.Ryres = Minfo.Ayres;
+   Vxres = Minfo.Axres;
+   Vyres = Minfo.Ayres;
+ printf("%s: %f  %d %d %f %d %d\n",flname,Minfo.TotSec,Minfo.Video,Minfo.Audio,Minfo.fps,Minfo.Axres,Minfo.Ayres);
+   if((!Minfo.Audio)&&(!Minfo.Video)) return 0;
+   else return 1;
+#endif 
 }
-MEDIAINFO * GetMediaInfo(char *flname) {
+MEDIAINFO * GetMediaInfo_o(char *flname) {
    char buff[500];
    MEDIAINFO *mpt,mtmp;
    int i;
@@ -1885,7 +1991,23 @@ MEDIAINFO * GetMediaInfo(char *flname) {
     sprintf(buff,"Mplayer  -endpos 0 -vo null -ao null %s",flname);
    else sprintf(buff,"Mplayer  -endpos 0 -vo null -ao null \"%s\"",flname);
 //   printf("%s\n",buff);
-   runfunction(buff,ProcessMediaInfo,Mplayer);
+   runfunction(buff,ProcessMediaInfo_o,Mplayer);
+   mpt = (MEDIAINFO *)malloc(sizeof(MEDIAINFO));
+   *mpt= Minfo;
+    Minfo=mtmp;
+    return mpt;
+}
+MEDIAINFO * GetMediaInfo(char *flname) {
+   char buff[500];
+   MEDIAINFO *mpt,mtmp;
+   int i;
+   mtmp = Minfo;
+   i=0; while(flname[i]==' ')i++;
+   if(flname[i]=='\"') 
+    sprintf(buff,"ffmpegfun  -i %s",flname);
+   else sprintf(buff,"ffmpegfun  -i  \"%s\"",flname);
+//   printf("%s\n",buff);
+   runfunction(buff,ProcessMediaInfo,ffmpegfun);
    mpt = (MEDIAINFO *)malloc(sizeof(MEDIAINFO));
    *mpt= Minfo;
     Minfo=mtmp;
@@ -2829,7 +2951,7 @@ int  kgMplayersplbutton1callback(int butno,int i,void *Tmp) {
         WriteMessage(buff);
 #endif
         break;
-        case 3:
+        case 5:
         SetMplayer();
         sprintf(buff,"!f24Playing :URL");
         kgTruncateString(buff,50);
@@ -2981,7 +3103,7 @@ int  kgMplayerbrowser1callback(int item,int i,void *Tmp) {
       kgUpdateWidget(B17);
       kgUpdateWidget(C19);
       break;
-    case 4:  // URL
+    case 5: 
       FilePlay=3;Vcd=0;Dvd=0;
       kgSetGrpVisibility(Tmp,DirGrp,0);
       kgSetGrpVisibility(Tmp,StoffGrp,0);
@@ -3003,7 +3125,7 @@ int  kgMplayerbrowser1callback(int item,int i,void *Tmp) {
       WriteMessage((char *)"may SEARCH for URL using string in url");
 //      kgUpdateGrp(Tmp,UrlGrp);
       break;
-    case 5:  // URL
+    case 4:
       FilePlay=4;Vcd=0;Dvd=0;
       kgSetGrpVisibility(Tmp,UrlGrp,0);
       kgSetGrpVisibility(Tmp,StoffGrp,0);

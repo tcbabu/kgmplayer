@@ -89,7 +89,8 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Runbackground.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
 	../mplayer/ffmpeg/ffmpeg.o ../mplayer/ffmpeg/cmdutils.o \
-	../mplayer/ffmpeg/ffmpeg_filter.o ../mplayer/ffmpeg/ffmpeg_opt.o
+	../mplayer/ffmpeg/ffmpeg_filter.o ../mplayer/ffmpeg/ffmpeg_opt.o \
+	../mplayer/ffmpeg/ffmpeg_vdpau.o 
 kgMplayer.o	: kgMplayer.c kulina.h
 	 $(CC) -c kgMplayer.c
 kgMplayerCallbacks.o	: kgMplayerCallbacks.c 

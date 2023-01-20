@@ -1,72 +1,16 @@
-int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **)){
-   int ret =0;
-   FILE *fp,*fp1;
-   int pip[2],pid,status,pip2[2],argc;
-   char *args[100],buff[1000],pt[300];
-   char *pgrpath=NULL;
-   int i=0,pos=0;
-//   printf("Job= %s\n",job);
-   if(job==NULL) return 0;
-   if( pipe(pip) < 0) return 0;
-   if( pipe(pip2) < 0) return 0;
-   Mute=0;
-//   pipew =pip2[1];
-   while(job[i]==' ') i++;
-   strcpy(buff,job+i);
-   i=0;
-   while ( sscanf(buff+pos,"%s",pt) > 0 ) {
-     if(pt[0]=='\"') {
-      pos++;
-      args[i]=buff+pos;
-      while(buff[pos]!='\"')pos++;
-      buff[pos]='\0';
-      i++;
-     }
-     else {
-       args[i]=buff+pos;
-       pos +=strlen(pt);
-       i++;
-       if(buff[pos]< ' ') break;
-       buff[pos]='\0';
-     }
-     pos++;
-     while(buff[pos]==' ') pos++;
- //    printf("%s ",args[i-1]);
+  if(kgDragThumbNail(Y,item-1,&x,&y)) {
+	  if( (x>Xmin) && (x<Xmax)&&(y>Ymin)&&(y<Ymax)) {
+		  thtmp = (ThumbNail **) malloc(sizeof(ThumbNail *)*(nitems+2));
+		  for(k=0;k<nitems;k++) thtmp[k] = thx[k];
+		  thtmp[nitems]= CopyThumbNail(thy[item-1]);
+		  thtmp[nitems +1]= NULL;
+                  kgSetList(X,(void **) thtmp);
+                  if(thx != NULL) free(thx);
+                  kgUpdateWidget(X);
+                  kgUpdateOn(D);
+                  ret=0;
+		  
+	  }
    }
-//   printf("\n");
-   args[i]=NULL;
-   if(i==0) return 0;
-   argc=i;
-#if 1
-   pid = fork();
-   if(pid == 0) { /* child process */
-//     if(fork()!=0) exit(0); /* to avoid zombie */
-     close(0);
-     dup(pip2[0]);
-     close(pip2[0]);
-     close(1);
-     dup(pip[1]);
-     close(2);
-     dup(pip[1]);
-     close(pip[1]);
-     if(function != NULL) function(argc,args);
-     printf("END:\n");
-     exit(0);
-   }
-   else {   /* parent process */
-//     printf("Waiting pid: %d\n",pid);
-     close(pip2[0]);
-     close(pip[1]);
-     if(ProcessOut != NULL){
-        ret=ProcessOut(pip[0],pip2[1],pid);
-//        printf("Killing %d\n",pid);
-        kill(pid,9);
-     }
-     waitpid(pid,&status,0);
-     return ret;
-   }
-#else
-     Mplayer(argc,args);
-     return 1;
+
 #endif
-}

@@ -200,7 +200,7 @@ int monitor( void *parent,void **v,void *pt) {
      D.xo=D.yo=0; D.xl = xres; D.yl=yres;
 //     D.StackPos = 1; // you may need it
   }    /*  end of fullscreen mode */
-  kgColorTheme(&D,Thred,Thgreen,Thblue);
+//  kgColorTheme(&D,Thred,Thgreen,Thblue);
 //  ModifymonitorGc(&(D.gc));    /*  set colors for gui*/
   ret= kgUi(&D);
   kgCleanUi(&D);

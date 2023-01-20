@@ -1,6 +1,6 @@
 #include <X11/X.h>
 #include <X11/Xlib.h>
-#include "kulina.h"
+#include <kulina.h>
 #include "MwinCallbacks.h"
 void  *kgCreateWindow (void *Tmp);
 void kgSubWindow(void *Gtmp);

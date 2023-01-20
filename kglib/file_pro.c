@@ -57,15 +57,15 @@ File * Fopen(char *flname){
    j=i-1;   
    buf[++j]='\n';
    buf[++j]='\0';
-   bf=(char *)malloc(j+1);
+   bf=(char *)Malloc(j+1);
    strcpy(bf,buf);
    Dadd(LN,bf);
   }
   fclose(fp);
-  F = (File *)malloc(sizeof(File));
+  F = (File *)Malloc(sizeof(File));
   F->L = LN;
   if( strlen(flname)>119 ) {
-    normal();
+//    normal();
     printf("Error: long file name in Fcreate/Fopen %s\n",flname);
     exit(0);
   }
@@ -83,10 +83,9 @@ File * Fcreate(char *flname){
   int i,j;
   FILE *fp;
   File *F;
-  F = (File *)malloc(sizeof(File));
+  F = (File *)Malloc(sizeof(File));
   F->L = Dopen();
   if( strlen(flname)>119 ) {
-    normal();
     printf("Error: long file name in Fcreate/Fopen %s\n",flname);
     exit(0);
   }
@@ -110,7 +109,7 @@ int append_line(File *F,char *buf){
     return 0;
   }
   while( buf[l]!='\0')l++;
-  bf=(char *)malloc(l+1);
+  bf=(char *)Malloc(l+1);
   strcpy(bf,buf);
   Dappend(F->L,bf);
   F->C_pos=0;
@@ -301,7 +300,7 @@ void insert_line(File *F,char *buf) {
  char *bf;
  if(F==NULL) return;
  l=0;while(buf[l]!='\0')l++;
- bf=(char *)malloc(l+1);
+ bf=(char *)Malloc(l+1);
  strcpy(bf,buf);
  Dinsert(F->L,bf);
  F->C_pos=0;
@@ -312,7 +311,7 @@ void add_line(File *F,char *buf) {
  char *bf;
  if(F==NULL) return;
  l=0;while(buf[l]!='\0')l++;
- bf=(char *)malloc(l+1);
+ bf=(char *)Malloc(l+1);
  strcpy(bf,buf);
  Dadd(F->L,bf);
  F->C_pos=0;
@@ -447,6 +446,6 @@ int Fprintf(void * unknown,...)
    }
    else cpt++;
   }
-  if(pt!='\0')strcat(wrk,pt);
+  if(pt!=NULL)strcat(wrk,pt);
   add_line(fp,wrk);
  }

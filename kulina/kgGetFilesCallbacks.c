@@ -6,6 +6,7 @@ static char Folder[500],Home[500],Filter[200]="*";
 static void *InfoBox,*ImgBox,*FolderBox,*OutBox;
 static void *MusicImg=NULL,*UnknownImg=NULL,*VideoImg=NULL;
 static char **Args=NULL;
+static DIALOG *Dia;
 int DeleteThumbNails(ThumbNail **th) {
     int i=0,n=0,j=0;
     if(th!= NULL) {
@@ -210,7 +211,10 @@ ThumbNail * CopyThumbNail(ThumbNail *th) {
 static int MakeThumbNailImages(ThumbNail **th) {
   ThumbNail **thtmp=NULL;
   int i=0,j=0;
-  thtmp = kgMakeThumbNails(Folder,48);
+  void *id;
+  id = kgOpenBusy(Dia,600,150);
+  thtmp = kgMakeThumbNails(Folder,84);
+  kgCloseBusy(id);
   i=0; j=0;
   if(thtmp!= NULL) {
    while(th[i]!= NULL) {
@@ -362,7 +366,7 @@ int  kgGetFilessplbutton1callback(int butno,int i,void *Tmp) {
 void  kgGetFilessplbutton1init(DIL *B,void *pt) {
 }
 int  kgGetFilesbrowser1callback(int item,int i,void *Tmp) {
-  DIALOG *D;DIY *Y;void *pt; 
+  DIALOG *D;DIY *Y,*X;void *pt; 
   /*********************************** 
     item : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -372,6 +376,44 @@ int  kgGetFilesbrowser1callback(int item,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   pt = D->pt;
   Y = (DIY *)kgGetWidget(Tmp,i);
+  X = (DIY *)kgGetNamedWidget(Tmp,(char *)"kgGetFilesItems");
+  char newdir[300];
+  char **m,**dir,**file,*folder;
+  ThumbNail *tpt,**thy,**thx,**thtmp;
+  void *ph;
+  int pos,x,y,k,nitems=0;
+  int Xmin,Ymin,Xmax,Ymax;
+  Xmin= X->x1; Ymin = X->y1;
+  Xmax= X->x2; Ymax = X->y2;
+  pt = (void **)(((DIALOG *)Tmp)->pt);
+  
+  thy = (ThumbNail **)kgGetList(Y);
+  thx = (ThumbNail **)kgGetList(X);
+  nitems =0;
+  if(thx != NULL) {
+     k=0; while(thx[k]!=NULL) k++;
+     nitems =k;
+  }
+
+#if 1
+  if(kgDragThumbNail(Y,item-1,&x,&y)) {
+	  if( (x>Xmin) && (x<Xmax)&&(y>Ymin)&&(y<Ymax)) {
+		  thtmp = (ThumbNail **) malloc(sizeof(ThumbNail *)*(nitems+2));
+		  for(k=0;k<nitems;k++) thtmp[k] = thx[k];
+		  thtmp[nitems]= CopyThumbNail(thy[item-1]);
+		  thtmp[nitems +1]= NULL;
+                  kgSetList(X,(void **) thtmp);
+                  if(thx != NULL) free(thx);
+                  kgUpdateWidget(X);
+                  kgUpdateOn(D);
+                  ret=0;
+		  
+	  }
+   }
+
+#endif
+
+
   switch(item) {
     case 1: 
       break;
@@ -416,10 +458,38 @@ int  kgGetFilesbrowser3callback(int item,int i,void *Tmp) {
     i :  Index of Widget  (0 to max_widgets-1) 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
-  int ret=1; 
+  int ret=1,pos,nitems=0,k; 
+  int x,y;
+  ThumbNail **thy,*tpt,**thtmp;
   D = (DIALOG *)Tmp;
   pt = D->pt;
   Y = (DIY *)kgGetWidget(Tmp,i);
+  thy = (ThumbNail **)kgGetList(Y);
+  nitems =0;
+  if(thy != NULL) {
+     k=0; while(thy[k]!=NULL) k++;
+     nitems =k;
+  }
+  if(kgDragThumbNail(Y,item-1,&x,&y)) {
+	  pos = kgGetThumbNailItem(Y,x,y);
+	  if((pos >=0)&&(pos!=(item-1)) ) {
+	    tpt = thy[item-1];
+            if(pos < (item-1) ) {
+              for(k=(item-1);k>pos;k--){ thy[k]=thy[k-1]; }
+              thy[pos]= tpt;
+            }
+            else {
+              for(k=item;k<pos;k++) {thy[k-1]=thy[k];}
+              thy[pos-1]= tpt;
+            }
+            *(Y->df) = pos+1;
+            kgSetList((void *)Y,(void **)thy);
+            kgUpdateWidget(Y);
+            kgUpdateOn(D);
+            ret=0;
+	  }
+   }
+
   switch(item) {
     case 1: 
       break;
@@ -439,6 +509,7 @@ int  kgGetFilesbutton2callback(int butno,int i,void *Tmp) {
   DIALOG *D;DIN *B; 
   int n,ret =0; 
   ThumbNail **th;
+  DIY *Y;
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
@@ -461,6 +532,7 @@ int  kgGetFilesbutton2callback(int butno,int i,void *Tmp) {
       th = (ThumbNail **) kgGetList(OutBox);
       DeleteThumbNails(th);
       kgSetList(OutBox,(void **)th);
+      Y = (DIY *)OutBox;
       kgUpdateWidget(OutBox);
       kgUpdateOn(D);
       break;
@@ -478,6 +550,7 @@ int kgGetFilesinit(void *Tmp) {
   ThumbNail **th;
   DIALOG *D;void *pt;
   D = (DIALOG *)Tmp;
+  Dia = D;
   if(pt != NULL) {
    Args =(char **) D->pt;
    strcpy(Filter,(char *)Args[0]);

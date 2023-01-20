@@ -71,7 +71,7 @@ void Read_Gclr(Gclr *gc,char *app) {
     if(buff[0]=='#') continue;
     i=0; while( buff[i]==' ') i++;
     if(buff[i]< ' ') continue;
-    sscanf(buff+i,"%s",code);
+    sscanf(buff+i,"%s",(char *)code);
     if(strcmp(code,"char_clr") == 0) {
       while( (buff[i]!='=')&&(buff[i] >= ' ')) i++;
       if(buff[i] != '=') continue;
@@ -297,7 +297,7 @@ DIM * Read_data_message(FILE *fp) {
   int i, n,l;
   DIM *t;
   char buff[500];
-  t = (DIM *) malloc(sizeof(DIM));
+  t = (DIM *) Malloc(sizeof(DIM));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -324,7 +324,7 @@ DIO * Read_data_progressbar(FILE *fp) {
   int i, n,l;
   DIO *t;
   char buff[500];
-  t = (DIO *) malloc(sizeof(DIO));
+  t = (DIO *) Malloc(sizeof(DIO));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -355,7 +355,7 @@ DIV * Read_data_vertscroll(FILE *fp) {
   int i, n,l;
   DIV *t;
   char buff[500];
-  t = (DIV *) malloc(sizeof(DIV));
+  t = (DIV *) Malloc(sizeof(DIV));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -384,7 +384,7 @@ DIZ * Read_data_horizscroll(FILE *fp) {
   int i, n,l;
   DIZ *t;
   char buff[500];
-  t = (DIZ *) malloc(sizeof(DIZ));
+  t = (DIZ *) Malloc(sizeof(DIZ));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -416,7 +416,7 @@ void Print_data_floatslide(FILE *fp,DIF *f) {
 DIF * Read_data_floatslide(FILE *fp) {
   DIF *t;
   char buff[500];
-  t = (DIF *) malloc(sizeof(DIF));
+  t = (DIF *) Malloc(sizeof(DIF));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -428,7 +428,7 @@ DIF * Read_data_floatslide(FILE *fp) {
   sscanf(buff,"%d",&(t->lngth));
   GETDATALINE;
   if(!NULLDATA(buff)){
-    t->prompt = (char *)malloc(200);
+    t->prompt = (char *)Malloc(200);
     StringCopy(t->prompt,buff);
   }
   else t->prompt = NULL;
@@ -438,7 +438,7 @@ DIF * Read_data_floatslide(FILE *fp) {
   sscanf(buff,"%d",&(t->hide));
   if((t->hide != 0) &&(t->hide!=1)) t->hide=0;
   t->y2 = t->y2;
-  t->df = (double *)malloc(sizeof(double));
+  t->df = (double *)Malloc(sizeof(double));
   *((double *)(t->df)) = 1;
   t->arg = NULL;
   t->Update = NULL;
@@ -460,7 +460,7 @@ void Print_data_intslide(FILE *fp,DID *f) {
 DID * Read_data_intslide(FILE *fp) {
   DID *t;
   char buff[500];
-  t = (DID *) malloc(sizeof(DID));
+  t = (DID *) Malloc(sizeof(DID));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -472,7 +472,7 @@ DID * Read_data_intslide(FILE *fp) {
   sscanf(buff,"%d",&(t->lngth));
   GETDATALINE;
   if(!NULLDATA(buff)){
-    t->prompt = (char *)malloc(200);
+    t->prompt = (char *)Malloc(200);
     StringCopy(t->prompt,buff);
   }
   else t->prompt = NULL;
@@ -482,7 +482,7 @@ DID * Read_data_intslide(FILE *fp) {
   sscanf(buff,"%d",&(t->hide));
   if((t->hide != 0) &&(t->hide!=1)) t->hide=0;
   t->y2 = t->y2;
-  t->df = (int *)malloc(sizeof(int));
+  t->df = (int *)Malloc(sizeof(int));
   *((int *)(t->df)) = 1;
   t->arg = NULL;
   t->Update = NULL;
@@ -503,7 +503,7 @@ void Print_data_horislide(FILE *fp,DIHB *f) {
 DIHB * Read_data_horislide(FILE *fp) {
   DIHB *t;
   char buff[500];
-  t = (DIHB *) malloc(sizeof(DIHB));
+  t = (DIHB *) Malloc(sizeof(DIHB));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -515,7 +515,7 @@ DIHB * Read_data_horislide(FILE *fp) {
   sscanf(buff,"%d",&(t->lngth));
   GETDATALINE;
   if(!NULLDATA(buff)){
-    t->prompt = (char *)malloc(200);
+    t->prompt = (char *)Malloc(200);
     StringCopy(t->prompt,buff);
   }
   else t->prompt = NULL;
@@ -525,7 +525,7 @@ DIHB * Read_data_horislide(FILE *fp) {
   sscanf(buff,"%d%d%d%d",&(t->bordr),&(t->hide),&(t->type),&(t->sldclr));
   if((t->hide != 0) &&(t->hide!=1)) t->hide=0;
   t->y2 = t->y2;
-  t->df = (int *)malloc(sizeof(int));
+  t->df = (int *)Malloc(sizeof(int));
   *((int *)(t->df)) = 1;
   t->arg = NULL;
   t->Update = NULL;
@@ -554,7 +554,7 @@ DIW * Read_data_browser(FILE *fp) {
   char buff[500];
   DIW *t;
   Dlink *L;
-  t = (DIW *) malloc(sizeof(DIW));
+  t = (DIW *) Malloc(sizeof(DIW));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -567,7 +567,7 @@ DIW * Read_data_browser(FILE *fp) {
   sscanf(buff,"%d",&(t->size));
   GETDATALINE;
   if(!NULLDATA(buff)){
-    t->prompt = (char *)malloc(200);
+    t->prompt = (char *)Malloc(200);
     StringCopy(t->prompt,buff);
   }
   else t->prompt = NULL;
@@ -575,7 +575,7 @@ DIW * Read_data_browser(FILE *fp) {
   i =0;
   GETDATALINE;
   while(!NULLDATA(buff)) {
-    tmp = (char *)malloc(200);
+    tmp = (char *)Malloc(200);
     StringCopy(tmp,buff);
     Dadd(L,tmp);
     i++;
@@ -583,7 +583,7 @@ DIW * Read_data_browser(FILE *fp) {
   }
   GETDATALINE;
   sscanf(buff,"%d",&(t->hide));
-  pt = (char **) malloc(sizeof(char *)*(i +1));
+  pt = (char **) Malloc(sizeof(char *)*(i +1));
   t->menu=pt;
   i=0;
   Resetlink(L);
@@ -592,7 +592,7 @@ DIW * Read_data_browser(FILE *fp) {
   }
   pt[i]= NULL;
   Dfree(L);
-  t->df = (int *)malloc(sizeof(int));
+  t->df = (int *)Malloc(sizeof(int));
   *((int *)(t->df)) = 1;
   t->arg = NULL;
   t->Update = NULL;
@@ -621,7 +621,7 @@ DIE * Read_data_scrollmenu(FILE *fp) {
   char buff[500];
   DIE *t;
   Dlink *L;
-  t = (DIE *) malloc(sizeof(DIE));
+  t = (DIE *) Malloc(sizeof(DIE));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -632,7 +632,7 @@ DIE * Read_data_scrollmenu(FILE *fp) {
   sscanf(buff,"%d",&(t->size));
   GETDATALINE;
   if(!NULLDATA(buff)){
-    t->prompt = (char *)malloc(200);
+    t->prompt = (char *)Malloc(200);
     StringCopy(t->prompt,buff);
   }
   else t->prompt = NULL;
@@ -640,13 +640,13 @@ DIE * Read_data_scrollmenu(FILE *fp) {
   i =0;
   GETDATALINE;
   while(!NULLDATA(buff)) {
-    tmp = (char *)malloc(200);
+    tmp = (char *)Malloc(200);
     StringCopy(tmp,buff);
     Dadd(L,tmp);
     i++;
     GETDATALINE;
   }
-  pt = (char **) malloc(sizeof(char *)*(i +1));
+  pt = (char **) Malloc(sizeof(char *)*(i +1));
   t->menu=pt;
   i=0;
   Resetlink(L);
@@ -655,7 +655,7 @@ DIE * Read_data_scrollmenu(FILE *fp) {
   }
   pt[i]= NULL;
   Dfree(L);
-  t->df = (int *)malloc(sizeof(int));
+  t->df = (int *)Malloc(sizeof(int));
   *((int *)(t->df)) = 1;
   t->arg = NULL;
   t->Update = NULL;
@@ -685,8 +685,8 @@ DIX *Read_data_selectmenu(FILE *fp) {
   char buff[500];
   char *tmp,**pt,*xpm;
   Dlink *L;
-  t = (DIX *) malloc(sizeof(DIX));
-  tmpv = (int *) malloc(sizeof(int));
+  t = (DIX *) Malloc(sizeof(DIX));
+  tmpv = (int *) Malloc(sizeof(int));
   *tmpv =1;
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
@@ -733,8 +733,8 @@ DIY *Read_data_thumbnailbrowser(FILE *fp) {
   char buff[500];
   char *tmp,**pt,*xpm;
   Dlink *L;
-  t = (DIY *) malloc(sizeof(DIY));
-  tmpv = (int *) malloc(sizeof(int));
+  t = (DIY *) Malloc(sizeof(DIY));
+  tmpv = (int *) Malloc(sizeof(int));
   *tmpv =1;
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
@@ -790,8 +790,8 @@ DIRA *Read_data_radiobutton(FILE *fp) {
   DIRA *t;
   char *tmp,**pt,*xpm;
   Dlink *L;
-  t = (DIRA *) malloc(sizeof(DIRA));
-  tmpv = (int *) malloc(sizeof(int));
+  t = (DIRA *) Malloc(sizeof(DIRA));
+  tmpv = (int *) Malloc(sizeof(int));
   *tmpv =1;
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
@@ -815,7 +815,7 @@ DIRA *Read_data_radiobutton(FILE *fp) {
   i =0;
   GETDATALINE;
   while(!NULLDATA(buff)) {
-    tmp = (char *)malloc(200);
+    tmp = (char *)Malloc(200);
     StringCopy(tmp,buff);
     Dadd(L,tmp);
     i++;
@@ -823,7 +823,7 @@ DIRA *Read_data_radiobutton(FILE *fp) {
     GETDATALINE;
   }
   t->ny=i;
-  pt = (char **) malloc(sizeof(char *)*(i +1));
+  pt = (char **) Malloc(sizeof(char *)*(i +1));
   i=0;
   Resetlink(L);
   while((tmp = (char *)Getrecord(L))!= NULL) {
@@ -870,8 +870,8 @@ DICH *Read_data_checkbox(FILE *fp) {
   DICH *t;
   char *tmp,**pt,*xpm;
   Dlink *L;
-  t = (DICH *) malloc(sizeof(DICH));
-  tmpv = (int *) malloc(sizeof(int));
+  t = (DICH *) Malloc(sizeof(DICH));
+  tmpv = (int *) Malloc(sizeof(int));
   *tmpv =1;
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
@@ -895,7 +895,7 @@ DICH *Read_data_checkbox(FILE *fp) {
   i =0;
   GETDATALINE;
   while(!NULLDATA(buff)) {
-    tmp = (char *)malloc(200);
+    tmp = (char *)Malloc(200);
     StringCopy(tmp,buff);
     Dadd(L,tmp);
     i++;
@@ -903,7 +903,7 @@ DICH *Read_data_checkbox(FILE *fp) {
     GETDATALINE;
   }
   t->ny=i;
-  pt = (char **) malloc(sizeof(char *)*(i +1));
+  pt = (char **) Malloc(sizeof(char *)*(i +1));
   i=0;
   Resetlink(L);
   while((tmp = (char *)Getrecord(L))!= NULL) {
@@ -940,7 +940,7 @@ DIS * Read_data_msgscroll(FILE *fp) {
   char buff[500];
   DIS *t;
   Dlink *L;
-  t = (DIS *) malloc(sizeof(DIS));
+  t = (DIS *) Malloc(sizeof(DIS));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -950,7 +950,7 @@ DIS * Read_data_msgscroll(FILE *fp) {
   sscanf(buff,"%d",&(t->size));
   GETDATALINE;
   if(!NULLDATA(buff)){
-    t->prompt = (char *)malloc(200);
+    t->prompt = (char *)Malloc(200);
     StringCopy(t->prompt,buff);
   }
   else t->prompt = NULL;
@@ -958,13 +958,13 @@ DIS * Read_data_msgscroll(FILE *fp) {
   i =0;
   GETDATALINE;
   while(!NULLDATA(buff)) {
-    tmp = (char *)malloc(200);
+    tmp = (char *)Malloc(200);
     StringCopy(tmp,buff);
     Dadd(L,tmp);
     i++;
     GETDATALINE;
   }
-  pt = (char **) malloc(sizeof(char *)*(i +1));
+  pt = (char **) Malloc(sizeof(char *)*(i +1));
   t->menu=pt;
   i=0;
   Resetlink(L);
@@ -992,7 +992,7 @@ int PrintXpm(FILE *fp,void *xpm){
   else {
     tmp = (char *)(xpm);
     if( (tmp[0]=='#')&&(tmp[1]=='#') )
-        fprintf(fp,"%-s // XPM \n",xpm+2);
+        fprintf(fp,"%-s // XPM \n",(char *)(xpm+2));
     else fprintf(fp,"NULL // XPM \n");
   }
   return 1;
@@ -1011,7 +1011,7 @@ DIP *Read_data_pixmapbox(FILE *fp) {
   int i, n,l;
   DIP *t;
   char buff[500];
-  t = (DIP *) malloc(sizeof(DIP));
+  t = (DIP *) Malloc(sizeof(DIP));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -1022,7 +1022,7 @@ DIP *Read_data_pixmapbox(FILE *fp) {
   t->y2 = t->y2;
   GETDATALINE;
   if(!NULLDATA(buff)) {
-    t->xpm = (void *)malloc(100);
+    t->xpm = (void *)Malloc(100);
     strcpy((char *)(t->xpm),"##");
     sscanf(buff,"%s",(char *)(t->xpm)+2);
   }
@@ -1049,7 +1049,7 @@ DII *Read_data_infobox(FILE *fp) {
   int i, n,l;
   DII *t;
   char buff[500];
-  t = (DII *) malloc(sizeof(DII));
+  t = (DII *) Malloc(sizeof(DII));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -1083,7 +1083,7 @@ DIG *Read_data_graphbox(FILE *fp) {
   int i, n,l;
   DIG *t;
   char buff[500];
-  t = (DIG *) malloc(sizeof(DIG));
+  t = (DIG *) Malloc(sizeof(DIG));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -1094,7 +1094,7 @@ DIG *Read_data_graphbox(FILE *fp) {
   t->y2 = t->y2;
   GETDATALINE;
   if(!NULLDATA(buff)) {
-    t->xpm = (void *)malloc(100);
+    t->xpm = (void *)Malloc(100);
     StringCopy((char *)t->xpm,buff);
   }
   else t->xpm = NULL;
@@ -1137,7 +1137,7 @@ DIT * Read_data_textbox(FILE *fp) {
   int *itmp;
   char ch;
   selmt = sizeof(T_ELMT);
-  t = (DIT *) malloc(sizeof(DIT));
+  t = (DIT *) Malloc(sizeof(DIT));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -1147,11 +1147,11 @@ DIT * Read_data_textbox(FILE *fp) {
   GETDATALINE;
   sscanf(buff,"%d%d",&(t->nx),&(t->ny));
   n = (t->nx)*(t->ny);
-  t->elmt = (T_ELMT *) malloc(selmt*n);
+  t->elmt = (T_ELMT *) Malloc(selmt*n);
   e = t->elmt;
   for(i=0;i<n;i++) {
     GETDATALINE;
-    e[i].fmt = (char *)malloc(100);
+    e[i].fmt = (char *)Malloc(100);
     StringCopy(e[i].fmt,buff);
     e[i].sw =1;
     l = strlen(e[i].fmt) - 1;
@@ -1161,17 +1161,17 @@ DIT * Read_data_textbox(FILE *fp) {
       case 'f':
         e[i].fmt[l]='F';
       case 'F':
-        ftmp = (double *)malloc(sizeof(double));
+        ftmp = (double *)Malloc(sizeof(double));
         *ftmp =0.;
         e[i].v = (void *)ftmp;
         break;
       case 'd':
-        itmp = (int *)malloc(sizeof(int));
+        itmp = (int *)Malloc(sizeof(int));
         *itmp = 1;
         e[i].v = (void *)itmp;
         break;
       case 's':
-        ctmp = (char *)malloc(100);
+        ctmp = (char *)Malloc(100);
         ctmp[0]='\0';
         e[i].v = (void *) ctmp;
         break;
@@ -1236,7 +1236,7 @@ DIT * Read_data_tablebox(FILE *fp) {
   int *itmp;
   char ch;
   selmt = sizeof(T_ELMT);
-  t = (DIT *) malloc(sizeof(DIT));
+  t = (DIT *) Malloc(sizeof(DIT));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -1248,7 +1248,7 @@ DIT * Read_data_tablebox(FILE *fp) {
   n = (t->nx)*(t->ny);
   nx = t->nx;
   ny = t->ny;
-  t->elmt = (T_ELMT *) malloc(selmt*n);
+  t->elmt = (T_ELMT *) Malloc(selmt*n);
   e = t->elmt;
   for(j=0;j<nx;j++) {
     GETDATALINE;
@@ -1258,7 +1258,7 @@ DIT * Read_data_tablebox(FILE *fp) {
     for(k=0;k<ny;k++) {
       strcpy(buff,temp);
       i = k*nx+j;
-      e[i].fmt = (char *)malloc(100);
+      e[i].fmt = (char *)Malloc(100);
       StringCopy(e[i].fmt,buff);
       e[i].sw =sw;
       l = strlen(e[i].fmt) - 1;
@@ -1266,17 +1266,17 @@ DIT * Read_data_tablebox(FILE *fp) {
       ch = e[i].fmt[l];
       switch(ch) {
         case 'F':
-          ftmp = (double *)malloc(sizeof(double));
+          ftmp = (double *)Malloc(sizeof(double));
           *ftmp =0.;
           e[i].v = (void *)ftmp;
           break;
         case 'd':
-          itmp = (int *)malloc(sizeof(int));
+          itmp = (int *)Malloc(sizeof(int));
           *itmp = 1;
           e[i].v = (void *)itmp;
           break;
         case 's':
-          ctmp = (char *)malloc(100);
+          ctmp = (char *)Malloc(100);
           ctmp[0]='\0';
           e[i].v = (void *) ctmp;
           break;
@@ -1422,7 +1422,7 @@ DIB * Read_data_buttonbox(FILE *fp){
   int *tmp;
   char *pt;
   char buff[500];
-  t = (DIB *) malloc(sizeof(DIB));
+  t = (DIB *) Malloc(sizeof(DIB));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -1436,11 +1436,11 @@ DIB * Read_data_buttonbox(FILE *fp){
   GETDATALINE;
   sscanf(buff,"%d%d",&(t->nx),&(t->ny));
   n = t->nx*t->ny;
-  t->xpm = (void **)malloc(sizeof(char *)*3*n);
-  t->bkgr = (int *)malloc(sizeof(int)*n);
+  t->xpm = (void **)Malloc(sizeof(char *)*3*n);
+  t->bkgr = (int *)Malloc(sizeof(int)*n);
   for(i=0;i<n;i++) { t->bkgr[i]=-1;}
   GETDATALINE;
-  t->sw = (int *) malloc(sizeof(int)*n);
+  t->sw = (int *) Malloc(sizeof(int)*n);
   if(NULLDATA(buff)) {
     for(i=0;i<n;i++) {
       t->sw[i]=1;
@@ -1453,10 +1453,10 @@ DIB * Read_data_buttonbox(FILE *fp){
       sscanf(buff,"%d",&(t->sw[i]));
     }
   }
-  t->titles = (char **) malloc(sizeof(char *)*(n+1));
+  t->titles = (char **) Malloc(sizeof(char *)*(n+1));
   for(i=0;i<n;i++) {
     GETDATALINE;
-    t->titles[i] = (char *)malloc(100);
+    t->titles[i] = (char *)Malloc(100);
     StringCopy(t->titles[i],buff);
   }
   GETDATALINE;
@@ -1466,16 +1466,16 @@ DIB * Read_data_buttonbox(FILE *fp){
     t->butncode = NULL;
   }
   else {
-   t->butncode = (char *)malloc(100);
+   t->butncode = (char *)Malloc(100);
    StringCopy(t->butncode,buff);
   }
   for(i=0;i<3*n;i++) {
     GETDATALINE;
     if(!NULLDATA(buff)) {
-      t->xpm[i]= (void *)malloc(100);
+      t->xpm[i]= (void *)Malloc(100);
       pt =(char *) t->xpm[i];
       strcpy(pt,"##");
-      sscanf(buff,"%s",pt+2);
+      sscanf(buff,"%s",(char *)(pt+2));
     }
     else t->xpm[i]=NULL;
   }
@@ -1532,7 +1532,7 @@ DIN * Read_data_buttonboxn(FILE *fp){
   int *tmp;
   char *pt;
   char buff[500];
-  t = (DIN *) malloc(sizeof(DIN));
+  t = (DIN *) Malloc(sizeof(DIN));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -1548,7 +1548,7 @@ DIN * Read_data_buttonboxn(FILE *fp){
   GETDATALINE;
   sscanf(buff,"%d%d",&(t->nx),&(t->ny));
   n = t->nx*t->ny;
-  t->buts = (void *)malloc(sizeof(BUT_STR)*n);
+  t->buts = (void *)Malloc(sizeof(BUT_STR)*n);
   butn = (BUT_STR *)t->buts;
   for(i=0;i<n;i++) {
     GETDATALINE;
@@ -1557,26 +1557,26 @@ DIN * Read_data_buttonboxn(FILE *fp){
     StringCopy(butn[i].title,buff);
     GETDATALINE;
     if(!NULLDATA(buff)) {
-      butn[i].xpmn= (void *)malloc(100);
+      butn[i].xpmn= (void *)Malloc(100);
       pt =(char *) butn[i].xpmn;
       strcpy(pt,"##");
-      sscanf(buff,"%s",pt+2);
+      sscanf(buff,"%s",(char *)(pt+2));
     }
     else butn[i].xpmn=NULL;
     GETDATALINE;
     if(!NULLDATA(buff)) {
-      butn[i].xpmp= (void *)malloc(100);
+      butn[i].xpmp= (void *)Malloc(100);
       pt =(char *) butn[i].xpmp;
       strcpy(pt,"##");
-      sscanf(buff,"%s",pt+2);
+      sscanf(buff,"%s",(char *)(pt+2));
     }
     else butn[i].xpmp=NULL;
     GETDATALINE;
     if(!NULLDATA(buff)) {
-      butn[i].xpmh= (void *)malloc(100);
+      butn[i].xpmh= (void *)Malloc(100);
       pt =(char *) butn[i].xpmh;
       strcpy(pt,"##");
-      sscanf(buff,"%s",pt+2);
+      sscanf(buff,"%s",(char *)(pt+2));
     }
     else butn[i].xpmh=NULL;
     butn[i].imgn=NULL;
@@ -1586,7 +1586,7 @@ DIN * Read_data_buttonboxn(FILE *fp){
     GETDATALINE;
     sscanf(buff,"%d",&(butn[i].bkgr));
     GETDATALINE;
-    sscanf(buff,"%c",&(butn[i].butncode));
+    sscanf(buff,"%c",(char *)&(butn[i].butncode));
   }
   GETDATALINE;
   sscanf(buff,"%d%f%d",&(t->type),&(t->fac),&(t->bordr));
@@ -1608,7 +1608,7 @@ DIL * Read_data_splbuttonbox(FILE *fp){
   int *tmp;
   char *pt;
   char buff[500];
-  t = (DIL *) malloc(sizeof(DIL));
+  t = (DIL *) Malloc(sizeof(DIL));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -1624,7 +1624,7 @@ DIL * Read_data_splbuttonbox(FILE *fp){
   GETDATALINE;
   sscanf(buff,"%d%d",&(t->nx),&(t->ny));
   n = t->nx*t->ny;
-  t->buts = (void *)malloc(sizeof(BUT_STR)*n);
+  t->buts = (void *)Malloc(sizeof(BUT_STR)*n);
   butn = (BUT_STR *)t->buts;
   for(i=0;i<n;i++) {
     GETDATALINE;
@@ -1633,26 +1633,26 @@ DIL * Read_data_splbuttonbox(FILE *fp){
     StringCopy(butn[i].title,buff);
     GETDATALINE;
     if(!NULLDATA(buff)) {
-      butn[i].xpmn= (void *)malloc(100);
+      butn[i].xpmn= (void *)Malloc(100);
       pt =(char *) butn[i].xpmn;
       strcpy(pt,"##");
-      sscanf(buff,"%s",pt+2);
+      sscanf(buff,"%s",(char *)(pt+2));
     }
     else butn[i].xpmn=NULL;
     GETDATALINE;
     if(!NULLDATA(buff)) {
-      butn[i].xpmp= (void *)malloc(100);
+      butn[i].xpmp= (void *)Malloc(100);
       pt =(char *) butn[i].xpmp;
       strcpy(pt,"##");
-      sscanf(buff,"%s",pt+2);
+      sscanf(buff,"%s",(char *)(pt+2));
     }
     else butn[i].xpmp=NULL;
     GETDATALINE;
     if(!NULLDATA(buff)) {
-      butn[i].xpmh= (void *)malloc(100);
+      butn[i].xpmh= (void *)Malloc(100);
       pt =(char *) butn[i].xpmh;
       strcpy(pt,"##");
-      sscanf(buff,"%s",pt+2);
+      sscanf(buff,"%s",(char *)(pt+2));
     }
     else butn[i].xpmh=NULL;
     butn[i].imgn=NULL;
@@ -1662,7 +1662,7 @@ DIL * Read_data_splbuttonbox(FILE *fp){
     GETDATALINE;
     sscanf(buff,"%d",&(butn[i].bkgr));
     GETDATALINE;
-    sscanf(buff,"%c",&(butn[i].butncode));
+    sscanf(buff,"%c",(char *)&(butn[i].butncode));
   }
   GETDATALINE;
   sscanf(buff,"%d%f%d",&(t->type),&(t->fac),&(t->bordr));
@@ -1727,9 +1727,9 @@ DIBN * Read_data_buttonboxnew(FILE *fp){
   int i, n,l;
   int *tmp;
   char buff[500];
-  tmp = (int *) malloc(sizeof(int));
+  tmp = (int *) Malloc(sizeof(int));
   *tmp =1;
-  t = (DIBN *) malloc(sizeof(DIBN));
+  t = (DIBN *) Malloc(sizeof(DIBN));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -1743,20 +1743,20 @@ DIBN * Read_data_buttonboxnew(FILE *fp){
   GETDATALINE;
   sscanf(buff,"%d%d",&(t->nx),&(t->ny));
   n = t->nx*t->ny;
-  t->xpm = (void **)malloc(sizeof(char *)*3*n);
-  t->bkgr = (int *)malloc(sizeof(int)*n);
+  t->xpm = (void **)Malloc(sizeof(char *)*3*n);
+  t->bkgr = (int *)Malloc(sizeof(int)*n);
   for(i=0;i<n;i++) { t->bkgr[i]=-1;}
   GETDATALINE;
   if(NULLDATA(buff)) t->prompt =NULL;
   else {
-   t->prompt = (char *)malloc(100);
+   t->prompt = (char *)Malloc(100);
    StringCopy(t->prompt,buff);
   }
   n = t->nx*t->ny;
-  t->titles = (char **) malloc(sizeof(char *)*(n+1));
+  t->titles = (char **) Malloc(sizeof(char *)*(n+1));
   for(i=0;i<n;i++) {
     GETDATALINE;
-    t->titles[i] = (char *)malloc(100);
+    t->titles[i] = (char *)Malloc(100);
     StringCopy(t->titles[i],buff);
   }
   GETDATALINE;
@@ -1766,16 +1766,16 @@ DIBN * Read_data_buttonboxnew(FILE *fp){
     t->butncode = NULL;
   }
   else {
-   t->butncode = (char *)malloc(100);
+   t->butncode = (char *)Malloc(100);
    StringCopy(t->butncode,buff);
   }
   for(i=0;i<n;i++) {
     GETDATALINE;
     if(!NULLDATA(buff)) {
-      t->xpm[i]= (void *)malloc(100);
+      t->xpm[i]= (void *)Malloc(100);
       pt =(char *) t->xpm[i];
       strcpy(pt,"##");
-      sscanf(buff,"%s",pt+2);
+      sscanf(buff,"%s",(char *)(pt+2));
     }
     else t->xpm[i]=NULL;
   }
@@ -1952,7 +1952,7 @@ DILN * Read_data_horibarnew(FILE *fp){
   int i, n,l;
   int *tmp;
   char buff[500];
-  t = (DILN *) malloc(sizeof(DILN));
+  t = (DILN *) Malloc(sizeof(DILN));
   GETDATALINE;
   sscanf(buff,"%c",&(t->code));
   GETDATALINE;
@@ -1966,25 +1966,25 @@ DILN * Read_data_horibarnew(FILE *fp){
   GETDATALINE;
   sscanf(buff,"%d%d",&(t->nx),&(t->ny));
   n = t->nx*t->ny;
-  t->xpm = (void **)malloc(sizeof(char *)*3*n);
-  t->bkgr = (int *)malloc(sizeof(int)*n);
+  t->xpm = (void **)Malloc(sizeof(char *)*3*n);
+  t->bkgr = (int *)Malloc(sizeof(int)*n);
   for(i=0;i<n;i++) { t->bkgr[i]=-1;}
   GETDATALINE;
   if(NULLDATA(buff)) {
     t->sw = NULL;
   }
   else {
-    t->sw = (int *) malloc(sizeof(int)*n);
+    t->sw = (int *) Malloc(sizeof(int)*n);
     sscanf(buff,"%d",&(t->sw[0]));
     for(i=1;i<n;i++) {
       GETDATALINE;
       sscanf(buff,"%d",&(t->sw[i]));
     }
   }
-  t->titles = (char **) malloc(sizeof(char *)*(n+1));
+  t->titles = (char **) Malloc(sizeof(char *)*(n+1));
   for(i=0;i<n;i++) {
     GETDATALINE;
-    t->titles[i] = (char *)malloc(100);
+    t->titles[i] = (char *)Malloc(100);
     StringCopy(t->titles[i],buff);
   }
   t->titles[n]=NULL;
@@ -1995,16 +1995,16 @@ DILN * Read_data_horibarnew(FILE *fp){
     t->butncode = NULL;
   }
   else {
-   t->butncode = (char *)malloc(100);
+   t->butncode = (char *)Malloc(100);
    StringCopy(t->butncode,buff);
   }
   for(i=0;i<3*n;i++) {
     GETDATALINE;
     if(!NULLDATA(buff)) {
-      t->xpm[i]= (void *)malloc(100);
+      t->xpm[i]= (void *)Malloc(100);
       pt =(char *) t->xpm[i];
       strcpy(pt,"##");
-      sscanf(buff,"%s",pt+2);
+      sscanf(buff,"%s",(char *)(pt+2));
     }
     else t->xpm[i]=NULL;
   }
@@ -2176,7 +2176,7 @@ DILN * kgCreateHButtons(int xo,int yo,int nx,int length,int height,char **titles
    int xgap=4,ygap=0,lngth=80,width=25,nxb=1,nyb=1;
    DILN htmp = {'H',10L,10L,0,0,5,5,50,25,1,1,NULL,NULL,NULL,
            NULL,NULL,NULL,NULL,NULL,2,0.2,0,0};
-   h = (DILN *) malloc(sizeof(DILN));
+   h = (DILN *) Malloc(sizeof(DILN));
    htmp.type=type;
    htmp.fac=fac;
    htmp.Wid[0]='\0';
@@ -2189,10 +2189,10 @@ DILN * kgCreateHButtons(int xo,int yo,int nx,int length,int height,char **titles
    else htmp.xgap=4;
    *h = htmp;
    if(name != NULL)strcpy(h->Wid,name);
-   xpm = (char **) malloc(sizeof(char *)*(h->nx*h->ny)*3);
-   bkgr= (int *) malloc(sizeof(int)*(h->nx*h->ny));
-   h->titles= (char **)malloc(sizeof(char *)*(nx+1));
-   h->sw= (int *)malloc(sizeof(int)*(nx+1));
+   xpm = (char **) Malloc(sizeof(char *)*(h->nx*h->ny)*3);
+   bkgr= (int *) Malloc(sizeof(int)*(h->nx*h->ny));
+   h->titles= (char **)Malloc(sizeof(char *)*(nx+1));
+   h->sw= (int *)Malloc(sizeof(int)*(nx+1));
    h->bkgr = bkgr;
    h->xpm = (void **)xpm;
    for(i=0;i<3*(h->nx*h->ny);i++){
@@ -2206,7 +2206,7 @@ DILN * kgCreateHButtons(int xo,int yo,int nx,int length,int height,char **titles
    if(titles != NULL) {
      for(i=0;i<(h->nx*h->ny);i++){
        if(titles[i]==NULL) break;
-       h->titles[i]=(char *)malloc(strlen(titles[i])+1);
+       h->titles[i]=(char *)Malloc(strlen(titles[i])+1);
        strcpy(h->titles[i],titles[i]);
      }
    }
@@ -2232,7 +2232,7 @@ DIB * kgCreateButtonsb(int xo,int yo,int nx,int ny,int length,int height,char **
    int xgap=4,ygap=4,lngth=80,width=25,nxb=1,nyb=1;
    DIB htmp = {'b',10L,10L,60,20,5,5,52,52,1,1,NULL,NULL,NULL,
            NULL,NULL,NULL,NULL,NULL,2,0.2,0,0,-1};
-   h = (DIB *) malloc(sizeof(DIB));
+   h = (DIB *) Malloc(sizeof(DIB));
    htmp.type=type;
    htmp.fac=fac;
    htmp.Wid[0]='\0';
@@ -2246,10 +2246,10 @@ DIB * kgCreateButtonsb(int xo,int yo,int nx,int ny,int length,int height,char **
    else htmp.xgap=4;
    *h = htmp;
    if(name != NULL)strcpy(h->Wid,name);
-   xpm = (char **) malloc(sizeof(char *)*(h->nx*h->ny)*3);
-   bkgr= (int *) malloc(sizeof(int)*(h->nx*h->ny));
-   h->titles= (char **)malloc(sizeof(char *)*(h->ny*h->nx+1));
-   h->sw= (int *)malloc(sizeof(int)*(h->nx*h->ny+1));
+   xpm = (char **) Malloc(sizeof(char *)*(h->nx*h->ny)*3);
+   bkgr= (int *) Malloc(sizeof(int)*(h->nx*h->ny));
+   h->titles= (char **)Malloc(sizeof(char *)*(h->ny*h->nx+1));
+   h->sw= (int *)Malloc(sizeof(int)*(h->nx*h->ny+1));
    h->bkgr = bkgr;
    h->xpm = (void **)xpm;
    for(i=0;i<3*(h->nx*h->ny);i++){
@@ -2263,7 +2263,7 @@ DIB * kgCreateButtonsb(int xo,int yo,int nx,int ny,int length,int height,char **
    if(titles != NULL) {
      for(i=0;i<(h->nx*h->ny);i++){
        if(titles[i]==NULL) break;
-       h->titles[i]=(char *)malloc(strlen(titles[i])+1);
+       h->titles[i]=(char *)Malloc(strlen(titles[i])+1);
        strcpy(h->titles[i],titles[i]);
      }
    }
@@ -2290,7 +2290,7 @@ DIN * kgCreateButtons(int xo,int yo,int nx,int ny,int length,int height,char **t
    int xgap=4,ygap=4,lngth=80,width=25,nxb=1,nyb=1;
    DIN htmp = {'n',10L,10L,60,20,5,5,52,52,1,1,
            7,0.15,0,0,0,1,NULL,NULL,NULL};
-   h = (DIN *) malloc(sizeof(DIN));
+   h = (DIN *) Malloc(sizeof(DIN));
    htmp.type=type;
    htmp.fac=fac;
    htmp.Wid[0]='\0';
@@ -2311,7 +2311,7 @@ DIN * kgCreateButtons(int xo,int yo,int nx,int ny,int length,int height,char **t
    h->y2=h->y1+h->ny*(h->width+h->ygap)+2*offset;
    h->Update=NULL;
    h->item=-1;
-   h->buts=(void *)malloc(sizeof(BUT_STR)*nx*ny);
+   h->buts=(void *)Malloc(sizeof(BUT_STR)*nx*ny);
    butn= (BUT_STR *)h->buts;
    for(i=0;i<(nx*ny);i++) {
     butn[i].xpmn=NULL;
@@ -2337,7 +2337,7 @@ DIL * kgCreateSplButtons(int xo,int yo,int nx,int ny,int length,int height,char 
    int xgap=4,ygap=4,lngth=80,width=25,nxb=1,nyb=1;
    DIL htmp = {'h',10L,10L,60,20,5,5,52,52,1,1,
            7,0.15,0,0,0,1,NULL,NULL,NULL};
-   h = (DIL *) malloc(sizeof(DIL));
+   h = (DIL *) Malloc(sizeof(DIL));
    htmp.type=type;
    htmp.fac=fac;
    htmp.Wid[0]='\0';
@@ -2358,7 +2358,7 @@ DIL * kgCreateSplButtons(int xo,int yo,int nx,int ny,int length,int height,char 
    h->y2=h->y1+h->ny*(h->width+h->ygap)+2*offset;
    h->Update=NULL;
    h->item=-1;
-   h->buts=(void *)malloc(sizeof(BUT_STR)*nx*ny);
+   h->buts=(void *)Malloc(sizeof(BUT_STR)*nx*ny);
    butn= (BUT_STR *)h->buts;
    for(i=0;i<(nx*ny);i++) {
     butn[i].xpmn=NULL;
@@ -2377,7 +2377,7 @@ DII * kgCreateInfoBox(int xo,int yo,int nchars,int nlines,char *name){
    int  l,w;
    float x1,y1,x2,y2;
    DII gtmp = {'i',10,10,20,20,22,0,0,0,0,0};
-   g = (DII *)malloc(sizeof(DII));
+   g = (DII *)Malloc(sizeof(DII));
    gtmp.Wid[0]='\0';
    *g = gtmp;
    if(name != NULL) strcpy(g->Wid,name);
@@ -2399,7 +2399,7 @@ DIG * kgCreateDrawingBox(int xo,int yo,int xsize,int ysize,char *name) {
    DIG  *g; 
    int i,n;
    DIG gtmp = {'g',10,10,20,20,NULL,0,NULL,NULL,0,0};
-   g = (DIG *)malloc(sizeof(DIG));
+   g = (DIG *)Malloc(sizeof(DIG));
    gtmp.Wid[0]='\0';
    *g = gtmp;
    g->xpm = NULL;
@@ -2422,12 +2422,12 @@ DIP * kgCreateImageBox(int xo,int yo,int length,int width,char *image,int bordrt
    int  min=0,max=100,df=0;
    float x1,y1,x2,y2;
    DIP ptmp = {'p',10,10,20,20,NULL,-1};
-   p = (DIP *)malloc(sizeof(DIP));
+   p = (DIP *)Malloc(sizeof(DIP));
    ptmp.Wid[0]='\0';
    *p = ptmp;
    if(name != NULL) strcpy(p->Wid,name);
    if( image != NULL) {
-     xpm = (char *) malloc(100);
+     xpm = (char *) Malloc(100);
      strcpy(xpm,"##");
      strcat(xpm,image);
      p->xpm=xpm;
@@ -2446,7 +2446,7 @@ DIM * kgCreateDisplayBox(int xo,int yo,int length,int width,char *name){
    DIM  *m; 
    int i,n;
    DIM mtmp = {'M',10L,10L,0,0,1,0};
-   m = (DIM *)malloc(sizeof(DIM));
+   m = (DIM *)Malloc(sizeof(DIM));
    mtmp.Wid[0]='\0';
    *m = mtmp;
    if(name != NULL) strcpy(m->Wid,name);
@@ -2466,7 +2466,7 @@ DIO * kgCreateProgressBar(int xo,int yo,int length,int width,char *name){
    int i,n;
    float x1,y1,x2,y2;
    DIO mtmp = {'o',10L,10L,0,0,0,0};
-   m = (DIO *)malloc(sizeof(DIO));
+   m = (DIO *)Malloc(sizeof(DIO));
    mtmp.Wid[0]='\0';
    *m = mtmp;
    if(name != NULL) strcpy(m->Wid,name);
@@ -2485,7 +2485,7 @@ DIV * kgCreateVertScroll(int xo,int yo,int height,int width,char *name) {
    DIV  *m; 
    int  wd=20,hide=0;
    DIV mtmp = {'v',10L,10L,30,210,0,100.,0.,5.,NULL,NULL};
-   m = (DIV *)malloc(sizeof(DIV));
+   m = (DIV *)Malloc(sizeof(DIV));
    mtmp.Wid[0]='\0';
    *m = mtmp;
    if(name != NULL) strcpy(m->Wid,name);
@@ -2507,7 +2507,7 @@ DIZ * kgCreateHorizScroll(int xo,int yo,int length,int width,char *name) {
    DIZ  *m; 
    int  wd=20,hide=0;
    DIZ mtmp = {'z',10L,10L,30,210,0,100.,0.,5.,NULL,NULL};
-   m = (DIZ *)malloc(sizeof(DIZ));
+   m = (DIZ *)Malloc(sizeof(DIZ));
    mtmp.Wid[0]='\0';
    *m = mtmp;
    if(name != NULL) strcpy(m->Wid,name);
@@ -2533,7 +2533,7 @@ DIM * kgCreateMessageBox(int xo,int yo,int length,int width,char *msg,int type,c
    int  min=0,max=100,df=0;
    float x1,y1,x2,y2;
    DIM mtmp = {'m',10L,10L,0,0,1,0};
-   m = (DIM *)malloc(sizeof(DIM));
+   m = (DIM *)Malloc(sizeof(DIM));
    mtmp.Wid[0]='\0';
    *m = mtmp;
    if(name != NULL) strcpy(m->Wid,name);
@@ -2619,7 +2619,7 @@ static int  _uiScanString(DIT *T,void *str) {
   cpt = wrk;
   while( *cpt != '\0'){ if(*cpt=='%')item++;cpt++;}
   if(item==0 ) return 0;
-  e = (T_ELMT *)malloc(sizeof(T_ELMT)*item);
+  e = (T_ELMT *)Malloc(sizeof(T_ELMT)*item);
   cpt = wrk;
   pt = cpt;
   it=0;
@@ -2642,7 +2642,7 @@ static int  _uiScanString(DIT *T,void *str) {
     }
     *cpt='\0';
     ln = strlen(pt)+2;
-    e[it].fmt = (char *)malloc(ln);
+    e[it].fmt = (char *)Malloc(ln);
     strcpy(e[it].fmt,pt);
     e[it].sw=1;
     cpt++;
@@ -2651,26 +2651,26 @@ static int  _uiScanString(DIT *T,void *str) {
       case 's':
         strcat(e[it].fmt,"s");
         e[it].sw=1;
-        e[it].v= (void *)malloc(500);
+        e[it].v= (void *)Malloc(500);
         ((char *)e[it].v)[0]='\0';
       break;
       case 'f':
       case 'g':
         strcat(e[it].fmt,"f");
         e[it].sw=1;
-        e[it].v= (void *)malloc(sizeof(float));
+        e[it].v= (void *)Malloc(sizeof(float));
         *((float *)e[it].v) = 0.0;
       break;
       case 'F':
         strcat(e[it].fmt,"F");
         e[it].sw=1;
-        e[it].v= (void *)malloc(sizeof(double));
+        e[it].v= (void *)Malloc(sizeof(double));
         *((double *)e[it].v) = 0.0;
       break;
       case 'd':
         strcat(e[it].fmt,"d");
         e[it].sw=1;
-        e[it].v= (void *)malloc(sizeof(int));
+        e[it].v= (void *)Malloc(sizeof(int));
         *((int *)e[it].v) = 0;
       break;
     }
@@ -2678,7 +2678,7 @@ static int  _uiScanString(DIT *T,void *str) {
    }
    else cpt++;
   }
-  v = (void **)malloc(sizeof(void *)*(it+1));
+  v = (void **)Malloc(sizeof(void *)*(it+1));
   lngth=0;
   width = (it)*T->width+(it-1)*10;
   for(i=0;i<it;i++) {
@@ -2708,7 +2708,7 @@ DIT * kgCreateTextBox(int xo,int yo,char *formats,char *name) {
    char  *ctmp;
    void **v;
    DIT Tmp = {'t',10L,10L,0,0,20L,1L,1L,NULL,0,0,NULL,NULL};
-   T = (DIT *)malloc(sizeof(DIT));
+   T = (DIT *)Malloc(sizeof(DIT));
    Tmp.Wid[0]='\0';
    *T = Tmp;
    T->x1 = xo;

@@ -22,8 +22,8 @@ int runfunctionbkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(int
   char buff[500];
 
   if( (pid =fork())!= 0) {
-    kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
-    sleep(2);
+//    kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
+//    sleep(2);
     return pid;
   }
   
@@ -64,8 +64,9 @@ int runnormalisebkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(in
   char buff[500];
 
   if( (pid =fork())!= 0) {
-    kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
-    sleep(2);
+//TCB
+//    kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
+//    sleep(2);
     return pid;
   }
   

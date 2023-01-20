@@ -23,6 +23,7 @@ int FileStat(char *);
 extern char GrabFileName[300];
 int kgLame(int,char **);
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int Mplayer(int,char **);
 int Mencoder(int,char **);
 void *RunMonitorJoin(void *arg);
@@ -184,11 +185,11 @@ int MixAudioToVideo( CONVDATA *cn) {
         strcpy(Qstr,"3000K -aq 0");
         break;
       case 2:
-        strcpy(Qstr,"1500K -aq 0");
+        strcpy(Qstr,"2000K -aq 0");
         break;
       default:
       case 3:
-        strcpy(Qstr,"700K -aq 2");
+        strcpy(Qstr,"1000K -aq 2");
         break;
     }
     sprintf(options,"!c01Mixing audio "
@@ -201,59 +202,59 @@ int MixAudioToVideo( CONVDATA *cn) {
     if(Esec< Asec) {
        Msec = Esec;
     }
-//    printf("%lf,%lf,%lf\n",Asec,Esec,Msec);
+    printf("%lf,%lf,%lf\n",Asec,Esec,Msec);
     sprintf(options,"Esec: %lf\n",Msec);
     write(Jpipe[1],options,strlen(options));
-    sprintf(command,"kgffmpeg -vn -i \"%s\" "
+    sprintf(command,"ffmpegfun -vn -i \"%s\" "
        " -vn -aq 2 -ac 2 -ar 44100 -acodec pcm_s32le -t %lf -y %s/F%-4.4d.wav ",
        Cn.audiofile,Msec,Folder,0);
 //       printf("%s\n",command);
-    runfunction(command,ProcessToPipe,kgffmpeg);
+    runfunction(command,ProcessToPipe,ffmpegfun);
     id=1;
     sprintf(options,"Esec: %lf\n",Msec);
     write(Jpipe[1],options,strlen(options));
-    sprintf(command,"kgffmpeg -vn -i \"%s\" "
+    sprintf(command,"ffmpegfun -vn -i \"%s\" "
        " -vn -aq 2 -ac 2 -ar 44100 -acodec pcm_s32le -t %lf -y %s/F%-4.4d.wav ",
        Cn.infile,Msec,Folder,1);
-    runfunction(command,ProcessToPipe,kgffmpeg);
+    runfunction(command,ProcessToPipe,ffmpegfun);
 //       printf("%s\n",command);
     sprintf(options,"Mixing audios...1\n");
     write(Jpipe[1],options,strlen(options));
     sprintf(options,"Esec: %lf\n",Msec);
     write(Jpipe[1],options,strlen(options));
-    sprintf(command,"kgffmpeg -vn -i %s/F%-4.4d.wav -vn -i "
+    sprintf(command,"ffmpegfun -vn -i %s/F%-4.4d.wav -vn -i "
        " %s/F%-4.4d.wav -ac 2 -ar 44100 -acodec pcm_s32le -lavfi amix "
        "  -y %s/F%-4.4d.wav ",
        Folder,1,Folder,0,Folder,2);
 //       printf("%s\n",command);
-    runfunction(command,ProcessToPipe,kgffmpeg);
+    runfunction(command,ProcessToPipe,ffmpegfun);
     sprintf(options,"Mixing audios...2\n");
     write(Jpipe[1],options,strlen(options));
     sprintf(options,"Esec: %lf\n",Msec);
     write(Jpipe[1],options,strlen(options));
-    sprintf(command,"kgffmpeg  -i %s/F%-4.4d.wav -ac 2 -ar 44100 "
+    sprintf(command,"ffmpegfun  -i %s/F%-4.4d.wav -ac 2 -ar 44100 "
        " -acodec pcm_s32le -filter_complex "
        " \"aeval=val(0)/2*3|val(1)/2*3:c=same\" "
        "  -y %s/F%-4.4d.wav ",
        Folder,2,Folder,3);
 //       printf("%s\n",command);
-    runfunction(command,ProcessToPipe,kgffmpeg);
+    runfunction(command,ProcessToPipe,ffmpegfun);
     id = 3;
     if(Msec == Asec) {
       char infile1[500],infile2[500],outfile[500];
-    sprintf(options,"Mixing audios...3\n");
-    write(Jpipe[1],options,strlen(options));
+      sprintf(options,"Mixing audios...3\n");
+      write(Jpipe[1],options,strlen(options));
       sprintf(options,"Esec: %lf\n",Esec-Asec);
       write(Jpipe[1],options,strlen(options));
-      sprintf(command,"kgffmpeg -vn -i \"%s\" -ss %lf "
+      sprintf(command,"ffmpegfun -vn -i \"%s\" -ss %lf "
        " -vn -aq 2 -ac 2 -ar 44100 -acodec pcm_s32le -y %s/F%-4.4d.wav ",
        Cn.infile,Msec,Folder,4);
 //       printf("%s\n",command);
-      runfunction(command,ProcessToPipe,kgffmpeg);
+      runfunction(command,ProcessToPipe,ffmpegfun);
       sprintf(infile1,"%s/F%-4.4d.wav",Folder,3);
       sprintf(infile2,"%s/F%-4.4d.wav",Folder,4);
       sprintf(outfile,"%s/F%-4.4d.wav",Folder,5);
-//      printf("joining: %s %s %s\n",infile1,infile2,outfile);
+      printf("joining: %s %s %s\n",infile1,infile2,outfile);
       sprintf(options,"Mixing audios...4\n");
       write(Jpipe[1],options,strlen(options));
       sprintf(options,"Per: %f\n",0.0);
@@ -265,11 +266,11 @@ int MixAudioToVideo( CONVDATA *cn) {
     write(Jpipe[1],options,strlen(options));
     sprintf(options,"Converting to mp4\n");
     write(Jpipe[1],options,strlen(options));
-    sprintf(command,"kgffmpeg -vn -i %-s/F%-4.4d.wav -an -i \"%-s\" "
-        " -y -f mp4 -vcodec libx265 -c:a libmp3lame -ac 2 "
+    sprintf(command,"ffmpegfun -vn -i %-s/F%-4.4d.wav -an -i \"%-s\" "
+        " -y -f mp4 -vcodec copy -c:a libmp3lame -ac 2 "
         " -b:v %-s -t %lf \"%-s\" ", Folder,id ,Cn.infile,Qstr,Esec,Cn.outfile);
 //    printf("%s\n",command);
-    runfunction(command,ProcessToPipe,kgffmpeg);
+    runfunction(command,ProcessToPipe,ffmpegfun);
     kgCleanDir(Folder);
     close(Jpipe[1]);
     exit(0);
@@ -335,52 +336,52 @@ int MixAudioToAudio( CONVDATA *cn) {
 //    printf("%lf,%lf,%lf\n",Asec,Esec,Msec);
     sprintf(options,"Esec: %lf\n",Msec);
     write(Jpipe[1],options,strlen(options));
-    sprintf(command,"kgffmpeg -vn -i \"%s\" "
+    sprintf(command,"ffmpegfun -vn -i \"%s\" "
        " -vn -aq 2 -ac 2 -ar 44100 -acodec pcm_s32le -t %lf -y %s/F%-4.4d.wav ",
        Cn.audiofile,Msec,Folder,0);
 //       printf("%s\n",command);
-    runfunction(command,ProcessToPipe,kgffmpeg);
+    runfunction(command,ProcessToPipe,ffmpegfun);
     id=1;
     sprintf(options,"Esec: %lf\n",Msec);
     write(Jpipe[1],options,strlen(options));
-    sprintf(command,"kgffmpeg -vn -i \"%s\" "
+    sprintf(command,"ffmpegfun -vn -i \"%s\" "
        " -vn -aq 2 -ac 2 -ar 44100 -acodec pcm_s32le -t %lf -y %s/F%-4.4d.wav ",
        Cn.infile,Msec,Folder,1);
-    runfunction(command,ProcessToPipe,kgffmpeg);
+    runfunction(command,ProcessToPipe,ffmpegfun);
 //       printf("%s\n",command);
     sprintf(options,"Mixing audios...1\n");
     write(Jpipe[1],options,strlen(options));
     sprintf(options,"Esec: %lf\n",Msec);
     write(Jpipe[1],options,strlen(options));
-    sprintf(command,"kgffmpeg -vn -i %s/F%-4.4d.wav -vn -i "
+    sprintf(command,"ffmpegfun -vn -i %s/F%-4.4d.wav -vn -i "
        " %s/F%-4.4d.wav -ac 2 -ar 44100 -acodec pcm_s32le -lavfi amix "
        "  -y %s/F%-4.4d.wav ",
        Folder,1,Folder,0,Folder,2);
 //       printf("%s\n",command);
-    runfunction(command,ProcessToPipe,kgffmpeg);
+    runfunction(command,ProcessToPipe,ffmpegfun);
     sprintf(options,"Mixing audios...2\n");
     write(Jpipe[1],options,strlen(options));
     sprintf(options,"Esec: %lf\n",Msec);
     write(Jpipe[1],options,strlen(options));
-    sprintf(command,"kgffmpeg  -i %s/F%-4.4d.wav -ac 2 -ar 44100 "
+    sprintf(command,"ffmpegfun  -i %s/F%-4.4d.wav -ac 2 -ar 44100 "
        " -acodec pcm_s32le -filter_complex "
        " \"aeval=val(0)/2*3|val(1)/2*3:c=same\" "
        "  -y %s/F%-4.4d.wav ",
        Folder,2,Folder,3);
 //       printf("%s\n",command);
-    runfunction(command,ProcessToPipe,kgffmpeg);
+    runfunction(command,ProcessToPipe,ffmpegfun);
     id = 3;
     if(Msec == Asec) {
       char infile1[500],infile2[500],outfile[500];
-    sprintf(options,"Mixing audios...3\n");
-    write(Jpipe[1],options,strlen(options));
+      sprintf(options,"Mixing audios...3\n");
+      write(Jpipe[1],options,strlen(options));
       sprintf(options,"Esec: %lf\n",Esec-Asec);
       write(Jpipe[1],options,strlen(options));
-      sprintf(command,"kgffmpeg -vn -i \"%s\" -ss %lf "
+      sprintf(command,"ffmpegfun -vn -i \"%s\" -ss %lf "
        " -vn -aq 2 -ac 2 -ar 44100 -acodec pcm_s32le -y %s/F%-4.4d.wav ",
        Cn.infile,Msec,Folder,4);
 //       printf("%s\n",command);
-      runfunction(command,ProcessToPipe,kgffmpeg);
+      runfunction(command,ProcessToPipe,ffmpegfun);
       sprintf(infile1,"%s/F%-4.4d.wav",Folder,3);
       sprintf(infile2,"%s/F%-4.4d.wav",Folder,4);
       sprintf(outfile,"%s/F%-4.4d.wav",Folder,5);
@@ -397,24 +398,24 @@ int MixAudioToAudio( CONVDATA *cn) {
     sprintf(options,"Converting to audio output\n");
     write(Jpipe[1],options,strlen(options));
     if(kgSearchString (Cn.outfile,(char *)".mp3")>=0 ) {
-      sprintf(command,"kgffmpeg -vn -i %-s/F%-4.4d.wav "
+      sprintf(command,"ffmpegfun -vn -i %-s/F%-4.4d.wav "
         " -y  -c:a libmp3lame -ac 2 "
         "  %-s -t %lf \"%-s\" ", Folder,id ,Qstr,Esec,Cn.outfile);
     }
     else {
       if(kgSearchString (Cn.outfile,(char *)".aac")>=0 ) {
-       sprintf(command,"kgffmpeg -vn -i %-s/F%-4.4d.wav "
+       sprintf(command,"ffmpegfun -vn -i %-s/F%-4.4d.wav "
         " -y  -ac 2 -c:a libfdk_aac "
         " -t %lf \"%-s\" ", Folder,id ,Esec,Cn.outfile);
       }
       else {
-       sprintf(command,"kgffmpeg -vn -i %-s/F%-4.4d.wav "
+       sprintf(command,"ffmpegfun -vn -i %-s/F%-4.4d.wav "
         " -y  -ac 2 "
         "  %-s -t %lf \"%-s\" ", Folder,id ,Qstr,Esec,Cn.outfile);
       }
     }
 //    printf("%s\n",command);
-    runfunction(command,ProcessToPipe,kgffmpeg);
+    runfunction(command,ProcessToPipe,ffmpegfun);
     kgCleanDir(Folder);
     close(Jpipe[1]);
     exit(0);
@@ -536,7 +537,7 @@ int  MixAudiosplbutton1callback(int butno,int i,void *Tmp) {
   sprintf(buff,"%d \"%-s\" \"%-s\" \"%-s\" %d \n",
        cndata.code, cndata.audiofile,cndata.infile,cndata.outfile,Qty);
   write(ToTools[1],buff,strlen(buff));
-  kgSplashMessage(NULL,100,100,300,40,"Send for Processing",1,0,15);
+  kgSplashMessage(Tmp,100,100,300,40,"Send for Processing",1,0,15);
   ret =0;
   return ret;
 }

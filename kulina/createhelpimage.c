@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "kulina.h"
+#include <kulina.h>
 
 static char *GetNextString(char *str,int *pos) {
   int i=0,j,k,l,len;

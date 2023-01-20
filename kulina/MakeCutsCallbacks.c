@@ -26,9 +26,10 @@ MEDIAINFO * GetMediaInfo(char *flname);
 int FileStat(char *);
 DIX *SX3=NULL;
 extern char GrabFileName[300];
-int Pval;
+extern int Pval;
 int kgLame(int,char **);
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int Mplayer(int,char **);
 int Mencoder(int,char **);
 void *RunMonitorJoin(void *arg);
@@ -86,21 +87,21 @@ int MakeAudioCuts( CONVDATA *cn) {
     while( (mpt=(char *)Getrecord(L))!= NULL) {
       sscanf(mpt,"%f%f",&pos,&duration);
       if((pos - opos)> 0.001) {
-       sprintf(command,"kgffmpeg -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
+       sprintf(command,"ffmpegfun -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
          "-acodec pcm_s32le -y -ss %f -to %f %s/M%-4.4d.wav ",
          Cn.infile, opos, pos ,Folder,id);
        id++;
-       runfunction(command,ProcessSkip,kgffmpeg);
+       runfunction(command,ProcessSkip,ffmpegfun);
       }
       opos = pos+duration;
     }
     if(opos< Mesec) {
-      sprintf(command,"kgffmpeg -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
+      sprintf(command,"ffmpegfun -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
          "-acodec pcm_s32le -y -ss %f  %s/M%-4.4d.wav ",
          Cn.infile, opos, Folder,id);
          opos = pos;
       id++;
-      runfunction(command,ProcessSkip,kgffmpeg);
+      runfunction(command,ProcessSkip,ffmpegfun);
 //      printf("%s\n",command);
     }
     if(id==0) exit(0);
@@ -122,10 +123,10 @@ int MakeAudioCuts( CONVDATA *cn) {
      if(kgSearchString(Cn.outfile,(char *)".mp3")>=0) {
        sprintf(Qstr," -c:a libmp3lame -aq 0  ");
      }
-     sprintf(command,"kgffmpeg    -i %-s/out.wav "
+     sprintf(command,"ffmpegfun    -i %-s/out.wav "
         " -ac 2 %s -y \"%-s\" ", Folder ,Qstr,Cn.outfile);
 //        printf("%s\n",command);
-     runfunction(command,ProcessToAudioPipe,kgffmpeg);
+     runfunction(command,ProcessToAudioPipe,ffmpegfun);
      kgCleanDir(Folder);
      strcpy(options,"Joinded Audio Files\n");
      write(Jpipe[1],options,strlen(options));
@@ -379,7 +380,7 @@ int  MakeCutssplbutton1callback(int butno,int i,void *Tmp) {
       break;
   }
 
-  kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
+  kgSplashMessage(Tmp,100,100,300,40,(char *)"Send for Processing",1,0,15);
   ret = 0;
   return ret;
 }

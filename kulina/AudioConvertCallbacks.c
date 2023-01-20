@@ -16,13 +16,16 @@ extern int Jpipe[2];
 extern int Jstat[2];
 
 extern char GrabFileName[300];
-int Pval;
+extern int Pval;
 int CheckMedia(char *);
 int kgLame(int,char **);
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int Mplayer(int,char **);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int ProcessToPipe(int pip0,int pip1,int Pid) ;
+int ProcessSkip(int pip0,int pip1,int Pid) ;
+int ProcessPrint(int pip0,int pip1,int Pid) ;
 void *RunMonitorJoin(void *arg);
 void *Runmonitor(void *arg);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
@@ -258,8 +261,10 @@ int ConvertToMp3( CONVDATA *cn) {
   }
   
   strcpy(GrabFileName,cn->outfile);
+  fflush(stdout);
+  fflush(stderr);
   if ((pid=fork())==0) {
-    char command[500],Str1[100],Str2[100],options[100],Qstr[100];
+    char command[500],Str1[500],Str2[500],options[500],Qstr[500];
      options[0] ='\0';
      Qstr[0]='\0';
      sprintf(Str1,"Quality as original\n");
@@ -327,10 +332,14 @@ int ConvertToMp3( CONVDATA *cn) {
       if(pipe(Jpipe) < 0) exit(0);
       if(pipe(Jstat) < 0) exit(0);
       MonPipe = Jpipe[0];
+      fflush(stdout);
+      fflush(stderr);
       if( fork()==0) {
+        MonPipe = Jpipe[0];
         close(Jpipe[1]);
         close(Jstat[0]);
         RunMonitorJoin(NULL);
+	printf("Exit RunMonitorJoin\n");
         exit(0);
       }
       close(Jpipe[0]);
@@ -341,7 +350,7 @@ int ConvertToMp3( CONVDATA *cn) {
          sprintf(options,"Converted Media Length: %f\n",
                              (float)(Esec-Cn.StartSec));
          write(Jpipe[1],options,strlen(options));
-         sprintf(command,"kgffmpeg -i \"%-s\" -vn -t %-8.2lf -ss %-8.2lf -ac 2 %s -y \"%-s\"",
+         sprintf(command,"ffmpegfun -nostdin -i \"%-s\" -vn -t %-8.2lf -ss %-8.2lf -ac 2 %s -y \"%-s\"",
              Cn.infile,Esec-Cn.StartSec,Cn.StartSec,Qstr,Cn.outfile);
       }
       else {
@@ -349,19 +358,22 @@ int ConvertToMp3( CONVDATA *cn) {
          sprintf(options,"Converted Media Length: %f\n",
                           (float)(Minfo.TotSec-Cn.StartSec));
          write(Jpipe[1],options,strlen(options));
-         sprintf(command,"kgffmpeg -i \"%-s\" -vn  -ss %-8.2lf -ac 2 %s -y \"%-s\"",
+         sprintf(command,"ffmpegfun -nostdin -i \"%-s\" -vn  -ss %-8.2lf -ac 2 %s -y \"%-s\"",
              Cn.infile,Cn.StartSec,Qstr,Cn.outfile);
       }
-//      printf("%s\n",command);
+      printf("%s\n",command);
+      fflush(stdout);
       write(Jpipe[1],Str1,strlen(Str1));
       write(Jpipe[1],Str2,strlen(Str2));
       sprintf(Str1,"!c01Output format is selected as per file extension\n");
       write(Jpipe[1],Str1,strlen(Str1));
-      sprintf(Str1,"!c01If CUT and JOIN is planned !z54!c04.wav/.flac!c01!z45 is better\n");
+      sprintf(Str1,"!c01If CUT and JOIN is planned !z54.wav/.flac!z45 is better\n");
       write(Jpipe[1],Str1,strlen(Str1));
-      runfunction(command, ProcessToPipe ,kgffmpeg);
-//      close(open(Fifo,O_RDONLY));
-//      fprintf(stderr,"Removing Fifo\n");
+#if 1
+      runfunction(command, ProcessToPipe ,ffmpegfun);
+#else
+      runfunction(command, ProcessPrint ,ffmpegfun);
+#endif
     exit(0);
   }
   else {
@@ -499,7 +511,7 @@ int  AudioConvertsplbutton1callback(int butno,int i,void *Tmp) {
        cndata.VolEnh,cndata.Enhfac,cndata.FullRange,
        cndata.StartSec,cndata.EndSec);
   write(ToTools[1],buff,strlen(buff));
-  kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
+  kgSplashMessage(Tmp,100,100,300,40,(char *)"Send for Processing",1,0,15);
   ret = 0;
   return ret;
 }

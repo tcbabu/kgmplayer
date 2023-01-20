@@ -23,8 +23,8 @@ int toolsGroup( DIALOG *D,void **v,void *pt) {
   butn0[0].xpmn=(char *)(&tools_str);
 //  butn0[0].xpmn= (char *)malloc(100); 
 //  strcpy(butn0[0].xpmn,(char *)"##/usr/share/icons/oxygen/256x256/categories/preferences-system.png");
-  butn0[0].bkgr=-160210240;
-  butn0[0].bkgr= -69128181;
+  butn0[0].bkgr=-100120100;
+//  butn0[0].bkgr= -1;
   butn0[0].butncode='';
   DIN b0 = { 
     'n',

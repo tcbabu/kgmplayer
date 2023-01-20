@@ -14,6 +14,7 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
 int runfunctionbkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int FileStat(char *flname);
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessToPipe(int pip0,int pip1,int Pid);
 
@@ -127,16 +128,16 @@ int  hflipsplbutton1callback(int butno,int i,void *Tmp) {
         strcpy(infile,kgGetString(kgGetNamedWidget(Dia,(char *)"hflipInput"),0));
         strcpy(outfile,kgGetString(kgGetNamedWidget(Dia,(char *)"hflipOutput"),0));
 #ifdef D_X264
-        sprintf(buff,"kgffmpeg -noautorotate -i \"%-s\" -vf hflip "
+        sprintf(buff,"ffmpegfun -noautorotate -i \"%-s\" -vf hflip "
                   " -f mp4 -b:v 3000K -vcodec libx264 \"%-s\" ",
               infile,outfile);
 #else
-        sprintf(buff,"kgffmpeg -noautorotate -i \"%-s\" -vf hflip "
+        sprintf(buff,"ffmpegfun -noautorotate -i \"%-s\" -vf hflip "
                   " -f mp4 -vcodec libx265 \"%-s\" ",
               infile,outfile);
 #endif
 //        printf("%s\n",buff);
-        runfunctionbkgr (buff, ProcessToPipe,kgffmpeg);
+        runfunctionbkgr (buff, ProcessToPipe,ffmpegfun);
       }
       ret = 0;
       break;

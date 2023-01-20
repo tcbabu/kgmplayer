@@ -6,6 +6,7 @@
 
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessPrint(int pip0,int pip1,int Pid);
 int ProcessToPipe(int pip0,int pip1,int Pid);
@@ -56,11 +57,11 @@ int Imgs2Videos( IMGS2VDATA *is2vdata) {
     strcpy(Qstr,"3000K");
      Resetlink(L);
      sprintf(Tmpimage,"%-s/Image.jpg",Folder);
-     sprintf(command,"kgffmpeg -f lavfi -i color=c=black:s=%-dx%-d  "
+     sprintf(command,"ffmpegfun -f lavfi -i color=c=black:s=%-dx%-d  "
          "-t %-5.2f "
          " -y -f mp4 -b:v 3000K -vcodec libx265 \"%-s/%-d\"",
          is2vdata->Xsize,is2vdata->Ysize,is2vdata->imagetime, Folder,id);
-     runfunction (command,ProcessSkip,kgffmpeg);
+     runfunction (command,ProcessSkip,ffmpegfun);
      Vlist = Dopen();
      while ( (Minfo= Getrecord(L)) != NULL) {
        sprintf(Vname,"%-s/Img%-5.5d.mp4",Folder,vid);
@@ -111,10 +112,10 @@ int Imgs2Videos( IMGS2VDATA *is2vdata) {
        kgFreeImage(Timg);
        kgWriteImage(Img, Tmpimage);
        kgFreeImage(Img);
-       sprintf(command,"kgffmpeg -i \"%-s/%-d\" -i \"%s\" -filter_complex"
+       sprintf(command,"ffmpegfun -i \"%-s/%-d\" -i \"%s\" -filter_complex"
         " overlay=%-d:%-d -f mp4 -b:v 3000K -vcodec libx265 -y \"%-s\" ",
          Folder,id,Tmpimage,dx,dy,Vname);
-       runfunction (command,ProcessToPipe,kgffmpeg);
+       runfunction (command,ProcessToPipe,ffmpegfun);
        fprintf(myl,"file  \'%-s\'\n",Vname);
        fflush(myl);
        vid++;
@@ -133,9 +134,9 @@ int Imgs2Videos( IMGS2VDATA *is2vdata) {
      write(Jpipe[1],options,strlen(options));
      sprintf(options,"Plese wait......\n");
      write(Jpipe[1],options,strlen(options));
-     sprintf(command,"kgffmpeg -f concat -i %-s -y -f mp4 -vcodec libx265 "
+     sprintf(command,"ffmpegfun -f concat -i %-s -y -f mp4 -vcodec libx265 "
         " -b:v %-s \"%-s\" ", mylist ,Qstr,is2vdata->Outfile);
-     runfunction(command,ProcessToPipe,kgffmpeg);
+     runfunction(command,ProcessToPipe,ffmpegfun);
 
      Dempty(Vlist);
      Vlist=NULL;

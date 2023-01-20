@@ -20,6 +20,7 @@ int FileStat(char *);
 extern char GrabFileName[300];
 int kgLame(int,char **);
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int Mplayer(int,char **);
 int Mencoder(int,char **);
 void *RunMonitorJoin(void *arg);
@@ -89,24 +90,24 @@ int ConvertToKaraoke( CONVDATA *cn) {
     sprintf(options,"Esec: %lf\n",Esec);
     write(Jpipe[1],options,strlen(options));
     if(kgSearchString (Cn.outfile,(char *)".mp3")>=0 ) {
-      sprintf(command,"kgffmpeg -vn -i \"%-s\" "
+      sprintf(command,"ffmpegfun -vn -i \"%-s\" "
         "-af \"pan=stereo|c0=c0+-1*c1|c1=c1+-1*c0\" -y  -c:a libmp3lame -ac 2 "
         "  %-s -t %lf \"%-s\" ", Cn.audiofile ,Qstr,Esec,Cn.outfile);
     }
     else {
       if(kgSearchString (Cn.outfile,(char *)".aac")>=0 ) {
-       sprintf(command,"kgffmpeg -vn -i \"%-s\" "
+       sprintf(command,"ffmpegfun -vn -i \"%-s\" "
         " -af \"pan=stereo|c0=c0+-1*c1|c1=c0+-1*c1\"-y  -ac 2 -c:a libfdk_aac "
         " -t %lf \"%-s\" ", Cn.audiofile  ,Esec,Cn.outfile);
       }
       else {
-      sprintf(command,"kgffmpeg -vn -i \"%-s\" "
+      sprintf(command,"ffmpegfun -vn -i \"%-s\" "
         "-af \"pan=stereo|c0=c0+-1*c1|c1=c0+-1*c1\" -y  -ac 2 "
         "  %-s -t %lf \"%-s\" ", Cn.audiofile ,Qstr,Esec,Cn.outfile);
       }
     }
 //    printf("%s\n",command);
-    runfunction(command,ProcessToPipe,kgffmpeg);
+    runfunction(command,ProcessToPipe,ffmpegfun);
     close(Jpipe[1]);
     exit(0);
   }
@@ -222,7 +223,7 @@ int  MakeKaraokesplbutton1callback(int butno,int i,void *Tmp) {
   sprintf(buff,"%d \"%-s\" \"%-s\" \"%-s\" %d \n",
        cndata.code, cndata.audiofile,cndata.infile,cndata.outfile,Qty);
   write(ToTools[1],buff,strlen(buff));
-  kgSplashMessage(NULL,100,100,300,40,"Send for Processing",1,0,15);
+  kgSplashMessage(Tmp,100,100,300,40,"Send for Processing",1,0,15);
   ret =0;
   return ret;
 }

@@ -557,7 +557,7 @@ int _uiprinter(char pr[],  void *v0, void *v1 ){
     -1 /* bkgr colour */ 
   };
   Printers=Dopen();
-  pt = (char *)malloc(31);
+  pt = (char *)malloc(50);
   strcpy(pt,Tofile);
   Dadd(Printers,pt);
   fp = fopen("/etc/printcap","r");

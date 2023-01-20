@@ -124,7 +124,8 @@ build	:  lib/kgmplayer.a
 		 echo "cd mplayer" >> build
 		 echo "./rebuild" >> build
 		 chmod +x build
-bin/kgmplayer	: lib/libgm.a lib/libmovgrab.a lib/libmp3lame.a \
+#bin/kgmplayer	: lib/libgm.a lib/libmovgrab.a lib/libmp3lame.a 
+bin/kgmplayer	: lib/libgm.a  lib/libmp3lame.a \
 		 lib/libx264.a lib/libx265.a ffmpeg/libavdevice/libavdevice.a \
 		  build
 #		 rm lib/libx264.so.148
@@ -144,18 +145,18 @@ lib/libmovgrab.a	: $(MOVFILES) grabmak
 		 make -C movgrab install
 lib/libmp3lame.a	:  lamebuild
 		 ./lamebuild
-		 make -j4 -C lame
+		 make -j2 -C lame
 		 make -C lame install
 lib/libx264.a	:  x264build
 		 ./x264build
-		 make -j4 -C x264
+		 make -j2 -C x264
 		 make -C x264 install
 lib/libx265.a	:  x265build
 		 ./x265build
 ffmpeg/libavdevice/libavdevice.a	:  lib/libmp3lame.a \
 		 lib/libx264.a lib/libx265.a ffmpegbuild
 		 ./ffmpegbuild
-		 make -j4 -C ffmpeg
+		 make -j2 -C ffmpeg
 		 rm ffmpeg/ffmpeg
 #		 make -C ffmpeg install
 install	: bin/kgmplayer

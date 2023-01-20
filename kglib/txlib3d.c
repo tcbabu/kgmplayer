@@ -30,7 +30,7 @@ void get_color(int col,short *r,short *g,short *b);
 void get_cur_color(int *r,int *g,int *b) ;
 void _put_trans_pix3(int col,int row,short r,short g,short b);
 int PutPixel_IMAGE(int x,int y,int red,int green,int blue);
-void put_shade_pix3(int col,int row,int z,float illu);
+void uiput_shade_pix3(DIG *G,int col,int row,int z,float illu);
 void draw_line3(int xa,int ya,int za,int xb,int yb,int zb);
 void hori_line3(int xa,int xb,int y,int za,int zb);
 void godr_line3(int xa,int xb,int y,int za,int zb,float pa,float pb);

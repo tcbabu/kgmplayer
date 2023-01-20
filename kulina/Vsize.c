@@ -24,8 +24,8 @@ int VsizeGroup( DIALOG *D,void **v,void *pt) {
   e0[0].noecho=0;
   DIT t0 = { 
     't',
-    404,126,  
-    574,160,
+    454,141,  
+    554,165,
     20, 
     1,1, 
     e0,

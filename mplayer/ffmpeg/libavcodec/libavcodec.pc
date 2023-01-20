@@ -9,6 +9,6 @@ Version: 57.24.102
 Requires: libswresample >= 2.0.101, libavutil >= 55.17.103
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavcodec -lXv -lX11 -lXext -lXfixes -lXext -lX11 -lasound -L/home/babu/BUILD/kgmplayer/lib -lx265 -lmp3lame -L/home/babu/BUILD/kgmplayer/lib -lfdk-aac -lm -lgmp -lm -llzma -lbz2 -lz -pthread -lgnutls -lgnutlsxx -lnettle -lhogweed -lgmp -lfdk-aac
+Libs: -L${libdir}  -lavcodec -lXv -lX11 -lXext -lXfixes -lXext -lX11 -lasound -L/home/babu/BUILD/kgmplayer/lib -lx265 -L/home/babu/BUILD/kgmplayer/lib -lx264 -lmp3lame -L/home/babu/BUILD/kgmplayer/lib -lfdk-aac -lm -lgmp -lm -llzma -lbz2 -lz -pthread -lgnutls -lgnutlsxx -lnettle -lhogweed -lgmp -lfdk-aac
 Libs.private: 
 Cflags: -I${includedir}

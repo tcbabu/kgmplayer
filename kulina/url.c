@@ -1,6 +1,7 @@
 #include <kulina.h>
 #include "urlCallbacks.h"
-#define BCLR -69128181
+//#define BCLR -69128181
+#define BCLR -1
 void ModifyurlGc(Gclr *gc) {
 /*
 //  You may change default settings here 
@@ -77,8 +78,8 @@ int urlGroup( DIALOG *D,void **v,void *pt) {
   m2.item = -1;
   BUT_STR  *butn3=NULL; 
   butn3= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
-  butn3[0].sw=1;
-  strcpy(butn3[0].title,(char *)"GRAB");
+  butn3[0].sw=0;
+  strcpy(butn3[0].title,(char *)"GraB");
   butn3[0].xpmn=NULL;
   butn3[0].xpmp=NULL;
   butn3[0].xpmh=NULL;

@@ -30,6 +30,7 @@ extern char GrabFileName[300];
 int Pval;
 int kgLame(int,char **);
 int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
 int Mplayer(int,char **);
 int Mencoder(int,char **);
 void *RunMonitorJoin(void *arg);
@@ -86,27 +87,27 @@ int InsertSilences( CONVDATA *cn) {
     while( (mpt=(char *)Getrecord(L))!= NULL) {
       sscanf(mpt,"%f%f",&pos,&duration);
       if(fabsf(pos - opos)> 0.001) {
-       sprintf(command,"kgffmpeg -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
+       sprintf(command,"ffmpegfun -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
          "-acodec pcm_s32le -y -ss %f -t %f %s/M%-4.4d.wav ",
          Cn.infile, opos, pos - opos,Folder,id);
          opos = pos;
        id++;
-       runfunction(command,ProcessSkip,kgffmpeg);
+       runfunction(command,ProcessSkip,ffmpegfun);
       }
-      sprintf(command,"kgffmpeg -ar 44100  -f s32le -acodec pcm_s32le "
+      sprintf(command,"ffmpegfun -ar 44100  -f s32le -acodec pcm_s32le "
         " -ac 2 -i /dev/zero -acodec pcm_s32le -t %f  %s/M%-4.4d.wav ",
          duration,Folder,id);
 //      printf("%s\n",command);
-      runfunction(command,ProcessSkip,kgffmpeg);
+      runfunction(command,ProcessSkip,ffmpegfun);
       id++;
     }
     if(opos< Mesec) {
-      sprintf(command,"kgffmpeg -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
+      sprintf(command,"ffmpegfun -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
          "-acodec pcm_s32le -y -ss %f  %s/M%-4.4d.wav ",
          Cn.infile, opos, Folder,id);
          opos = pos;
       id++;
-      runfunction(command,ProcessSkip,kgffmpeg);
+      runfunction(command,ProcessSkip,ffmpegfun);
 //      printf("%s\n",command);
     }
     if(id==0) exit(0);
@@ -128,10 +129,10 @@ int InsertSilences( CONVDATA *cn) {
      if(kgSearchString(Cn.outfile,(char *)".mp3")>=0) {
        sprintf(Qstr," -c:a libmp3lame -aq 0  ");
      }
-     sprintf(command,"kgffmpeg    -i %-s/out.wav "
+     sprintf(command,"ffmpegfun    -i %-s/out.wav "
         " -ac 2 %s -y \"%-s\" ", Folder ,Qstr,Cn.outfile);
 //        printf("%s\n",command);
-     runfunction(command,ProcessToAudioPipe,kgffmpeg);
+     runfunction(command,ProcessToAudioPipe,ffmpegfun);
      kgCleanDir(Folder);
      strcpy(options,"Joinded Audio Files\n");
      write(Jpipe[1],options,strlen(options));
@@ -376,7 +377,8 @@ int  AddSilencesplbutton1callback(int butno,int i,void *Tmp) {
   }
   Dempty(L);
   cndata.Slist=NULL;
-  kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
+      //TCB
+  kgSplashMessage(Tmp,100,100,300,40,(char *)"Send for Processing",1,0,15);
   ret=0;
   
  

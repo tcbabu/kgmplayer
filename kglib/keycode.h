@@ -9,7 +9,7 @@
 #define RightKey     9
 #define DownKey      10
 #define UpKey        11
-#define CaplockKey   12
+#define CapslockKey   12
 #define ShiftKey     13
 #define CntlKey      14
 #define AltKey       15
@@ -20,3 +20,5 @@
 #define TabKey       20
 #define SpaceKey     21
 #define PrintKey     22
+#define ShiftRightKey 23
+#define ShiftLockKey  24
