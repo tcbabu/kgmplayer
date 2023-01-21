@@ -1,16 +1,10 @@
-  if(kgDragThumbNail(Y,item-1,&x,&y)) {
-	  if( (x>Xmin) && (x<Xmax)&&(y>Ymin)&&(y<Ymax)) {
-		  thtmp = (ThumbNail **) malloc(sizeof(ThumbNail *)*(nitems+2));
-		  for(k=0;k<nitems;k++) thtmp[k] = thx[k];
-		  thtmp[nitems]= CopyThumbNail(thy[item-1]);
-		  thtmp[nitems +1]= NULL;
-                  kgSetList(X,(void **) thtmp);
-                  if(thx != NULL) free(thx);
-                  kgUpdateWidget(X);
-                  kgUpdateOn(D);
-                  ret=0;
-		  
-	  }
-   }
-
-#endif
+	  if((pos >=0)&&(pos!=(item-1)) ) {
+	    tpt = thy[item-1];
+            if(pos < (item-1) ) {
+              for(k=(item-1);k>pos;k--){ thy[k]=thy[k-1]; }
+              thy[pos]= tpt;
+            }
+            else {
+              for(k=item;k<pos;k++) {thy[k-1]=thy[k];}
+              thy[pos-1]= tpt;
+            }

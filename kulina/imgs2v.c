@@ -179,7 +179,7 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   butn7[0].xpmn=NULL;
   butn7[0].xpmp=NULL;
   butn7[0].xpmh=NULL;
-  butn7[0].bkgr=-177196221;
+  butn7[0].bkgr=-107226121;
   butn7[0].butncode='';
   butn7[1].sw=1;
   strcpy(butn7[1].title,(char *)"Clear");

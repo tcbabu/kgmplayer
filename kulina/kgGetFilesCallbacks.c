@@ -208,6 +208,48 @@ ThumbNail * CopyThumbNail(ThumbNail *th) {
   tpt->id=1;
   return tpt;
 }
+int RepositionThumbNail(ThumbNail **thy,int pos ,int item) {
+	int ret=0,k;
+	ThumbNail *tpt;
+	  if((pos >=0)&&(pos!=(item)) ) {
+	    tpt = thy[item];
+            if(pos < (item) ) {
+              for(k=(item);k>pos;k--){ thy[k]=thy[k-1]; }
+              thy[pos]= tpt;
+            }
+            else {
+              for(k=item+1;k<pos;k++) {thy[k-1]=thy[k];}
+              thy[pos-1]= tpt;
+            }
+	    ret = 1;
+	  }
+	return ret;
+}
+ThumbNail **AppendThumbNails(ThumbNail **th,ThumbNail **thadd) {
+	int i,j,nitems,nadd;
+	ThumbNail **thtmp=NULL;
+	nitems = 0;
+	if(th != NULL) while(th[nitems] != NULL) nitems++;
+	nadd = 0;
+	if(thadd != NULL) while(thadd[nadd] != NULL) nadd++;
+	thtmp =  (ThumbNail **) malloc(sizeof(ThumbNail *)*(nitems+nadd+1));
+	for(i=0;i<nitems;i++) thtmp[i] =th[i];
+	for(i=0;i<nadd;i++) thtmp[i+nitems] =thadd[i];
+	thtmp[nitems+nadd]=NULL;
+	return thtmp;
+}
+ThumbNail **InsertThumbNail(ThumbNail **th,int pos,ThumbNail *thadd) {
+	int i,j,nitems,nadd;
+	ThumbNail **thtmp;
+	nitems = 0;
+	if(th != NULL) while(th[nitems] != NULL) nitems++;
+	thtmp =  (ThumbNail **) malloc(sizeof(ThumbNail *)*(nitems+2));
+	for(i=0;i<pos;i++) thtmp[i] =th[i];
+	thtmp[pos] = thadd;
+	for(i=pos;i<nitems;i++) thtmp[i+1] =th[i];
+	thtmp[nitems+1]=NULL;
+	return thtmp;
+}
 static int MakeThumbNailImages(ThumbNail **th) {
   ThumbNail **thtmp=NULL;
   int i=0,j=0;
@@ -398,15 +440,40 @@ int  kgGetFilesbrowser1callback(int item,int i,void *Tmp) {
 #if 1
   if(kgDragThumbNail(Y,item-1,&x,&y)) {
 	  if( (x>Xmin) && (x<Xmax)&&(y>Ymin)&&(y<Ymax)) {
+#if 0
 		  thtmp = (ThumbNail **) malloc(sizeof(ThumbNail *)*(nitems+2));
 		  for(k=0;k<nitems;k++) thtmp[k] = thx[k];
 		  thtmp[nitems]= CopyThumbNail(thy[item-1]);
 		  thtmp[nitems +1]= NULL;
                   kgSetList(X,(void **) thtmp);
+                  ClearThumbNails(thtmp);
+                  ClearThumbNails(thy);
                   if(thx != NULL) free(thx);
                   kgUpdateWidget(X);
+                  kgUpdateWidget(Y);
                   kgUpdateOn(D);
                   ret=0;
+#else
+		  ThumbNail *thadd[2];
+		  thadd[0] = CopyThumbNail(thy[item-1]);
+		  thadd[1] = NULL;
+	          pos = kgGetThumbNailItem(X,x,y);
+	          if((pos >=0) ) {
+	            thtmp =  InsertThumbNail(thx,pos,thadd[0]);
+		  }
+		  else {
+		    thtmp = AppendThumbNails(thx,thadd);
+		  }
+		  kgSetList(X,(void **) thtmp);
+                  if(thx != NULL) free(thx);
+                  ClearThumbNails(thtmp);
+                  ClearThumbNails(thy);
+                  kgUpdateWidget(X);
+                  kgUpdateWidget(Y);
+                  kgUpdateOn(D);
+                  ret=0;
+#endif
+
 		  
 	  }
    }
@@ -472,6 +539,7 @@ int  kgGetFilesbrowser3callback(int item,int i,void *Tmp) {
   }
   if(kgDragThumbNail(Y,item-1,&x,&y)) {
 	  pos = kgGetThumbNailItem(Y,x,y);
+#if 0
 	  if((pos >=0)&&(pos!=(item-1)) ) {
 	    tpt = thy[item-1];
             if(pos < (item-1) ) {
@@ -486,8 +554,17 @@ int  kgGetFilesbrowser3callback(int item,int i,void *Tmp) {
             kgSetList((void *)Y,(void **)thy);
             kgUpdateWidget(Y);
             kgUpdateOn(D);
-            ret=0;
 	  }
+#else
+	  if(RepositionThumbNail(thy,pos,item-1)) {
+            *(Y->df) = pos+1;
+            kgSetList((void *)Y,(void **)thy);
+            ClearThumbNails(thy);
+            kgUpdateWidget(Y);
+            kgUpdateOn(D);
+	  }
+#endif
+            ret=0;
    }
 
   switch(item) {
