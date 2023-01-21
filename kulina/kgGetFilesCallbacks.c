@@ -347,7 +347,9 @@ int  kgGetFilessplbutton1callback(int butno,int i,void *Tmp) {
          if(th[i++]->sw == 1) nc++;
         }
       }
+      if(nc == 0) {ret = 0;break;}
       tho = (ThumbNail **) kgGetList(OutBox);
+#if 0
       no=0;
       if(tho != NULL) {
         int i=0;
@@ -364,9 +366,25 @@ int  kgGetFilessplbutton1callback(int butno,int i,void *Tmp) {
         k++;
       }
       thn[j]=NULL;
+#else
+      ThumbNail **thtmp;
+      thn = (ThumbNail **) malloc(sizeof(ThumbNail *)*(nc+1));
+      thn[nc]=NULL;
+      j=0; k=0;
+      while(th[k]!= NULL) {
+	if(th[k]->sw == 1) thn[j++]= CopyThumbNail(th[k]);
+	k++;
+      }
+      thn[j] = NULL;
+      thtmp = AppendThumbNails(tho,thn);
+      if(thn != NULL) free(thn);
+      thn = thtmp;
+#endif
+      ClearThumbNails(th);
       if(tho != NULL) free(tho);
       kgSetList(OutBox,(void **) thn);
       kgUpdateWidget(OutBox);
+      kgUpdateWidget(ImgBox);
       kgUpdateOn(D);
       ret=0;
       break;
