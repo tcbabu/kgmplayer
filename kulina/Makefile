@@ -43,7 +43,8 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 HelpButn.o HelpButnCallbacks.o \
 	 ImageBox.o ImageBoxCallbacks.o \
 	 Runbackground.o \
-	 Helper.o HelperCallbacks.o createhelpimage.o
+	 Helper.o HelperCallbacks.o createhelpimage.o \
+	 ReorderImages.o ReorderImagesCallbacks.o
 	 ar -r  kgMplayer.a  kgMplayer.o kgMplayerCallbacks.o main.o \
 	 FullScreen.o FullScreenCallbacks.o  \
 	ControlsCallbacks.o Controls.o AControls.o Rip.o \
@@ -88,6 +89,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 ImageBox.o ImageBoxCallbacks.o \
 	 Runbackground.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
+	 ReorderImages.o ReorderImagesCallbacks.o \
 	../mplayer/ffmpeg/ffmpeg.o ../mplayer/ffmpeg/cmdutils.o \
 	../mplayer/ffmpeg/ffmpeg_filter.o ../mplayer/ffmpeg/ffmpeg_opt.o \
 	../mplayer/ffmpeg/ffmpeg_vdpau.o 
@@ -237,6 +239,10 @@ HelperCallbacks.o	: HelperCallbacks.c
 		$(CC) -c HelperCallbacks.c
 createhelpimage.o	: createhelpimage.c
 		$(CC) -c createhelpimage.c
+ReorderImages.o	: ReorderImages.c
+		$(CC) -c ReorderImages.c
+ReorderImagesCallbacks.o	: ReorderImagesCallbacks.c
+		$(CC) -c ReorderImagesCallbacks.c
 
 
 

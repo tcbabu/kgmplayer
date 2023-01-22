@@ -26,7 +26,7 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   strcpy(m0.Wid,(char *)"imgs2vWidget1");
   m0.item = -1;
   BUT_STR  *butn1=NULL; 
-  butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
+  butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*3);
   butn1[0].sw=1;
   strcpy(butn1[0].title,(char *)"Add");
   butn1[0].xpmn=NULL;
@@ -41,14 +41,21 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   butn1[1].xpmh=NULL;
   butn1[1].bkgr=-1;
   butn1[1].butncode='';
+  butn1[2].sw=1;
+  strcpy(butn1[2].title,(char *)"Reorder");
+  butn1[2].xpmn=NULL;
+  butn1[2].xpmp=NULL;
+  butn1[2].xpmh=NULL;
+  butn1[2].bkgr=-1;
+  butn1[2].butncode='';
   DIN b1 = { 
     'n',
-    296,9,  
+    236,9,  
     404,41,
     2,2,  
     48, 
     22, 
-    2,1, 
+    3,1, 
     5,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn1, 

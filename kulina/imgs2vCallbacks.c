@@ -13,6 +13,7 @@ int MakeMp4File(char *Infile,char *Outfile,int id);
 int GetBaseIndex(char *s);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 void *RunkgGetFiles(void *arg,char *Filter);
+void *RunReorderImages(void *arg);
 
 ThumbNail **AddItemtoIlist(char *newitem) {
   char buff[500];
@@ -53,7 +54,7 @@ ThumbNail **DeleteItemsfromIlist(void) {
   int ln,i,index;
   char **menu;
   char *file;
-  L = Dopen();
+//  L = Dopen();
   L = (Dlink *) is2vdata.List;
   if(L==NULL) L = Dopen();
   is2vdata.List = L;
@@ -92,6 +93,7 @@ int  imgs2vbutton1callback(int butno,int i,void *Tmp) {
    ***********************************/ 
   DIALOG *D;DIN *B; 
   int n,ret =0,j=0; 
+  char **names=NULL;
   static char filename[500]="";
   ThumbNail **th;
   char **Plist=NULL;
@@ -141,6 +143,32 @@ int  imgs2vbutton1callback(int butno,int i,void *Tmp) {
       kgUpdateOn(Tmp);
 
       break;
+    case 3: 
+      th = (ThumbNail **) kgGetList(IX2);
+      if(th==NULL) break;
+      if(th[0]==NULL) break;
+      Plist = (char **)RunReorderImages(is2vdata.List);
+      Dempty(is2vdata.List);
+      is2vdata.List=NULL;
+      th = NULL;
+      if(Plist != NULL) {
+        j=0;
+        while(Plist[j]!= NULL) {
+          th = AddItemtoIlist(Plist[j]);
+          j++;
+        }
+        kgFreeDouble((void **)Plist);
+        Plist=NULL;
+        kgFreeThumbNails((ThumbNail **)kgGetList(IX2));
+        kgSetList(IX2,(void **)th);
+        kgUpdateWidget(IX2);
+        kgUpdateOn(Tmp);
+      }
+      else {
+      }
+      break;
+    default:
+      break;  
   }
   return ret;
 }
