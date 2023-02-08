@@ -12,6 +12,7 @@ int kgffmpeg(int,char **);
 int ffmpegfun(int,char **);
 int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessPrint(int pip0,int pip1,int Pid);
+int ProcessData(int pip0,int pip1,int Pid);
 int ProcessToPipe(int pip0,int pip1,int Pid);
 int Mencoder(int,char **);
 void *RunkgGetFiles(void *arg,char *Filter);
@@ -79,9 +80,10 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
   int status;
   char buff[5000];
   int totsec=0;
-  int ssec,esec;
+  float  ssec,esec,crr=0.00;
   int n;
   float per=0;
+  char outfile[500];
 
   if( CheckMedia(flname) == 0 ) {
     kgSplashMessage(NULL,100,100,300,40,(char *)"Error: Not Video",1,0,15);
@@ -99,82 +101,75 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
   MonPipe = Jpipe[0];
   
   if ((pid=fork())==0) {
+    fflush(stdout);
+    fflush(stderr);
     close(Jpipe[0]);
     close(Jstat[1]);
-#if 1  // modify as required
      sprintf(buff,"Executing... PLEASE WAIT\n");
      write(Jpipe[1],buff,strlen(buff));
      sprintf(buff,"PLEASE WAIT till the window closes\n");
      write(Jpipe[1],buff,strlen(buff));
      sprintf(buff,"You can cancel job if you wish\n");
      write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"slice : %d\n",tslice);
+     write(Jpipe[1],buff,strlen(buff));
      sprintf(buff,"Esec: %d\n",tslice);
      write(Jpipe[1],buff,strlen(buff));
      ssec=0;
      esec = tslice;
      n=1;
+#if 1
      while (ssec < totsec) {
        sprintf(buff,"  %-s/Frm%-5.5d\n",folder,n);
        write(Jpipe[1],buff,strlen(buff));
        per = ssec*100.0/totsec;
-       sprintf(buff,"Cur: %f \n",per);
+       sprintf(buff,"Per: %f \n",per);
        write(Jpipe[1],buff,strlen(buff));
+       sprintf(outfile,"%-s/Frm%-5.5d.mp4",folder,n);
 #ifdef D_X264
        if(esec < totsec) {
-        sprintf(buff,"ffmpegfun -ss %-d -t %-d -i \"%-s\" "
+        sprintf(buff,"ffmpegfun -accurate_seek -ss %-f  -i \"%-s\" -ss 0 -t %-f"
            " -y -video_track_timescale 90k -f mp4 -vcodec libx264  -b:v 3000K -aq 0 "
            " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
-           ssec,tslice,flname,folder,n);
+           ssec,flname,tslice+crr,folder,n);
        }
        else {
-        sprintf(buff,"ffmpegfun -ss %-d  -i \"%-s\" "
+        sprintf(buff,"ffmpegfun -accurate_seek -ss %-f  -i \"%-s\" -ss 0 "
            " -y -video_track_timescale 90k -f mp4 -vcodec libx264  -b:v 3000K -aq 0 "
            " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
            ssec,flname,folder,n);
        }
 #else
-#if 0
        if(esec < totsec) {
-        sprintf(buff,"ffmpegfun -ss %-d -t %-d -i \"%-s\" "
-           " -y -f mp4 -vcodec libx265 -aq 0  "
-//           " -y -f mp4 -c:v libx265 -crf 0 -preset medium -x265-params \"keyint=1:lossless=1\" -aq 0  "
-           " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
-           ssec,tslice,flname,folder,n);
-//           " -y -f mp4 -vcodec libx265 -aq 0 "
+        sprintf(buff,"ffmpegfun  -accurate_seek -ss %-f   -i \"%-s\" -ss 0   -to %-f  "
+           "  -y -f mp4 -video_track_timescale 90k    -aq 0 -preset medium -crf 18 -c:v libx264  "
+           " -c:a copy  \"%-s/Frm%-5.5d.mp4\"",
+           ssec+crr,flname,(float)tslice,folder,n);
        }
        else {
-        sprintf(buff,"ffmpegfun -ss %-d  -i \"%-s\" "
-           " -y -f mp4 -vcodec libx265 -aq 0  "
-//           " -y -f mp4 -c:v libx265 -crf 0 -preset medium -x265-params \"keyint=1:lossless=1\" -aq 0  "
-           " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
-           ssec,flname,folder,n);
-#else
-       if(esec < totsec) {
-        sprintf(buff,"ffmpegfun -ss %-d -t %-d -i \"%-s\" "
-           " -y -f mp4 -video_track_timescale 90k -c:v copy  -aq 0  "
-           " -c:a copy \"%-s/Frm%-5.5d\"",
-           ssec,tslice,flname,folder,n);
-//           " -y -f mp4 -video_track_timescale 90k -c:v libx265 -crf 0 -preset medium -x265-params \"keyint=1:lossless=1\" -aq 0  "
-       }
-       else {
-        sprintf(buff,"ffmpegfun -ss %-d  -i \"%-s\" "
-           " -y -f mp4 -video_track_timescale 90k -c:v copy -aq 0  "
-           " -c:a copy  \"%-s/Frm%-5.5d\"",
-           ssec,flname,folder,n);
-#endif	
+        sprintf(buff,"ffmpegfun  -accurate_seek -ss %-f -i \"%-s\" -ss 0 "
+           "  -y -f mp4 -video_track_timescale 90k  -aq 0 -preset medium -crf 18 -c:v libx264  "
+           " -c:a copy  \"%-s/Frm%-5.5d.mp4\"",
+           ssec+crr,flname,folder,n);
        }
 #endif
+       runfunction(buff,ProcessData,ffmpegfun);
+       CheckMedia(outfile);
+//       ssec += tslice;
+//       crr=0.00;
+       sprintf(buff,"info:  %f %f %f %f\n",ssec,esec,Minfo.start,Minfo.TotSec);
+       write(Jpipe[1],buff,strlen(buff));
+       ssec +=Minfo.TotSec;
+       esec = ssec + tslice;
+       if(Minfo.TotSec < 1 ) break;
        n++;
-       runfunction(buff,ProcessToPipe,ffmpegfun);
-       ssec += tslice;
-       esec += tslice;
 
-     }
-#endif 
+     } //while
+#endif
      close(Jpipe[1]);
      close(Jstat[0]);
      exit(0);
-  }
+  }  //fork
   else {
      close(Jpipe[1]);
      close(Jstat[0]);
@@ -184,6 +179,7 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
      exit(0);
   }
 }
+#if 1
 int  slicetextbox1callback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
@@ -378,3 +374,4 @@ int sliceWaitCallBack(void *Tmp) {
   int ret = 0;
   return ret;
 }
+#endif

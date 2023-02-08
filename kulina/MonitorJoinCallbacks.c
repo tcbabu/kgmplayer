@@ -101,6 +101,7 @@ int MonitorJoinWaitCallBack(void *Tmp) {
 
   int ret = 0;
   char buff[1000],connection[500];
+  char tmpbuff[500];
      int ch,i=0,j,pos,pip0;
      float h,m,s;
      float per=0.0,fac=0.0;
@@ -110,7 +111,8 @@ int MonitorJoinWaitCallBack(void *Tmp) {
 //     close(pip1);
      O = (DIO *)kgGetNamedWidget(Tmp,"JoinBar");
      pip0 = MonPipe;
-     Esec =0.0;
+//     sprintf(buff,"Tool : %d\n",Tools);
+//     WriteInfo(buff);
      if((ch=GetTimedLine(pip0,buff,1000)) ) {
 #if 0
          if(!GetTimedLine(StatusGrab[0],connection,300)) kgSetExit(Tmp);
@@ -121,7 +123,7 @@ int MonitorJoinWaitCallBack(void *Tmp) {
              case 3:
              case 5:
              case 6:
-#if 0
+#if 1
                pos = kgSearchString(buff,"Esec:");
                if(pos>=0) {
                  sscanf(buff+pos+5,"%lf",&Esec);
@@ -183,11 +185,13 @@ int MonitorJoinWaitCallBack(void *Tmp) {
                WriteInfo(buff);
                break;
              default:
-#if 0
+#if 1
                pos = kgSearchString(buff,"Esec:");
                if(pos>=0) {
                  sscanf(buff+pos+5,"%lf",&Esec);
 //                 printf("Esec : %lf\n",Esec);
+                 sprintf(tmpbuff,"End Time : %lf\n",Esec);
+                 WriteInfo(tmpbuff);
                  break;
                }
 #endif

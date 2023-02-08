@@ -20,6 +20,7 @@ extern int Tools;
 extern int Jpipe[2];
 extern int Jstat[2];
 
+float GetTimeval(char *);
 int FileStat(char *flname);
 int CheckVideo(char *flname);
 int CheckMedia(char *flname);
@@ -44,42 +45,44 @@ int ProcessToAudioPipe(int pip0,int pip1,int Pid) {
      char buff[1000],work[100];
      int ret =0;
      int ch,i=0,j,pos,len,OK=0;
-     float per=0.0,csec,m,h,s;
+     float per=0.0,csec,m,h,s,totsec=0;;
      char *pt;
 //     close(pip1);
      while((ch=GetLine(pip0,buff)) ) {
 //         if(!GetTimedLine(StatusGrab[0],work,300)) break;
 //         if(!GetTimedLine(Jstat[0],work,300)) break;
          if(ch< 0) continue;
-         if((pos=SearchString(buff,(char *)"%"))>=0)  {
+         if ( pos = SearchString(buff,(char *)"Duration:") >=0 ) {
+	       pt = buff+pos+10;
+	       totsec = GetTimeval(pt);
+               sprintf(work,"Esec: %f \n",totsec);
+               write(Jpipe[1],work,strlen(work));
+               continue;
+	 }
+         if(SearchString(buff,(char *)"frame=")>=0)  {
+           if((pos=SearchString(buff,(char *)"%"))>=0)  {
              buff[pos]=' ';
              pos = SearchString(buff,(char *)"(");
              if(pos>=0) {
                pt = buff+pos+1;
                sscanf(pt,"%f",&per);
-               sprintf(work,"Per: %f \n",per);
+               sprintf(work,"Cur: %f \n",per);
                write(Jpipe[1],work,strlen(work));
-         //////////////////      printf("%s",work);
              }
-         }
-         if(SearchString(buff,(char *)"size=")>=0)  {
+           }
+           if(SearchString(buff,(char *)"size=")>=0)  {
              pos = SearchString(buff,(char *)"time=");
              if(pos>=0) {
                pt = buff+pos+5;
-               pos= kgSearchString(pt,(char *)":");
-               pt[pos]=' ';
-               pos= kgSearchString(pt,(char *)":");
-               pt[pos]=' ';
-               sscanf(pt,"%f%f%f",&h,&m,&s);
                s += (h*3600+m*60);
-               per = s;
+               per = GetTimeval(pt);
                sprintf(work,"Cur: %f \n",per);
                write(Jpipe[1],work,strlen(work));
-//      printf("%s",work);
+//             printf("%s",work);
                continue;
              }
-         }
-//         printf("%s",buff);
+           }
+	 }
      }
      return ret;
 }

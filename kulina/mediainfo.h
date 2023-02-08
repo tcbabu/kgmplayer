@@ -18,5 +18,6 @@ typedef struct _mediainfo {
   int SubTitleOff; // swich off subtitle
   int vcodec;
   float rotation;
+  float start;
 } MEDIAINFO;
 #endif

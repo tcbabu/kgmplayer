@@ -1420,10 +1420,10 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
      }
      pos++;
      while(buff[pos]==' ') pos++;
-     printf("%s \n ",args[i-1]);
-     fflush(stdout);
+//     printf("%s \n ",args[i-1]);
+//     fflush(stdout);
    }
-   printf("\n");
+//   printf("\n");
    args[i]=NULL;
    if(i==0){
 	   printf("i==0 Exiting\n");
@@ -1710,6 +1710,33 @@ int ProcessMediaInfo_o(int pip0,int pip1,int Pid) {
      }
      return 1;
 }
+float GetTimeval (char *buff) {
+	float val =0;
+	char *pt;
+	char work[1000];
+	int hr,mt;
+	float sec;
+	int i=0;
+		   int ncol=0;
+		   pt = buff;
+		   sscanf(pt,"%s",work);
+		   while( (work[i]!='\0')){
+			 if(work[i]==':') {work[i]=' ';ncol++;}
+			 if(work[i]==',') work[i]=' ';
+			 i++;
+		   } 
+		   work[i]='\0';
+		   if(ncol != 0) {
+		     sscanf(work,"%d%d%f",&hr,&mt,&sec);
+                     val = hr*3600+mt*60+sec;
+		   }
+		   else {
+		     sscanf(work,"%f",&sec);
+                     val = sec;
+		   }
+		   return val;
+}
+
 int ProcessMediaInfo(int pip0,int pip1,int Pid) {
      int ch,Asp;
      char buff[1000],work[100],CODE[10];
@@ -1719,6 +1746,7 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
      Asp=0;
      Minfo.Video=Minfo.Audio=0;
      Minfo.TotSec=0;
+     Minfo.start =0;
      Minfo.AspectNu=Minfo.AspectDe=1.0;
      Minfo.Axres=Minfo.Ayres=1;
      Minfo.Rxres=Minfo.Ryres=1;
@@ -1729,19 +1757,13 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
 //         fflush(stdout);
          if(ch< 0) continue;
          if( (pos=SearchString(buff,(char *)"Duration:"))>=0) {
-		 int i= 0;
-		 int hr,mt;
-		 float sec;
 		 pt = buff+pos+10;
-		 sscanf(pt,"%s",work);
-		 while( (work[i]!=',')){
-			 if(work[i]==':') work[i]=' ';
-			 i++;
-		 } 
-		 work[i]='\0';
-//		 printf("%s\n",work);
-		 sscanf(work,"%d%d%f",&hr,&mt,&sec);
-                 Minfo.TotSec= hr*3600+mt*60+sec;
+		 Minfo.TotSec = GetTimeval(pt);
+		 if((pos=SearchString(buff,(char *)" start:"))>=0) {
+		   pt = buff+pos+8;
+		   Minfo.start  = GetTimeval(pt);
+		 }
+		 else Minfo.start =0;
 //		 printf("Totsec = %f\n",Minfo.TotSec);
 	 }	 
          if( (pos=SearchString(buff,(char *)"Video:"))>=0) {
@@ -1965,10 +1987,11 @@ int CheckMedia(char *flname) {
    int i;
    mtmp = Minfo;
    Minfo.TotSec=500;
+   Minfo.start=0;
    i=0; while(flname[i]==' ')i++;
    if(flname[i]=='\"') 
-    sprintf(buff,"kgmffpeg  -i %s",flname);
-   else sprintf(buff,"ffmpegfun  -i  \"%s\"",flname);
+    sprintf(buff,"ffmpegfun  -probesize 50M  -analyzeduration 10000000  -i %s ",flname);
+   else sprintf(buff,"ffmpegfun -probesize 50M  -analyzeduration 10000000  -i  \"%s\"",flname);
 //   printf("%s\n",buff);
    runfunction(buff,ProcessMediaInfo,ffmpegfun);
    VIDEO=Minfo.Video;
@@ -1976,7 +1999,7 @@ int CheckMedia(char *flname) {
    Minfo.Ryres = Minfo.Ayres;
    Vxres = Minfo.Axres;
    Vyres = Minfo.Ayres;
- printf("%s: %f  %d %d %f %d %d\n",flname,Minfo.TotSec,Minfo.Video,Minfo.Audio,Minfo.fps,Minfo.Axres,Minfo.Ayres);
+ printf("%s: %f %f  %d %d %f %d %d\n",flname,Minfo.start,Minfo.TotSec,Minfo.Video,Minfo.Audio,Minfo.fps,Minfo.Axres,Minfo.Ayres);
    if((!Minfo.Audio)&&(!Minfo.Video)) return 0;
    else return 1;
 #endif 
