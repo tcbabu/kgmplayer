@@ -1,0 +1,41 @@
+#export PKG_CONFIG_PATH=$KULINA/lib/pkgconfig
+export LD_CONFIG_PATH=$LD_CONFIG_PATH:$KULINA/lib
+export LDFLAGS=-L$KULINA/lib
+echo $LDFLAGS
+export CFLAGS=-I$KULINA/include
+export CPPFLAGS=-I$KULINA/include
+export ZLIBLIB=$KULINA/lib
+export ZLIBINC=$KULINA/include
+echo $CFLAGS
+echo $PKG_CONFIG_PATH
+echo "$X11_LIBS"
+echo "$X11_CFLAGS"
+tar xf freetype-2.11.0.tar.xz >../out
+cd freetype-2.11.0
+./configure --prefix=$KULINA --enable-static --disable-shared >../out
+make  >../out
+make  install >../out
+cd ..
+rm -rf freetype-2.11.0
+echo "freetype"
+
+tar xf harfbuzz-2.9.0.tar.xz >../out
+cd harfbuzz-2.9.0
+./configure --prefix=$KULINA --enable-static --disable-shared --without-glib  > ../out;
+make -j1 > ../out;
+make install > ../out;
+cd ..
+rm -rf harfbuzz-2.9.0
+tar xf freetype-2.11.0.tar.xz >../out
+cd freetype-2.11.0
+./configure --prefix=$KULINA --enable-static --disable-shared > ../out;
+make  > ../out;
+make  install > ../out;
+cd ..
+rm -rf freetype-2.11.0
+tar xf fontconfig-2.13.1.tar.bz2 >../out
+cd fontconfig-2.13.1
+./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
+make 
+make  install
+cd ..

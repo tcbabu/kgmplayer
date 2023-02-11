@@ -1,0 +1,12 @@
+#ifdef D_KULINA
+#define Exit_program(ret) { \
+        printf("Calling exit_program\n");\
+        exit_program(ret);\
+        printf("returning\n");\
+        return ret;\
+}
+#else
+#define Exit_program(ret) { \
+        exit_program(ret);\
+}
+#endif

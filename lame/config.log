@@ -62,8 +62,8 @@ configure:3253: found /bin/gcc
 configure:3264: result: gcc
 configure:3493: checking for C compiler version
 configure:3502: gcc --version >&5
-gcc (GCC) 10.3.0
-Copyright (C) 2020 Free Software Foundation, Inc.
+gcc (GCC) 12.2.0
+Copyright (C) 2022 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
@@ -71,12 +71,12 @@ configure:3513: $? = 0
 configure:3502: gcc -v >&5
 Using built-in specs.
 COLLECT_GCC=gcc
-COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-pc-linux-gnu/10.3.0/lto-wrapper
+COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-pc-linux-gnu/12.2.0/lto-wrapper
 Target: x86_64-pc-linux-gnu
-Configured with: ../configure --prefix=/usr LD=ld --enable-languages=c,c++ --disable-multilib --disable-bootstrap --with-system-zlib
+Configured with: ../configure --prefix=/usr --enable-bootstrap --disable-multilib --enable-languages=c,c++
 Thread model: posix
 Supported LTO compression algorithms: zlib zstd
-gcc version 10.3.0 (GCC) 
+gcc version 12.2.0 (GCC) 
 configure:3513: $? = 0
 configure:3502: gcc -V >&5
 gcc: error: unrecognized command-line option '-V'
@@ -412,8 +412,8 @@ configure:11106: checking for gcc
 configure:11133: result: gcc
 configure:11362: checking for C compiler version
 configure:11371: gcc --version >&5
-gcc (GCC) 10.3.0
-Copyright (C) 2020 Free Software Foundation, Inc.
+gcc (GCC) 12.2.0
+Copyright (C) 2022 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
@@ -421,12 +421,12 @@ configure:11382: $? = 0
 configure:11371: gcc -v >&5
 Using built-in specs.
 COLLECT_GCC=gcc
-COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-pc-linux-gnu/10.3.0/lto-wrapper
+COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-pc-linux-gnu/12.2.0/lto-wrapper
 Target: x86_64-pc-linux-gnu
-Configured with: ../configure --prefix=/usr LD=ld --enable-languages=c,c++ --disable-multilib --disable-bootstrap --with-system-zlib
+Configured with: ../configure --prefix=/usr --enable-bootstrap --disable-multilib --enable-languages=c,c++
 Thread model: posix
 Supported LTO compression algorithms: zlib zstd
-gcc version 10.3.0 (GCC) 
+gcc version 12.2.0 (GCC) 
 configure:11382: $? = 0
 configure:11371: gcc -V >&5
 gcc: error: unrecognized command-line option '-V'
@@ -447,7 +447,7 @@ configure:11578: result: none needed
 configure:11600: checking dependency style of gcc
 configure:11710: result: gcc3
 configure:11727: checking version of GCC
-configure:11730: result: 10.3.0
+configure:11730: result: 12.2.0
 configure:11734: checking for function prototypes
 configure:11737: result: yes
 configure:11760: checking for string.h
@@ -655,13 +655,13 @@ configure:12036: $? = 0
 configure:12044: result: inline
 configure:12063: checking whether byte ordering is bigendian
 configure:12078: gcc -c -I/home/babu/BUILD/kgmplayer/include  conftest.c >&5
-conftest.c:43:9: error: unknown type name 'not'
-   43 |         not a universal capable compiler
-      |         ^~~
-conftest.c:43:15: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'universal'
-   43 |         not a universal capable compiler
-      |               ^~~~~~~~~
-conftest.c:43:15: error: unknown type name 'universal'
+conftest.c:43:16: error: unknown type name 'not'
+   43 |                not a universal capable compiler
+      |                ^~~
+conftest.c:43:22: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'universal'
+   43 |                not a universal capable compiler
+      |                      ^~~~~~~~~
+conftest.c:43:22: error: unknown type name 'universal'
 configure:12078: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -714,13 +714,13 @@ configure:12123: gcc -c -I/home/babu/BUILD/kgmplayer/include  conftest.c >&5
 configure:12123: $? = 0
 configure:12141: gcc -c -I/home/babu/BUILD/kgmplayer/include  conftest.c >&5
 conftest.c: In function 'main':
-conftest.c:49:4: error: unknown type name 'not'; did you mean 'ino_t'?
-   49 |    not big endian
-      |    ^~~
-      |    ino_t
-conftest.c:49:12: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'endian'
-   49 |    not big endian
-      |            ^~~~~~
+conftest.c:49:18: error: unknown type name 'not'; did you mean 'ino_t'?
+   49 |                  not big endian
+      |                  ^~~
+      |                  ino_t
+conftest.c:49:26: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'endian'
+   49 |                  not big endian
+      |                          ^~~~~~
 configure:12141: $? = 1
 configure: failed program was:
 | /* confdefs.h */

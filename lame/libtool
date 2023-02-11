@@ -237,7 +237,7 @@ finish_eval=""
 hardcode_into_libs=yes
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="/usr/lib /usr/lib/gcc/x86_64-pc-linux-gnu/10.3.0 /lib "
+sys_lib_search_path_spec="/usr/lib64 /usr/lib/gcc/x86_64-pc-linux-gnu/12.2.0 /lib64 "
 
 # Run-time system search path for libraries.
 sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/local/lib /opt/lib /opt/rustc/lib /opt/qt5/lib "
