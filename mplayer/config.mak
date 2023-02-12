@@ -3,7 +3,7 @@
 # Ensure that locale settings do not interfere with shell commands.
 export LC_ALL = C
 
-CONFIGURATION = --prefix=/home/babu/BUILD/kgmplayer --disable-gui --enable-runtime-cpudetection --disable-relocatable --disable-gif --disable-speex --disable-gl --enable-alsa --enable-pulse --enable-vm --enable-gnutls --disable-mencoder --enable-mp3lame --enable-freetype --enable-fontconfig --disable-tv-v4l1 --cc=gcc
+CONFIGURATION = --prefix=/home/kulina/BUILD/kgmplayer --disable-gui --enable-runtime-cpudetection --disable-relocatable --disable-gif --disable-speex --disable-gl --enable-alsa --enable-pulse --enable-vm --enable-gnutls --disable-mencoder --enable-mp3lame --enable-freetype --enable-fontconfig --disable-tv-v4l1 --cc=gcc
 
 CHARSET = UTF-8
 DOC_LANGS = en
@@ -15,12 +15,12 @@ CATALOG =
 XMLLINT_COMMAND = xmllint --noout --noent --postvalid 
 XSLT_COMMAND = xsltproc  -o
 
-prefix  = $(DESTDIR)/home/babu/BUILD/kgmplayer
-BINDIR  = $(DESTDIR)/home/babu/BUILD/kgmplayer/bin
-DATADIR = $(DESTDIR)/home/babu/BUILD/kgmplayer/share/mplayer
-LIBDIR  = $(DESTDIR)/home/babu/BUILD/kgmplayer/lib
-MANDIR  = $(DESTDIR)/home/babu/BUILD/kgmplayer/share/man
-CONFDIR = $(DESTDIR)/home/babu/BUILD/kgmplayer/etc/mplayer
+prefix  = $(DESTDIR)/home/kulina/BUILD/kgmplayer
+BINDIR  = $(DESTDIR)/home/kulina/BUILD/kgmplayer/bin
+DATADIR = $(DESTDIR)/home/kulina/BUILD/kgmplayer/share/mplayer
+LIBDIR  = $(DESTDIR)/home/kulina/BUILD/kgmplayer/lib
+MANDIR  = $(DESTDIR)/home/kulina/BUILD/kgmplayer/share/man
+CONFDIR = $(DESTDIR)/home/kulina/BUILD/kgmplayer/etc/mplayer
 
 AR      = ar
 ARFLAGS = rc
@@ -33,8 +33,8 @@ INSTALL = install
 INSTALLSTRIP = -s
 WINDRES = windres
 
-CFLAGS   = -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/home/babu/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE  -D_REENTRANT -I/home/babu/BUILD/kgmplayer/include  -D_REENTRANT -I/home/babu/BUILD/kgmplayer/include -I/home/babu/BUILD/kgmplayer/include/freetype2 -I/home/babu/BUILD/kgmplayer/include -DPCRE_STATIC -I/home/babu/BUILD/kgmplayer/include/fribidi -I/home/babu/BUILD/kgmplayer/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -DZLIB_CONST
-CXXFLAGS = -Wundef   -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/home/babu/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS  -D_REENTRANT -I/home/babu/BUILD/kgmplayer/include  -D_REENTRANT -I/home/babu/BUILD/kgmplayer/include -I/home/babu/BUILD/kgmplayer/include/freetype2 -I/home/babu/BUILD/kgmplayer/include -DPCRE_STATIC -I/home/babu/BUILD/kgmplayer/include/fribidi -I/home/babu/BUILD/kgmplayer/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -DZLIB_CONST 
+CFLAGS   = -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/home/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE  -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include  -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include -DPCRE_STATIC -I/home/kulina/BUILD/kgmplayer/include/fribidi -I/home/kulina/BUILD/kgmplayer/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -DZLIB_CONST
+CXXFLAGS = -Wundef   -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/home/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS  -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include  -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include -DPCRE_STATIC -I/home/kulina/BUILD/kgmplayer/include/fribidi -I/home/kulina/BUILD/kgmplayer/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -DZLIB_CONST 
 CC_DEPFLAGS = -MMD -MP
 
 CFLAGS_DHAHELPER         = 
@@ -42,7 +42,7 @@ CFLAGS_NO_OMIT_LEAF_FRAME_POINTER = -mno-omit-leaf-frame-pointer
 CFLAGS_STACKREALIGN      = 
 CFLAGS_SVGALIB_HELPER    = 
 
-EXTRALIBS          =  -Wl,--version-script,binary.ver -Wl,-z,noexecstack  -L/home/babu/BUILD/kgmplayer/lib    -lncurses -lrt -L/home/babu/BUILD/kgmplayer/lib -lgnutls -lpng -lz -ljpeg -lasound   -L/home/babu/BUILD/kgmplayer/lib -ldvdread -L/home/babu/BUILD/kgmplayer/lib -lfreetype -lz -lbz2 -L/home/babu/BUILD/kgmplayer/lib -lfribidi -lglib-2.0 -lz -lbz2 -lmad -lvorbisenc -lvorbis -logg   -rdynamic -lm  
+EXTRALIBS          =  -Wl,--version-script,binary.ver -Wl,-z,noexecstack  -L/home/kulina/BUILD/kgmplayer/lib    -lncurses -lrt -L/home/kulina/BUILD/kgmplayer/lib -lgnutls -lpng -lz -ljpeg -lasound   -L/home/kulina/BUILD/kgmplayer/lib -ldvdread -L/home/kulina/BUILD/kgmplayer/lib -lfreetype -lz -lbz2 -L/home/kulina/BUILD/kgmplayer/lib -lfribidi -lglib-2.0 -lz -lbz2 -lmad -lvorbisenc -lvorbis -logg   -rdynamic -lm  
 EXTRALIBS_MPLAYER  =  -lXfixes -lXext -lX11 -lXss -lXv -lvdpau -lXinerama -lXxf86vm -lXxf86dga -lpulse -pthread
 EXTRALIBS_MENCODER =  -lmp3lame
 
@@ -323,7 +323,7 @@ CONFIG_SELECT_FILTER = no
 
 CONFIG_STATIC = yes
 SRC_PATH      = .
-DST_PATH      = /home/babu/BUILD/kgmplayer/mplayer/ffmpeg
+DST_PATH      = /home/kulina/BUILD/kgmplayer/mplayer/ffmpeg
 LIBPREF       = lib
 LIBSUF        = .a
 FULLNAME      = $(NAME)$(BUILDSUF)
@@ -1858,5 +1858,5 @@ CONFIG_SHOWWAVESPIC_FILTER = no
 CONFIG_SPECTRUMSYNTH_FILTER = no
 CONFIG_AMOVIE_FILTER = no
 CONFIG_MOVIE_FILTER = no
-X11_CFLAGS=-I/home/babu/BUILD/kgmplayer/include 
+X11_CFLAGS=-I/home/kulina/BUILD/kgmplayer/include 
 X11_LIBS=-lX11 

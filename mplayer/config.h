@@ -36,11 +36,11 @@
 
 
 
-#define CONFIGURATION "--prefix=/home/babu/BUILD/kgmplayer --disable-gui --enable-runtime-cpudetection --disable-relocatable --disable-gif --disable-speex --disable-gl --enable-alsa --enable-pulse --enable-vm --enable-gnutls --disable-mencoder --enable-mp3lame --enable-freetype --enable-fontconfig --disable-tv-v4l1 --cc=gcc"
+#define CONFIGURATION "--prefix=/home/kulina/BUILD/kgmplayer --disable-gui --enable-runtime-cpudetection --disable-relocatable --disable-gif --disable-speex --disable-gl --enable-alsa --enable-pulse --enable-vm --enable-gnutls --disable-mencoder --enable-mp3lame --enable-freetype --enable-fontconfig --disable-tv-v4l1 --cc=gcc"
 
-#define MPLAYER_DATADIR "/home/babu/BUILD/kgmplayer/share/mplayer"
-#define MPLAYER_CONFDIR "/home/babu/BUILD/kgmplayer/etc/mplayer"
-#define MPLAYER_LIBDIR "/home/babu/BUILD/kgmplayer/lib"
+#define MPLAYER_DATADIR "/home/kulina/BUILD/kgmplayer/share/mplayer"
+#define MPLAYER_CONFDIR "/home/kulina/BUILD/kgmplayer/etc/mplayer"
+#define MPLAYER_LIBDIR "/home/kulina/BUILD/kgmplayer/lib"
 
 /* definitions needed by included libraries */
 /* libmpeg2 */
@@ -321,7 +321,7 @@
 #undef CONFIG_WIN32DLL
 #define CONFIG_XANIM 1
 #undef CONFIG_XMMS
-#define BINARY_CODECS_PATH "/home/babu/BUILD/kgmplayer/lib/codecs"
+#define BINARY_CODECS_PATH "/home/kulina/BUILD/kgmplayer/lib/codecs"
 #define XMMS_INPUT_PLUGIN_DIR ""
 
 
