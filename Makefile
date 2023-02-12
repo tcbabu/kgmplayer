@@ -166,28 +166,25 @@ install	: bin/kgmplayer
 	  ln -sf $(PREFIX)/bin/kgmplayer $(PREFIX)/bin/kglame
 	  ln -sf $(PREFIX)/bin/kgmplayer $(PREFIX)/bin/kgffmpeg
 	  mkdir -p /usr/share/kgmplayer
-	  install -m 644 kgmplayer.png /usr/share/kgmplayer
-	  install -m 644 empty.srt /usr/share/kgmplayer
-	  install -m 644 empty.idx /usr/share/kgmplayer
-	  install -m 644 empty.sub /usr/share/kgmplayer
-	  install -m 644 kgmplayer.desktop /usr/share/applications
-	  install -m 644 kgMplayer.desktop /usr/share/applications
+	  install -m 644 TARBALL/kgmplayer.png /usr/share/kgmplayer
+	  install -m 644 TARBALL/empty.srt /usr/share/kgmplayer
+	  install -m 644 TARBALL/empty.idx /usr/share/kgmplayer
+	  install -m 644 TARBALL/empty.sub /usr/share/kgmplayer
+	  install -m 644 TARBALL/kgmplayer.desktop /usr/share/applications
+	  install -m 644 TARBALL/kgMplayer.desktop /usr/share/applications
 
 tarball		: bin/kgmplayer
 		  mv TARBALL kgmplayer-4.4
-		  cp kgmplayer.png kgmplayer-4.4
-		  cp empty.srt kgmplayer-4.4
-		  cp empty.idx kgmplayer-4.4
-		  cp empty.sub kgmplayer-4.4
 		  cp bin/kgmplayer kgmplayer-4.4
 		  tar czf kgmplayer-4.4.bin.tar kgmplayer-4.4
 		  mv kgmplayer-4.4 TARBALL
-		  rm TARBALL/kgmplayer
+		  rm -f TARBALL/kgmplayer
 
 clean	:
 	 rm -rf lib/* share/* bin/* man/* build grabmak ffmpegbuild \
 	 x264build x265build lamebuild bin/movgrab sbin/* var/* \
 	 etc/* include/* mplayer/kgmplayer kgmplayer-4.4.bin.tar
+		  rm -f TARBALL/kgmplayer
 
 	$(MAKE) -C OpenSource clean
 	$(MAKE) -C lame clean
