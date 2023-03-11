@@ -1019,6 +1019,7 @@ void kgFreePixmapImage(void *Widget);
 int  kgDisplaySize(int *xres,int *yres);
 int  kgCheckTrueColor(void);
 int  kgCheckCompositor(void);
+char *  kgCheckWindowManager(void);
 int  kgMenu(void *parent,int xx1,int yy1,int pos,int df,char **menu,int size);
 int  kgMenu1( void *parent,int xo,int yo,int df,char **menu,int size,int (*Fun)(int,void *),void *arg);
 int  kgGoBackGround(void);

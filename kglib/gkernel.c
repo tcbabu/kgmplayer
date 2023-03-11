@@ -1760,6 +1760,85 @@ int kgCheckCompositor(void) {
 #endif
   return ret;
 }
+char * kgCheckWindowManager(void) {
+  char * ret=NULL;
+  Window wmwin;
+    Window win;
+    Atom pty,target,prop,sel;
+    Atom prop_type;
+    int prop_format,count=0;
+    unsigned long prop_size, prop_items;
+
+    unsigned long len;
+    unsigned char *txt;
+    Display *Dsp;
+    Dsp = XOpenDisplay(NULL);
+    if(Dsp == NULL) {
+      setenv("DISPLAY",":0",1);
+      Dsp = XOpenDisplay(NULL);
+    }
+    Atom cm_atom = XInternAtom (Dsp,"_NET_SUPPORTING_WM_CHECK",1);
+    if(cm_atom ==None) {
+//     printf("No Window Manager\n");
+     return ret;
+    }
+//	  printf("Window Manager atom  present\n");
+    prop = cm_atom;
+    win =    RootWindow(Dsp,DefaultScreen(Dsp));
+    target = XA_STRING;
+    wmwin = (Window )XGetWindowProperty(Dsp, win, prop, 0, 0, False,
+                           AnyPropertyType, &prop_type,
+                          &prop_format,
+                           &prop_items, &prop_size, &txt);
+//    printf("%ld %ld %ld %s\n",prop_format,prop_items,prop_size,txt);
+    if(prop_type==None) {
+//     printf("No Window Manager\n");
+     XFree(txt);
+     txt=NULL;
+     return ret;
+    }
+//    printf("type %d \n",prop_type);
+    len = prop_size;
+//    printf("len = %d\n",len);
+#if 1
+    XGetWindowProperty(Dsp, win, prop, 0, len, False,
+                           prop_type, &prop_type,
+                          &prop_format,
+                           &prop_items, &prop_size, &txt);
+
+//    printf("%ld %ld %ld %d\n",prop_format,prop_items,prop_size,*((long*)txt));
+    wmwin = *((long *)txt);
+    prop = XInternAtom (Dsp,"_NET_WM_NAME",1);
+    if(prop ==None) {
+//     printf("No Window Manager\n");
+     return ret;
+    }
+    XGetWindowProperty(Dsp, wmwin, prop, 0, 0, False,
+                           AnyPropertyType, &prop_type,
+                          &prop_format,
+                           &prop_items, &prop_size, &txt);
+//    printf("%ld %ld %ld %s\n",prop_format,prop_items,prop_size,txt);
+    if(prop_type==None) {
+//     printf("No Window Manager\n");
+     XFree(txt);
+     txt=NULL;
+     return ret;
+    }
+    len = prop_size;
+//    printf("len = %d\n",len);
+    XGetWindowProperty(Dsp, wmwin, prop, 0, len, False,
+                           prop_type, &prop_type,
+                          &prop_format,
+                           &prop_items, &prop_size, &txt);
+//    printf("%ld %ld %ld %s\n",prop_format,prop_items,prop_size,txt);
+    ret = (char *)malloc(strlen(txt)+1);
+    strcpy(ret,txt);
+    XFree(txt);
+
+#endif
+  XCloseDisplay(Dsp);
+  return ret;
+}
 void  *kgCreateWindow (void *Tmp) {
   DIALOG *D;
   int xpos,ypos, xres, yres;
@@ -1778,6 +1857,7 @@ void  *kgCreateWindow (void *Tmp) {
   Visual *Vis;
   unsigned char data[5]={0,0,0,0,0};
   unsigned int Dpth=32;
+  char *WinMngr=NULL;
   Dlink *SBlist;
   Window par,Win,Parent;
   Pixmap CurPix,CurMask;
@@ -1835,6 +1915,15 @@ void  *kgCreateWindow (void *Tmp) {
   if(Dsp == NULL) {
       setenv("DISPLAY",":0",1);
       Dsp = XOpenDisplay(NULL);
+  }
+  if((WinMngr=kgCheckWindowManager())== NULL) {
+	  NoWinMngr =1;
+	  D->NoWinMngr =1;
+  }
+  else {
+	  NoWinMngr =0;
+	  D->NoWinMngr =0;
+	  free(WinMngr);
   }
   if(Dsp == NULL) {printf(" Error: in opening Display ..\n");exit(0);}
   xresmax = DisplayWidth(Dsp,DefaultScreen(Dsp));
