@@ -160,7 +160,7 @@ ffmpeg/libavdevice/libavdevice.a	:  lib/libmp3lame.a \
 		 rm ffmpeg/ffmpeg
 #		 make -C ffmpeg install
 install	: bin/kgmplayer
-	  install -m 755 -s bin/kgmplayer $(PREFIX)/bin
+	  install -m 755  bin/kgmplayer $(PREFIX)/bin
 	  ln -sf $(PREFIX)/bin/kgmplayer $(PREFIX)/bin/kgMplayer
 	  ln -sf $(PREFIX)/bin/kgmplayer $(PREFIX)/bin/kgmencoder
 	  ln -sf $(PREFIX)/bin/kgmplayer $(PREFIX)/bin/kglame

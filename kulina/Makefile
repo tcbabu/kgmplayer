@@ -93,39 +93,39 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	../mplayer/ffmpeg/ffmpeg.o ../mplayer/ffmpeg/cmdutils.o \
 	../mplayer/ffmpeg/ffmpeg_filter.o ../mplayer/ffmpeg/ffmpeg_opt.o \
 	../mplayer/ffmpeg/ffmpeg_vdpau.o 
-kgMplayer.o	: kgMplayer.c kulina.h
+kgMplayer.o	: kgMplayer.c 
 	 $(CC) -c kgMplayer.c
 kgMplayerCallbacks.o	: kgMplayerCallbacks.c 
 	 $(CC) -c kgMplayerCallbacks.c
-main.o	: main.c  kulina.h ConvertData.h
+main.o	: main.c   ConvertData.h
 	 $(CC) -c main.c
-FullScreen.o	: FullScreen.c kulina.h
+FullScreen.o	: FullScreen.c 
 	 $(CC) -c FullScreen.c
-FullScreenCallbacks.o	: FullScreenCallbacks.c kulina.h
+FullScreenCallbacks.o	: FullScreenCallbacks.c 
 	 $(CC) -c FullScreenCallbacks.c
-Controls.o	: Controls.c kulina.h cimages.c
+Controls.o	: Controls.c  cimages.c
 	 $(CC) -c Controls.c
-AControls.o	: AControls.c kulina.h cimages.c
+AControls.o	: AControls.c  cimages.c
 	 $(CC) -c AControls.c
-ControlsCallbacks.o	: ControlsCallbacks.c kulina.h
+ControlsCallbacks.o	: ControlsCallbacks.c 
 	 $(CC) -c ControlsCallbacks.c
 Rip.o	: Rip.c 
 	 $(CC) -c Rip.c
-Manage.o	: Manage.c kulina.h
+Manage.o	: Manage.c 
 	 $(CC) -c Manage.c
-ManageCallbacks.o	: ManageCallbacks.c kulina.h
+ManageCallbacks.o	: ManageCallbacks.c 
 	 $(CC) -c ManageCallbacks.c
-PlayList.o	: PlayList.c kulina.h
+PlayList.o	: PlayList.c 
 	 $(CC) -c PlayList.c
-PlayListCallbacks.o	: PlayListCallbacks.c kulina.h ConvertData.h
+PlayListCallbacks.o	: PlayListCallbacks.c  ConvertData.h
 	 $(CC) -c PlayListCallbacks.c
-AddSilence.o	: AddSilence.c kulina.h ConvertData.h
+AddSilence.o	: AddSilence.c  ConvertData.h
 	 $(CC) -c AddSilence.c
-AddSilenceCallbacks.o	: AddSilenceCallbacks.c kulina.h ConvertData.h
+AddSilenceCallbacks.o	: AddSilenceCallbacks.c  ConvertData.h
 	 $(CC) -c AddSilenceCallbacks.c
-MakeCuts.o	: MakeCuts.c kulina.h ConvertData.h
+MakeCuts.o	: MakeCuts.c  ConvertData.h
 	 $(CC) -c MakeCuts.c
-MakeCutsCallbacks.o	: MakeCutsCallbacks.c kulina.h ConvertData.h
+MakeCutsCallbacks.o	: MakeCutsCallbacks.c  ConvertData.h
 	 $(CC) -c MakeCutsCallbacks.c
 MonitorJoin.o   : MonitorJoin.c
 	 $(CC) -c MonitorJoin.c
