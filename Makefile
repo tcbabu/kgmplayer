@@ -61,7 +61,8 @@ MOVFILES = $(foreach part, movgrab, $(wildcard $(addprefix $(part)/,*.[ch])))
 all	: bin/kgmplayer
 
 lib/kgmplayer.a      : $(KULINAFILES) lib/libkulina.a 
-	echo "export KULINA=$(PWD)">kulina/config.mak
+	echo "#! /bin/bash " > kulina/config.mak
+	echo "export KULINA=$(PWD)">>kulina/config.mak
 	echo "export X11_CFLAGS=\"$(X11_CFLAGS)\"">>kulina/config.mak
 	echo "export X11_LIBS=\"$(X11_LIBS)\"">>kulina/config.mak
 	$(MAKE) -C kulina
@@ -75,7 +76,8 @@ lib/libkulina.a	: lib/libgm.a $(KGLIBFILES)
 	$(MAKE) -C kglib  install
 
 lib/libgm.a	: $(GMFILES)
-	echo "PREFIX=$(PWD)">OpenSource/config.mak
+	echo "#! /bin/bash ">OpenSource/config.mak
+	echo "PREFIX=$(PWD)">>OpenSource/config.mak
 	echo "KULINA=$(PWD)">>OpenSource/config.mak
 	echo "export X11_CFLAGS=\"$(X11_CFLAGS)\"">>OpenSource/config.mak
 	echo "export X11_LIBS=\"$(X11_LIBS)\"">>OpenSource/config.mak
@@ -83,14 +85,17 @@ lib/libgm.a	: $(GMFILES)
 	$(MAKE) -C OpenSource 
 	$(MAKE) -C OpenSource install
 lamebuild	:  
-		 echo "export KULINA=$(PWD)" > lamebuild
+		 echo "#! /bin/bash " >lamebuild
+		 echo "export KULINA=$(PWD)" >> lamebuild
 		 echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:$(PKG_CONFIG_PATH_OLD)">>lamebuild
 	 	 echo "export PATH=\"$(PATHNEW)\"">>lamebuild
 		 echo "cd lame" >> lamebuild
 		 echo "./rebuild" >> lamebuild
 		 chmod +x lamebuild
 ffmpegbuild	:  
-		 echo "export KULINA=$(PWD)" > ffmpegbuild
+		 echo "#! /bin/bash" >ffmpegbuild
+		 echo "export CC=/usr/bin/gcc ">> ffmpegbuild
+		 echo "export KULINA=$(PWD)" >> ffmpegbuild
 		 echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:$(PKG_CONFIG_PATH_OLD)">>ffmpegbuild
 	 	 echo "export PATH=\"$(PATHNEW)\"">>ffmpegbuild
 		 echo "cd ffmpeg" >> ffmpegbuild
@@ -99,14 +104,17 @@ ffmpegbuild	:
 		 echo "./rebuild" >> ffmpegbuild
 		 chmod +x ffmpegbuild
 x264build	:  
-		 echo "export KULINA=$(PWD)" > x264build
+		 echo "#! /bin/bash" >x264build
+		 echo "export KULINA=$(PWD)" >> x264build
 		 echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:$(PKG_CONFIG_PATH_OLD)">>x264build
 	 	 echo "export PATH=\"$(PATHNEW)\"">>x264build
 		 echo "cd x264" >> x264build
 		 echo "./rebuild" >> x264build
 		 chmod +x x264build
 x265build	:  
-		 echo "export KULINA=$(PWD)" > x265build
+		 echo "#! /bin/bash" >x265build
+		 echo "export KULINA=$(PWD)" >> x265build
+	 	 echo "export PATH=\"$(PATHNEW)\"">>x265build
 		 echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:$(PKG_CONFIG_PATH_OLD)">>x265build
 	 	 echo "export PATH=\"$(PATHNEW)\"">>x265build
 		 echo "cd x265" >> x265build
@@ -116,7 +124,8 @@ x265build	:
 build	:  lib/kgmplayer.a 
 		 @echo "Dir = $(PWD)"
 		 @echo "KULINA=$(PWD)"
-		 echo "export KULINA=$(PWD)" > build
+		 echo "#! /bin/bash" >build
+		 echo "export KULINA=$(PWD)" >> build
 		 echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:$(PKG_CONFIG_PATH_OLD)">>build
 		 echo "export X11_CFLAGS=\"$(X11_CFLAGS)\"">>build
 	 	 echo "export X11_LIBS=\"$(X11_LIBS)\"">>build

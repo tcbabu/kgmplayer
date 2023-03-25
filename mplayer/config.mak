@@ -1860,3 +1860,5 @@ CONFIG_AMOVIE_FILTER = no
 CONFIG_MOVIE_FILTER = no
 X11_CFLAGS=-I/home/kulina/BUILD/kgmplayer/include 
 X11_LIBS=-lX11 
+X11_CFLAGS=-I/home/kulina/BUILD/kgmplayer/include 
+X11_LIBS=-lX11 

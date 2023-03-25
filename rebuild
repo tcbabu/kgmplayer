@@ -1,3 +1,4 @@
+#! /bin/bash
 export X11_CFLAGS=`pkg-config --cflags x11`
 export X11_LIBS=`pkg-config --libs x11`
 echo "X11_CFLAGS=$X11_CFLAGS">OpenSource/config.mak
