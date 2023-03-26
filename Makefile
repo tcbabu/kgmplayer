@@ -63,6 +63,7 @@ all	: bin/kgmplayer
 lib/kgmplayer.a      : $(KULINAFILES) lib/libkulina.a 
 	echo "#! /bin/bash " > kulina/config.mak
 	echo "export KULINA=$(PWD)">>kulina/config.mak
+	echo "export PATH=$(PATHNEW)">>kulina/config.mak
 	echo "export X11_CFLAGS=\"$(X11_CFLAGS)\"">>kulina/config.mak
 	echo "export X11_LIBS=\"$(X11_LIBS)\"">>kulina/config.mak
 	$(MAKE) -C kulina
@@ -90,18 +91,18 @@ lamebuild	:
 		 echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:$(PKG_CONFIG_PATH_OLD)">>lamebuild
 	 	 echo "export PATH=\"$(PATHNEW)\"">>lamebuild
 		 echo "cd lame" >> lamebuild
-		 echo "./rebuild" >> lamebuild
+		 cat lame/rebuild >> lamebuild
 		 chmod +x lamebuild
 ffmpegbuild	:  
 		 echo "#! /bin/bash" >ffmpegbuild
-		 echo "export CC=/usr/bin/gcc ">> ffmpegbuild
 		 echo "export KULINA=$(PWD)" >> ffmpegbuild
 		 echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:$(PKG_CONFIG_PATH_OLD)">>ffmpegbuild
+		 echo "export LD_LIBRARY_PATH=$(PWD)/lib:$(LD_LIBRARY_PATH)">>ffmpegbuild
 	 	 echo "export PATH=\"$(PATHNEW)\"">>ffmpegbuild
 		 echo "cd ffmpeg" >> ffmpegbuild
 		 echo "export CFLAGS=\"$(CFLAGS) $(X11_CFLAGS)\"">>ffmpegbuild
 		 echo "export LDFLAGS=\"$(LDFLAGS) $(X11_LIBS)\"">>ffmpegbuild
-		 echo "./rebuild" >> ffmpegbuild
+		 cat ffmpeg/rebuild >> ffmpegbuild
 		 chmod +x ffmpegbuild
 x264build	:  
 		 echo "#! /bin/bash" >x264build
@@ -158,14 +159,15 @@ lib/libmp3lame.a	:  lamebuild
 		 make -C lame install
 lib/libx264.a	:  x264build
 		 ./x264build
-		 make -j2 -C x264
+		 PATH=$(PATHNEW) make -j2 -C x264
 		 make -C x264 install
 lib/libx265.a	:  x265build
 		 ./x265build
 ffmpeg/libavdevice/libavdevice.a	:  lib/libmp3lame.a \
 		 lib/libx264.a lib/libx265.a ffmpegbuild
 		 ./ffmpegbuild
-		 make -j2 -C ffmpeg
+		 echo $(PATHNEW)
+		 PATH=$(PATHNEW) make -j2 -C ffmpeg
 		 rm ffmpeg/ffmpeg
 #		 make -C ffmpeg install
 install	: bin/kgmplayer

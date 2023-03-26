@@ -23,8 +23,8 @@ Result is: 10
 #endif
 int main(void) { return 0; }
 
-gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp  
-/tmp/mplayer-configure--276728/tmp.c:3:2: error: #error condition not true: defined(__MINGW32__)
+gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp  
+/tmp/mplayer-configure-29293-12830/tmp.c:3:2: error: #error condition not true: defined(__MINGW32__)
     3 | #error condition not true: defined(__MINGW32__)
       |  ^~~~~
 
@@ -33,13 +33,13 @@ gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c
 
 int main(void) { return 0; }
 
-gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp  
+gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp  
 
 
 
 int main(void) { return 0; }
 
-gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -lm 
+gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -lm 
 
 
 
@@ -48,14 +48,14 @@ int main(void) {
     return 0;
 }
 
-gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp  -lm
+gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp  -lm
 
 
 ============ Checking for cross compilation ============
 
 int main(void) { return 0; }
 
-gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp  -lm
+gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp  -lm
 
 
 Result is: no 
@@ -69,19 +69,19 @@ Result is: gcc
 
 int main(void) { return 0; }
 
-gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -mtune=generic -lm
+gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -mtune=generic -lm
 
 
 
 int main(void) { return 0; }
 
-gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -mtune=generic -lm
+gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -mtune=generic -lm
 
 
 
 int main(void) { return 0; }
 
-gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -march=x86-64 -mtune=generic -lm
+gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -march=x86-64 -mtune=generic -lm
 
 
 Result is:  
@@ -94,7 +94,7 @@ short ascii_name[] = {
   'i' << 8 | 'g', 'E' << 8 | 'n', 'd' << 8 | 'i', 'a' << 8 | 'n', 0 };
 int main(void) { return (long)ascii_name; }
 
-gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp  -lm
+gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp  -lm
 
 
 Result is: little-endian 
@@ -104,7 +104,7 @@ Result is: little-endian
 
 int ff_extern;
 
-gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -c -lm
+gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -c -lm
 
 
 Result is:  
@@ -114,7 +114,7 @@ Result is:
 
 int main(void) { return 0; }
 
-gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -pipe -I. -lm
+gcc   -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -pipe -I. -lm
 
 
 Result is: yes 
@@ -127,73 +127,73 @@ Result is: yes
 #endif
 int main(void) { return 0; }
 
-gcc   -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp  -lm
+gcc   -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp  -lm
 
 
 
 int main(void) { return 0; }
 
-gcc   -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -fno-tree-vectorize -lm
+gcc   -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -fno-tree-vectorize -lm
 
 
 
 int main(void) { return 0; }
 
-gcc   -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -Wundef -lm
+gcc   -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -Wundef -lm
 
 
 
 int main(void) { return 0; }
 
-gcc -Wundef   -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -std=gnu99 -lm
+gcc -Wundef   -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -std=gnu99 -lm
 
 
 
 int main(void) { return 0; }
 
-gcc -Wundef  -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -Wdeclaration-after-statement -lm
+gcc -Wundef  -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -Wdeclaration-after-statement -lm
 
 
 
 int main(void) { return 0; }
 
-gcc -Wundef  -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -Wno-pointer-sign -lm
+gcc -Wundef  -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -Wno-pointer-sign -lm
 
 
 
 int main(void) { return 0; }
 
-gcc -Wundef  -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -Wdisabled-optimization -lm
+gcc -Wundef  -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -Wdisabled-optimization -lm
 
 
 
 int main(void) { return 0; }
 
-gcc -Wundef  -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -Wmissing-prototypes -lm
+gcc -Wundef  -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -Wmissing-prototypes -lm
 
 
 
 int main(void) { return 0; }
 
-gcc -Wundef  -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -Wstrict-prototypes -lm
+gcc -Wundef  -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -Wstrict-prototypes -lm
 
 
 
 int main(void) { return 0; }
 
-gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -fno-asynchronous-unwind-tables -lm
+gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -fno-asynchronous-unwind-tables -lm
 
 
 
 int main(void) { return 0; }
 
-gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -mno-omit-leaf-frame-pointer -lm
+gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -mno-omit-leaf-frame-pointer -lm
 
 
 
 int main(void) { return 0; }
 
-gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables /tmp/mplayer-configure--276728/tmp.c      -o /tmp/mplayer-configure--276728/tmp -MMD -MP -lm
+gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables /tmp/mplayer-configure-29293-12830/tmp.c      -o /tmp/mplayer-configure-29293-12830/tmp -MMD -MP -lm
 
 
 ============ Checking for relocatable binary ============
@@ -208,7 +208,7 @@ Result is: no
 #endif
 int main(void) { return 0; }
 
-gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables /tmp/mplayer-configure--276728/tmp.c    -L/mnt/kulina/BUILD/kgmplayer/lib    -o /tmp/mplayer-configure--276728/tmp  -lm
+gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables /tmp/mplayer-configure-29293-12830/tmp.c    -L/mnt/kulina/BUILD/kgmplayer/lib    -o /tmp/mplayer-configure-29293-12830/tmp  -lm
 
 
 Result is: yes 
@@ -217,16 +217,16 @@ Result is: yes
 
 int main(void) { __asm__ volatile ("mov (%eax), %eax"); return 0; }
 
-gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables /tmp/mplayer-configure--276728/tmp.c  -DPIC   -L/mnt/kulina/BUILD/kgmplayer/lib    -o /tmp/mplayer-configure--276728/tmp  -lm
+gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables /tmp/mplayer-configure-29293-12830/tmp.c  -DPIC   -L/mnt/kulina/BUILD/kgmplayer/lib    -o /tmp/mplayer-configure-29293-12830/tmp  -lm
 
 
 ============ Checking for .align is a power of two ============
 
 int main(void) { __asm__ volatile (".align 3"); return 0; }
 
-gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables /tmp/mplayer-configure--276728/tmp.c  -DPIC   -L/mnt/kulina/BUILD/kgmplayer/lib    -o /tmp/mplayer-configure--276728/tmp  -lm
-/tmp/mplayer-configure--276728/tmp.c: Assembler messages:
-/tmp/mplayer-configure--276728/tmp.c:1: Error: alignment not a power of 2
+gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables /tmp/mplayer-configure-29293-12830/tmp.c  -DPIC   -L/mnt/kulina/BUILD/kgmplayer/lib    -o /tmp/mplayer-configure-29293-12830/tmp  -lm
+/tmp/mplayer-configure-29293-12830/tmp.c: Assembler messages:
+/tmp/mplayer-configure-29293-12830/tmp.c:1: Error: alignment not a power of 2
 
 
 Result is: no 
@@ -247,7 +247,7 @@ int main(void) {
     return 0;
 }
 
-gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables /tmp/mplayer-configure--276728/tmp.c  -DPIC   -L/mnt/kulina/BUILD/kgmplayer/lib    -o /tmp/mplayer-configure--276728/tmp  -lm
+gcc -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/mnt/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables /tmp/mplayer-configure-29293-12830/tmp.c  -DPIC   -L/mnt/kulina/BUILD/kgmplayer/lib    -o /tmp/mplayer-configure-29293-12830/tmp  -lm
 
 
 Result is: yes 
@@ -257,14 +257,14 @@ Result is: yes
 
 pextrd [eax], xmm0, 1
 
-yasm -f elf  -DPIC -m amd64 -o /tmp/mplayer-configure--276728/tmp /tmp/mplayer-configure--276728/tmp.S 
-./configure: 186: yasm: not found
+yasm -f elf  -DPIC -m amd64 -o /tmp/mplayer-configure-29293-12830/tmp /tmp/mplayer-configure-29293-12830/tmp.S 
+./configure: line 186: yasm: command not found
 
 
 
 pextrd [eax], xmm0, 1
 
-yasm -f elf64  -DPIC -o /tmp/mplayer-configure--276728/tmp /tmp/mplayer-configure--276728/tmp.S 
-./configure: 186: yasm: not found
+yasm -f elf64  -DPIC -o /tmp/mplayer-configure-29293-12830/tmp /tmp/mplayer-configure-29293-12830/tmp.S 
+./configure: line 186: yasm: command not found
 
 
