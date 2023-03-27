@@ -1,1 +1,53 @@
-tar xf freetype-2.4.8.tar.gz
+tar xf json-c.tar.xz
+cd json-c
+rm -rf build
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=$KULINA ..
+make -j1
+make install
+cd ../..
+rm -rf json-c
+tar xf libsndfile-1.0.25.tar.gz
+cd libsndfile-1.0.25
+./configure --prefix=$KULINA --enable-static --disable-shared
+make -j1
+make install
+cd ..
+rm -rf libsndfile-1.0.25
+tar xf intltool-0.51.0.tar.gz
+cd intltool-0.51.0
+./configure --prefix=$KULINA 
+make
+make install
+cd ..
+rm -rf intltool-0.51.0
+tar xf libtool-2.4.7.tar.xz
+cd libtool-2.4.7
+./configure --prefix=$KULINA --enable-ltdl-install --enable-shared=yes --enable-shared=yes
+make
+make install
+cd ..
+rm -rf libtool-2.4.7
+rm -rf alsa-lib-1.2.8
+tar xf alsa-lib-1.2.8.tar.bz2
+cd alsa-lib-1.2.8
+./configure --prefix=$KULINA --enable-static=yes --disable-shared
+make
+make install
+cd ..
+rm alsa-lib-1.2.8
+tar xf pulseaudio-16.1.tar.xz
+cd pulseaudio-16.1
+rm -rf build
+mkdir build
+cd build
+meson --prefix=$KULINA       \
+      --buildtype=release \
+      -Ddatabase=gdbm     \
+      -Ddoxygen=false     \
+      -Dbluez5=disabled   &&
+ninja
+ninja install
+cd ../..
+#rm -rf pulseaudio-16.1

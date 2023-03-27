@@ -80,9 +80,14 @@ lib/libgm.a	: $(GMFILES)
 	echo "#! /bin/bash ">OpenSource/config.mak
 	echo "PREFIX=$(PWD)">>OpenSource/config.mak
 	echo "KULINA=$(PWD)">>OpenSource/config.mak
+	echo "export CFLAGS=\"-fPIC -fpic $(CFLAGS)\"">>OpenSource/config.mak
+	echo "export CPPFLAGS=\"-fPIC -fpic $(CFLAGS)\"">>OpenSource/config.mak
+	echo "export LDFLAGS=\"-L$(KULINA)/lib $(LDFLAGS)\"">>OpenSource/config.mak
 	echo "export X11_CFLAGS=\"$(X11_CFLAGS)\"">>OpenSource/config.mak
 	echo "export X11_LIBS=\"$(X11_LIBS)\"">>OpenSource/config.mak
-	echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:/usr/X11R76/lib/pkgconfig">>OpenSource/config.mak
+	echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:/usr/X11R76/lib/pkgconfig:$(PKG_CONFIG_PATH)">>OpenSource/config.mak
+	echo "export LD_LIBRARY_PATH=$(PWD)/lib:/usr/X11R76/lib:$(LD_LIBRARY_PATH)">>OpenSource/config.mak
+	echo "export PATH=$(PWD)/bin:$(PATH)">>OpenSource/config.mak
 	$(MAKE) -C OpenSource 
 	$(MAKE) -C OpenSource install
 lamebuild	:  
