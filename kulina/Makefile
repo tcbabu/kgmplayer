@@ -91,8 +91,8 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
 	 ReorderImages.o ReorderImagesCallbacks.o \
 	../mplayer/ffmpeg/ffmpeg.o ../mplayer/ffmpeg/cmdutils.o \
-	../mplayer/ffmpeg/ffmpeg_filter.o ../mplayer/ffmpeg/ffmpeg_opt.o \
-	../mplayer/ffmpeg/ffmpeg_vdpau.o 
+	../mplayer/ffmpeg/ffmpeg_filter.o ../mplayer/ffmpeg/ffmpeg_opt.o 
+#	../mplayer/ffmpeg/ffmpeg_vdpau.o 
 kgMplayer.o	: kgMplayer.c 
 	 $(CC) -c kgMplayer.c
 kgMplayerCallbacks.o	: kgMplayerCallbacks.c 

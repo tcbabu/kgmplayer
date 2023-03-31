@@ -8,7 +8,7 @@ export X11_CFLAGS="-I/home/kulina/BUILD/kgmplayer/include "
 export X11_LIBS="-lX11 "
 export PKG_CONFIG_PATH=/home/kulina/BUILD/kgmplayer/lib/pkgconfig:/usr/X11R76/lib/pkgconfig:/home/kulina/BUILD/kgmplayer/lib/pkgconfig:/usr/X11R76/lib/pkgconfig
 export LD_LIBRARY_PATH=/home/kulina/BUILD/kgmplayer/lib:/usr/X11R76/lib:
-export PATH=/home/kulina/BUILD/kgmplayer/bin:/opt/rustc/bin:/bin:/opt/qt5/bin:/usr/bin
+export PATH=/home/kulina/BUILD/kgmplayer/bin:/usr/local/bin:/usr/bin:/bin:/usr/games:/usr/lib64/libexec/kf5:/usr/lib64/qt5/bin
 #export PKG_CONFIG_PATH=$KULINA/lib/pkgconfig
 export LD_CONFIG_PATH=$LD_CONFIG_PATH:$KULINA/lib
 export ZLIBLIB=$KULINA/lib
@@ -28,16 +28,16 @@ echo "libpng"
 tar xf yasm-1.3.0.tar.gz >../out
 cd yasm-1.3.0 >../out
 ./configure --prefix=$KULINA >../out
-make -j2 >../out
-make -j2 install >../out
+make -j4 >../out
+make -j4 install >../out
 cd ..
 rm -rf yasm-1.3.0
 echo "yasm"
 tar xf freetype-2.4.8.tar.gz
 cd freetype-2.4.8
 ./configure --prefix=$KULINA --enable-static --disable-shared >../out
-make -j2 >../out
-make -j2 install >../out
+make -j4 >../out
+make -j4 install >../out
 cd ..
 rm -r -f freetype-2.4.8
 echo "freetype"
@@ -51,31 +51,31 @@ rm -rf harfbuzz-0.9.38
 tar xf freetype-2.4.8.tar.gz > ../out;
 cd freetype-2.4.8
 ./configure --prefix=$KULINA --enable-static --disable-shared > ../out;
-make -j2 > ../out;
-make -j2 install > ../out;
+make -j4 > ../out;
+make -j4 install > ../out;
 cd ..
 rm -r -f freetype-2.4.8
 echo "freetype again"
 tar xf jpegsrc.v8c.tar.gz
 cd jpeg-8c
 ./configure --prefix=$KULINA --enable-static --disable-shared > ../out
-make -j2 > ../out
-make -j2 install > ../out
+make -j4 > ../out
+make -j4 install > ../out
 cd ..
 rm -r -f jpeg-8c
 echo "jpeg"
 tar xf jasper-1.900.1.tar.gz
 cd jasper-1.900.1
 ./configure --prefix=$KULINA --enable-static --disable-shared >../out
-make -j2 >../out
-make -j2 install >../out
+make -j4 >../out
+make -j4 install >../out
 cd ..
 rm -r -f jasper-1.900.1
 tar xf tiff-4.0.0.tar.gz
 cd tiff-4.0.0
 ./configure --prefix=$KULINA --enable-static --disable-shared >../out
-make -j2 >../out
-make -j2 install >../out
+make -j4 >../out
+make -j4 install >../out
 cd ..
 rm -r -f tiff-4.0.0
 echo "tiff"
@@ -85,9 +85,9 @@ cd GraphicsMagick-1.3.21 >../out
 #./configure --prefix=$KULINA --enable-static  --without-magick-plus-plus --without-perl   --without-lcms --without-lcms2 --without-trio --without-wmf --without-xml --x-libraries=/usr/X11R76/lib --x-includes=/usr/X11R76/include --disable-openmp --with-threads --without-x
 ./configure --prefix=$KULINA --enable-static  --without-magick-plus-plus \
 --without-perl   --without-lcms --without-lcms2 --without-trio \
---without-wmf --without-xml  --disable-openmp --with-threads --without-x >../out
-make -j2  >../out;
-make -j2 install >../out;
+--without-wmf --without-xml  --disable-openmp --with-threads --without-x --without-webp>../out
+make -j4  >../out;
+make -j4 install >../out;
 cd ..
 rm -r -f GraphicsMagick-1.3.21  >../out;
 echo "Graphic Magic"
@@ -138,28 +138,28 @@ rm -rf libdvdnav-5.0.3
 tar xf libcdio-0.93.tar.gz
 cd libcdio-0.93
 ./configure --prefix=$KULINA --enable-static --disable-shared  >../out;
-make -j2 >../out;
+make -j4 >../out;
 make install >../out;
 cd ..
 rm -rf libcdio-0.93
 tar xf vcdimager-0.7.24.tar.gz
 cd vcdimager-0.7.24 >../out;
 ./configure --prefix=$KULINA --enable-static --disable-shared  >../out;
-make -j2 >../out;
+make -j4 >../out;
 make install >../out;
 cd ..
 rm -rf vcdimager-0.7.24 >../out;
 tar xf libvdpau-0.9.tar.gz >../out;
 cd libvdpau-0.9 >../out;
 ./configure --prefix=$KULINA --enable-static --disable-shared >../out;
-make -j2 >../out;
-make -j2 install >../out;
+make -j4 >../out;
+make -j4 install >../out;
 cd ..
 rm -rf libvdpau-0.9 >../out;
 tar xf gmp-6.1.0.tar.xz >../out;
 cd gmp-6.1.0 >../out;
 ./configure --prefix=$KULINA --enable-static --disable-shared 
-make -j2 
+make -j4 
 make  install >../out;
 cd ..
 rm -rf gmp-6.1.0 >../out;
@@ -167,71 +167,71 @@ tar xf openssl-1.0.2h.tar.gz
 cd openssl-1.0.2h
 ./config --prefix=$KULINA --openssldir=$KULINA/openssl no-shared
 make depend
-make -j2 
+make -j4 
 make  install >../out;
 cd ..
 rm -rf openssl-1.0.2h >../out;
 tar xf nettle-3.2.tar.gz >../out;
 cd nettle-3.2 
 ./configure --prefix=$KULINA --enable-static --disable-shared --disable-openssl 
-make -j2 
+make -j4 
 make  install 
 cd ..
 rm -rf nettle-3.2 >../out;
 tar xf expat-2.2.0.tar.bz2
 cd expat-2.2.0
 ./configure --prefix=$KULINA --enable-static --disable-shared
-make -j2
+make -j4
 make  install
 cd ..
 rm -rf expat-2.2.0
 tar xf fontconfig-2.12.1.tar.bz2 >../out
 cd fontconfig-2.12.1
 ./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
-make -j2
+make -j4
 make  install
 cd ..
 rm -rf fontconfig-2.12.1
 tar xf libass-0.13.6.tar.xz >../out
 cd libass-0.13.6
 ./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
-make -j2
+make -j4
 make  install
 cd ..
 rm -rf libass-0.13.6
 tar xf fdk-aac-0.1.5.tar.gz
 cd  fdk-aac-0.1.5
 ./configure --prefix=$KULINA --enable-static --disable-shared
-make -j2
+make -j4
 make install
 cd ..
 rm -rf fdk-aac-0.1.5
 tar xf libmad-0.15.1b.tar.gz
 cd libmad-0.15.1b
 ./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
-make -j2
+make -j4
 make  install
 cd ..
 rm -rf libmad-0.15.1b
 tar xf libogg-1.3.2.tar.xz
 cd libogg-1.3.2
 ./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
-make -j2
+make -j4
 make  install
 cd ..
 rm -rf libogg-1.3.2
 tar xf libvorbis-1.3.5.tar.xz
 cd libvorbis-1.3.5
 ./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
-make -j2
+make -j4
 make  install
 cd ..
 rm -rf libvorbis-1.3.5
 # will fail so must be last
 tar xf gnutls-3.5.0.tar.xz >../out;
 cd gnutls-3.5.0 
-./configure --prefix=$KULINA --with-included-libtasn1 --enable-static --disable-shared --without-p11-kit --disable-tests --disable-valgrind-tests
-make -j2 
+./configure --prefix=$KULINA --with-included-libtasn1 --enable-static --disable-shared --without-p11-kit --disable-tests --disable-valgrind-tests --without-idn
+make -j4 
 make  install 
 cd ..
 rm -rf gnutls-3.5.0 >../out;
