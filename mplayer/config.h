@@ -36,11 +36,11 @@
 
 
 
-#define CONFIGURATION "--prefix= --disable-gui --enable-runtime-cpudetection --disable-relocatable --disable-gif --disable-speex --disable-gl --enable-alsa --enable-pulse --enable-vm --enable-gnutls --disable-mencoder --enable-mp3lame --enable-freetype --enable-fontconfig --disable-tv-v4l1 --cc=gcc"
+#define CONFIGURATION "--prefix=/home/kulina/BUILD/kgmplayer --disable-gui --enable-runtime-cpudetection --disable-relocatable --disable-gif --disable-speex --disable-gl --enable-alsa --enable-pulse --enable-vm --enable-gnutls --disable-mencoder --enable-mp3lame --enable-freetype --enable-fontconfig --disable-tv-v4l1 --cc=gcc"
 
-#define MPLAYER_DATADIR "/share/mplayer"
-#define MPLAYER_CONFDIR "/etc/mplayer"
-#define MPLAYER_LIBDIR "/lib"
+#define MPLAYER_DATADIR "/home/kulina/BUILD/kgmplayer/share/mplayer"
+#define MPLAYER_CONFDIR "/home/kulina/BUILD/kgmplayer/etc/mplayer"
+#define MPLAYER_LIBDIR "/home/kulina/BUILD/kgmplayer/lib"
 
 /* definitions needed by included libraries */
 /* libmpeg2 */
@@ -278,7 +278,7 @@
 #undef CONFIG_CDDB
 #undef CONFIG_CDDA
 #undef CONFIG_DVDNAV
-#undef CONFIG_DVDREAD
+#define CONFIG_DVDREAD 1
 #undef CONFIG_LIBCDIO
 #define CONFIG_VCD 1
 
@@ -294,10 +294,10 @@
 #undef CONFIG_LIBMPEG2_INTERNAL
 #define CONFIG_ILBC 0
 #undef CONFIG_LIBOPUS
-#undef CONFIG_LIBMAD
+#define CONFIG_LIBMAD 1
 #define CONFIG_MP3LAME 1
-#undef CONFIG_MP3LAME_PRESET
-#undef CONFIG_MP3LAME_PRESET_MEDIUM
+#define CONFIG_MP3LAME_PRESET 1
+#define CONFIG_MP3LAME_PRESET_MEDIUM 1
 #undef CONFIG_MPG123
 #undef CONFIG_MUSEPACK
 #undef CONFIG_SPEEX
@@ -305,7 +305,7 @@
 #undef CONFIG_TOOLAME
 
 #undef CONFIG_TWOLAME
-
+#define CONFIG_OGGVORBIS 1
 #undef CONFIG_X264
 #undef CONFIG_XVID4
 #define CONFIG_ZLIB 1
@@ -321,7 +321,7 @@
 #undef CONFIG_WIN32DLL
 #define CONFIG_XANIM 1
 #undef CONFIG_XMMS
-#define BINARY_CODECS_PATH "/lib/codecs"
+#define BINARY_CODECS_PATH "/home/kulina/BUILD/kgmplayer/lib/codecs"
 #define XMMS_INPUT_PLUGIN_DIR ""
 
 
@@ -363,7 +363,7 @@
 #undef CONFIG_JOYSTICK
 #undef CONFIG_LIRC
 #undef CONFIG_LIRCC
-#undef CONFIG_PVR
+#define CONFIG_PVR 1
 #undef CONFIG_RADIO
 #undef CONFIG_RADIO_BSDBT848
 #undef CONFIG_RADIO_CAPTURE
@@ -372,9 +372,9 @@
 #define CONFIG_TV 1
 
 #undef CONFIG_TV_DSHOW
-#undef CONFIG_TV_V4L
+#define CONFIG_TV_V4L 1
 
-#undef CONFIG_TV_V4L2
+#define CONFIG_TV_V4L2 1
 
 
 /* font stuff */
@@ -391,7 +391,7 @@
 #define HAVE_CLOSESOCKET 0
 #define CONFIG_FTP 1
 #define HAVE_AF_INET6 1
-#define HAVE_INET_ATON 0
+#define HAVE_INET_ATON 1
 #define HAVE_INET_PTON 1
 #undef CONFIG_LIVE555
 #undef CONFIG_LIBNEMESI
@@ -449,7 +449,7 @@
 #undef CONFIG_XVR100
 #define CONFIG_TGA 1
 #define CONFIG_V4L2_DECODER 1
-#define CONFIG_VDPAU 0
+#define CONFIG_VDPAU 1
 #undef CONFIG_VESA
 #define CONFIG_VIDIX 1
 #define CONFIG_VIDIX_DRV_CYBERBLADE 1
@@ -790,7 +790,7 @@
 #define CONFIG_H264_MMAL_DECODER 0
 #define CONFIG_H264_QSV_DECODER 0
 #define CONFIG_H264_VDA_DECODER 0
-#define CONFIG_H264_VDPAU_DECODER 0
+#define CONFIG_H264_VDPAU_DECODER 1
 #define CONFIG_HAP_DECODER 1
 #define CONFIG_HEVC_DECODER 1
 #define CONFIG_HEVC_QSV_DECODER 0
@@ -824,10 +824,10 @@
 #define CONFIG_MPEG4_DECODER 1
 #define CONFIG_MPEG4_CRYSTALHD_DECODER 0
 #define CONFIG_MPEG4_MMAL_DECODER 0
-#define CONFIG_MPEG4_VDPAU_DECODER 0
+#define CONFIG_MPEG4_VDPAU_DECODER 1
 #define CONFIG_MPEGVIDEO_DECODER 1
-#define CONFIG_MPEG_VDPAU_DECODER 0
-#define CONFIG_MPEG1_VDPAU_DECODER 0
+#define CONFIG_MPEG_VDPAU_DECODER 1
+#define CONFIG_MPEG1_VDPAU_DECODER 1
 #define CONFIG_MPEG2_MMAL_DECODER 0
 #define CONFIG_MPEG2_CRYSTALHD_DECODER 0
 #define CONFIG_MPEG2_QSV_DECODER 0
@@ -910,7 +910,7 @@
 #define CONFIG_VBLE_DECODER 1
 #define CONFIG_VC1_DECODER 1
 #define CONFIG_VC1_CRYSTALHD_DECODER 0
-#define CONFIG_VC1_VDPAU_DECODER 0
+#define CONFIG_VC1_VDPAU_DECODER 1
 #define CONFIG_VC1IMAGE_DECODER 1
 #define CONFIG_VC1_MMAL_DECODER 0
 #define CONFIG_VC1_QSV_DECODER 0
@@ -931,7 +931,7 @@
 #define CONFIG_WMV2_DECODER 1
 #define CONFIG_WMV3_DECODER 1
 #define CONFIG_WMV3_CRYSTALHD_DECODER 0
-#define CONFIG_WMV3_VDPAU_DECODER 0
+#define CONFIG_WMV3_VDPAU_DECODER 1
 #define CONFIG_WMV3IMAGE_DECODER 1
 #define CONFIG_WNV1_DECODER 1
 #define CONFIG_XAN_WC3_DECODER 1
@@ -1829,7 +1829,7 @@
 #define CONFIG_H264_VAAPI_HWACCEL 0
 #define CONFIG_H264_VDA_HWACCEL 0
 #define CONFIG_H264_VDA_OLD_HWACCEL 0
-#define CONFIG_H264_VDPAU_HWACCEL 0
+#define CONFIG_H264_VDPAU_HWACCEL 1
 #define CONFIG_H264_VIDEOTOOLBOX_HWACCEL 0
 #define CONFIG_HEVC_D3D11VA_HWACCEL 0
 #define CONFIG_HEVC_DXVA2_HWACCEL 0
@@ -1837,7 +1837,7 @@
 #define CONFIG_HEVC_VAAPI_HWACCEL 0
 #define CONFIG_HEVC_VDPAU_HWACCEL 0
 #define CONFIG_MPEG1_XVMC_HWACCEL 0
-#define CONFIG_MPEG1_VDPAU_HWACCEL 0
+#define CONFIG_MPEG1_VDPAU_HWACCEL 1
 #define CONFIG_MPEG1_VIDEOTOOLBOX_HWACCEL 0
 #define CONFIG_MPEG2_XVMC_HWACCEL 0
 #define CONFIG_MPEG2_D3D11VA_HWACCEL 0
@@ -1845,16 +1845,16 @@
 #define CONFIG_MPEG2_MMAL_HWACCEL 0
 #define CONFIG_MPEG2_QSV_HWACCEL 0
 #define CONFIG_MPEG2_VAAPI_HWACCEL 0
-#define CONFIG_MPEG2_VDPAU_HWACCEL 0
+#define CONFIG_MPEG2_VDPAU_HWACCEL 1
 #define CONFIG_MPEG2_VIDEOTOOLBOX_HWACCEL 0
 #define CONFIG_MPEG4_MMAL_HWACCEL 0
 #define CONFIG_MPEG4_VAAPI_HWACCEL 0
-#define CONFIG_MPEG4_VDPAU_HWACCEL 0
+#define CONFIG_MPEG4_VDPAU_HWACCEL 1
 #define CONFIG_MPEG4_VIDEOTOOLBOX_HWACCEL 0
 #define CONFIG_VC1_D3D11VA_HWACCEL 0
 #define CONFIG_VC1_DXVA2_HWACCEL 0
 #define CONFIG_VC1_VAAPI_HWACCEL 0
-#define CONFIG_VC1_VDPAU_HWACCEL 0
+#define CONFIG_VC1_VDPAU_HWACCEL 1
 #define CONFIG_VC1_MMAL_HWACCEL 0
 #define CONFIG_VC1_QSV_HWACCEL 0
 #define CONFIG_VP9_D3D11VA_HWACCEL 0
@@ -1863,7 +1863,7 @@
 #define CONFIG_WMV3_D3D11VA_HWACCEL 0
 #define CONFIG_WMV3_DXVA2_HWACCEL 0
 #define CONFIG_WMV3_VAAPI_HWACCEL 0
-#define CONFIG_WMV3_VDPAU_HWACCEL 0
+#define CONFIG_WMV3_VDPAU_HWACCEL 1
 #define CONFIG_ACOMPRESSOR_FILTER 0
 #define CONFIG_ACROSSFADE_FILTER 0
 #define CONFIG_ADELAY_FILTER 0

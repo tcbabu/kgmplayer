@@ -15,4 +15,4 @@ echo "X11_CFLAGS=$X11_CFLAGS">>config.mak
 echo "X11_LIBS=$X11_LIBS">>config.mak
 make -j2
 make install
-cp ../bin/kgmplayer ../tarball/
+cp ../bin/kgmplayer ../TARBALL/
