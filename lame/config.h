@@ -126,7 +126,7 @@
 /* #undef HAVE_NASM */
 
 /* Define to 1 if you have the <ncurses/termcap.h> header file. */
-#define HAVE_NCURSES_TERMCAP_H 1
+/* #undef HAVE_NCURSES_TERMCAP_H */
 
 /* Define to 1 if you have the `socket' function. */
 #define HAVE_SOCKET 1

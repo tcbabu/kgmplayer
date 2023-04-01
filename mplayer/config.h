@@ -36,11 +36,11 @@
 
 
 
-#define CONFIGURATION "--prefix=/home/kulina/BUILD/kgmplayer --disable-gui --enable-runtime-cpudetection --disable-relocatable --disable-gif --disable-speex --disable-gl --enable-alsa --enable-pulse --enable-vm --enable-gnutls --disable-mencoder --enable-mp3lame --enable-freetype --enable-fontconfig --disable-tv-v4l1 --cc=gcc"
+#define CONFIGURATION "--prefix= --disable-gui --enable-runtime-cpudetection --disable-relocatable --disable-gif --disable-speex --disable-gl --enable-alsa --enable-pulse --enable-vm --enable-gnutls --disable-mencoder --enable-mp3lame --enable-freetype --enable-fontconfig --disable-tv-v4l1 --cc=gcc"
 
-#define MPLAYER_DATADIR "/home/kulina/BUILD/kgmplayer/share/mplayer"
-#define MPLAYER_CONFDIR "/home/kulina/BUILD/kgmplayer/etc/mplayer"
-#define MPLAYER_LIBDIR "/home/kulina/BUILD/kgmplayer/lib"
+#define MPLAYER_DATADIR "/share/mplayer"
+#define MPLAYER_CONFDIR "/etc/mplayer"
+#define MPLAYER_LIBDIR "/lib"
 
 /* definitions needed by included libraries */
 /* libmpeg2 */
@@ -87,7 +87,7 @@
 #undef HAVE_SYS_TERMIOS_H
 #define HAVE_WINSOCK2_H 0
 #define HAVE_CDIO_PARANOIA_H 0
-#define HAVE_CDIO_PARANOIA_PARANOIA_H 1
+#define HAVE_CDIO_PARANOIA_PARANOIA_H 0
 
 
 /* system functions */
@@ -274,38 +274,38 @@
 /* Blu-ray/DVD/VCD/CD */
 #define DEFAULT_CDROM_DEVICE "/dev/cdrom"
 #define DEFAULT_DVD_DEVICE   "/dev/dvd"
-#define CONFIG_LIBBLURAY 1
-#define CONFIG_CDDB 1
-#define CONFIG_CDDA 1
+#undef CONFIG_LIBBLURAY
+#undef CONFIG_CDDB
+#undef CONFIG_CDDA
 #undef CONFIG_DVDNAV
-#define CONFIG_DVDREAD 1
-#define CONFIG_LIBCDIO 1
+#undef CONFIG_DVDREAD
+#undef CONFIG_LIBCDIO
 #define CONFIG_VCD 1
 
 
 /* codec libraries */
 #undef CONFIG_FAAC
 #undef CONFIG_FAAD
-#define CONFIG_LIBA52 1
+#undef CONFIG_LIBA52
 #undef CONFIG_LIBDCA
 #undef CONFIG_LIBDV095
-#define CONFIG_LIBLZO 1
+#undef CONFIG_LIBLZO
 #undef CONFIG_LIBMPEG2
 #undef CONFIG_LIBMPEG2_INTERNAL
 #define CONFIG_ILBC 0
-#define CONFIG_LIBOPUS 1
-#define CONFIG_LIBMAD 1
+#undef CONFIG_LIBOPUS
+#undef CONFIG_LIBMAD
 #define CONFIG_MP3LAME 1
-#define CONFIG_MP3LAME_PRESET 1
-#define CONFIG_MP3LAME_PRESET_MEDIUM 1
-#define CONFIG_MPG123 1
+#undef CONFIG_MP3LAME_PRESET
+#undef CONFIG_MP3LAME_PRESET_MEDIUM
+#undef CONFIG_MPG123
 #undef CONFIG_MUSEPACK
 #undef CONFIG_SPEEX
-#define CONFIG_OGGTHEORA 1
+#undef CONFIG_OGGTHEORA
 #undef CONFIG_TOOLAME
 
 #undef CONFIG_TWOLAME
-#define CONFIG_OGGVORBIS 1
+
 #undef CONFIG_X264
 #undef CONFIG_XVID4
 #define CONFIG_ZLIB 1
@@ -321,7 +321,7 @@
 #undef CONFIG_WIN32DLL
 #define CONFIG_XANIM 1
 #undef CONFIG_XMMS
-#define BINARY_CODECS_PATH "/home/kulina/BUILD/kgmplayer/lib/codecs"
+#define BINARY_CODECS_PATH "/lib/codecs"
 #define XMMS_INPUT_PLUGIN_DIR ""
 
 
@@ -335,12 +335,12 @@
 
 
 
-#define CONFIG_ESD 1
-#define CONFIG_ESD_LATENCY 1
+#undef CONFIG_ESD
+#undef CONFIG_ESD_LATENCY
 
 
 #undef CONFIG_NAS
-#define CONFIG_OPENAL 1
+
 
 #define CONFIG_OSS_AUDIO 1
 #define PATH_DEV_DSP "/dev/dsp"
@@ -363,7 +363,7 @@
 #undef CONFIG_JOYSTICK
 #undef CONFIG_LIRC
 #undef CONFIG_LIRCC
-#define CONFIG_PVR 1
+#undef CONFIG_PVR
 #undef CONFIG_RADIO
 #undef CONFIG_RADIO_BSDBT848
 #undef CONFIG_RADIO_CAPTURE
@@ -372,9 +372,9 @@
 #define CONFIG_TV 1
 
 #undef CONFIG_TV_DSHOW
-#define CONFIG_TV_V4L 1
+#undef CONFIG_TV_V4L
 
-#define CONFIG_TV_V4L2 1
+#undef CONFIG_TV_V4L2
 
 
 /* font stuff */
@@ -391,20 +391,20 @@
 #define HAVE_CLOSESOCKET 0
 #define CONFIG_FTP 1
 #define HAVE_AF_INET6 1
-#define HAVE_INET_ATON 1
+#define HAVE_INET_ATON 0
 #define HAVE_INET_PTON 1
 #undef CONFIG_LIVE555
 #undef CONFIG_LIBNEMESI
 #define CONFIG_NETWORKING 1
-#define CONFIG_LIBSMBCLIENT 1
+#undef CONFIG_LIBSMBCLIENT
 #undef CONFIG_VSTREAM
 
 
 /* libvo options */
 #undef CONFIG_3DFX
-#define CONFIG_AA 1
+#undef CONFIG_AA
 #undef CONFIG_BL
-#define CONFIG_CACA 1
+#undef CONFIG_CACA
 
 #define CONFIG_DGA 1
 #undef CONFIG_DGA1
@@ -436,15 +436,15 @@
 #define CONFIG_MD5SUM 1
 #undef CONFIG_MGA
 #define CONFIG_MLIB 0
-#define CONFIG_MNG 1
+#undef CONFIG_MNG
 #define CONFIG_POSTPROC 1
 #define CONFIG_PNG 1
 #define CONFIG_PNM 1
 
 #undef CONFIG_S3FB
-#define CONFIG_SDL 1
-#define CONFIG_SDL_SDL_H 1
-#define CONFIG_SVGALIB 1
+#undef CONFIG_SDL
+#undef CONFIG_SDL_SDL_H
+#undef CONFIG_SVGALIB
 #undef CONFIG_TDFXFB
 #undef CONFIG_XVR100
 #define CONFIG_TGA 1
@@ -1131,12 +1131,12 @@
 #define CONFIG_LIBOPENCORE_AMRNB_DECODER 0
 #define CONFIG_LIBOPENCORE_AMRWB_DECODER 0
 #define CONFIG_LIBOPENJPEG_DECODER 0
-#define CONFIG_LIBOPUS_DECODER 1
+#define CONFIG_LIBOPUS_DECODER 0
 #define CONFIG_LIBSCHROEDINGER_DECODER 0
 #define CONFIG_LIBSPEEX_DECODER 0
 #define CONFIG_LIBUTVIDEO_DECODER 0
 #define CONFIG_LIBVORBIS_DECODER 0
-#define CONFIG_LIBVPX_VP8_DECODER 1
+#define CONFIG_LIBVPX_VP8_DECODER 0
 #define CONFIG_LIBVPX_VP9_DECODER 0
 #define CONFIG_LIBZVBI_TELETEXT_DECODER 0
 #define CONFIG_BINTEXT_DECODER 1

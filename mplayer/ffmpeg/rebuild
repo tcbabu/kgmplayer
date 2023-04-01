@@ -12,5 +12,6 @@
 #--disable-libxcb  --enable-libx264 --enable-libx265 \
 #--enable-nonfree --enable-openssl \
 #--enable-runtime-cpudetect  --enable-indev=x11grab \
+#--enable-vdpau \
 #make -j2
 

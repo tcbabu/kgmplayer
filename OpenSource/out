@@ -1834,6 +1834,8 @@ installing man3/d2i_SSL_SESSION.3
 i2d_SSL_SESSION.3 => d2i_SSL_SESSION.3
 installing man3/ssl.3
 SSL.3 => ssl.3
+created directory `/home/kulina/BUILD/kgmplayer/lib64/engines'
+created directory `/home/kulina/BUILD/kgmplayer/include/openssl'
 making install in crypto...
 make[3]: Entering directory '/home/kulina/BUILD/kgmplayer/OpenSource/openssl-1.0.2h/crypto'
 making install in crypto/objects...

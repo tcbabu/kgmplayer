@@ -2,6 +2,7 @@ include config.mak
 #CC	=g++ -pthread
 #CC	=cc -pthread -fPIC 
 CC	=gcc -pthread -fPIC  $(X11_CFLAGS) -I$(KULINA)/include
+FFMPEGOBJS	=$(foreach part, ../mplayer/ffmpeg, $(wildcard $(addprefix $(part)/,*.[o])))
 kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
                   FullScreenCallbacks.o main.o ControlsCallbacks.o \
 	        Controls.o AControls.o Rip.o Manage.o ManageCallbacks.o\
@@ -90,9 +91,8 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Runbackground.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
 	 ReorderImages.o ReorderImagesCallbacks.o \
-	../mplayer/ffmpeg/ffmpeg.o ../mplayer/ffmpeg/cmdutils.o \
-	../mplayer/ffmpeg/ffmpeg_filter.o ../mplayer/ffmpeg/ffmpeg_opt.o 
-#	../mplayer/ffmpeg/ffmpeg_vdpau.o 
+	 $(FFMPEGOBJS)
+	 echo $(FFMPEGOBJS)
 kgMplayer.o	: kgMplayer.c 
 	 $(CC) -c kgMplayer.c
 kgMplayerCallbacks.o	: kgMplayerCallbacks.c 
