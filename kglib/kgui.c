@@ -188,7 +188,7 @@ static char *uiSearchFolder(char *Folder,char *Icon) {
   char **Dirs,**Files;
   char *res=NULL,*cpt;
   char buff[500];
-  int i,l;
+  int i,l,App=0;
   Dlink *L;
   Files = kgFileMenu(Folder,"*.png");
   if(Files != NULL) {
@@ -211,14 +211,56 @@ static char *uiSearchFolder(char *Folder,char *Icon) {
     if(res != NULL) return res;
   }
 /*  Going down throuch Folders */
-
   Dirs = kgFolderMenu(Folder);
   if(Dirs==NULL) return res;
   if(Dirs[0]==NULL) { kgFreeDouble((void **)Dirs); return res;}
-  L = Dopen();
+#if 1
   i=0;
-  while(Dirs[i]!= NULL) {Dadd(L,Dirs[i]);i++;}
+  App=0;
+  while(Dirs[i]!=NULL) {
+	  char *pt=NULL;
+	  pt=strstr(Dirs[i],"app");
+	  if(pt!=NULL) {
+             App=1;
+	     break;
+	  }
+	  i++;
+  }
+#endif
+  L = Dopen();
+  if(App) {
+	  /* if an app folder is available only thar folder is checked */
+    i=0;
+    while(Dirs[i]!= NULL) {if(strstr(Dirs[i],"app")!=NULL) Dadd(L,Dirs[i]);i++;}
+  }
+  else {
+    i=0;
+    while(Dirs[i]!= NULL) {
+	    char *pt,buff[500];
+	    strcpy(buff,Dirs[i]);
+	    /* Checking for <reso>x<reso> type , small ones ignored */
+	    pt =strstr(buff,"x");
+	    if(pt!= NULL) {
+		    int reso,k,type=1;
+		    *pt='\0';
+		    k=0;
+		    while(buff[k] != '\0') {
+		       int j=0;
+		       if(!isdigit(buff[k])) {type=0; break;}
+		       k++;
+		    }
+		    if(type) {
+		       sscanf(buff,"%d",&reso);
+	               if(reso>= 128) Dadd(L,Dirs[i]);
+		    }
+		    else Dadd(L,Dirs[i]);
+	    }
+	    else Dadd(L,Dirs[i]);
+	    i++;
+    }
+  }
   free(Dirs);
+  if(Dcount(L)==0) return res;
   Dsort(L,compname);
   Resetlink(L);
   while ( (cpt=(char *)Getrecord(L))!=NULL) {
@@ -235,7 +277,7 @@ static char *uiSearchFolder(char *Folder,char *Icon) {
 char *kgGetIcon(char *pgr,char *theme) {
 /* Caller must free result if it is not NULL */
   int i=0,j,k=0,End=0;
-  char *pt,**m,*res=NULL,*cpt,**m1,**m2;
+  char *pt,**m,*res=NULL,*cpt,**m1,**m2,*ptmp;
   char buff[500];
   char buff1[500];
   char buff2[500];
@@ -265,8 +307,12 @@ char *kgGetIcon(char *pgr,char *theme) {
   }
   pt = getenv("XDG_DATA_DIRS");
   if(pt==NULL) strcpy(path,"/usr/share");
-  else strcpy(path , getenv("XDG_DATA_DIRS"));
+  else{
+     ptmp =getenv("XDG_DATA_DIRS");
+     strcpy(path , ptmp);
+  }
   L = Dopen();
+  i=0; pt=path;
   while(!End) {
     j=i;
     if(pt[j]< ' ') break;
@@ -292,7 +338,6 @@ char *kgGetIcon(char *pgr,char *theme) {
     if(m[0]==NULL) { kgFreeDouble((void **)m);continue;}
     i=0;
     while(m[i]!= NULL){
-//      printf("THEME: %s : %s\n",m[i],theme);
       if(kgSearchString(m[i],theme)< 0) {i++;continue;}
       strcpy(buff1,buff);
       strcat(buff1,"/");
@@ -306,9 +351,38 @@ char *kgGetIcon(char *pgr,char *theme) {
   return res;
 }
 
+static int uiProcessIconName(char *Icon){
+  int pos,count=0,i;
+  char *pt,*ptmp;
+  if(strstr(Icon,".png")!= NULL) return 1;
+  if((pt=strstr(Icon,".svg"))!= NULL)  {
+          strcpy(pt,".png");
+          return 1;
+  }
+  count =0;
+  pt=Icon;
+  i=0;while(pt[i]>= ' ') i++;
+  while(pt[i] <= ' ') {pt[i]='\0'; i--;if(i==0) break;}
+  while((ptmp=strstr(pt," "))!= NULL) {*ptmp='_';}
+  while((pt=strstr(pt,"."))!= NULL) {count++;pt++;}
+  if(count>1) {
+    pt = strstr(Icon,".")+1;
+    while((ptmp=strstr(pt,"."))!= NULL){
+      pt=ptmp+1;
+    }
+    strcpy(Icon,pt);
+//    strcat(Icon,".png");
+    return 1;
+  }
+//  strcat(Icon,".png");
+  return 1;
+}
+
 void *kgSearchIcon(char *IconName) {
-  char *pt,*res=NULL;
-  pt = IconName;
+  char *pt,*res=NULL,Icon[500],*ptmp;
+  strcpy(Icon,IconName);
+  uiProcessIconName(Icon);
+  pt = Icon;
   res = kgGetIcon(pt,"oxygen");
   if(res==NULL) res = kgGetIcon(pt,"Oxygen");
   if(res==NULL) res = kgGetIcon(pt,"KDE");
@@ -333,6 +407,26 @@ void *kgSearchIcon(char *IconName) {
       }
       kgFreeDouble((void **)m2);
     }
+  }
+  if(res==NULL) {
+	  ptmp = strstr(Icon,"_");
+	  if(ptmp!= NULL) {
+		  pt =ptmp+1;
+		  res= kgGetIcon(pt,"hicolor");
+		  if(res=NULL) res= kgGetIcon(pt,"oxygen");
+                  if(res==NULL) res = kgGetIcon(pt,"gnome");
+                  if(res==NULL) res = kgGetIcon(pt,"CratOS");
+	  }
+  }
+  if(res==NULL) {
+	  ptmp = strstr(Icon,"-");
+	  if(ptmp!= NULL) {
+		  *ptmp='\0';
+		  res= kgGetIcon(pt,"hicolor");
+		  if(res=NULL) res= kgGetIcon(pt,"oxygen");
+                  if(res==NULL) res = kgGetIcon(pt,"gnome");
+                  if(res==NULL) res = kgGetIcon(pt,"CratOS");
+	  }
   }
   return res;
 }
@@ -1095,8 +1189,6 @@ int uiDraw_Dialog(DIALOG *D) {
  i=0;
  while(d[i].t!=NULL) {
      ch =  (d[i].t->code);
-//     fprintf(stderr,"ch:%c\n",ch);
-//     fflush(stderr);
      switch ((int)ch) {
        case 'o': /* progress bar */
          _uiDrawO(D,i);
@@ -5120,8 +5212,6 @@ again:
      kgDisableSelection(D);
      if(!WC(D)->FullScreen) {
        pthread_cancel(WC(D)->Pth);
-//       fprintf(stderr,"Joining thread\n");
-//       fflush(stderr);
        pthread_join(WC(D)->Pth,NULL);
      }
      Dempty(WC(D)->Clip);
