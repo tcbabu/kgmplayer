@@ -219,7 +219,7 @@ rm -rf libvorbis-1.3.5
 # will fail so must be last
 tar xf gnutls-3.5.0.tar.xz >../out;
 cd gnutls-3.5.0 
-./configure --prefix=$KULINA --with-included-libtasn1 --enable-static --disable-shared --without-p11-kit --disable-tests --disable-valgrind-tests --without-idn
+./configure --prefix=$KULINA --with-included-libtasn1 --enable-static --disable-shared --without-p11-kit --disable-tests --disable-valgrind-tests --without-idn --with-mini-nettle
 make -j4 
 make  install 
 cd ..
