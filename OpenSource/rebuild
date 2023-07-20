@@ -272,6 +272,7 @@ meson --prefix=$KULINA       \
       --buildtype=release \
       -Ddatabase=gdbm     \
       -Ddoxygen=false     \
+      -Dstatic=yes \
       -Dbluez5=disabled   &&
 ninja
 ninja install
