@@ -5876,7 +5876,7 @@ echores "$_pulse"
 if test "$_pulse" = yes ; then
   def_pulse='#define CONFIG_PULSE 1'
   aomodules="pulse $aomodules"
-  libs_mplayer="$libs_mplayer $($_pkg_config --libs libpulse)"
+#TCB  libs_mplayer="$libs_mplayer $($_pkg_config --libs libpulse)"
   extra_cflags="$extra_cflags $($_pkg_config --cflags libpulse)"
 else
   def_pulse='#undef CONFIG_PULSE'
@@ -6349,11 +6349,12 @@ int main(void) {
 }
 EOF
     _fribidi=no
-    cc_check -lfribidi && _fribidi=yes && extra_ldflags="$extra_ldflags -lfribidi"
+#TCB    cc_check -lfribidi && _fribidi=yes && extra_ldflags="$extra_ldflags -lfribidi"
+B    cc_check -lfribidi && _fribidi=yes && extra_ldflags="$extra_ldflags "
     if $_pkg_config --exists fribidi > /dev/null 2>&1 &&
        test "$_fribidi" = no ; then
         inc_tmp="$($_pkg_config --cflags fribidi)"
-        ld_tmp="$($_pkg_config --libs fribidi)"
+        ld_tmp="-Wl,-Bstatic $($_pkg_config --libs fribidi) "
         cc_check $inc_tmp $ld_tmp && _fribidi=yes &&
             extra_cflags="$extra_cflags $inc_tmp" &&
             extra_ldflags="$extra_ldflags $ld_tmp"

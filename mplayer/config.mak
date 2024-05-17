@@ -42,8 +42,8 @@ CFLAGS_NO_OMIT_LEAF_FRAME_POINTER = -mno-omit-leaf-frame-pointer
 CFLAGS_STACKREALIGN      = 
 CFLAGS_SVGALIB_HELPER    = 
 
-EXTRALIBS          =  -Wl,--version-script,binary.ver -Wl,-z,noexecstack  -L/home/kulina/BUILD/kgmplayer/lib    -lncurses -lrt -L/home/kulina/BUILD/kgmplayer/lib -lgnutls -lpng -lz -ljpeg -lasound   -L/home/kulina/BUILD/kgmplayer/lib -ldvdread -L/home/kulina/BUILD/kgmplayer/lib -lfreetype -lfribidi -lass -lz -lbz2 -lmad -lvorbisenc -lvorbis -logg   -rdynamic -lm  
-EXTRALIBS_MPLAYER  =  -lXfixes -lXext -lX11 -lXss -lXv -lvdpau -lXinerama -lXxf86vm -lXxf86dga -lpulse -pthread
+EXTRALIBS          =  -Wl,--version-script,binary.ver -Wl,-z,noexecstack  -L/home/kulina/BUILD/kgmplayer/lib    -lncurses -lrt -L/home/kulina/BUILD/kgmplayer/lib -lgnutls -lpng -lz -ljpeg -lasound   -L/home/kulina/BUILD/kgmplayer/lib -ldvdread -L/home/kulina/BUILD/kgmplayer/lib -lfreetype -lass -lz -lbz2 -lmad -lvorbisenc -lvorbis -logg   -rdynamic -lm  
+EXTRALIBS_MPLAYER  =  -lXfixes -lXext -lX11 -lXss -lXv -lvdpau -lXinerama -lXxf86vm -lXxf86dga
 EXTRALIBS_MENCODER =  -lmp3lame
 
 MP_MSG_LIBS =  -lncurses 

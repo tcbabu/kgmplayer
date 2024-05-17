@@ -278,6 +278,14 @@ cd  fdk-aac-0.1.5
 make -j4
 make install
 rm -rf fdk-aac-0.1.5
+mkdir tmp
+cd tmp
+ar x $KULINA/lib/libfreetype.a
+ar x $KULINA/lib/libass.a
+ar r libass.a *.o
+cp libass.a $KULINA/lib/
+cd ..
+rm -r tmp
 #rm -rf ../lib/*.so*
 #rm -rf pulseaudio-16.1
 #rm -rf ../lib/*.so*

@@ -384,7 +384,7 @@
 #undef CONFIG_ENCA
 #define CONFIG_FONTCONFIG 1
 #define CONFIG_FREETYPE 1
-#define CONFIG_FRIBIDI 1
+#undef CONFIG_FRIBIDI
 
 
 /* networking */
