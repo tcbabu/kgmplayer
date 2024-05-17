@@ -1,3 +1,13 @@
+INSTALLING BINARY kgmplayer
+Just untar the tarball (tar xf <tarball>)
+cd to the directory
+and run 
+./install.sh
+It should work, as most dependencies are provided, other than the
+system files
+
+Notes on kgmplayer
+
 This is full source code for 'kgmplayer' and includes all necessary
 dependencies including 'kglib' and OpenSource components including the
 necessary CD libraries and tools.
