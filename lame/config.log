@@ -28,6 +28,8 @@ uname -v = #1 SMP Tue Jan 3 11:07:17 IST 2023
 /bin/universe          = unknown
 
 PATH: /home/kulina/BUILD/kgmplayer/bin
+PATH: /home/kulina/GPES/bin
+PATH: /home/kulina/.local/bin
 PATH: /opt/rustc/bin
 PATH: /bin
 PATH: /usr/Kulina/bin

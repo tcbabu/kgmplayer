@@ -240,7 +240,7 @@ hardcode_into_libs=yes
 sys_lib_search_path_spec="/usr/lib64 /usr/lib/gcc/x86_64-pc-linux-gnu/12.2.0 /lib64 "
 
 # Run-time system search path for libraries.
-sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/Kulina/lib /usr/local/lib /opt/lib /opt/rustc/lib /opt/qt5/lib "
+sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib /usr/lib64 /usr/Kulina/lib /usr/local/lib /opt/lib /opt/rustc/lib /opt/qt5/lib "
 
 # Whether dlopen is supported.
 dlopen_support=unknown

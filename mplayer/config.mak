@@ -33,8 +33,8 @@ INSTALL = install
 INSTALLSTRIP = -s
 WINDRES = windres
 
-CFLAGS   = -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/home/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE  -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include -I/usr/Kulina/include  -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include -DPCRE_STATIC -I/home/kulina/BUILD/kgmplayer/include/fribidi -I/home/kulina/BUILD/kgmplayer/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -DZLIB_CONST
-CXXFLAGS = -Wundef   -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/home/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS  -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include -I/usr/Kulina/include  -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include -DPCRE_STATIC -I/home/kulina/BUILD/kgmplayer/include/fribidi -I/home/kulina/BUILD/kgmplayer/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -DZLIB_CONST 
+CFLAGS   = -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/home/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE  -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include -I/usr/Kulina/include  -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/libpng16 -I/usr/Kulina/include -DZLIB_CONST
+CXXFLAGS = -Wundef   -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -I/home/kulina/BUILD/kgmplayer/include -fno-tree-vectorize -fno-asynchronous-unwind-tables -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS  -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include -I/usr/Kulina/include  -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/libpng16 -I/usr/Kulina/include -DZLIB_CONST 
 CC_DEPFLAGS = -MMD -MP
 
 CFLAGS_DHAHELPER         = 
@@ -42,7 +42,7 @@ CFLAGS_NO_OMIT_LEAF_FRAME_POINTER = -mno-omit-leaf-frame-pointer
 CFLAGS_STACKREALIGN      = 
 CFLAGS_SVGALIB_HELPER    = 
 
-EXTRALIBS          =  -Wl,--version-script,binary.ver -Wl,-z,noexecstack  -L/home/kulina/BUILD/kgmplayer/lib    -lncurses -lrt -L/home/kulina/BUILD/kgmplayer/lib -lgnutls -lpng -lz -ljpeg -lasound   -L/home/kulina/BUILD/kgmplayer/lib -ldvdread -L/home/kulina/BUILD/kgmplayer/lib -lfreetype -lz -lbz2 -L/home/kulina/BUILD/kgmplayer/lib -lfribidi -lglib-2.0 -lz -lbz2 -lmad -lvorbisenc -lvorbis -logg   -rdynamic -lm  
+EXTRALIBS          =  -Wl,--version-script,binary.ver -Wl,-z,noexecstack  -L/home/kulina/BUILD/kgmplayer/lib    -lncurses -lrt -L/home/kulina/BUILD/kgmplayer/lib -lgnutls -lpng -lz -ljpeg -lasound   -L/home/kulina/BUILD/kgmplayer/lib -ldvdread -L/home/kulina/BUILD/kgmplayer/lib -lfreetype -lfribidi -lass -lz -lbz2 -lmad -lvorbisenc -lvorbis -logg   -rdynamic -lm  
 EXTRALIBS_MPLAYER  =  -lXfixes -lXext -lX11 -lXss -lXv -lvdpau -lXinerama -lXxf86vm -lXxf86dga -lpulse -pthread
 EXTRALIBS_MENCODER =  -lmp3lame
 
@@ -178,7 +178,7 @@ KVA = auto
 LADSPA = no
 LIBA52 = no
 LIBASS = yes
-LIBASS_INTERNAL = yes
+LIBASS_INTERNAL = no
 LIBBLURAY = no
 LIBBS2B = no
 LIBDCA = no

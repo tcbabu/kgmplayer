@@ -1,0 +1,49 @@
+tar xf libuuid-1.0.3.tar.gz
+cd libuuid-1.0.3
+./configure --prefix=$KULINA --enable-static
+make -j4
+make install
+cd ..
+rm libuuid-1.0.3
+tar xf bzip2-1.0.6.tar.gz
+cd bzip2-1.0.6
+make install --PREFIX=$KULINA
+cd ..
+rm -rf bzip2-1.0.6
+tar xf harfbuzz-2.9.0.tar.xz
+cd harfbuzz-2.9.0
+./configure --prefix=$KULINA --enable-static --disable-shared --with-freetype=no
+make -j4
+make install
+cd ..
+rm -rf harfbuzz-2.9.0
+tar xf freetype-2.11.0.tar.xz
+cd freetype-2.11.0
+./configure --prefix=$KULINA --enable-static --with-harfbuzz=no --with-png=no --with-bzip2=no
+make -j4
+make install
+cd ..
+rm -rf freetype-2.11.0
+tar xf fribidi-0.19.7.tar.bz2
+cd fribidi-0.19.7
+./configure --prefix=$KULINA --enable-static --with-glib=no
+make -j4
+make install
+cd ..
+rm -rf fribidi-0.19.7
+tar xf fontconfig-2.13.1.tar.bz2
+cd fontconfig-2.13.1
+./configure --prefix=$KULINA --enable-static
+make -j4 
+make install
+cd ..
+rm -rf fontconfig-2.13.1
+tar xf pulseaudio-12.2.tar.xz
+cd pulseaudio-12.2
+./configure --prefix=$KULINA --enable-static --disable-openssl --disable-x11 --disable-glib2 --disable-dbus --disable-rpath--disable-tests --disable-default-build-tests
+make -j4
+make install
+cd ..
+rm -rf pulseaudio-12.2
+
+
