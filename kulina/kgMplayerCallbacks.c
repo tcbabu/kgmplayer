@@ -982,30 +982,36 @@ int ProcessAplay(int pip0,int pip1,int Pid) {
            j = SearchString(buff,(char *)"card");
            j +=5;
            while(isdigit(buff[j])) {
-              Card = Card*10+buff[j]-'0';
+//              Card = Card*10+buff[j]-'0';
+              Card = (buff[j]-'0');
               j++;
            }
            j = SearchString(buff,(char *)"device");
            j +=7;
            while(isdigit(buff[j])) {
-              Device = Device*10+buff[j]-'0';
+//              Device = Device*10+buff[j]-'0';
+              Device = (buff[j]-'0');
               j++;
            }
            break;
          }
          else {
            j = SearchString(buff,(char *)"card");
-           j +=5;
-           while(isdigit(buff[j])) {
-              Card = Card*10+buff[j]-'0';
-              j++;
-           }
-           j = SearchString(buff,(char *)"device");
-           j +=7;
-           while(isdigit(buff[j])) {
-              Device = Device*10+buff[j]-'0';
-              j++;
-           }
+	   if(j>=0) {
+             j +=5;
+             while(isdigit(buff[j])) {
+//                Card = Card*10+buff[j]-'0';
+                Card = buff[j]-'0';
+                j++;
+             }
+             j = SearchString(buff,(char *)"device");
+             j +=7;
+             while(isdigit(buff[j])) {
+//                Device = Device*10+buff[j]-'0';
+                Device = buff[j]-'0';
+                j++;
+             }
+	   }
          }
      }
      return 1;
@@ -1064,6 +1070,7 @@ int ProcessPacmd(int pip0,int pip1,int Pid) {
              PULSE=0;
          }
 #else
+#if 0
          if(sinks==1) {
            if(SearchString(buff,(char *)"device.string")>=0) {
              if(SearchString(buff,(char *)"hdmi")>=0) {
@@ -1074,6 +1081,9 @@ int ProcessPacmd(int pip0,int pip1,int Pid) {
            }
          }
          else {
+#else
+		 {
+#endif
            if(SearchString(buff,(char *)"sink(s)")>=0) {
              sscanf(buff,"%d",&sinks);
 //             fprintf(stderr,"Pulse sinks: %d\n",sinks);
@@ -1927,7 +1937,7 @@ int CheckPulse(void){
           WriteMessage(buff);
      }
    }
-//   printf("PULSE= %d\n",PULSE);
+   printf("PULSE= %d\n",PULSE);
    return PULSE;
 }
 int CheckCdrom(void){
@@ -2370,6 +2380,8 @@ int SetMplayer(void){
    }
    else strcpy(vostring," -vo xv,x11");
 #ifdef D_PULSE
+   CheckPulse();
+   if(PULSE) HDMIAUDIO=0;
    if((HDMI==0)||(HDMIAUDIO==0)) {
      CheckPulse();
      printf("CheckPulse : %d\n",PULSE);
@@ -2631,14 +2643,16 @@ int SetMplayer(void){
      strcat(Line,dummy);
    }
    else {
+     if(PULSE) {
+//       sprintf(dummy," -delay .625 ");
+       sprintf(dummy," -delay .0 ");
+       strcat(Line,dummy);
+     }
+     else {
      if(HDMI&&HDMIAUDIO) {
        sprintf(dummy," -delay .0 ");
        strcat(Line,dummy);
      }
-     else if(PULSE) {
-//       sprintf(dummy," -delay .625 ");
-       sprintf(dummy," -delay .0 ");
-       strcat(Line,dummy);
      }
    }
    if( Minfo.SubTitleOff) {
@@ -2843,7 +2857,7 @@ int  kgMplayersplbutton1callback(int butno,int i,void *Tmp) {
          return 0;
        }
        else runjob((char *)"aplay -l",ProcessAplay);
-//        printf("Card: %-d Device: %-d\n",Card,Device);
+        printf("Card: %-d Device: %-d\n",Card,Device);
       }
       else {
         runjob((char *)"aplay -l",ProcessAplay);

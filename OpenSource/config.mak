@@ -1,8 +1,8 @@
 #! /bin/bash 
 PREFIX=/home/kulina/BUILD/kgmplayer
 KULINA=/home/kulina/BUILD/kgmplayer
-export CFLAGS="-fPIC -fpic -I/home/kulina/BUILD/kgmplayer/include"
-export CPPFLAGS="-fPIC -fpic -I/home/kulina/BUILD/kgmplayer/include"
+export CFLAGS="-fPIC -fpic -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2"
+export CPPFLAGS="-fPIC -fpic -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2"
 export LDFLAGS="-L/lib -L/home/kulina/BUILD/kgmplayer/lib "
 export X11_CFLAGS="-I/home/kulina/BUILD/kgmplayer/include "
 export X11_LIBS="-lX11 "

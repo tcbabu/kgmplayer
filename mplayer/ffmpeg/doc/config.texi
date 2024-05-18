@@ -532,7 +532,7 @@
 @c @set config-memalign-hack no
 @c @set config-memory-poisoning no
 @c @set config-neon-clobber-test no
-@c @set config-pic no
+@set config-pic yes
 @set config-pod2man yes
 @c @set config-raise-major no
 @c @set config-thumb no

@@ -23,7 +23,7 @@
 # local fallbacks for missing operating system features
 SHELL	:= /bin/bash
 PREFIX=/usr
-export CFLAGS=-I$(PWD)/include
+export CFLAGS= -fPIC -I$(PWD)/include -I$(PWD)/include/freetype2
 export LDFLAGS=-L$(PWD)/lib 
 X11_CFLAGS	="-I$(PWD)/include $(shell pkg-config --cflags x11)"
 X11_LIBS 	="$(shell pkg-config --libs x11) "

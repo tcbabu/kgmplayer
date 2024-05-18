@@ -237,7 +237,7 @@ cd ..
 rm -rf harfbuzz-2.9.0
 tar xf freetype-2.11.0.tar.xz
 cd freetype-2.11.0
-./configure --prefix=$KULINA --enable-static   --with-harfbuzz=no --disable-shared
+./configure --prefix=$KULINA --enable-static   --with-harfbuzz=no --disable-shared --with-brotli=no
 make 
 make install
 cd ..
@@ -257,9 +257,16 @@ make -j4
 make install
 cd ..
 rm -rf fontconfig-2.13.1
+export CFLAGS="$CFLAGS -fPIC -I$KULINA/include"
+tar xf libsndfile-1.0.25.tar.gz
+cd libsndfile-1.0.25
+./configure --prefix=$KULINA  --enable-static --disable-shared
+make -j1
+make install
+cd ..
 tar xf pulseaudio-12.2.tar.xz
 cd pulseaudio-12.2
-./configure --prefix=$KULINA --enable-static --disable-openssl --disable-x11 --disable-glib2 --disable-dbus --disable-rpath--disable-tests --disable-default-build-tests
+./configure --prefix=$KULINA --enable-static --disable-openssl --disable-x11 --disable-glib2 --disable-dbus --disable-rpath--disable-tests --disable-default-build-tests --without-caps
 make -j4
 make install
 cp $KULINA/lib/pulseaudio/*.a $KULINA/lib/
@@ -278,14 +285,6 @@ cd  fdk-aac-0.1.5
 make -j4
 make install
 rm -rf fdk-aac-0.1.5
-mkdir tmp
-cd tmp
-ar x $KULINA/lib/libfreetype.a
-ar x $KULINA/lib/libass.a
-ar r libass.a *.o
-cp libass.a $KULINA/lib/
-cd ..
-rm -r tmp
 #rm -rf ../lib/*.so*
 #rm -rf pulseaudio-16.1
 #rm -rf ../lib/*.so*

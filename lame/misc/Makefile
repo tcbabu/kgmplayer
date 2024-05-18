@@ -89,7 +89,7 @@ AUTOMAKE = ${SHELL} /home/kulina/BUILD/kgmplayer/lame/missing --run automake-1.1
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS =  -Wall -pipe -I/home/kulina/BUILD/kgmplayer/include
+CFLAGS =  -Wall -pipe -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2
 CONFIG_DEFS = 
 CONFIG_MATH_LIB = -lm
 CPP = gcc -E

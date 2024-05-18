@@ -15,72 +15,23 @@ echo $LDFLAGS
 export CPPFLAGS="-fpic -fPIC -I$KULINA/include"
 export ZLIBLIB=$KULINA/lib
 export ZLIBINC=$KULINA/include
+export CFLAGS="$CFLAGS -fPIC -I$KULINA/include"
 echo $CFLAGS
+$CFLAGS
 echo $PKG_CONFIG_PATH
 echo "$X11_LIBS"
 echo "$X11_CFLAGS"
-tar xf libuuid-1.0.3.tar.gz
-cd libuuid-1.0.3
-./configure --prefix=$KULINA --enable-static
-make -j4
+tar xf libsndfile-1.0.25.tar.gz
+cd libsndfile-1.0.25
+./configure --prefix=$KULINA  --enable-static --disable-shared
+make -j1
 make install
 cd ..
-rm libuuid-1.0.3
-tar xf bzip2-1.0.6.tar.gz
-cd bzip2-1.0.6
-make install PREFIX=$KULINA
-cd ..
-rm -rf bzip2-1.0.6
-tar xf harfbuzz-2.9.0.tar.xz
-cd harfbuzz-2.9.0
-./configure --prefix=$KULINA --enable-static --disable-shared --with-freetype=no
-make -j4
-make install
-cd ..
-rm -rf harfbuzz-2.9.0
-tar xf freetype-2.11.0.tar.xz
-cd freetype-2.11.0
-./configure --prefix=$KULINA --enable-static   --with-harfbuzz=no --disable-shared
-make 
-make install
-cd ..
-rm -rf freetype-2.11.0
-sleep 20
-
-tar xf fribidi-0.19.7.tar.bz2
-cd fribidi-0.19.7
-./configure --prefix=$KULINA --enable-static --with-glib=no
-make -j4
-make install
-cd ..
-rm -rf fribidi-0.19.7
-tar xf fontconfig-2.13.1.tar.bz2
-cd fontconfig-2.13.1
-./configure --prefix=$KULINA --enable-static
-make -j4 
-make install
-cd ..
-rm -rf fontconfig-2.13.1
 tar xf pulseaudio-12.2.tar.xz
 cd pulseaudio-12.2
-./configure --prefix=$KULINA --enable-static --disable-openssl --disable-x11 --disable-glib2 --disable-dbus --disable-rpath--disable-tests --disable-default-build-tests
+./configure --prefix=$KULINA --enable-static --disable-openssl --disable-x11 --disable-glib2 --disable-dbus --disable-rpath--disable-tests --disable-default-build-tests --without-caps
 make -j4
 make install
 cp $KULINA/lib/pulseaudio/*.a $KULINA/lib/
 cd ..
 rm -rf pulseaudio-12.2
-tar xf libass-0.13.6.tar.xz >../out
-cd libass-0.13.6
-./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs --enable-fontconfig --disable-harfbuzz
-make -j4
-make  install
-cd ..
-rm -rf libass-0.13.6
-tar xvf fdk-aac-0.1.5.tar.gz
-cd  fdk-aac-0.1.5
-./configure --prefix=$KULINA --enable-static --disable-shared
-make -j4
-make install
-rm -rf fdk-aac-0.1.5
-#rm -rf ../lib/*.so*
-#rm -rf pulseaudio-16.1
