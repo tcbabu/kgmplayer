@@ -3,7 +3,7 @@ PREFIX=/home/kulina/BUILD/kgmplayer
 KULINA=/home/kulina/BUILD/kgmplayer
 export CFLAGS="-fPIC -fpic -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2"
 export CPPFLAGS="-fPIC -fpic -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2"
-export LDFLAGS="-L/lib -L/home/kulina/BUILD/kgmplayer/lib "
+export LDFLAGS="-L/home/kulina/BUILD/kgmplayer/lib -L/home/kulina/BUILD/kgmplayer/lib "
 export X11_CFLAGS="-I/home/kulina/BUILD/kgmplayer/include "
 export X11_LIBS="-lX11 "
 export PKG_CONFIG_PATH=/home/kulina/BUILD/kgmplayer/lib/pkgconfig:/usr/X11R76/lib/pkgconfig:/home/kulina/BUILD/kgmplayer/lib/pkgconfig:/usr/X11R76/lib/pkgconfig
@@ -17,6 +17,13 @@ echo $CFLAGS
 echo $PKG_CONFIG_PATH
 echo "$X11_LIBS"
 echo "$X11_CFLAGS"
+tar xf zlib-1.2.8.tar.gz
+cd zlib-1.2.8
+./configure --prefix=$KULINA --static
+make
+make install
+cd ..
+rm -rf zlib-1.2.8
 tar xf libpng-1.6.9.tar.xz
 cd libpng-1.6.9
 ./configure --prefix=$KULINA --enable-static --disable-shared --with-zlib-prefix=$KULINA CFLAGS=-I$KULINA/include LDFLAGS=-L$KULINA/lib >../out
@@ -295,7 +302,15 @@ cd  fdk-aac-0.1.5
 ./configure --prefix=$KULINA --enable-static --disable-shared
 make -j4
 make install
+cd ..
 rm -rf fdk-aac-0.1.5
+tar xf ncurses-6.5.tar.gz
+cd ncurses-6.5
+./configure --prefix=$KULINA --enable-static 
+make -j4
+make install
+cd ..
+rm -rf ncurses-6.5
 #rm -rf ../lib/*.so*
 #rm -rf pulseaudio-16.1
 #rm -rf ../lib/*.so*

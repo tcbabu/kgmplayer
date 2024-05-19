@@ -755,7 +755,7 @@ kgmplayer$(EXESUF): EXTRALIBS +=  $(EXTRALIBS_MPLAYER) \
 -Wl,-rpath,/usr/share/kgmplayer/lib  -Wl,-Bstatic ffmpeg/libavdevice/libavdevice.a \
 -L$(KULINA)/lib  $(KULINA)/lib/libx264.a $(KULINA)/lib/libx265.a $(KULINA)/lib/libharfbuzz.a \
 $(KULINA)/lib/libnettle.a $(KULINA)/lib/libhogweed.a $(KULINA)/lib/libgmp.a $(KULINA)/lib/libsndfile.a -lcdio -lvcdinfo -liso9660 -lmp3lame -llzma -lz\
--lfdk-aac -lfontconfig $(KULINA)/lib/libkulina.a $(KULINA)/lib/libgm.a -lpulse -luuid -lpulsecommon-12.2 -lfreetype -llzma -lexpat -lsndfile -lfribidi  -Wl,-Bdynamic  
+-lfdk-aac -lfontconfig $(KULINA)/lib/libkulina.a $(KULINA)/lib/libgm.a -lpulse -luuid -lpulsecommon-12.2 -lfreetype -llzma -lexpat -lsndfile -lfribidi  -lz -lncursesw  -Wl,-Bdynamic  
 kgmplayer$(EXESUF):
 	echo "g++ -o $@ $^ $(EXTRALIBS)  " > makecmd
 	g++ -o $@ $^  $(EXTRALIBS) -Wl,-Bdynamic 
