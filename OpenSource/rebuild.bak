@@ -6,6 +6,13 @@ echo $CFLAGS
 echo $PKG_CONFIG_PATH
 echo "$X11_LIBS"
 echo "$X11_CFLAGS"
+tar xf zlib-1.2.8.tar.gz
+cd zlib-1.2.8
+./configure --prefix=$KULINA --static
+make
+make install
+cd ..
+rm -rf zlib-1.2.8
 tar xf libpng-1.6.9.tar.xz
 cd libpng-1.6.9
 ./configure --prefix=$KULINA --enable-static --disable-shared --with-zlib-prefix=$KULINA CFLAGS=-I$KULINA/include LDFLAGS=-L$KULINA/lib >../out
@@ -22,29 +29,6 @@ make -j4 install >../out
 cd ..
 rm -rf yasm-1.3.0
 echo "yasm"
-tar xf freetype-2.11.0.tar.xz
-cd freetype-2.11.0
-./configure --prefix=$KULINA --enable-static --disable-shared >../out
-make -j4 >../out
-make -j4 install >../out
-cd ..
-rm -r -f freetype-2.11.0
-echo "freetype"
-tar xf harfbuzz-0.9.38.tar.gz
-cd harfbuzz-0.9.38
-./configure --prefix=$KULINA --enable-static --disable-shared --without-glib  > ../out;
-make -j1 > ../out;
-make install > ../out;
-cd ..
-rm -rf harfbuzz-0.9.38
-tar xf freetype-2.11.0.tar.xz
-cd freetype-2.11.0
-./configure --prefix=$KULINA --enable-static --disable-shared > ../out;
-make -j4 > ../out;
-make -j4 install > ../out;
-cd ..
-rm -r -f freetype-2.11.0
-echo "freetype again"
 tar xf jpegsrc.v8c.tar.gz
 cd jpeg-8c
 ./configure --prefix=$KULINA --enable-static --disable-shared > ../out
@@ -83,9 +67,6 @@ echo "Graphic Magic"
 rm libgm.a
 mkdir tmp
 cd tmp
-ar x $KULINA/lib/libharfbuzz-icu.a
-ar x $KULINA/lib/libharfbuzz.a
-ar x $KULINA/lib/libfreetype.a
 ar x $KULINA/lib/libjasper.a
 ar x $KULINA/lib/libjpeg.a
 ar x $KULINA/lib/libtiff.a
@@ -104,13 +85,6 @@ make >../out;
 make install >../out;
 cd ..
 rm -rf pcre-8.38
-tar xf fribidi-0.19.7.tar.bz2
-cd fribidi-0.19.7
-./configure --prefix=$KULINA --enable-static --disable-shared >../out;
-make >../out;
-make install >../out;
-cd ..
-rm -rf fribidi-0.19.7
 tar xf libdvdread-5.0.2.tar.gz
 cd libdvdread-5.0.2
 ./configure --prefix=$KULINA --enable-static --disable-shared >../out;
@@ -181,21 +155,6 @@ cd fontconfig-2.12.1
 make -j4
 make  install
 cd ..
-rm -rf fontconfig-2.12.1
-tar xf libass-0.13.6.tar.xz >../out
-cd libass-0.13.6
-./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
-make -j4
-make  install
-cd ..
-rm -rf libass-0.13.6
-tar xf fdk-aac-0.1.5.tar.gz
-cd  fdk-aac-0.1.5
-./configure --prefix=$KULINA --enable-static --disable-shared
-make -j4
-make install
-cd ..
-rm -rf fdk-aac-0.1.5
 tar xf libmad-0.15.1b.tar.gz
 cd libmad-0.15.1b
 ./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
@@ -264,19 +223,84 @@ make
 make install
 cd ..
 rm alsa-lib-1.2.8
-tar xf pulseaudio-16.1.tar.xz
-cd pulseaudio-16.1
-rm -rf build
-mkdir build
-cd build
-meson --prefix=$KULINA       \
-      --buildtype=release \
-      -Ddatabase=gdbm     \
-      -Ddoxygen=false     \
-      -Dstatic=yes \
-      -Dbluez5=disabled   &&
-ninja
-ninja install
-cd ../..
+tar xf libuuid-1.0.3.tar.gz
+cd libuuid-1.0.3
+./configure --prefix=$KULINA --enable-static
+make -j4
+make install
+cd ..
+rm libuuid-1.0.3
+tar xf bzip2-1.0.6.tar.gz
+cd bzip2-1.0.6
+make install PREFIX=$KULINA
+cd ..
+rm -rf bzip2-1.0.6
+tar xf harfbuzz-2.9.0.tar.xz
+cd harfbuzz-2.9.0
+./configure --prefix=$KULINA --enable-static --disable-shared --with-freetype=no
+make -j4
+make install
+cd ..
+rm -rf harfbuzz-2.9.0
+tar xf freetype-2.11.0.tar.xz
+cd freetype-2.11.0
+./configure --prefix=$KULINA --enable-static   --with-harfbuzz=no --disable-shared --with-brotli=no
+make 
+make install
+cd ..
+rm -rf freetype-2.11.0
+
+tar xf fribidi-0.19.7.tar.bz2
+cd fribidi-0.19.7
+./configure --prefix=$KULINA --enable-static --with-glib=no
+make -j4
+make install
+cd ..
+rm -rf fribidi-0.19.7
+tar xf fontconfig-2.13.1.tar.bz2
+cd fontconfig-2.13.1
+./configure --prefix=$KULINA --enable-static
+make -j4 
+make install
+cd ..
+rm -rf fontconfig-2.13.1
+export CFLAGS="$CFLAGS -fPIC -I$KULINA/include"
+tar xf libsndfile-1.0.25.tar.gz
+cd libsndfile-1.0.25
+./configure --prefix=$KULINA  --enable-static --disable-shared
+make -j1
+make install
+cd ..
+tar xf pulseaudio-12.2.tar.xz
+cd pulseaudio-12.2
+./configure --prefix=$KULINA --enable-static --disable-openssl --disable-x11 --disable-glib2 --disable-dbus --disable-rpath--disable-tests --disable-default-build-tests --without-caps
+make -j4
+make install
+cp $KULINA/lib/pulseaudio/*.a $KULINA/lib/
+cd ..
+rm -rf pulseaudio-12.2
+tar xf libass-0.13.6.tar.xz >../out
+cd libass-0.13.6
+./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs --enable-fontconfig --disable-harfbuzz
+make -j4
+make  install
+cd ..
+rm -rf libass-0.13.6
+tar xvf fdk-aac-0.1.5.tar.gz
+cd  fdk-aac-0.1.5
+./configure --prefix=$KULINA --enable-static --disable-shared
+make -j4
+make install
+cd ..
+rm -rf fdk-aac-0.1.5
+tar xf ncurses-6.5.tar.gz
+cd ncurses-6.5
+./configure --prefix=$KULINA --enable-static 
+make -j4
+make install
+cd ..
+rm -rf ncurses-6.5
+#rm -rf ../lib/*.so*
+#rm -rf pulseaudio-16.1
 #rm -rf ../lib/*.so*
 #rm -rf pulseaudio-16.1

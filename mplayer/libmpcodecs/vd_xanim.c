@@ -23,7 +23,7 @@
  * with MPlayer; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
+#define D_KULINA
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h> /* strerror */
@@ -48,7 +48,7 @@ LIBVD_EXTERN(xanim)
 #include <unistd.h>
 #endif
 
-#include <dlfcn.h> /* dlsym, dlopen, dlclose */
+//#include <dlfcn.h> /* dlsym, dlopen, dlclose */
 #include <stdarg.h> /* va_alist, va_start, va_end */
 #include <errno.h> /* strerror, errno */
 
@@ -223,7 +223,7 @@ static int xacodec_load(sh_video_t *sh, char *filename)
     XAVID_MOD_HDR *mod_hdr;
     XAVID_FUNC_HDR *func;
     int i;
-
+#if 0  //TCB
 //    priv->file_handler = dlopen(filename, RTLD_NOW|RTLD_GLOBAL);
     priv->file_handler = dlopen(filename, RTLD_LAZY);
     if (!priv->file_handler)
@@ -305,6 +305,7 @@ static int xacodec_load(sh_video_t *sh, char *filename)
 	    priv->dec_func = func[i].dec_func;
 	}
     }
+#endif
     return 1;
 }
 
@@ -781,7 +782,9 @@ static void uninit(sh_video_t *sh)
 	    close_func = xa_close_func[i];
 	    close_func();
 	}
-    dlclose(priv->file_handler);
+    //TCB
+//    dlclose(priv->file_handler);
+    //
     free(priv->decinfo);
     free(priv);
 }

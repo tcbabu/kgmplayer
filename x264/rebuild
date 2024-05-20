@@ -1,1 +1,1 @@
-./configure --prefix=$KULINA --enable-static --enable-shared --system-libx264
+./configure --prefix=$KULINA --enable-static --enable-shared --system-libx264 --disable-opencl  --disable-avs

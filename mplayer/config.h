@@ -67,6 +67,7 @@
 #define HAVE_LIMITS_H 1
 /* libdvdread */
 #define HAVE_DLFCN_H 1
+#define HAVE_DLFCN_H 0
 #define HAVE_MEMCPY 1
 #define STDC_HEADERS 1
 /* libdvdnav */
@@ -117,7 +118,7 @@
 /* system-specific features */
 #define ASMALIGN(ZEROBITS) ".align 1<<" #ZEROBITS "\n\t"
 #define HAVE_BUILTIN_EXPECT 1
-#define HAVE_LIBDL 1
+#undef HAVE_LIBDL
 #define HAVE_DOS_PATHS 0
 #define EXTERN_ASM 
 #define EXTERN_PREFIX ""

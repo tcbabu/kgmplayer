@@ -3919,8 +3919,10 @@ _dl=no
 for ld_tmp in "" -ldl; do
   statement_check dlfcn.h 'dlopen("", 0)' $ld_tmp && ld_dl="$ld_tmp" && _dl=yes && break
 done
+
 if test "$_dl" = yes ; then
   def_dl='#define HAVE_LIBDL 1'
+  def_dl='#undef HAVE_LIBDL'
 else
   def_dl='#undef HAVE_LIBDL'
 fi
@@ -8813,6 +8815,7 @@ $def_sys_uio_h
 #define HAVE_LIMITS_H 1
 /* libdvdread */
 #define HAVE_DLFCN_H 1
+#define HAVE_DLFCN_H 0
 #define HAVE_MEMCPY 1
 #define STDC_HEADERS 1
 /* libdvdnav */
