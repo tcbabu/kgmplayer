@@ -1238,13 +1238,13 @@ void* Dpick(Dlink *LN) ; /* like Ddelete but does not free */
 void kgAddSearchDir(void *Tmp,char *Dir);
 void *kgFMGtogmImage(void *tmp);
 int kgDragRegion(void *Tmp,int xmin,int ymin,int xmax,int ymax,int *x,int *y);
-int kgGetThumbNailItem(DIY *Y,int x,int y);
+//int kgGetThumbNailItem(DIY *Y,int x,int y);
 int kgGetThumbNailItemRectangle(DIY *Y,int item,int *x1,int *y1,int *x2,int *y2);
 void kgFreeXImage(void *Img);
 void * kgRegionImage(void *Tmp,int xmin,int ymin,int xmax,int ymax);
 int kgScrollDownThumbNails (DIY *y);
 int kgScrollUpThumbNails (DIY *y);
-int  kgDragThumbNail(DIY *Y,int item,int *x,int *y);
+//int  kgDragThumbNail(DIY *Y,int item,int *x,int *y);
 int kgPickImage( void *parent,int xo,int yo,void *pt);
 void kgDropFocus(void *tmp);
 int kgRedrawDialog(DIALOG *Dialog);

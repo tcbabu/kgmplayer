@@ -1442,6 +1442,7 @@ void *kgBlurImage(void *img) {
  return uiBlurgmImage((GMIMG *)img);
 }
 void *uiEmbossgmImage(GMIMG *png) {
+	/* Returns a NEW IMAGE */
   int bkgrclr,w,h;
   float rzfac;
   Image *image,*resize_image=NULL;
@@ -1490,7 +1491,9 @@ void *uiEmbossgmImage(GMIMG *png) {
   png->image_rowbytes = png->image_width*png->image_channels;
   return png;
 }
+
 void *kgEmbossImage(void *img) {
+	/* New  image returns */
   return uiEmbossgmImage((GMIMG *)img);
 }
 void *uiSharpengmImage(GMIMG *png) {
@@ -2321,6 +2324,48 @@ void *kgChangeBrightness(void *Img,float fac) {
    SyncImagePixels(img);
    return Img;
 }
+void *kgModifyImageHSV(void *Img,float hfac,float sfac,float vfac) {
+  /* Adding Transparency to Image */
+   int w,h,i,j,k;
+   GMIMG *png;
+   Image *img;
+   int channels=3, opacity,red,green,blue;
+   float r,g,b,hu,s,v;
+   float f;
+   PixelPacket *pixels,*dest;
+   if(Img==NULL) return NULL;
+   png = (GMIMG *)Img;
+   channels = png->image_channels;
+   png->image_channels=4;
+   img = png->image;
+   w = img->columns;
+   h = img->rows;
+   img->matte=1;
+   img->background_color.opacity =255;
+   pixels = (PixelPacket *)uiPixelsgmImage(Img);
+   for (i = 0;  i < h;  ++i) {
+            dest = pixels + i*w;
+            for (j=0;j < w;   j++) {
+                 r = dest->red;
+                 g = dest->green;
+                 b = dest->blue;
+                 RGBtoHSV(r,g,b,&hu,&s,&v);
+                 v = v*vfac;
+                 if(v> 1.0) v=1.0;
+                 s = s*sfac;
+                 if(s> 1.0) s=1.0;
+                 hu = hu*hfac;
+                 hu =((int)hu)%360;
+                 HSVtoRGB(&r,&g,&b,hu,s,v);
+                 dest->red=r;
+                 dest->green=g;
+                 dest->blue=b;
+                 dest++;
+           }
+   }
+   SyncImagePixels(img);
+   return Img;
+}
 void *kgAddTransparency(void *Img,float transp) {
   /* Adding Transparency to Image */
    int w,h,i,j,k;
@@ -2344,12 +2389,15 @@ void *kgAddTransparency(void *Img,float transp) {
    for (i = 0;  i < h;  ++i) {
             dest = pixels + i*w;
             for (j=0;j < w;   j++) {
+#if 1
                   if(dest->opacity < 255 ){
                        opacity = dest->opacity +  f+0.5;
                        if(opacity >255) opacity=255;
                        dest->opacity=opacity;
                   }
                   else dest->opacity=255;
+#else
+#endif
                   dest++;
            }
    }
@@ -2496,5 +2544,101 @@ void *kgMergeImages(void *png1,void *png2,int Xshft,int Yshft) {
      return img2;
    }
    else return uiMergegmImages((GMIMG *)png1,(GMIMG *)png2,Xshft, Yshft);
+}
+void *kgImagetoGray(void *img) {
+
+/*
+ Converts the Image to Gray scale
+  
+*/
+  int i,j,k=0;
+  GMIMG *png=NULL;
+  int gray=0;
+  int xsize,ysize;
+  
+  Image *image;
+  PixelPacket *pixels;
+  unsigned int red,green,blue;
+  png = (GMIMG *)img;
+  if(png== NULL) return NULL;
+  image = (Image *)(png->image);
+  uiInitGm();
+  pixels =GetImagePixels(image,0,0,image->columns,image->rows);
+  xsize = image->columns;
+  ysize = image->rows;
+  k=0;
+  for(j=0;j<(ysize);j++) {
+    for(i=0;i<(xsize);i++) {
+       blue = pixels[k].blue;
+       green = pixels[k].green;
+       red = pixels[k].red;
+       gray = 0.299*red+0.587*green+0.114*blue;
+       pixels[k].blue = gray;
+       pixels[k].green = gray;
+       pixels[k].red = gray;
+       k++;
+    }
+  }
+  SyncImagePixels(image);
+  return png;
+}
+void *kgImageModifyColor(void *img,float rfac,float gfac,float bfac) {
+
+/*
+ Converts the Image to Gray scale
+  
+*/
+  int i,j,k=0;
+  GMIMG *png=NULL;
+  int gray=0;
+  int xsize,ysize;
+  
+  Image *image;
+  PixelPacket *pixels;
+  unsigned int red,green,blue;
+  png = (GMIMG *)img;
+  if(png== NULL) return NULL;
+  image = (Image *)(png->image);
+  uiInitGm();
+  pixels =GetImagePixels(image,0,0,image->columns,image->rows);
+  xsize = image->columns;
+  ysize = image->rows;
+  k=0;
+  for(j=0;j<(ysize);j++) {
+    for(i=0;i<(xsize);i++) {
+       blue = pixels[k].blue*bfac;
+       green = pixels[k].green*gfac;
+       red = pixels[k].red*rfac;
+//       gray = 0.299*red+0.587*green+0.114*blue;
+       if(blue >255) blue=255;
+       if(green >255) green=255;
+       if(red >255) red=255;
+       pixels[k].blue = blue;
+       pixels[k].green = green;
+       pixels[k].red = red;
+       k++;
+    }
+  }
+  SyncImagePixels(image);
+  return png;
+}
+int kgGetImageSize(void *img,int *xsize,int *ysize) {
+
+/*
+ Converts the Image to Gray scale
+  
+*/
+  int i,j,k=0;
+  GMIMG *png=NULL;
+  int gray=0;
+  
+  Image *image;
+  png = (GMIMG *)img;
+  *xsize =0,*ysize = 0;
+  if(png== NULL) return 0;
+  image = (Image *)(png->image);
+  *xsize = image->columns;
+  *ysize = image->rows;
+  return 1;
 }
 #endif

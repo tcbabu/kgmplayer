@@ -2328,11 +2328,11 @@ DIL * kgCreateSplButtons(int xo,int yo,int nx,int ny,int length,int height,char 
    DIL *h;
    BUT_STR *butn;
    int i,n=0;
-   double fac=0.0;
+   double fac=0.2;
    int offset=4;
    char **xpm;
    int *bkgr;
-   int type=2;
+   int type=5;
    int clr=-1;
    int xgap=4,ygap=4,lngth=80,width=25,nxb=1,nyb=1;
    DIL htmp = {'h',10L,10L,60,20,5,5,52,52,1,1,
@@ -2365,6 +2365,9 @@ DIL * kgCreateSplButtons(int xo,int yo,int nx,int ny,int length,int height,char 
     butn[i].xpmp=NULL;
     butn[i].xpmh=NULL;
     butn[i].title[0]='\0';
+    if(titles!= NULL) {
+      if(titles[i] != NULL) strcpy(butn[i].title,titles[i]);
+    }
     butn[i].bkgr = -1;
     butn[i].sw =1;
     butn[i].butncode=31;

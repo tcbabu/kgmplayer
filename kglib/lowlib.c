@@ -234,7 +234,7 @@ void _uiInitButs(DIN *B);
 DIALOG *getParentDisplay(void *D) {
   DIALOG *Dtmp;
   Dtmp = (DIALOG *) D;
-  while(Dtmp->Newwin!=1 ){
+  if(Dtmp->Newwin!=1 ){
     Dtmp = Dtmp->parent;
     if(Dtmp==NULL) {printf("Parent=NULL\n");exit(0);}
   }
@@ -6243,6 +6243,41 @@ void uiString(DIALOG *D,char *str,int x,int y,int width,int height,int font,int 
    }
    else printf("img == NULL\n");
 }
+void uiMsgString(DIALOG *D,char *str,int x1,int y1,int char_clr,int Font,int FontSize)
+{
+ /* writes a string in fixed font mod */
+ void *fid,*img;
+ int jj,k,i,iyi,ln;
+ unsigned int temp;
+ char stmp[2];
+ int xsize,ysize;
+ float th,tw,tg,xx,yy;;
+ ln = strlen(str);
+ if(ln > 0) {
+   xsize = ln*FontSize;
+   ysize = 1.80*FontSize;
+   stmp[1]='\0';
+//   fid = kgInitImage((int)(xsize),ysize,2);
+   fid = kgInitImage((int)(xsize),ysize,RESIZE);
+   kgUserFrame(fid,0.,0.,(float)xsize,(float)ysize);
+   th = FontSize*1.1;
+   tw = FontSize;
+   kgTextFont(fid,Font);
+   kgTextSize(fid,th,tw,GAP*tw);
+   kgTextColor(fid,char_clr);
+   xx =0.0;
+   yy = 0.5*FontSize;
+   i=0;
+   kgMove2f(fid,xx,yy);
+   kgWriteText(fid,str);
+//   img = kgGetResizedImage(fid);
+   img = kgGetSharpImage(fid);
+   kgCloseImage(fid);
+   kgImage(D,img,x1,y1,xsize,ysize,0.0,1.0);
+   kgFreeImage(img);
+ }
+ return;
+}
 void uiBoxedString(DIALOG *D,char *str,int x,int y,int width,int height,int font,int border,int highli,int charclr,int FontSize,int justfic,float rfac,int state){
 /*
    Write a string in Dialog Area;
@@ -8654,7 +8689,7 @@ void _ui_slidevalue(DIALOG *D,S_STR *pt) {
    EVGAY = D->evgay;
    uiBkup_clip_limits(wc);
    uiSet_full_scrn(wc);
-   uiShadedString(D,"!f35t", x-3, EVGAY-y-1, w,w+1,35,D->gc.fill_clr,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
+   uiShadedString(D,"!f35t", x-3, EVGAY-y-1, w,w+1,35,D->gc.scroll_fill,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
    uiRest_clip_limits(wc);
   }
  void _ui_right_dir(DIALOG *D,int x,int y,int w,int bright)
@@ -8671,7 +8706,7 @@ void _ui_slidevalue(DIALOG *D,S_STR *pt) {
    uiSet_full_scrn(wc);
    uiset_clr(D,tmp);
 //   uiShadedString(D,"!f35!w32!xs", x+3, EVGAY-y-1, w,w+1,35,D->gc.fill_clr,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
-   uiShadedString(D,"!f35s", x+3, EVGAY-y-1, w,w+1,35,D->gc.fill_clr,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
+   uiShadedString(D,"!f35s", x+3, EVGAY-y-1, w,w+1,35,D->gc.scroll_fill,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
    uiRest_clip_limits(wc);
   }
  void _dvleft_dir(DIALOG *D,int x,int y,int w,float rfac,int type)
@@ -8684,7 +8719,7 @@ void _ui_slidevalue(DIALOG *D,S_STR *pt) {
    wc= WC(D);
    uiBkup_clip_limits(wc);
    uiSet_full_scrn(wc);
-   uiShadedString(D,"!f35t", x, y, w-1,w,35,D->gc.fill_clr,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
+   uiShadedString(D,"!f35t", x, y, w-1,w,35,D->gc.scroll_fill,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
    uiRest_clip_limits(wc);
   }
  void _dvright_dir(DIALOG *D,int x,int y,int w,float rfac,int type)
@@ -8699,7 +8734,7 @@ void _ui_slidevalue(DIALOG *D,S_STR *pt) {
    uiSet_full_scrn(wc);
    uiset_clr(D,tmp);
 //   uiShadedString(D,"!f35!w32!xs", x+3, EVGAY-y-1, w,w+1,35,D->gc.fill_clr,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
-   uiShadedString(D,"!f35s", x, y, w-1,w,35,D->gc.fill_clr,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
+   uiShadedString(D,"!f35s", x, y, w-1,w,35,D->gc.scroll_fill,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
    uiRest_clip_limits(wc);
   }
 void _ui_slidebar_o(DIALOG *D,S_STR *pt) {
@@ -9981,7 +10016,7 @@ int Make_fbrowser(DIX *x,int x1,int y1,int XX)
    wc= WC(D);
    uiBkup_clip_limits(wc);
    uiSet_full_scrn(wc);
-   uiShadedString(D,"!f35!w32!xs", x, y, w,w,35,D->gc.fill_clr,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
+   uiShadedString(D,"!f35!w32!xs", x, y, w,w,35,D->gc.scroll_fill,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
    uiRest_clip_limits(wc);
   }
  void _dvdown_dir(DIALOG *D,int x,int y,int w,float rfac,int type)
@@ -9990,7 +10025,7 @@ int Make_fbrowser(DIX *x,int x1,int y1,int XX)
    wc= WC(D);
    uiBkup_clip_limits(wc);
    uiSet_full_scrn(wc);
-   uiShadedString(D,"!f35!w32!xt", x, y, w,w,35,D->gc.fill_clr,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
+   uiShadedString(D,"!f35!w32!xt", x, y, w,w,35,D->gc.scroll_fill,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
    uiRest_clip_limits(wc);
   }
  void _uidown_dir_o(DIALOG *D,int x,int y,int w)
@@ -10064,18 +10099,26 @@ void ui_draw_browser(DIW *w,int n,int lngth) {
   if(w->Bimg != NULL) kgRestoreImage(D,w->Bimg,x1,y1,(x2-x1+1),(y2-y1+1));
   if(n> 0) {
      uiString(D,w->prompt,x1,y1,lngth,w->y2-w->y1,D->gc.PromptFont,
-                   D->gc.txt_pchar,D->gc.FontSize,1,-1);
-//                   D->gc.txt_pchar,D->gc.FontSize,1,D->gc.fill_clr);
+                   D->gc.txt_pchar,D->gc.FontSize,1,D->gc.fill_clr);
   }
   EVGAY = D->evgay;
   x1 = w->xb+D->xo+2;
   x2 = w->x2+D->xo-w->width-w->offset;
+  //NEW
+#if 0
   y1 = w->y1+D->yo+2;
   y2 = w->y2+D->yo-2;
+  y1 = w->y1+D->yo;
+  y2 = w->y2+D->yo;
   yoff = (y2-y1-w->width)*0.5;
   x1+=xoff;
   y1+=yoff;
   y2-=yoff;
+#else 
+  yoff= w->width*0.5;
+  y1 = (w->y1+w->y2)*0.5+D->yo-yoff;
+  y2 = (w->y1+w->y2)*0.5+D->yo+yoff;
+#endif
   ln = x2-x1-5;
   uiBkup_clip_limits(wc);
   uiSet_full_scrn(wc);
@@ -10089,10 +10132,15 @@ void ui_draw_browser(DIW *w,int n,int lngth) {
            D->gc.menu_char,D->gc.FontSize,-1,-1);
 //  kgImage(D,img,x1+5,y1,ln,w->width,0.0,1.0);
 #endif
+#if 0
   y1-=yoff;
   y2+=yoff;
   yoff = (y2-y1-w->w)*0.5;
   _dvdown_dir(D,x2,y1+yoff,w->w,0.2,5);
+  _dvdown_dir(D,x2,y1,w->w,0.2,5);
+#else
+  _dvdown_dir(D,x2,y1-3,w->width+4,0.2,4);
+#endif
   uiRest_clip_limits(wc);
 }
 void uiCleanEbrowserImages(DIE *w) {
@@ -10202,7 +10250,7 @@ void uiMakeYImages(DIY *w) {
    }
 #else
    w->imgs= (void **) uiMenuNailImages(D,menu,
-                 lng,width,D->gc.MsgFont,D->gc.info_char,
+                 lng,width,D->gc.MsgFont,D->gc.twin_char,
                  D->gc.FontSize,0,4);
 #endif
    return;
@@ -10243,8 +10291,8 @@ void uiMakeXImages(DIX *w,int lng) {
      w->himg=NULL;
    }
    i=0;
-   w->nimg = uiMakeXSymbol(w,D->gc.menu_char,D->gc.FontSize,0);
-   w->himg = uiMakeXSymbol(w,D->gc.menu_char,D->gc.FontSize,1);
+   w->nimg = uiMakeXSymbol(w,D->gc.twin_char,D->gc.FontSize,0);
+   w->himg = uiMakeXSymbol(w,D->gc.twin_char,D->gc.FontSize,1);
    menu = (ThumbNail **)w->list;
    if(menu != NULL) {
 #if 0
@@ -10259,7 +10307,7 @@ void uiMakeXImages(DIX *w,int lng) {
      }
 #else
    w->imgs= (void **) uiMenuNailImages(D,menu,
-                 lng,w->width,D->gc.MenuFont,D->gc.menu_char,
+                 lng,w->width,D->gc.MenuFont,D->gc.twin_char,
                  D->gc.FontSize,-1,Mag);
 #endif
    }
@@ -11267,6 +11315,7 @@ int _uiMake_X(DIX *y)
    bwsr->y1 =y->y1+y1;
    bwsr->x2 =y->x2+x1;
    bwsr->y2 =y->y2+y1;
+   if(y->bkgr ==1) _dvrect_fill(WC(D), bwsr->x1+4,bwsr->y1+4,bwsr->x2-4,bwsr->y2-4,D->gc.twin_fill);
   if(y->hide != 1) {
    CHECKLIMITS(y);
    if(y->Bimg== NULL) y->Bimg=kgGetBackground(D,bwsr->x1,bwsr->y1,bwsr->x2,bwsr->y2 );
@@ -11877,8 +11926,9 @@ int _uiMake_MS(DIS *y)
  {
   char **menu;
   BRW_STR *bwsr;
+  Gclr gc;
   int ret,n=0,i=0,x1,y1;
-  int height,extra,w;
+  int height,extra,w,exitems;
   kgWC *wc;
   DIALOG *D;
   D = (DIALOG *) (y->D);
@@ -11899,15 +11949,23 @@ int _uiMake_MS(DIS *y)
    menu=(char **)y->menu;
    n=0;
    if(menu != NULL) while ( menu[n]!=NULL) n++;
-   y->nitems=n;
-   if(y->size>n) y->size=n;
    bwsr->hitem=0;
    bwsr->pos=0;
    bwsr->xb= bwsr->x2;
    height = y->width;
    bwsr->width=height;
    y->size = (y->y2-y->y1-2*y->offset)/bwsr->width;
-   if(y->size>y->nitems) y->size=y->nitems;
+   y->nitems=n;
+   //TCB NEW
+   exitems=0;
+   if(n>y->size) {
+	   exitems= n -y->size;
+#if 0
+	   menu +=exitems;
+	   y->nitems= y->size;
+#endif
+   }
+//   if(y->size>y->nitems) y->size=y->nitems;
    bwsr->w= y->w;
    bwsr->offset=y->offset;
    if(y->size<=0) {
@@ -11916,17 +11974,28 @@ int _uiMake_MS(DIS *y)
    }
    extra = (y->y2 -y->y1-2*y->offset-y->size*height)/2;
    if(extra < -y->offset) extra= -y->offset;
-   bwsr->offset =y->offset+extra;
+   //TCB NEW
+//   bwsr->offset =y->offset+extra;
    bwsr->scroll=1;
    bwsr->menu = (char **)menu;
-   if(y->size==y->nitems) {
+//   if(y->size<=y->nitems) {
+   if(exitems==0) {
         bwsr->scroll=0;
    }
    bwsr->size=y->size;
+#if 0   
    if(bwsr->df >n ) bwsr->df=1;
    if(bwsr->df < 1 ) bwsr->df=1;
-   bwsr->pos=0;
+#else
+   //TCB NEW
+   bwsr->df=exitems+1;
+#endif
+   bwsr->pos=exitems;
    bwsr->D=D;
+   gc=D->gc;
+//   bwsr->MS.color1=gc.fill_clr;bwsr->MS.color2=gc.high_clr;
+   bwsr->MS.color1=gc.msg_fill;bwsr->MS.color2=gc.msg_bodr;
+   bwsr->MS.char_clr = gc.msg_char;
    bwsr->hitem = bwsr->df-1;
    w = bwsr->scroll*y->w;
    bwsr->w=w;
@@ -16518,15 +16587,18 @@ int kgScrollDownThumbNails (DIY *y) {
       else ret =0;
       return(ret);
 }
-int  kgDragThumbNail(DIY *Y,int item,int *x,int *y) {
+int  kgDragThumbNail(void *wid,int item,int *x,int *y) {
   ThumbNail **th,*tpt;
   void *Img=NULL;
   KBEVENT  kb;
   DIALOG *D;
+  DIY *Y;
   int ret=0,pos,k,rv; 
   int ymin,ymax,xmin,xmax,xmid;
   int x1,y1,x2,y2,xl,yl;
+  Y = (DIY *) wid;
   D = ((DIALOG *)(Y->D));
+  if( (Y->code != 'y') && (Y->code != 'x') ) return 0;
   ymin = Y->y1+D->yo+Y->offset;
   ymax = Y->y2+D->yo-Y->offset;
   xmin = Y->x1+D->xo+Y->offset;
@@ -18314,7 +18386,7 @@ void _uiPutYmenu( DIY *y){
       if(y->bordr==1) {
       _dv_draw_bound(D,(br->x1+xoffset),(br->y1+xoffset),(br->x2-xoffset-w), (br->y2-xoffset),D->gc.twin_bodr);
       _dv_draw_bound(D,(br->x1+xoffset+1),(br->y1+xoffset+1),(br->x2-xoffset-w-1), (br->y2-xoffset-1),D->gc.twin_bodr);
-      _dv_draw_bound(D,(br->x1+xoffset+2),(br->y1+xoffset+2),(br->x2-xoffset-w-2), (br->y2-xoffset-2),D->gc.twin_bodr);
+//      _dv_draw_bound(D,(br->x1+xoffset+2),(br->y1+xoffset+2),(br->x2-xoffset-w-2), (br->y2-xoffset-2),D->gc.twin_bodr);
       }
       jj = iy;
       uiDefaultGuiFontSize(D);
@@ -18324,7 +18396,7 @@ void _uiPutYmenu( DIY *y){
         yi = (br->hitem-pos)/nx;
         ixp = br->x1+xoffset+xi*(y->lngth+y->xgap)+br->xshift;
         iyp = br->y1+yoffset+yi*br->width;
-        _dvrect_fill(WC(D),ixp,iyp,ixp+y->lngth+y->xgap,iyp+y->width+6,D->gc.dim);
+        _dvrect_fill(WC(D),ixp,iyp,ixp+y->lngth+y->xgap,iyp+y->width+6,D->gc.ItemHighColor);
       }
 #endif
       kk=0;
@@ -18346,7 +18418,12 @@ void _uiPutYmenu( DIY *y){
          else img->bkgrclr=D->gc.twin_fill;
          kgImage(D,xpm,ixp+2,iyp+2,y->lngth+y->xgap-4,y->width+2,0.0,1.0);
         }
+	//TCB NEW
+#if 0
         iyp = iyp+br->width-th;
+#else
+        iyp = iyp+br->width-th*1.20;
+#endif
         if((list!= NULL)&&(menu[kk]->name!=NULL))
 //            uiString(D,menu[kk]->name,ixp,iyp,y->width+y->xgap,th,D->gc.MsgFont,D->gc.info_char,D->gc.FontSize,0,-1);
           kgImage(D,y->imgs[kk+pos],ixp,iyp,y->lngth+y->xgap,th,0.0,1.0);
@@ -18531,14 +18608,14 @@ void _uiPutXmenu( DIX *y){
       menu=NULL;
       if(list != NULL) menu=list+pos;
 #ifndef D_RESTORE
-      _dvrect_fill(WC(D),(br->x1+xoffset),(br->y1+xoffset),(br->x2-xoffset-w)-1, (br->y2-xoffset),D->gc.fill_clr);
+      _dvrect_fill(WC(D),(br->x1+xoffset),(br->y1+xoffset),(br->x2-xoffset-w)-1, (br->y2-xoffset),D->gc.twin_fill);
 #else
       dx = (br->x2-xoffset-w)-(br->x1+xoffset);
       dy = (br->y2-xoffset)-(br->y1+xoffset)+1;
       kgRestoreImagePart(D,y->Bimg,(br->x1+xoffset),(br->y1+xoffset),xoffset,xoffset,dx,dy);
 #endif
       if(y->bordr==1) {
-      _dv_draw_bound(D,(br->x1+xoffset),(br->y1+xoffset),(br->x2-xoffset-w)-1, (br->y2-xoffset),D->gc.high_clr);
+      _dv_draw_bound(D,(br->x1+xoffset),(br->y1+xoffset),(br->x2-xoffset-w)-1, (br->y2-xoffset),D->gc.twin_bodr);
       }
       jj = iy;
       uiDefaultGuiFontSize(D);
@@ -18703,6 +18780,7 @@ void _uiPutMmenu( DIS *y){
       char **menu,**list;
       unsigned int cur_c,temp,ch,cr,esc;
       int j,pos;
+      int offset=2;
       int k,kk,knew,jj,ln,bxln,bxwd;
       int n,iy,iyp,ixp,ixmid;
       int scroll=1,swv,nx,ny,yi,xi,scrsize,xoffset,yoffset,th,w;
@@ -18714,7 +18792,7 @@ void _uiPutMmenu( DIS *y){
       br= y->bwsr;
       D = (DIALOG *)(y->D);
       EVGAY = D->evgay;
-      list = (char **)y->menu;
+      list = (char **)br->menu;
       scroll=br->scroll;
       w = y->w*scroll;
       th = y->width;
@@ -18734,11 +18812,27 @@ void _uiPutMmenu( DIS *y){
       if(pos>=y->nitems) pos=y->nitems-1;
       br->pos=pos;
       menu=NULL;
+#if 0
       if(list != NULL) menu=list+pos;
+#else
+      menu = list;
+      if(y->nitems > y->size) menu += (y->nitems - y->size);
+#endif
+#if 0
       _dvrect_fill(WC(D),(br->x1+xoffset),(br->y1+xoffset),(br->x2-xoffset-w)-1, (br->y2-xoffset),D->gc.info_fill);
       if(y->bordr==1) {
       _dv_draw_bound(D,(br->x1+xoffset),(br->y1+xoffset),(br->x2-xoffset-w)-1, (br->y2-xoffset),D->gc.high_clr);
       }
+#else
+      _dvrect_fill(WC(D),(br->x1+xoffset),(br->y1+xoffset),(br->x2-xoffset-w)-1, (br->y2-xoffset),br->MS.color1);
+#if 0
+      if(y->bordr==1) {
+//      _dv_draw_bound(D,(br->x1+xoffset),(br->y1+xoffset),(br->x2-xoffset-w)-1, (br->y2-xoffset),br->MS.color2);
+      _dvrect_fill(WC(D),(br->x1+xoffset),(br->y1+xoffset),(br->x2-xoffset-w)-1, (br->y2-xoffset),br->MS.color2);
+      _dvrect_fill(WC(D),(br->x1+xoffset+offset),(br->y1+xoffset+offset),(br->x2-xoffset-w-1-offset), (br->y2-xoffset-offset),br->MS.color1);
+      }
+#endif
+#endif
       jj = iy;
       uiDefaultGuiFontSize(D);
       kk=0;
@@ -18751,11 +18845,17 @@ void _uiPutMmenu( DIS *y){
       {
         if(kk+pos >= y->nitems) continue;
         if(kk+pos==br->df-1)  swv=1;else swv=0;
-        ixp = br->x1+xoffset+xi*(y->width);
-        iyp = br->y1+yoffset+yi*br->width;
+        ixp = br->x1+xoffset+xi*(y->width)+br->width*0.5;
+        iyp = br->y1+yoffset+yi*br->width+br->width*0.5;
 	if((list!= NULL)&&(list[kk+pos]!=NULL)){
+#if 0
             uiString(D,list[kk+pos], (int)ixp+xoff*y->width,(int)iyp,bxln,y->width,D->gc.MsgFont,
                     D->gc.info_char,D->gc.FontSize,-1,-1);
+#else
+	    //TCB NEW
+	    //
+	   uiMsgString(D,list[kk+pos],(int)ixp+xoff*y->width,(int)iyp,br->MS.char_clr,D->gc.MsgFont,D->gc.FontSize);
+#endif
         }
         kk++;
       }
@@ -19037,8 +19137,8 @@ void _uiPutmsg(BRW_STR *br) {
   D= (DIALOG *)(v->D);
   uiBkup_clip_limits(WC(D));
   uiSet_full_scrn(WC(D));
-   xx = v->tbx1;
-   yy = v->tby1;
+   xx = v->tbx1+1;
+   yy = v->tby1+1;
    w= v->w;
    _dvup_dir(D,xx,yy,w,0.2,4);
    yy = v->bby1;
@@ -19109,7 +19209,7 @@ void _uiPutmsg(BRW_STR *br) {
   D= (DIALOG *)(y->D);
   uiBkup_clip_limits(WC(D));
   uiSet_full_scrn(WC(D));
-   xx = br->tbx1;
+   xx = br->tbx1+2;
    yy = br->tby1;
    w= br->w;
    _dvup_dir(D,xx,yy,w,0.2,4);
@@ -19249,15 +19349,15 @@ void _uiNewMoveVertPointer(BRW_STR *br) {
    tmp=WC(D)->c_color;
    uiBkup_clip_limits(WC(D));
    uiSet_full_scrn(WC(D));
-//TCB
+//TCB NEW
    x1=x+1;y1=y;x2=x1+w;y2=y+h;
-   _dvrect_fill(WC(D),x1,y1,x2,y2,D->gc.dim);
+   _dvrect_fill(WC(D),x1,y1,x2,y2,D->gc.scroll_dim);
    sy = y1+sy;
    if(sy>y2) sy=y2-sh;
    if(sy+sh>y2) sy =y2- sh;
-   uiset_clr(D,D->gc.vbright);
-   _dvrect_fill(WC(D),x1,sy,x2,sy+sh,D->gc.fill_clr);
-   uiset_clr(D,D->gc.vbright);
+   uiset_clr(D,D->gc.scroll_vbright);
+   _dvrect_fill(WC(D),x1,sy,x2,sy+sh,D->gc.scroll_fill);
+   uiset_clr(D,D->gc.scroll_vbright);
    _dv_h_line(WC(D),x1,x2,sy);
    _dv_v_line(WC(D),sy,sy+sh,x1);
    uiset_clr(D,D->gc.v_dim);
@@ -19275,13 +19375,13 @@ void _uiNewMoveVertPointer(BRW_STR *br) {
    uiSet_full_scrn(WC(D));
 //TCB
    x1=x;y1=y;x2=x+w;y2=y+h;
-   _dvrect_fill(WC(D),x1,y1,x2,y2,D->gc.dim);
+   _dvrect_fill(WC(D),x1,y1,x2,y2,D->gc.scroll_dim);
    sy = x1+sy;
    if(sy>x2) sy=x2-sh;
    if(sy+sh>x2) sy =x2- sh;
-   uiset_clr(D,D->gc.vbright);
-   _dvrect_fill(WC(D),sy,y1,sy+sh,y2,D->gc.fill_clr);
-   uiset_clr(D,D->gc.vbright);
+   uiset_clr(D,D->gc.scroll_vbright);
+   _dvrect_fill(WC(D),sy,y1,sy+sh,y2,D->gc.scroll_fill);
+   uiset_clr(D,D->gc.scroll_vbright);
    _dv_h_line(WC(D),sy,sy+sh,y1);
    _dv_v_line(WC(D),y1,y2,sy);
    uiset_clr(D,D->gc.v_dim);
@@ -19756,7 +19856,11 @@ void _uiDrawDialogMenu(BRW_STR *br) {
     uiSet_full_scrn(WC(D));
 //    offset=scroll*4;
     _uirect_fill(WC(D), br->x1+(offset+2),D->evgay-br->y1-(offset+2),br->x2-(offset+2), D->evgay-br->y2+(offset+2),gc.txt_fill);
+#if 0
     _uibordertype0(D, br->x1+(offset+2),D->evgay-br->y1-(offset+2),br->x2-((offset+2)-1), D->evgay-br->y2+((offset+2)-1),gc.vbright);
+#else
+    _uibordertype1(D, br->x1+(offset+2),D->evgay-br->y1-(offset+2),br->x2-((offset+2)-1), D->evgay-br->y2+((offset+2)-1));
+#endif
     uiRest_clip_limits(WC(D));
   }
   if(n!=0) {
@@ -19782,6 +19886,7 @@ void _uiDrawDialogMenu(BRW_STR *br) {
 
 }
 void _uiDrawDialogY(DIY *y) {
+  void *img;
   BRW_STR *br;
   Gclr gc;
   int offset=2;
@@ -19796,8 +19901,14 @@ void _uiDrawDialogY(DIY *y) {
    if(y->Bimg== NULL) y->Bimg=kgGetBackground(D,br->x1,br->y1,br->x2,br->y2 );
    else kgRestoreImage(D,y->Bimg,br->x1,br->y1,(br->x2-br->x1+1),(br->y2-br->y1+1));
    if((D->DrawBkgr!=0)&&(y->bkgr==1)) {
-    _dvrect_fill(WC(D), br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),gc.txt_fill);
-    _dvbordertype0(D, br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),gc.vbright);
+#if 0
+    _dvrect_fill(WC(D), br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),gc.twin_fill);
+    _dvbordertype0(D, br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),gc.twin_bodr);
+//    _dvbordertype4(D, br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset));
+#else
+    img = kgBorderedRectangle(br->x2-br->x1,br->y2-br->y1,gc.twin_fill,0.0);
+    kgImage(D,img, br->x1,br->y1,br->x2-br->x1,br->y2-br->y1,0.0,1.0);
+#endif
    }
    if(y->nitems!=0) {
     if(br->scroll) {
@@ -19888,6 +19999,7 @@ void _uiDrawDialogCheckBox(DICH *y) {
 }
 void _uiDrawDialogX(DIX *y) {
   BRW_STR *br;
+  void *img;
   Gclr gc;
   int offset=2;
   DIALOG *D;
@@ -19902,8 +20014,14 @@ void _uiDrawDialogX(DIX *y) {
    if(y->Bimg== NULL) y->Bimg=kgGetBackground(D,br->x1,br->y1,br->x2,br->y2 );
    if(y->Bimg != NULL) kgRestoreImage(D,y->Bimg,br->x1,br->y1,(br->x2-br->x1+1),(br->y2-br->y1+1));
    if((D->DrawBkgr!=0)&&(y->bkgr==1)) {
-    _dvrect_fill(WC(D), br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),gc.txt_fill);
-    _dvbordertype0(D, br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),gc.vbright);
+#if 0
+    _dvrect_fill(WC(D), br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),gc.twin_fill);
+    _dvbordertype0(D, br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),gc.twin_bodr);
+//    _dvbordertype4(D, br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset));
+#else
+    img = kgBorderedRectangle(br->x2-br->x1,br->y2-br->y1,gc.twin_fill,0.0);
+    kgImage(D,img, br->x1,br->y1,br->x2-br->x1,br->y2-br->y1,0.0,1.0);
+#endif
    }
    if(y->nitems!=0) {
     if(br->scroll) {
@@ -20028,11 +20146,24 @@ void _uiDrawDialogM(DIS *y) {
   gc = D->gc;
   uiBkup_clip_limits(WC(D));
   uiSet_full_scrn(WC(D));
+#if 0
    _dvrect_fill(WC(D), br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),gc.fill_clr);
    if((D->DrawBkgr!=0)&&(y->bkgr==1)) {
     _dvrect_fill(WC(D), br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),gc.txt_fill);
     _dvbordertype0(D, br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),gc.vbright);
    }
+#else
+   _dvrect_fill(WC(D), br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),gc.fill_clr);
+   if((D->DrawBkgr!=0)&&(y->bkgr==1)) {
+#if 0
+    _dvrect_fill(WC(D), br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),br->MS.color1);
+    _dvbordertype0(D, br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),br->MS.color2);
+#else
+      _dvrect_fill(WC(D),(br->x1+offset),(br->y1+offset),(br->x2-offset), (br->y2-offset),br->MS.color2);
+      _dvrect_fill(WC(D),(br->x1+offset)+3,(br->y1+offset)+3,(br->x2-offset)-3, (br->y2-offset)-3,br->MS.color1);
+#endif
+   }
+#endif
    if(y->nitems!=0) {
     if(br->scroll) {
      _ui_vert_scroll_mbar(y);
@@ -20108,7 +20239,8 @@ void _uiDrawMsg(DIS *w) {
   gc = D->gc;
   br->D=D;
   br->MS.color1=gc.fill_clr;br->MS.color2=gc.high_clr;
-  br->MS.char_clr = gc.txt_char;
+  br->MS.color1=gc.msg_fill;br->MS.color2=gc.msg_bodr;
+  br->MS.char_clr = gc.msg_char;
 //TCB
   br->MS.imenu=br->size;
   br->MS.nitems=n;
@@ -20134,9 +20266,16 @@ void _uiDrawMsg(DIS *w) {
   Y2=(br->MS.iyy+scroll*10+bodrwidth+(br->MS.iyl));
   uiBkup_clip_limits(WC(D));
   uiSet_full_scrn(WC(D));
-  _dvrect_fill(WC(D),br->x1+offset,br->y1+offset,br->x2-offset, br->y2-offset,gc.txt_fill);
+  _dvrect_fill(WC(D),br->x1+offset,br->y1+offset,br->x2-offset, br->y2-offset,gc.fill_clr);
 //TCBTCB
+#if 1
   _dvbordertype1(D,br->x1+offset,br->y1+offset,br->x2-offset, br->y2-offset);
+#else
+   if((D->DrawBkgr!=0)&&(w->bkgr==1)) {
+    _dvrect_fill(WC(D), br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),br->MS.color1);
+    _dvbordertype0(D, br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset),br->MS.color2);
+   }
+#endif
   uiRest_clip_limits(WC(D));
   if(n!=0) {
    pos  = 1;

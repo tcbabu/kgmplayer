@@ -3066,7 +3066,7 @@ int MousePressInHBar(void *tmp,KBEVENT kbevent) {
 int uiGetBrowserButtonPress(DIW *w,KBEVENT kbevent) {
     BRW_STR *br;
     Gclr gc;
-    int x1,y1,x2,y2,PON_X,PON_Y,df;
+    int x1,y1,x2,y2,PON_X,PON_Y,df,yoff;
     char **m;
     int evgax,evgay;
     DIALOG *D;
@@ -3078,7 +3078,8 @@ int uiGetBrowserButtonPress(DIW *w,KBEVENT kbevent) {
     PON_X=kbevent.x;
     PON_Y=kbevent.y;
     x1 = w->x2-w->width-w->offset+D->xo;
-    y1=w->y1+D->yo;
+    yoff = (w->y2+w->y1)*0.5;
+    y1=D->yo+yoff-w->width*.5;
     x2=x1+w->width;
     y2=y1+w->width;
     if(((x1>(PON_X))||(x2<(PON_X))||
@@ -3620,6 +3621,7 @@ int EventInMsg(BRW_STR *br,KBEVENT kbevent) {
   ans = kbevent.key;
 //  set_pointer_position(kbevent.x,kbevent.y,kbevent.button);
   D->PON_X=kbevent.x; D->PON_Y=kbevent.y;
+  printf("Msg Scroll\n");
   switch(kbevent.event) {
        case 0:
 //           printf("Msg Scroll\n");
@@ -3631,6 +3633,7 @@ int EventInMsg(BRW_STR *br,KBEVENT kbevent) {
        case 2:
           break;
        case 3:
+	   printf(" MS Scroll Move \n");
           _ui_scroll_msg_move(br,kbevent);
           break;
        case 4:
@@ -4008,6 +4011,7 @@ int ProcessMouseMovement(DIALOG *D,KBEVENT kbevent,int i,int controls) {
   if(controls > 0) {
   d = D->d;
   ch = D->d[i].t->code;
+//  printf("ProcessMouseMovement %c\n",ch);
   switch (ch) {
     case 'h':
     case 'n':
@@ -5080,6 +5084,7 @@ again:
       }
       continue;
     }
+//    printf("controls: %d KEY = %d\n",controls,KEY);
     if(KEY< 5)if(!uiCheckClickinDialog(D)){
 // As on 28 Jun 2013
       if((D->Callback != NULL)) OK=D->Callback(D,&kbevent); 
@@ -5087,7 +5092,6 @@ again:
       if(OK) OK=1001;
       continue; 
     }
-//    printf("controls: %d\n",controls);
     if(D->controls > 0) {
       switch (KEY) {
        case 0:
@@ -6285,11 +6289,44 @@ int kgWrite(void *Tmp,char *msg) {
    if(m->hide==1) return 0;
    strncpy(m->msg,msg,499);
    kgUpdateWidget(m);
+   kgUpdateOn(m->D);
+   break;
+   case 's':
+   {
+	   Dlink *L;
+	   DIS *s;
+	   int i=0;
+	   char *pt,**menu;
+	   s = (DIS *)m;
+	   L = Dopen();
+	   menu = s->menu;
+	   if (menu != NULL) {
+	     i=0;
+ 	     while( (pt = menu[i++])!= NULL) Dadd(L,pt);
+             free(menu);
+	   }
+	   pt = (char *)malloc(strlen(msg)+1);
+	   strcpy(pt,msg);
+	   Dappend(L,pt);
+	   Resetlink(L);
+	   menu = (char **) malloc(sizeof(char *)*(Dcount(L)+1));
+	   i=0;
+	   Resetlink(L);
+	   while( (pt= (char *)Getrecord(L))!= NULL) {
+		   menu[i]=pt;i++;
+	   }
+	   menu[i]=NULL;
+	   s->menu  = menu;
+	   Dfree(L);
+           kgUpdateWidget(s);
+	   kgUpdateOn(s->D);
+   }
    break;
    case 'i':
    I = (DII *)Tmp;
    if(I->hide==1) return 0;
    uiinfo_wprintf((DIALOG *)I->D,I->twin,msg);
+   kgUpdateOn(I->D);
    break;
    default:
    fprintf(stderr,"Wrong Widget for kgWrite\n");
@@ -6442,6 +6479,7 @@ void **kgSetList(void *Tmp,void **list) {
     case 'c':
     X->list=list;
     X->nitems= nitems;
+    *(X->df) = 1;
     uiCleanXImages(X);
     return (void **)list;
     case 'r':
@@ -6452,6 +6490,7 @@ void **kgSetList(void *Tmp,void **list) {
     case 'y':
     X->list=list;
     X->nitems= nitems;
+    *(X->df) = 1;
     uiCleanYImages((DIY *)X);
     return (void **)list;
     case 'e':
@@ -6468,6 +6507,427 @@ void **kgSetList(void *Tmp,void **list) {
     fprintf(stderr,"Invalid Widget: kgSetList\n");
     return NULL;
   }
+}
+void *kgGetThumbNail(void *wid,int item){
+  DIX *X;
+  int nitems=0;
+  X = (DIX *)wid;
+  ThumbNail **list;
+  switch(X->code) {
+    case 'x':
+    case 'y':
+    case 'r':
+    case 'c':
+	    list = (ThumbNail **)X->list;
+            if(list != NULL) {
+             while(list[nitems]!= NULL)nitems++;
+            }
+	    else return NULL;
+	    if(item>=nitems) return NULL;
+	    return list[item];
+	    break;
+    default:
+	    break;
+  }
+  return NULL;
+}
+char *kgGetThumbNailName(void *wid,int item){
+  DIX *X;
+  int nitems=0;
+  X = (DIX *)wid;
+  ThumbNail **list;
+  switch(X->code) {
+    case 'x':
+    case 'y':
+    case 'r':
+    case 'c':
+	    list = (ThumbNail **)X->list;
+            if(list != NULL) {
+             while(list[nitems]!= NULL)nitems++;
+            }
+	    else return NULL;
+	    if(item>=nitems) return NULL;
+	    return list[item]->name;
+	    break;
+    default:
+	    break;
+  }
+  return NULL;
+}
+void *kgGetThumbNailImage(void *wid,int item){
+  DIX *X;
+  X = (DIX *)wid;
+  ThumbNail **list;
+  switch(X->code) {
+    case 'x':
+    case 'y':
+    case 'r':
+    case 'c':
+	    int nitems=0;
+	    list = (ThumbNail **)X->list;
+            if(list != NULL) {
+             while(list[nitems]!= NULL)nitems++;
+            }
+	    else return NULL;
+	    if(item>=nitems) return NULL;
+	    return list[item]->img;
+	    break;
+    default:
+	    break;
+  }
+  return NULL;
+}
+void *kgSetThumbNailImage(void *wid,int item,void *img){
+  DIX *X;
+  X = (DIX *)wid;
+  ThumbNail **list;
+  switch(X->code) {
+    case 'x':
+    case 'y':
+    case 'r':
+    case 'c':
+	    int nitems=0;
+	    list = (ThumbNail **)X->list;
+            if(list != NULL) {
+             while(list[nitems]!= NULL)nitems++;
+            }
+	    else return NULL;
+	    if(item>=nitems) return NULL;
+	    list[item]->img=img;
+	    return img;
+	    break;
+    default:
+	    break;
+  }
+  return NULL;
+}
+void kgSetThumbNailName(void *wid,int item,char *name){
+  DIX *X;
+  X = (DIX *)wid;
+  ThumbNail **list;
+  switch(X->code) {
+    case 'x':
+    case 'y':
+    case 'r':
+    case 'c':
+	    int nitems=0;
+	    list = (ThumbNail **)X->list;
+            if(list != NULL) {
+             while(list[nitems]!= NULL)nitems++;
+            }
+	    else return ;
+	    if(item>=nitems) return;
+	    list[item]->name=(char *)malloc(strlen(name)+1);
+	    strcpy(list[item]->name,name);
+	    return ;
+	    break;
+    default:
+	    break;
+  }
+  return ;
+}
+void *kgCopyThumbNail(void *tmp) {
+	ThumbNail *thret=NULL,*th;
+	th = (ThumbNail *)tmp;
+	if (th==NULL) return NULL;
+	thret = (ThumbNail *) malloc(sizeof(ThumbNail));
+	thret->name = NULL;
+	thret->img = NULL;
+	thret->sw = th->sw;
+	thret->id = th->id;
+	thret->state = th->state;
+	if (th->name != NULL) {
+		thret->name=(char *)malloc(strlen(th->name)+1);
+		strcpy(thret->name,th->name);
+	}
+	if(th->img != NULL) {
+		thret->img= kgCopyImage(th->img);
+	}
+	return (void *)thret;
+
+}
+int kgInsertThumbNail(void *Wid,void *th,int pos) {
+	Dlink *L=NULL;
+	ThumbNail **TH;
+	void *pt;
+	int i,n;
+	TH = (ThumbNail **)kgGetList(Wid);
+	L = Dopen();
+	if (TH == NULL) Dadd(L,th);
+	else {
+		i=0;
+		while(TH[i] != NULL) {Dadd(L,TH[i]);i++;}
+	        if((pos>= i) || (pos < 0))Dappend(L,th);
+		else {
+	          Dposition(L,pos+1);
+	          Dinsert(L,th);
+		}
+	}
+	n = Dcount(L)+1;
+	free(TH);
+	TH = (ThumbNail **) malloc(sizeof(ThumbNail *)*n);
+	Resetlink(L);
+	i=0;
+	while( (pt=Getrecord(L))!= NULL) {TH[i]=pt;i++;}
+	TH[i]=NULL;
+	kgSetList(Wid,(void **)TH);
+	Dfree(L);
+	return 1;
+}
+int kgAddThumbNail(void *Wid,void *th,int pos) {
+	Dlink *L=NULL;
+	ThumbNail **TH;
+	void *pt;
+	int i=0,n;
+	TH = (ThumbNail **)kgGetList(Wid);
+	L = Dopen();
+	if (TH == NULL) Dadd(L,th);
+	else {
+		i=0;
+		while(TH[i] != NULL) {Dadd(L,TH[i]);i++;}
+	        if((pos>= i)||(pos < 0))  Dappend(L,th);
+		else {
+	          Dposition(L,pos+1);
+	          Dadd(L,th);
+		}
+	}
+	n = Dcount(L)+1;
+	if(TH != NULL) free(TH);
+	TH = (ThumbNail **) malloc(sizeof(ThumbNail *)*n);
+	Resetlink(L);
+	i=0;
+	while( (pt=Getrecord(L))!= NULL) {TH[i]=pt;i++;}
+	TH[i]=NULL;
+	kgSetList(Wid,(void **)TH);
+	Dfree(L);
+	return 1;
+}
+int kgDeleteThumbNail(void *Wid,int pos) {
+	Dlink *L=NULL;
+	ThumbNail **TH,*th;;
+	void *pt,*pdel;
+	int i,n;
+	TH = (ThumbNail **)kgGetList(Wid);
+	if (TH == NULL) return 0;
+	L = Dopen();
+	i=0;
+	while(TH[i] != NULL) {Dadd(L,TH[i]);i++;}
+	if(pos>= i) return 0;
+	Dposition(L,pos+1);
+	pdel = Dpick(L);
+	th = (ThumbNail *)pdel;
+	if(th->img != NULL) uiFreeImage(th->img);
+        if(th->name!= NULL) free(th->name);
+	if(th != NULL) free(th);
+	n = Dcount(L)+1;
+	free(TH);
+	TH = (ThumbNail **) malloc(sizeof(ThumbNail *)*n);
+	Resetlink(L);
+	i=0;
+	while( (pt=Getrecord(L))!= NULL) {TH[i]=pt;i++;}
+	TH[i]=NULL;
+	kgSetList(Wid,(void **)TH);
+	Dfree(L);
+	return 1;
+}
+void kgFreeThumbNail(ThumbNail * th) {
+    if(th != NULL) {
+	if(th->img != NULL) uiFreeImage(th->img);
+        if(th->name!= NULL) free(th->name);
+	free(th);
+    }
+}
+void * kgPickThumbNail(void *Wid,int pos) {
+	Dlink *L=NULL;
+	ThumbNail **TH,*th;;
+	void *pt,*pdel;
+	int i,n;
+	TH = (ThumbNail **)kgGetList(Wid);
+	if (TH == NULL) return 0;
+	L = Dopen();
+	i=0;
+	while(TH[i] != NULL) {Dadd(L,TH[i]);i++;}
+	if(pos>= i) return 0;
+	Dposition(L,pos+1);
+	pdel = Dpick(L);
+	n = Dcount(L)+1;
+	free(TH);
+	TH = (ThumbNail **) malloc(sizeof(ThumbNail *)*n);
+	Resetlink(L);
+	i=0;
+	while( (pt=Getrecord(L))!= NULL) {TH[i]=pt;i++;}
+	TH[i]=NULL;
+	kgSetList(Wid,(void **)TH);
+	Dfree(L);
+	return pdel;
+}
+int kgMoveThumbNail(void *wid,int item,int pos) {
+
+/*
+ * wid is DIX/DIY/DICH 
+ * Moves Thumnail at position 'item' to pos
+*/
+	if(item < 0) return 0;
+	if(item== pos) return 0;
+	if (item < pos) {
+	   kgInsertThumbNail(wid,kgPickThumbNail(wid,item),pos);
+	}
+	else {
+           kgAddThumbNail(wid,kgPickThumbNail(wid,item),pos-1);
+	}
+	return 1;
+
+}
+void *kgSetWidgetImage(void *wid,void *img) {
+	DIP *p;
+	p = (DIP *)wid;
+	if(p->code != 'p') return NULL;
+	p->xpm = img;
+	return img;
+}
+void *kgGetWidgetImage(void *wid) {
+	DIP *p;
+	void *img=NULL;
+	p = (DIP *)wid;
+	if(p->code != 'p') return NULL;
+	img = p->xpm;
+	return img;
+}
+
+static int uiDupItem(void *tmp1,void *tmp2) {
+	ThumbNail *th1,*th2;
+	int ret;
+	th1 = (ThumbNail *)tmp1;
+	th2 = (ThumbNail *)tmp2;
+	ret = strcmp(th1->name,th2->name);
+//	printf("%s : %s :ret = %d\n",th1->name,th2->name,ret);
+	if(ret == 0) return 1;
+	else return 0;
+}
+static int uiCompItem(void *tmp1,void *tmp2) {
+	ThumbNail *th1,*th2;
+	int ret;
+	th1 = (ThumbNail *)tmp1;
+	th2 = (ThumbNail *)tmp2;
+	ret = strcmp(th1->name,th2->name);
+	if(ret == 1) return 1;
+	else return 0;
+}
+int kgSortList(void *Wid) {
+	Dlink *L=NULL;
+	ThumbNail **TH,*th;
+	void *pt;
+	int i,n;
+	TH = (ThumbNail **)kgGetList(Wid);
+	if (TH == NULL) return 0;
+	L = Dopen();
+	i=0;
+	while(TH[i] != NULL) {
+		Dadd(L,TH[i]);
+		i++;
+	}
+	n = Dcount(L)+1;
+	if(n==1) return 0;
+	Resetlink(L);
+	Dsort(L,uiCompItem);
+	Resetlink(L);
+	i=0;
+	while( (pt=Getrecord(L))!= NULL) {TH[i]=pt;i++;}
+	TH[i]=NULL;
+	kgSetList(Wid,(void **)TH);
+	Dfree(L);
+	return 1;
+}
+void ** kgCopyList(void *Wid) {
+	Dlink *L=NULL;
+	ThumbNail **TH,*th;
+	ThumbNail **Tout;
+	void *pt;
+	int i,n;
+	TH = (ThumbNail **)kgGetList(Wid);
+	if (TH == NULL) return NULL;
+	i=0;
+	while(TH[i] != NULL) {
+		i++;
+	}
+	n = i;
+	Tout = (ThumbNail **) malloc(sizeof(ThumbNail)*(n+1));
+	i=0;
+	while(TH[i] != NULL) {
+		Tout[i]= kgCopyThumbNail(TH[i]);
+		i++;
+	}
+	Tout[i]=NULL;
+	return (void **)Tout;
+}
+int kgListRemoveDup_o(void *Wid) {
+	Dlink *L=NULL;
+	ThumbNail **TH,*th;
+	void *pt;
+	int i,n;
+	TH = (ThumbNail **)kgGetList(Wid);
+	if (TH == NULL) return 0;
+	L = Dopen();
+	i=0;
+	while(TH[i] != NULL) {
+		Dadd(L,TH[i]);
+		i++;
+	}
+	n = Dcount(L)+1;
+	if(n==1) return 0;
+	Resetlink(L);
+	Drmvdup_cond(L,uiDupItem);
+	Resetlink(L);
+	i=0;
+	while( (pt=Getrecord(L))!= NULL) {TH[i]=pt;i++;}
+	TH[i]=NULL;
+	kgSetList(Wid,(void **)TH);
+	Dfree(L);
+	return 1;
+}
+int kgListRemoveDup(void *Wid) {
+	Dlink *L=NULL,*Dup=NULL;
+	ThumbNail **TH,*th;
+	void *pt;
+	int i,n,j;
+	int Got=0;
+	TH = (ThumbNail **)kgGetList(Wid);
+	if (TH == NULL) return 0;
+	if(TH[0]==NULL)return 0;
+	L = Dopen();
+	Dadd(L,TH[0]);
+	i=1;
+	while(TH[i] != NULL) {
+		Resetlink(L);
+		Got=0;
+		while( (th= (ThumbNail*)Getrecord(L))!= NULL) {
+		  if(uiDupItem(th,TH[i])==1) {
+			  Got =1;
+			  break;
+		  }
+		}
+		if(Got) {
+			if(Dup==NULL) Dup=Dopen();
+			Dappend(Dup,TH[i]);
+		}
+		else Dappend(L,TH[i]);
+		i++;
+	}
+	n = Dcount(L)+1;
+	Resetlink(L);
+	i=0;
+	while( (pt=Getrecord(L))!= NULL) {TH[i]=pt;i++;}
+	TH[i]=NULL;
+	kgSetList(Wid,(void **)TH);
+	Dfree(L);
+	if(Dup != NULL) {
+		Resetlink(Dup);
+		while ((pt=Getrecord(Dup))!= NULL){
+			kgFreeThumbNail((ThumbNail *)pt);
+		}
+		Dfree(Dup);
+	}
+	return 1;
 }
 int kgGetSwitch(void *Tmp,int item) {
   DIA *D;DIX *X;DIW *W;DIE *E;
@@ -6534,6 +6994,65 @@ int kgSetSwitch(void *Tmp,int item,int val) {
     fprintf(stderr,"Invalid Widget: kgGetList\n");
     return 0;
   }
+}
+void kgSetScrollLength(void *wid,int percent) {
+	DIV *V;
+	V = (DIV *)wid;
+	switch (V->code) {
+		case 'v':
+		case 'z':
+			V->ds=percent;
+			break;
+		default:
+			break;
+	}
+}
+void kgSetScrollPos(void *wid,int percent) {
+	DIV *V;
+	V = (DIV *)wid;
+	switch (V->code) {
+		case 'v':
+		case 'z':
+			V->df=percent;
+			break;
+		default:
+			break;
+	}
+}
+int kgGetScrollPos(void *wid) {
+	DIV *V;
+	V = (DIV *)wid;
+	switch (V->code) {
+		case 'v':
+		case 'z':
+			return V->df;
+			break;
+		default:
+			break;
+	}
+}
+int kgGetScrollLength(void *wid) {
+	DIV *V;
+	V = (DIV *)wid;
+	switch (V->code) {
+		case 'v':
+		case 'z':
+			return V->ds;
+			break;
+		default:
+			break;
+	}
+}
+
+int kgGetWidgetSize(void *wid,int *xsize,int *ysize){
+	DIT *T;
+	*xsize =0;
+	*ysize =0;
+	if(wid==NULL) return 0;
+	T = (DIT *)wid;
+	*xsize = T->x2 -T->x1;
+	*ysize = T->y2 -T->y1;
+	return 1;
 }
 int Dgetselectmenuitem(void *Tmp,int menu) {
   DIA *D;DIX *E;
@@ -6703,6 +7222,32 @@ void * kgGetClickedWidget(void *Dtmp) {
                d[i].t->y2+yo,x1,y1) ==1) {wid = (void *)d[i].t; break;}
  }
  return wid;
+}
+void  kgGetClickedPosition(void *Dtmp,int *x,int *y) {
+ KBEVENT kb;
+ void *wid=NULL;
+ int i,n,x1,y1,xo,yo;
+ DIA *d;
+ DIALOG *D;
+ D = (DIALOG *)Dtmp;
+ kb = D->kb;
+ d = D->d;
+ *x= -1;*y=-1;
+ if((kb.event!= 1)&& (kb.event!=3)) return ;
+ x1 = kb.x;
+ y1 = kb.y;
+ *x = x1 - D->xo;
+ *y = y1 - D->yo;
+ return ;
+}
+int  kgGetWidgetLocation(void *wid,int *x1,int *y1) {
+	DIT *T;
+	if(wid != NULL) {
+		*x1 = T->x1;
+		*y1 = T->y1;
+		return 1;
+	}
+	return 0;
 }
 void * kgGetLocationWidget(void *Dtmp,int x1,int y1) {
  KBEVENT kb;
@@ -7126,6 +7671,82 @@ void * kgGetNamedWidget(void *Tmp,char *id) {
     }
   }
   return NULL;
+}
+int  kgCheckWidgetName(void *wid,char *name) {
+  DIX *x;
+  int i=0;
+  int ret =0;
+  x = (DIX *)wid;
+  switch(x->code) {
+       case 'x':
+       case 'r':
+       case 'c':
+       case 'y':
+         if(strcmp(x->Wid ,name)==0) return 1;
+         break;
+       case 'v':
+         if(strcmp(((DIV *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'z':
+         if(strcmp(((DIZ *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'o':
+         if(strcmp(((DIO *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'p': /* new for xpm display */
+         if(strcmp(((DIP *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'i': /* info box */
+         if(strcmp(((DII *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 't':
+       case 'T':
+         if(strcmp(((DIT *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'h':
+         if(strcmp(((DIL *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'H':
+         if(strcmp(((DILN *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'n':
+         if(strcmp(((DIN *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'b':
+       case 'N':
+         if(strcmp(((DIB *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'f':
+         if(strcmp(((DIF *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'P':
+         if(strcmp(((DIHB *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'd':
+         if(strcmp(((DID *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'w':
+         if(strcmp(((DIW *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'e':
+         if(strcmp(((DIE *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 's':
+         if(strcmp(((DIS *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'g':
+         if(strcmp(((DIG *)x)->Wid ,name)==0 ) return 1;
+         break;
+       case 'm':
+       case 'M':
+       case 'B':
+         if(strcmp(((DIM *)x)->Wid ,name)==0 ) return 1;
+         break;
+       default:
+         break;
+
+  }
+  return ret;
 }
 int kgSetGrpVisibility(void *Tmp,int grpid,int val) {
  DIX *x;
@@ -8796,6 +9417,78 @@ int kgSetSlideValue(void *tmp,int val) {
   X = (DIHB *)tmp;
   switch(X->code) {
     case 'P':
+    if(val < X->min) val=X->min;
+    if(val > X->max) val=X->max;
+    *(X->df)=val;;
+    df = *(X->df);
+    kgUpdateWidget(tmp);
+    return df;
+    default:
+    fprintf(stderr,"Invalid Widget: kgSetSlideValue\n");
+    return df;
+  }
+}
+int kgGetDslideValue(void *tmp) {
+  DIA *D;DID *X;
+  S_STR *sptr;
+  int df=0;
+  X = (DID*)tmp;
+  switch(X->code) {
+    case 'd':
+    sptr = X->sptr;
+    df = _ui_getdslidevalue(sptr);
+    *(X->df)= df;
+    df = *(X->df);
+//    printf("df = %d\n",df);
+    return df;
+    default:
+    fprintf(stderr,"Invalid Widget: kgGetSlideValue\n");
+    return df;
+  }
+  return 0;
+}
+int kgSetDslideValue(void *tmp,int val) {
+  DIA *D;DID *X;
+  int df=0;
+  X = (DID *)tmp;
+  switch(X->code) {
+    case 'd':
+    if(val < X->min) val=X->min;
+    if(val > X->max) val=X->max;
+    *(X->df)=val;;
+    df = *(X->df);
+    kgUpdateWidget(tmp);
+    return df;
+    default:
+    fprintf(stderr,"Invalid Widget: kgSetSlideValue\n");
+    return df;
+  }
+}
+float kgGetFslideValue(void *tmp) {
+  DIA *D;DIF *X;
+  S_STR *sptr;
+  float df=0;
+  X = (DIF*)tmp;
+  switch(X->code) {
+    case 'f':
+    sptr = X->sptr;
+    df = _ui_getfslidevalue(sptr);
+//    *(X->df)= df;
+//    printf("df = %f\n",df);
+//    df = *(X->df);
+    return df;
+    default:
+    fprintf(stderr,"Invalid Widget: kgGetSlideValue\n");
+    return df;
+  }
+  return 0;
+}
+float kgSetFslideValue(void *tmp,float  val) {
+  DIA *D;DIF *X;
+  float df=0;
+  X = (DIF *)tmp;
+  switch(X->code) {
+    case 'f':
     if(val < X->min) val=X->min;
     if(val > X->max) val=X->max;
     *(X->df)=val;;

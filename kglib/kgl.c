@@ -174,6 +174,10 @@ void kgDefaultGuiTheme(Gclr *Gc) {
   Gc->ProgColor=8;
   Gc->ItemHighColor=6;
   Gc->InputFontSize=9;
+  Gc->scroll_fill= Gc->fill_clr;
+  Gc->scroll_dim= Gc->dim;
+  Gc->scroll_bright= Gc->bright;
+  Gc->scroll_vbright= Gc->vbright;
   return ;
 }
 void kgColorTheme2(DIALOG *D,unsigned char red,unsigned char green, unsigned char blue) {
@@ -277,6 +281,10 @@ void kgColorTheme2(DIALOG *D,unsigned char red,unsigned char green, unsigned cha
   Gc->SplashCharColor=26;
   Gc->ItemHighColor=6;
   Gc->InputFontSize=9;
+  Gc->scroll_fill= Gc->fill_clr;
+  Gc->scroll_dim= Gc->dim;
+  Gc->scroll_bright= Gc->bright;
+  Gc->scroll_vbright= Gc->vbright;
   return ;
 }
 void kgColorTheme(DIALOG *D,unsigned char red,unsigned char green, unsigned char blue) {
@@ -393,6 +401,10 @@ void kgColorTheme(DIALOG *D,unsigned char red,unsigned char green, unsigned char
   Gc->ProgBodrColor=58;
   Gc->ProgColor=56;
   Gc->InputFontSize=9;
+  Gc->scroll_fill= Gc->fill_clr;
+  Gc->scroll_dim= Gc->dim;
+  Gc->scroll_bright= Gc->bright;
+  Gc->scroll_vbright= Gc->vbright;
   return ;
 }
 void kgColorTheme1(DIALOG *D,unsigned char red,unsigned char green, unsigned char blue) {
@@ -502,6 +514,10 @@ void kgColorTheme1(DIALOG *D,unsigned char red,unsigned char green, unsigned cha
   Gc->ProgBodrColor=58;
   Gc->ProgColor=56;
   Gc->InputFontSize=9;
+  Gc->scroll_fill= Gc->fill_clr;
+  Gc->scroll_dim= Gc->dim;
+  Gc->scroll_bright= Gc->bright;
+  Gc->scroll_vbright= Gc->vbright;
   return ;
 }
 void kgGrayGuiTheme(Gclr *Gc) {
@@ -549,6 +565,10 @@ void kgGrayGuiTheme(Gclr *Gc) {
   Gc->ProgColor=8;
   Gc->ItemHighColor=6;
   Gc->InputFontSize=8;
+  Gc->scroll_fill= Gc->fill_clr;
+  Gc->scroll_dim= Gc->dim;
+  Gc->scroll_bright= Gc->bright;
+  Gc->scroll_vbright= Gc->vbright;
   return ;
 }
 #if 0
@@ -6887,6 +6907,62 @@ void uireview_cmds(DIG *G)
    hbuf=open(".plotgph",O_CREAT|O_RDWR|O_TRUNC|O_BINARY, 0666);
   }
  #endif
+ void kgSaveAsPng(DIG *G,char *flname) {
+   char ch;
+   char command[500];
+   int xsize,ysize,xdim=1024;
+   float fac =1.0;
+   kgDC *dc;
+   dc = G->dc;
+   xsize = 640;
+//   ysize = xsize*(float)(dc->EVGAY)/(float)( dc->EVGAX);
+   ysize = xsize;
+   kgGetWidgetSize(G,&xsize,&ysize);
+   gscanf(G->D,"Dimension in X direction %6d",&xdim);
+   fac = (float)xdim/xsize;
+   xsize = xdim;
+   ysize = ysize*fac;
+#if 0
+   uilscopy(G);
+   ch ='P';
+   dc->TIFF =0;
+   if(dc->ZBUFF) dc->TIFF=1;
+   WRITE(G->hbuf,(void *)&ch,1);
+   close(G->hbuf);
+   {
+      char *dir,pngfile[300];
+      void *png;
+      printf("Creating Png Image File...\n");
+      dir = kgMakeTmpDir();
+      sprintf(pngfile,"%-s/gph.png",dir);
+      kgBackupGph(G,dc->plotfile);
+      png=kgGphtoAntialiasedImage(dc->plotfile,dc->EVGAX*2,dc->EVGAY*2,0,4);
+      kgWriteImage(png,pngfile);
+      kgFreeImage(png);
+      sprintf(command,"mv %-s %-s",pngfile,flname);
+      SYSTEM(command);
+      kgCleanDir(dir);
+      free(dir);
+   }
+   dc->TIFF=0;
+   remove(dc->plotfile);
+   G->hbuf =-1;
+#else
+      char *dir,pngfile[300];
+      void *png;
+      printf("Creating Png Image File...\n");
+      dir = kgMakeTmpDir();
+      sprintf(pngfile,"%-s/gph.png",dir);
+      kgBackupGph(G,dc->plotfile);
+      png=kgGphtoAntialiasedImage(dc->plotfile,xsize,ysize,0,4);
+      kgWriteImage(png,pngfile);
+      kgFreeImage(png);
+      sprintf(command,"mv %-s %-s",pngfile,flname);
+      SYSTEM(command);
+      kgCleanDir(dir);
+      free(dir);
+#endif
+ }
  void kgHardCopy(DIG *G,char *flname) {
    char ch;
    char command[500];
@@ -7864,7 +7940,16 @@ void kgDrawImage(DIG *G,void *imgfile,float x1,float y1,float x2, float y2){
        uiwrite_bf(G,&x2,4);
        uiwrite_bf(G,&y2,4);
      }
-     if(G->D_ON)ui_drawimage(G,imgfile,x1,y1,x2,y2);
+     if(G->D_ON){
+       if((buff[0]!='#')||(buff[1]!='#')) {
+        fprintf(stderr,"For Screen drawing filename should be ##<file>\n");
+        fprintf(stderr,"Trying inserting ##\n");
+	strcpy(buff,"##");
+	strncat(buff,imgfile,97);
+       }
+       ui_drawimage(G,imgfile,x1,y1,x2,y2);
+//       kgReview(G);
+     }
      else img_drawimage(G,imgfile,x1,y1,x2,y2);
  }
 void * gphStringToImage(char *Str,int xsize,int ysize,int font,int txtcolor,int justification,int width,int bkgr){

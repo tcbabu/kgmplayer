@@ -46,6 +46,7 @@
 #define uibkup_clip_limits wc->c_v_x1_o=wc->c_v_x1,wc->c_v_y1_o=wc->c_v_y1,wc->c_v_x2_o=wc->c_v_x2,wc->c_v_y2_o=wc->c_v_y2
 #define uiset_sup_clip_limits(wc,x1,y1,x2,y2) wc->s_v_x1=x1,wc->s_v_y1=y1,wc->s_v_x2=x2,wc->s_v_y2=y2
 #define uirest_clip_limits wc->c_v_x1=wc->c_v_x1_o,wc->c_v_y1=wc->c_v_y1_o,wc->c_v_x2=wc->c_v_x2_o,wc->c_v_y2=wc->c_v_y2_o
+static int Xid=0;
 extern int TextSize,Ht,Wd,Gap,Bt;  // It is Okay For Thread;
 static long EventMask =
   ExposureMask|KeyPressMask|KeyReleaseMask|ButtonPressMask|ButtonReleaseMask|PointerMotionMask|VisibilityChangeMask|StructureNotifyMask|PropertyChangeMask;
@@ -354,6 +355,181 @@ void uiscr_scroll_back(DIALOG *D,int x1,int y1,int x2,int y2,int width) {
   int i,j,addr;
   XCopyArea((Display *)WC(D)->Dsp,(Pixmap)WC(D)->DspWin,(Pixmap)WC(D)->DspWin,(GC)WC(D)->Gc,(short)x1,(short)(y1)
     ,(short)(x2-x1+1),(short)(y2-y1+1),(short)x1,(short)(y1-width));
+}
+int kgRunJob(char *job,int (*ProcessOut)(int,int,int)){
+   FILE *fp,*fp1;
+   int pip[2],pid,status,pip2[2];
+   char *args[100],buff[1000],pt[300];
+   char *pgrpath=NULL;
+   int i=0,pos=0;
+   if(job==NULL) return 0;
+   if( pipe(pip) < 0) return 0;
+   if( pipe(pip2) < 0) return 0;
+//   pipew =pip2[1];
+   while(job[i]==' ') i++;
+   strcpy(buff,job+i);
+   i=0;
+   while ( sscanf(buff+pos,"%s",pt) > 0 ) {
+     if(pt[0]=='\"') {
+      pos++;
+      args[i]=buff+pos;
+      while(buff[pos]!='\"')pos++;
+      buff[pos]='\0';
+      i++;
+     }
+     if(pt[0]=='\\') {
+      pos++;
+      args[i]=buff+pos;
+      while(buff[pos]!='\\')pos++;
+      buff[pos]='\0';
+      i++;
+     }
+     else {
+       args[i]=buff+pos;
+       pos +=strlen(pt);
+       i++;
+       if(buff[pos]< ' ') break;
+       buff[pos]='\0';
+     }
+     pos++;
+     while(buff[pos]==' ') pos++;
+   }
+   args[i]=NULL;
+   if(i==0) return 0;
+   pgrpath=kgWhich(args[0]);
+   if (pgrpath==NULL) return 0;
+   pid = fork();
+   if(pid == 0) { /* child process */
+//     if(fork()!=0) exit(0); /* to avoid zombie */
+     close(0);
+     dup(pip2[0]);
+     close(pip2[0]);
+     close(1);
+     dup(pip[1]);
+     close(2);
+#if 1
+     open("/dev/null",O_WRONLY|O_CREAT,0777);
+#else
+     dup(pip[1]);
+#endif
+     close(pip[1]);
+     execv(pgrpath,args);
+     fprintf(stderr,"Failed to execute \n");
+     exit(1);
+   }
+   else {   /* parent process */
+//     printf("Waiting pid: %d\n",pid);
+     int ret =0;
+     close(pip2[0]);
+     close(pip[1]);
+     if(ProcessOut != NULL)ret=ProcessOut(pip[0],pip2[1],pid);
+     WAIT(pid);
+     free(pgrpath);
+     return pid;
+   }
+}
+int kgChangeJob(char *job){
+   FILE *fp,*fp1;
+   int pip[2],pid,status,pip2[2];
+   char *args[100],buff[1000],pt[300];
+   char *pgrpath=NULL;
+   int i=0,pos=0;
+   if(job==NULL) return 0;
+   while(job[i]==' ') i++;
+   strcpy(buff,job+i);
+   i=0;
+   while ( sscanf(buff+pos,"%s",pt) > 0 ) {
+     if(pt[0]=='\"') {
+      pos++;
+      args[i]=buff+pos;
+      while(buff[pos]!='\"')pos++;
+      buff[pos]='\0';
+      i++;
+     }
+     if(pt[0]=='\\') {
+      pos++;
+      args[i]=buff+pos;
+      while(buff[pos]!='\\')pos++;
+      buff[pos]='\0';
+      i++;
+     }
+     else {
+       args[i]=buff+pos;
+       pos +=strlen(pt);
+       i++;
+       if(buff[pos]< ' ') break;
+       buff[pos]='\0';
+     }
+     pos++;
+     while(buff[pos]==' ') pos++;
+   }
+   args[i]=NULL;
+   if(i==0) return 0;
+   pgrpath=kgWhich(args[0]);
+   if (pgrpath==NULL) return 0;
+   execv(pgrpath,args);
+   fprintf(stderr,"Failed to execute \n");
+   exit(1);
+}
+static int isunixsocketinuse(char *sock) {
+  FILE *fp;
+  char buff1[300];
+  char *line=NULL;
+  int ret=0,no,id;
+  size_t len = 0;
+  ssize_t read;
+  fp = fopen("/proc/net/unix","r");
+  if(fp==NULL) return -1;
+//  read = getline(&line, &len, fp);
+  while (fscanf(fp,"%s",buff1) > 0) {
+       if(strcmp(buff1,sock)==0){ret=1; break;}
+  }
+  fclose(fp);
+  free(line);
+  return ret;
+}
+static int isdisplayinuse(int num) {
+  char buff[200];
+  sprintf(buff,"/tmp/.X11-unix/X%-d",num);
+  return isunixsocketinuse(buff);
+}
+
+int kgStartX(char *logfile) {
+  Display *Dsp;
+  Dsp = XOpenDisplay(NULL);
+  if(Dsp != NULL) {
+    XCloseDisplay(Dsp);
+    fprintf(stderr,"Xorg Active \n");
+    fflush(stderr);
+    return 1;
+  }
+  kgRunJob("killall Xorg",NULL);
+  kgRunJob("killall X",NULL);
+  remove("/tmp/.X0-lock");
+  remove("/tmp/.X11-unix/X0");
+  if( (Xid=fork())==0) {
+	if(logfile==NULL) {
+//	  kgChangeJob( "Xorg :0.0 vt7 -quiet -allowMouseOpenFail -terminate -reset -nopn   -retro  ");
+	  kgChangeJob( "Xorg :0.0 vt7 -quiet -allowMouseOpenFail -reset -nopn   -retro  ");
+	}
+	else {
+		char command[500];
+//		sprintf(command,"Xorg :0.0 vt7 -quiet -allowMouseOpenFail -terminate -reset -nopn   -retro   -logfile %s",logfile);
+		sprintf(command,"Xorg :0.0 vt7 -quiet -allowMouseOpenFail  -reset -nopn   -retro   -logfile %s",logfile);
+		kgChangeJob(command);
+	}
+	  exit(1);
+  }
+  while(!isdisplayinuse(0) );
+  return Xid;
+}
+int kgCloseX(void) {
+	if(Xid) {
+		kill(Xid,SIGTERM);
+//		kill(Xid,SIGHUP);
+//		kill(Xid,SIGKILL);
+	}
+	return 1;
 }
 /*
   Getting parent of a given routine; used only in this file

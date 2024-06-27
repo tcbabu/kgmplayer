@@ -1,6 +1,4 @@
 #define D_TH
-#include <unistd.h>
-#include <stdlib.h>
 #include "kulina.h"
 #include "gprivate.h"
 #include "dlink.h"
@@ -17,10 +15,6 @@
 #include "imageswarn.c"
 #include "images.c"
 #define RESIZE 5
-#define GETCWD(x,y) { \
-  void *ret; \
-  ret = getcwd(x,y); \
-}
 static int B_max=990000,B_min=989000;
 extern int TextSize,Ht,Wd,Gap,Bt;  // It is Okay For Thread;
 void *stop_xpm=&Stop_str;
@@ -694,85 +688,24 @@ int kgMenu(void *parent,int xx1,int yy1,int pos,int df,char **menu,int size){
   }
   return(item);
  }
-int  FontDiabrowser1callback(int item,int i,void *Tmp) {
-  /*********************************** 
-    item : selected item (1 to max_item)  not any specific relevence
-    i :  Index of Widget  (0 to max_widgets-1) 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
-  DIRA *R;DIALOG *D;void *pt; 
-  ThumbNail **th; 
+int  kgFontListDiabrowser1callback(int key,int i,void *Tmp) {
+  DIA *D;DIE *B; 
   int ret=1; 
-  D = (DIALOG *)Tmp;
-  pt = D->pt;
-  R = (DIRA *)kgGetWidget(Tmp,i);
-  th = (ThumbNail **) R->list;
-  return ret;
-}
-void  FontDiabrowser1init(DIRA *R,void *pt) {
-}
-int  FontDiasplbutton1callback(int butno,int i,void *Tmp) {
-  /*********************************** 
-    butno : selected item (1 to max_item) 
-    i :  Index of Widget  (0 to max_widgets-1) 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
-  DIALOG *D;DIL *B; 
-  int n,ret=1; 
-  D = (DIALOG *)Tmp;
-  B = (DIL *) kgGetWidget(Tmp,i);
-  n = B->nx;
-  switch(butno) {
+  D = ((DIALOG *)Tmp)->d;
+  B = D[i].e;
+  switch(key) {
     case 1: 
       break;
   }
   return ret;
 }
-void  FontDiasplbutton1init(DIL *B,void *pt) {
-}
-int FontDiainit(void *Tmp) {
-  /*********************************** 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
-  /* you add any initialisation here */
+int kgFontListDiainit(void *Tmp) {
   int ret = 1;
-  DIALOG *D;void *pt;
-  D = (DIALOG *)Tmp;
-  pt = D->pt;
-  return ret;
-}
-int FontDiacleanup(void *Tmp) {
-  /* you add any cleanup/mem free here */
-  /*********************************** 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
-  int ret = 1;
-  DIALOG *D;void *pt;
-  D = (DIALOG *)Tmp;
-  pt = D->pt;
-  ThumbNail **Fonts;
-  Fonts =(ThumbNail **)pt;
-  kgFreeThumbNails(Fonts);
-  return ret;
-}
-int ModifyFontDia(void *Tmp,int GrpId) {
   DIALOG *D;
   D = (DIALOG *)Tmp;
-  DIA *d;
-  int i,n;
-  d = D->d;
-  i=0;while(d[i].t!= NULL) {;
-     i++;
-  };
-  n=1;
-  return GrpId;
+  return ret;
 }
-
-int FontDiaCallBack(void *Tmp,void *tmp) {
-  /*********************************** 
-    Tmp :  Pointer to DIALOG  
-    tmp :  Pointer to KBEVENT  
-   ***********************************/ 
+int kgFontListDiaCallBack(void *Tmp,void *tmp) {
   int ret = 0;
   DIALOG *D;
   KBEVENT *kbe;
@@ -784,229 +717,93 @@ int FontDiaCallBack(void *Tmp,void *tmp) {
   }
   return ret;
 }
-int FontDiaResizeCallBack(void *Tmp) {
-  /*********************************** 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
-  int ret = 0;
-  int xres,yres,dx,dy;
-  DIALOG *D;
-  D = (DIALOG *)Tmp;
-  kgGetWindowSize(D,&xres,&yres);
-  dx = xres - D->xl;
-  dy = yres - D->yl;
-  /* extra code */
-  D->xl= xres;
-  D->yl= yres;
-  kgRedrawDialog(D);
-  return ret;
-}
-int FontDiaWaitCallBack(void *Tmp) {
-  /*********************************** 
-    Tmp :  Pointer to DIALOG  
-    Called while waiting for event  
-    return value 1 will close the the UI  
-   ***********************************/ 
-  int ret = 0;
-  return ret;
-}
-void ModifyFontDiaGc(Gclr *gc) {
-/*
-//  You may change default settings here 
-//  probably you can allow the user to create a config in $HOME
-//  and try to read that file (if exits); so dynamic configuration is possible
-   gc->FontSize =8;
-   gc->Font=23;
-*/
-}
-int FontDiaGroup( DIALOG *D,void **v,void *pt) {
-  int GrpId=0,oitems=0,i,j;
-  DIA *d=NULL,*dtmp;
-  ThumbNail **th0 ;
-  DIRA r0 = { 
-    'r',
-    10,7,  
-    315,360,   
-    8,0,  
-    260, 
-    25, 
-    1,18, 
-    1,13, 
-    (int *)v[0], 
-    NULL, 
-    NULL ,
-    NULL,FontDiabrowser1callback, /* *args, callback */
-    6,  /* Border Offset  */
-     22,  /* Scroll width  */
-     0,  /* Type  */
-     1, /* item highlight */
-    1, /* bordr */
-    0, /* bkgr */
-    0  /* =1 hide  */
-   };
-  r0.list=(void **)pt;
-  strcpy(r0.Wid,(char *)"FontList");
-  r0.item = -1;
-  BUT_STR  *butn1=NULL; 
-  butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
-  butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"Okay");
-  butn1[0].xpmn=NULL;
-  butn1[0].xpmp=NULL;
-  butn1[0].xpmh=NULL;
-  butn1[0].bkgr=-1;
-  butn1[0].butncode='';
-  DIL h1 = { 
-    'h',
-    107,361,  
-    184,389,
-    2,0,  
-    72, 
-    25, 
-    1,1, 
-    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
- 
-    butn1, 
-    FontDiasplbutton1callback, /*  Callbak */
-      NULL  /* any args */
-  };
-  strcpy(h1.Wid,(char *)"Okay");
-  h1.item = -1;
-  dtmp = D->d;
-  i=0;
-  if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+3));
-  d =dtmp+i; 
-  d[2].t=NULL;
-  d[0].t = (DIT *)malloc(sizeof(DIRA));
-  *d[0].r = r0;
-  d[0].r->item = -1;
-  FontDiabrowser1init(d[0].r,pt) ;
-  d[1].t = (DIT *)malloc(sizeof(DIL));
-  *d[1].h = h1;
-  d[1].h->item = -1;
-  FontDiasplbutton1init(d[1].h,pt) ;
-  d[2].t = NULL;
-  GrpId=kgOpenGrp(D);
-  D->d = dtmp;
-  j=0;
-  while(d[j].t!=NULL){ kgAddtoGrp(D,GrpId,(void *)(d[j].t));j++;}
-  return GrpId;
-} 
-
-/* One can also use the following code to add Widgets to an existing Dialog */
-
-int MakeFontDiaGroup(DIALOG *D,void *arg) {
-   int GrpId;
-   WIDGETGRP *Gpt;
-/*************************************************
-
-    RadioButtons1  1 data value
-
-*************************************************/
-   int  *v0 ;
-   v0 = (int *)malloc(sizeof(int));
-   *v0 = 1;
-   void** v=(void **)malloc(sizeof(void*)*2);
-   v[1]=NULL;
-   v[0]=(void *)(v0);
-   void *pt=NULL; /* pointer to send any extra information */
-   GrpId = FontDiaGroup(D,v,pt);
-   Gpt = kgGetWidgetGrp(D,GrpId);
-   Gpt->arg= v; // kulina will double free this; you may modify
-   return GrpId;
-}
-
-int FontDia( void *parent,void **v,void *pt,int xo,int yo) {
-  int ret=1,GrpId,k;
+int kgFontListDia( void *parent ,void *v0 ,int xo,int yo) {
+  int ret=1;
   DIALOG D;
-  DIA *d=NULL;
-  D.VerId=2107030000;
+  DIA d[2];
+  char *menu0[]  = { 
+    (char *)"",
+    NULL 
+  };
+  DIE e0 = { 
+    'e',
+    3,4,  
+    407,380,   
+    16,  
+    (int *)v0,
+    NULL,
+    menu0 ,
+    NULL,kgFontListDiabrowser1callback, /* *args, callback */
+    20,6,22,1,1,1,0
+  };
+  e0.menu = kgFontNames();
+  d[0].e = &e0;
+  d[1].t = NULL;
+  D.VerId=1401010200;
   kgInitUi(&D);
-  D.d=NULL;
-#if 1
-  GrpId = FontDiaGroup(&D,v,pt);
-#else 
-  GrpId = MakeFontDiaGroup(&D,pt); // can try this also
-#endif 
-  d = D.d;
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 1;
+  D.df = 0;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
   D.rw = 4;
   D.xo = xo;   /* Position of Dialog */ 
   D.yo = yo;
-  D.xl = 323;    /*  Length of Dialog */
-  D.yl = 396;    /*  Width  of Dialog */
-  D.Initfun = FontDiainit;    /*   init fuction for Dialog */
-  D.Cleanupfun = FontDiacleanup;    /*   init fuction for Dialog */
-  D.kbattn = 0;    /*  1 for drawing keyborad attention */
-  D.butattn = 0;    /*  1 for drawing button attention */
+  D.xl = 411;    /*  Length of Dialog */
+  D.yl = 383;    /*  Width  of Dialog */
+  D.Initfun = kgFontListDiainit;    /*   init fuction for Dialog */
+  D.kbattn = 1;;    /*  1 for drawing keyborad attention */
+  D.butattn = 1;    /*  1 for drawing button attention */
   D.fullscreen = 0;    /*  1 for for fullscreen mode */
   D.Deco = 1;    /*  1 for Window Decorration */
-  D.transparency = 0.000000;    /*  float 1.0 for full transparency */
+  D.transparency = .000000;    /*  float 1.0 for full transparency */
   D.Newwin = 0;    /*  1 for new window not yet implemented */
   D.DrawBkgr = 1;    /*  1 for drawing background */
   D.Bkpixmap = NULL;    /*  background image */
   D.Sticky = 0;    /*  1 for stickyness */
-  D.Resize = 0;    /*  1 for Resize option */
-  D.MinWidth = 100;    /*   for Resize option */
-  D.MinHeight = 100;    /*   for Resize option */
-#if 1 
-  D.Callback = FontDiaCallBack;    /*  default callback */
+#if 0 
+  D.Callback = kgFontListDiaCallBack;    /*  default callback */
 #else 
   D.Callback = NULL;    
 #endif
-  D.ResizeCallback = FontDiaResizeCallBack;  /*  Resize callback */
-#if 0 
-  D.WaitCallback = NULL;  /*  Wait callback */
-#else 
-  D.WaitCallback = FontDiaWaitCallBack;  /*  Wait callback */
-#endif
   D.Fixpos = 1;    /*  1 for Fixing Position */
   D.NoTaskBar = 0;    /*  1 for not showing in task bar*/
-  D.NoWinMngr = 0;    /*  1 for no Window Manager*/
-  D.StackPos = 0;    /* -1,0,1 for for Stack Position -1:below 0:normal 1:above*/
+  D.StackPos = 1;    /* -1,0,1 for for Stack Position -1:below 0:normal 1:above*/
   D.Shapexpm = NULL;    /*  PNG/jpeg file for window shape;Black color will not be drawn */
   D.parent = parent;    /*  1 for not showing in task bar*/
-  D.pt = pt;    /*  any data to be passed by user*/
-//  strcpy(D.name,"Kulina Designer ver 1.0");    /*  Dialog name you may change */
+  D.pt = NULL;    /*  any data to be passed by user*/
+  strcpy(D.name,"Kulina Font List");    /*  Dialog name you may change */
   if(D.fullscreen!=1) {    /*  if not fullscreen mode */
      int xres,yres; 
-     kgDisplaySize(&xres,&yres); 
+     GetDisplaySize(&xres,&yres); 
       // D.xo=D.yo=0; D.xl = xres-10; D.yl=yres-80;
   }
   else {    // for fullscreen
      int xres,yres; 
-     kgDisplaySize(&xres,&yres); 
+     GetDisplaySize(&xres,&yres); 
      D.xo=D.yo=0; D.xl = xres; D.yl=yres;
-//     D.StackPos = 1; // you may need it
   }    /*  end of fullscreen mode */
-//  kgColorTheme(&D,210,210,210);    /*  set colors for gui*/
-//  ModifyFontDiaGc(&(D.gc));    /*  set colors for gui*/
-  ModifyFontDia(&D,GrpId);    /*  add extras to  gui*/
+  kgDefaultGuiTheme(&(D.gc));    /*  set colors for gui*/
+  D.SearchList=NULL;
+  D.Resize=0;
+  D.ResizeCallback=NULL;
+  D.WaitCallback=NULL;
+  D.MinWidth=D.MinHeight=200;
   ret= kgUi(&D);
-  kgCleanUi(&D);
+  kgFreeFontNames(e0.menu);
   return ret;
 }
 int kgGetFont(void *arg,int xo,int yo) {
 /*************************************************
 
-    RadioButtons1  1 data value
+    Scrollmenu1  1 data value
 
 *************************************************/
    int   v0 = 1;
-   void* v[1];
-   v[0]=(void *)(&v0);
-   void *pt=NULL; /* pointer to send any extra information */
-   pt = (void *)kgStringToThumbNails(kgFontNames());
-   FontDia(NULL,v,pt,xo,yo );
-//   fprintf(stderr,"Font : %d\n",v0-1);
-   return v0-1;;
+   kgFontListDia(arg ,&v0 ,xo,yo);
+   return v0-1;
 }
 int kgColorsDia( void *parent ,void *v0 ,int xo, int yo) {
   int ret=1;
@@ -1959,7 +1756,7 @@ static int uiGetDirFile(char *flname,char *folder) {
      if(i<0 ) break;
   }
   if(i< 0) {
-    GETCWD(folder,499);
+    getcwd(folder,499);
   }
   else {
     strcpy(folder,flname);
@@ -2278,7 +2075,7 @@ int  filebrowsertextbox1callback(int key,int i,void *Tmp) {
   m = (char **)((DIALOG *)Tmp)->pt;
   T = D[i].t;
   e = T->elmt;
-  GETCWD(d_name,149);
+  getcwd(d_name,149);
   filter = Dgetstring(Tmp,i,1);
   m = _uiFileMenu(d_name,filter);
 //  scr_recover();
@@ -2405,7 +2202,7 @@ int kgFileBrowser(void *parent,int x0,int y0,  char *v0, char *v1 ){
     NULL,filebrowserbrowser1callback, /* *args, callback */
     20,6,22,1,1,1,0
   };
-  GETCWD(d_name,149);
+  getcwd(d_name,149);
 //  printf("Dir: %s\n",d_name);
   strcpy(filter,v1);
   e0[1].v=filter;
@@ -4891,6 +4688,54 @@ void *uiMakeThumbNail(void *Tmp) {
   else pt->thImg=NULL;
   return NULL;
 }
+void **uiGetThumbnails_o(char *Dir,int size) {
+  GMIMG **thImgs=NULL;
+  char **flnames,name[500];
+  int i,k=0;
+  char *pt;
+  GMIMG *img;
+  flnames = kgFileMenu(Dir,"*.png *.jpg *.jpeg *.JPG");
+  if(flnames != NULL) {
+   i=0;while(flnames[i]!= NULL) i++;
+//   if(i> 0) {
+   {
+     thImgs=(GMIMG **)Malloc(sizeof(GMIMG *)*(i+1));
+     for(k=0;k<=i;k++) thImgs[k]=NULL;
+     i=0;
+     k=0;
+     while(flnames[i]!=NULL) {
+       strcpy(name,Dir);
+       strcat(name,"/");
+       strcat(name,flnames[i]);
+       img = (GMIMG *)uiGetgmImage(name);
+//       printf("%s \n",flnames[i]);
+//       if(img==NULL) printf("%s is NULL\n",flnames[i]);
+       if(img != NULL) {
+         thImgs[k]= (GMIMG *)uiThumbnailgmImage(img,size,size);
+#if 0
+         sprintf(name,"(%5d,%5d): %s",img->image_width,img->image_height,flnames[i]);
+         strcpy(thImgs[k]->flname,name);
+#else
+         if((thImgs[k]->image_width>size)||(thImgs[k]->image_height>size)) {
+           printf("%s: %d:%d %d:%d\n",flnames[i],thImgs[k]->image_width,thImgs[k]->image_height,img->image_width,img->image_height);
+         }
+         thImgs[k]->image_width=img->image_width;
+         thImgs[k]->image_height=img->image_height;
+//         thImgs[k]->bkgrclr=15;
+         strcpy(thImgs[k]->flname,flnames[i]);
+#endif
+         uiFreeImage(img);
+         k++;
+       }
+       i++;
+     }
+     i=0;while(flnames[i]!= NULL) free(flnames[i++]);
+   }
+   free(flnames);
+  }
+//  printf("K= %d\n",k);
+  return (void **)thImgs;
+}
 void **uiGetThumbnails(char *Dir,int size) {
   GMIMG **thImgs=NULL;
   char **flnames,name[500];
@@ -5111,35 +4956,51 @@ void kgFreeThumbNails(ThumbNail **tb){
 #include <pthread.h>
 #include <math.h>
 int kgBusyinit(void *Tmp) {
-  void *img;
+  void *img=NULL,*imgbk=NULL,*imgr=NULL;
   float ang=0.0,dang=5.0,r=15.,xo,yo;
   double rang;
   int pipe;
   int ret = 1;
+  int count=0;
   DIALOG *D;
   D = (DIALOG *)Tmp;
   DIG *G;
-  rang = ang*3.14159265/180.0;
+  int fillclr;
+  fillclr = (D->gc).fill_clr;
+  dang = dang*3.14159265/180.0;
+  rang = count*dang;
   xo = r*cos(rang);
   yo=  r*sin(rang);
   pipe = *((int *)(D->pt)+0);
+  G = kgInitImage(D->xl,D->yl,RESIZE);
+#if 1
+  kgUserFrame(G,-25.,-25.,25.,25.);
+  kgRoundedRectangleRing3(G,1.,-1.,36.,36,0.,0.,0.,0.5,4.);
+  img=kgGetResizedImage(G);
+  kgCloseImage(G);
+  kgImage(D,img,D->xo,D->yo,D->xl,D->yl,0.,1.0);
+#endif
+  imgbk = kgGetBackground(Tmp,D->xo,D->yo,D->xo+D->xl,D->yo+D->yl);
+  kgFreeImage(img);
   while(!kgThreadWaitPipe(pipe,0,40000)) {
     G = kgInitImage(D->xl,D->yl,RESIZE);
     kgUserFrame(G,-25.,-25.,25.,25.);
     kgChangeColor(G,1002,0,0,0);
-    kgArcFill(G,xo,yo,3.0,0.,360.0,0,1002);
-    ang+=dang;
-    rang = ang*3.14159265/180.0;
+//    kgRoundedRectangleRing2(G,0.,0.,36.,36,0.,0.,0.,0.5,4.);
+    rang= count*dang;
+    count = (count+1)%72;
     xo = r*cos(rang);
     yo=  r*sin(rang);
-    kgChangeColor(G,1001,255,255,255);
-    kgArcFill(G,xo,yo,3.0,0.,360.0,0,1001);
+    kgChangeColor(G,1001,255,255,225);
+    kgArcFill(G,xo,yo,6.0,0.,360.0,0,1001);
     img=kgGetResizedImage(G);
     kgCloseImage(G);
+    kgImage(D,imgbk,D->xo,D->yo,D->xl,D->yl,0.,1.0);
     kgImage(D,img,D->xo,D->yo,D->xl,D->yl,0.,1.0);
     kgUpdateOn(D);
     uiFreeImage(img);
   }
+  uiFreeImage(imgbk);
   return ret;
 }
 int kgBusyCallBack(void *Tmp,void *tmp) {
@@ -5169,7 +5030,7 @@ void * kgBusy( void *dummy) {
   kgInitUi(&D);
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
-  D.bor_type = 4;
+  D.bor_type = 0;
   D.df = 0;
   D.tw = 4;
   D.bw = 4;
@@ -5231,7 +5092,7 @@ void * kgOpenBusy(void *arg,int xo,int yo) {
 *************************************************/
    int ch;
    dptr = (struct _doubleptr *) Malloc(sizeof(struct _doubleptr));
-   ch = pipe(dptr->pipe);
+   pipe(dptr->pipe);
    dptr->parent=arg;
    dptr->xo = xo;
    dptr->yo=  yo;
@@ -5242,9 +5103,8 @@ void * kgOpenBusy(void *arg,int xo,int yo) {
 void kgCloseBusy(void * id) {
    struct _doubleptr{void *parent;int pipe[2];pthread_t Pth;int xo;int yo;} *dptr;
    char bf=0xff;
-   int rval;
    dptr = (struct _doubleptr *)id;
-   rval = write(dptr->pipe[1],&bf,1);
+   write(dptr->pipe[1],&bf,1);
 //   pthread_cancel(dptr->Pth);
    pthread_join(dptr->Pth,NULL);
    close(dptr->pipe[0]);
@@ -5631,9 +5491,8 @@ static int  PickImagehoribar1callback(int key,int i,void *Tmp) {
           if(strcmp(CurDir,"/")!=0) strcat(sflname,"/");
           strcat(sflname,flname);
           if(kgFolderBrowser(NULL,100,100,flname,"*jpg *.png")==1) {
-            int rval;
             sprintf(buf,"cp \"%s\" \"%s\"",sflname,flname);
-            rval = system(buf);
+            system(buf);
           }
           break;
          }
@@ -5824,7 +5683,7 @@ int kgPickImage( void *parent,int xo,int yo,void *pt) {
   };
   xpm2[0]=kgHomeImage(24,250,250,220);
   xpm2[1]=kgUpdirImage(24,250,250,220);
-  GETCWD(CurDir,999);
+  getcwd(CurDir,999);
   strcpy(HomeDir,CurDir);
   menu0=kgFolderMenu(CurDir);
   e0.menu=menu0;
@@ -6048,7 +5907,7 @@ int kgSelectImage( void *parent,int xo,int yo,int ThSize,void *pt) {
   };
   xpm2[0]=kgHomeImage(24,250,250,220);
   xpm2[1]=kgUpdirImage(24,250,250,220);
-  GETCWD(CurDir,999);
+  getcwd(CurDir,999);
   strcpy(HomeDir,CurDir);
   menu0=kgFolderMenu(CurDir);
   e0.menu=menu0;
@@ -6142,8 +6001,56 @@ static int Size(char *t)
    if(lng != 0) lng +=(8);
    return ( lng);
  }
+static int  gcanftextbox1callback(int cellno,int i,void *Tmp) {
+  /*************************************************
+   cellno: current cell counted along column strting with 0
+           ie 0 to (nx*ny-1)
+   i     : widget id starting from 0
+   Tmp   : Pointer to DIALOG
+   *************************************************/
+  DIALOG *D;DIT *T;T_ELMT *e;
+  int ret=1;
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  if(T->ny == 1)kgSetExit(Tmp);
+  return ret;
+}
+
+static int gscanfCallBack(void *Tmp,void *tmp) {
+  /***********************************
+    Tmp :  Pointer to DIALOG
+    tmp :  Pointer to KBEVENT
+   ***********************************/
+  int ret = 0;
+  DIALOG *D;
+  KBEVENT *kbe;
+  D = (DIALOG *)Tmp;
+  kbe = (KBEVENT *)tmp;
+  if(kbe->event ==1) {
+    if(kbe->button ==1) {
+	    ret=1;
+    }
+  }
+  return ret;
+}
+static int gscanfinit(void *Tmp) {
+  /***********************************
+    Tmp :  Pointer to DIALOG
+   ***********************************/
+  /* you add any initialisation here */
+  int ret = 1;
+  DIALOG *D;void *pt;
+  D = (DIALOG *)Tmp;
+  pt = D->pt;
+  kgSetDefaultWidget(Tmp,0);
+  return ret;
+}
+
+
 int  gscanf(void *parent,void *unknown,...){
-  DILN *H;
+//  DILN *H;
+  DIL *H;
   DIALOG D;
   DIA *d;
   DIT *T;
@@ -6155,6 +6062,8 @@ int  gscanf(void *parent,void *unknown,...){
   int i,j,k,item=0,it=0,size=6,ln,width,lngth,nx,ny,ret=1,prsize=0,fldsize=0;
   void **v=NULL;
   va_list ad;
+  DIALOG *Par=NULL;
+  Par = (DIALOG *)parent;
   va_start(ad,unknown);
   if(unknown==NULL) return 0;
   strcpy(wrk,(char *)unknown);
@@ -6245,29 +6154,38 @@ int  gscanf(void *parent,void *unknown,...){
   if(lngth<100) lngth=100;
   T->x2 =T->x1+lngth;
   T->y2 =T->y1+width;
-  D.VerId=1401010200;
+  T->Update = gcanftextbox1callback;
+  D.VerId=2107030000;
   kgInitUi(&D);
   D.d = (DIA *)Malloc(sizeof(DIA)*3);
   d = D.d;
-  H = kgCreateHButtons(T->x1+lngth/2-30,T->y2+4,1,60,25,titles,NULL);
+//  H = kgCreateHButtons(T->x1+lngth/2-36,T->y2+4,1,72,25,titles,NULL);
+  H = kgCreateSplButtons(T->x1+lngth/2-36,T->y2+4,1,1,72,25,titles,NULL);
+  H->fac = 0.5;
+  H->bordr =0;
+  H->type = 4;
   d[0].t =T;
   d[1].t = (DIT *)H;
   d[2].t =NULL;
-  D.VerId=1401010200;
+  D.VerId=2107030000;
   kgInitUi(&D);
   D.xo= 100;
   D.yo= 100;
   D.xl = lngth+10;
   D.yl=width+45;
+  if(Par != NULL) {
+	  D.xo = (Par->xl -D.xl)/2;
+	  D.yo = (Par->yl -D.yl)/2;
+  }
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 1;
+  D.df = 0;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
   D.rw = 4;
-  D.Initfun = NULL;
-  D.kbattn = 1;   
+  D.Initfun = gscanfinit;
+  D.kbattn = 0;   
   D.butattn = 0; 
   D.fullscreen = 0;
   D.Deco = 1;   
@@ -6279,7 +6197,7 @@ int  gscanf(void *parent,void *unknown,...){
   D.Resize = 1;   
   D.MinWidth = 100; 
   D.MinHeight = 100; 
-  D.Callback = NULL;
+  D.Callback = gscanfCallBack;
   D.ResizeCallback = NULL;
   D.WaitCallback=NULL;
   D.Fixpos = 0;   
