@@ -1,4 +1,4 @@
-#include "kulina.h"
+#include <kulina.h>
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -22,11 +22,41 @@
   static DIT *T1;
   static DIX *X1;
   static DIY *Y1 , *Y2;
+  typedef char *(*GetType)(char *);
+  static char *kgCheckFileType ( char *name );
+  static char *kgCheckMediaFile ( char *name );
+  static char *kgCheckImageFile ( char *name );
+
+  GetType TypeFun[5]= {
+     &kgCheckFileType,
+     &kgCheckMediaFile,
+     NULL,
+     NULL,
+     &kgCheckImageFile
+  };
 #define kgFree(pt) {if(pt!=NULL) free(pt);pt=NULL;}
   int uiSetFileType(int type) {
 	  FileType = type;
 	  return type;
   }
+
+static int SetThumbNails(ThumbNail **th) {
+    int i=0,n=0,j=0;
+    if(th!= NULL) {
+     i=0; n=0;
+     while(th[i]!=NULL) th[i++]->sw = 1;
+    }
+    return 1;
+}
+static int ClearThumbNails(ThumbNail **th) {
+    int i=0,n=0,j=0;
+    if(th!= NULL) {
+     i=0; n=0;
+     while(th[i]!=NULL) th[i++]->sw = 0;
+    }
+    return 1;
+}
+
   static int chkfolderstat ( char *folder ) {
       FILE *fp;
       int junk;
@@ -101,6 +131,26 @@
           return ret;
       }
   }
+static   char *kgCheckImageFile ( char *name ) {
+      FILE *pp;
+      char wrk [ 500 ] , tmp [ 500 ] ;
+      char *pt;
+      char *ret = NULL;
+      sprintf ( wrk , "file \'%s\'" , name ) ;
+//	printf("%s\n",wrk);
+      pp = popen ( wrk , "r" ) ;
+      if ( pp == NULL ) return NULL;
+      while ( fgets ( tmp , 499 , pp ) != NULL ) {
+//	        printf("%s\n",tmp);
+//		fflush(stdout);
+          pt = strstr ( tmp , "cannot open" ) ;
+          if ( pt != NULL ) {pclose ( pp ) ;return NULL;}
+          ret = MakeFileToken ( tmp , " image data" , "Image" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          pclose ( pp ) ;
+          return ret;
+      }
+  }
 static   char *kgCheckMediaFile ( char *name ) {
       FILE *pp;
       char wrk [ 500 ] , tmp [ 500 ] ;
@@ -118,6 +168,57 @@ static   char *kgCheckMediaFile ( char *name ) {
           ret = MakeFileToken ( tmp , " MPEG" , "Music" ) ;
           if ( ret != NULL ) {pclose ( pp ) ;return ret;}
           ret = MakeFileToken ( tmp , " MP4" , "Video" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " WAVE" , "Music" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " Stereo" , "Music" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " stereo" , "Music" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " audio" , "Music" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " Audio" , "Music" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          pclose ( pp ) ;
+          return ret;
+      }
+  }
+static   char *kgCheckVideoFile ( char *name ) {
+      FILE *pp;
+      char wrk [ 500 ] , tmp [ 500 ] ;
+      char *pt;
+      char *ret = NULL;
+//      printf("Indide CheckMedia : FileType= %d\n",FileType);
+      sprintf ( wrk , "file \'%s\'" , name ) ;
+//	printf("%s\n",wrk);
+      pp = popen ( wrk , "r" ) ;
+      if ( pp == NULL ) return NULL;
+      while ( fgets ( tmp , 499 , pp ) != NULL ) {
+//	        printf("%s\n",tmp);
+//		fflush(stdout);
+          pt = strstr ( tmp , "cannot open" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " MP4" , "Video" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          pclose ( pp ) ;
+          return ret;
+      }
+  }
+static   char *kgCheckAudioFile ( char *name ) {
+      FILE *pp;
+      char wrk [ 500 ] , tmp [ 500 ] ;
+      char *pt;
+      char *ret = NULL;
+      sprintf ( wrk , "file \'%s\'" , name ) ;
+//	printf("%s\n",wrk);
+      pp = popen ( wrk , "r" ) ;
+      if ( pp == NULL ) return NULL;
+      while ( fgets ( tmp , 499 , pp ) != NULL ) {
+//	        printf("%s\n",tmp);
+//		fflush(stdout);
+          pt = strstr ( tmp , "cannot open" ) ;
+          if ( pt != NULL ) {pclose ( pp ) ;return NULL;}
+          ret = MakeFileToken ( tmp , " MPEG" , "Music" ) ;
           if ( ret != NULL ) {pclose ( pp ) ;return ret;}
           ret = MakeFileToken ( tmp , " WAVE" , "Music" ) ;
           if ( ret != NULL ) {pclose ( pp ) ;return ret;}
@@ -300,6 +401,7 @@ static   char *kgCheckMediaFile ( char *name ) {
       while ( th [ i ] != NULL ) {
           sprintf ( fullname , "%-s/%-s" , Folder , th [ i ] -> name ) ;
           fret = ( char * ) kgCheckFileType ( fullname ) ;
+//          fret = ( char * ) ((TypeFun[FileType]) ( fullname )) ;
           if ( fret != NULL ) {
               switch ( fret [ 0 ] ) {
                   case 'I':
@@ -458,6 +560,297 @@ static   char *kgCheckMediaFile ( char *name ) {
       th[i]=NULL;
       return th;
   }
+  static ThumbNail **GetAudioFileThumbNails ( char *Folder , int size ) {
+      ThumbNail **th = NULL;
+      Dlink *Tlist=Dopen();
+      void *tmp;
+      char fullname [ 300 ] ;
+      char *fret;
+      int i;
+      void *imgo = NULL , *img = NULL;
+      th = ( ThumbNail ** ) kgFileThumbNails ( Folder , "*" ) ;
+      if ( th == NULL ) return NULL;
+      if ( fileimg == NULL ) {
+          imgo = ( void * ) kgGetImageCopy ( NULL , ( void * ) & file_str ) ;
+          if ( imgo != NULL ) {
+              fileimg = kgThumbNailImage ( imgo , size , size ) ;
+              kgFreeImage ( imgo ) ;
+          }
+      }
+      if ( linkimg == NULL ) {
+          imgo = ( void * ) kgGetImageCopy ( NULL , ( void * ) & link_str ) ;
+          if ( imgo != NULL ) {
+              linkimg = kgThumbNailImage ( imgo , size , size ) ;
+              kgFreeImage ( imgo ) ;
+          }
+      }
+      i = 0;
+      while ( th [ i ] != NULL ) {
+          sprintf ( fullname , "%-s/%-s" , Folder , th [ i ] -> name ) ;
+          fret = ( char * ) kgCheckAudioFile ( fullname ) ;
+          if ( fret != NULL ) {
+              switch ( fret [ 0 ] ) {
+                  case 'I':
+                  imgo = kgGetImage ( fullname ) ;
+                  if ( imgo != NULL ) {
+                      th [ i ] -> img = kgThumbNailImage ( imgo , size , size ) ;
+                      kgFreeImage ( imgo ) ;
+                  }
+                  else th [ i ] -> img = kgCopyImage ( fileimg ) ;
+                  break;
+                  case 'L':
+                  if ( linkimg == NULL ) linkimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & link_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( linkimg , size , size ) ;
+                  break;
+                  case 'M':
+                  if ( musicimg == NULL ) musicimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & music_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( musicimg , size , size ) ;
+		  Dadd(Tlist,th[i]);
+                  break;
+                  case 'V':
+                  if ( videoimg == NULL ) videoimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & video_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( videoimg , size , size ) ;
+                  break;
+                  case 'O':
+                  if ( binaryimg == NULL ) binaryimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & binary_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( binaryimg , size , size ) ;
+                  break;
+                  case 'E':
+                  if ( exeimg == NULL ) exeimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & exec_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( exeimg , size , size ) ;
+                  break;
+                  case 'G':
+                  if ( gzipimg == NULL ) gzipimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & gzip_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( gzipimg , size , size ) ;
+                  break;
+                  case 'T':
+                  if ( tarimg == NULL ) tarimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & tar2_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( tarimg , size , size ) ;
+                  break;
+                  case 'C':
+                  if ( cimg == NULL ) cimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & source_c_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( cimg , size , size ) ;
+                  break;
+                  default:
+                  kgFreeThumbNail(th[i]);
+		  th[i]=NULL;
+                  break;
+              }
+          }
+          else {
+                  kgFreeThumbNail(th[i]);
+		  th[i]=NULL;
+	  }
+          i++;
+      }
+      i=0;
+      Resetlink(Tlist);
+      while( (tmp=Getrecord(Tlist)) != NULL) th[i++]=(ThumbNail *)tmp;
+      th[i]=NULL;
+      return th;
+  }
+  static ThumbNail **GetVideoFileThumbNails ( char *Folder , int size ) {
+      ThumbNail **th = NULL;
+      Dlink *Tlist=Dopen();
+      void *tmp;
+      char fullname [ 300 ] ;
+      char *fret;
+      int i;
+      void *imgo = NULL , *img = NULL;
+      th = ( ThumbNail ** ) kgFileThumbNails ( Folder , "*" ) ;
+      if ( th == NULL ) return NULL;
+      if ( fileimg == NULL ) {
+          imgo = ( void * ) kgGetImageCopy ( NULL , ( void * ) & file_str ) ;
+          if ( imgo != NULL ) {
+              fileimg = kgThumbNailImage ( imgo , size , size ) ;
+              kgFreeImage ( imgo ) ;
+          }
+      }
+      if ( linkimg == NULL ) {
+          imgo = ( void * ) kgGetImageCopy ( NULL , ( void * ) & link_str ) ;
+          if ( imgo != NULL ) {
+              linkimg = kgThumbNailImage ( imgo , size , size ) ;
+              kgFreeImage ( imgo ) ;
+          }
+      }
+      i = 0;
+      while ( th [ i ] != NULL ) {
+          sprintf ( fullname , "%-s/%-s" , Folder , th [ i ] -> name ) ;
+          fret = ( char * ) kgCheckVideoFile ( fullname ) ;
+          if ( fret != NULL ) {
+              switch ( fret [ 0 ] ) {
+                  case 'I':
+                  imgo = kgGetImage ( fullname ) ;
+                  if ( imgo != NULL ) {
+                      th [ i ] -> img = kgThumbNailImage ( imgo , size , size ) ;
+                      kgFreeImage ( imgo ) ;
+                  }
+                  else th [ i ] -> img = kgCopyImage ( fileimg ) ;
+                  break;
+                  case 'L':
+                  if ( linkimg == NULL ) linkimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & link_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( linkimg , size , size ) ;
+                  break;
+                  case 'M':
+                  if ( musicimg == NULL ) musicimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & music_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( musicimg , size , size ) ;
+                  break;
+                  case 'V':
+                  if ( videoimg == NULL ) videoimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & video_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( videoimg , size , size ) ;
+		  Dadd(Tlist,th[i]);
+                  break;
+                  case 'O':
+                  if ( binaryimg == NULL ) binaryimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & binary_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( binaryimg , size , size ) ;
+                  break;
+                  case 'E':
+                  if ( exeimg == NULL ) exeimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & exec_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( exeimg , size , size ) ;
+                  break;
+                  case 'G':
+                  if ( gzipimg == NULL ) gzipimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & gzip_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( gzipimg , size , size ) ;
+                  break;
+                  case 'T':
+                  if ( tarimg == NULL ) tarimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & tar2_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( tarimg , size , size ) ;
+                  break;
+                  case 'C':
+                  if ( cimg == NULL ) cimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & source_c_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( cimg , size , size ) ;
+                  break;
+                  default:
+                  kgFreeThumbNail(th[i]);
+		  th[i]=NULL;
+                  break;
+              }
+          }
+          else {
+                  kgFreeThumbNail(th[i]);
+		  th[i]=NULL;
+	  }
+          i++;
+      }
+      i=0;
+      Resetlink(Tlist);
+      while( (tmp=Getrecord(Tlist)) != NULL) th[i++]=(ThumbNail *)tmp;
+      th[i]=NULL;
+      return th;
+  }
+  static ThumbNail **GetImageFileThumbNails ( char *Folder , int size ) {
+      ThumbNail **th = NULL;
+      Dlink *Tlist=Dopen();
+      void *tmp;
+      char fullname [ 300 ] ;
+      char *fret;
+      int i;
+      void *imgo = NULL , *img = NULL;
+      th = ( ThumbNail ** ) kgFileThumbNails ( Folder , "*" ) ;
+      if ( th == NULL ) return NULL;
+      if ( fileimg == NULL ) {
+          imgo = ( void * ) kgGetImageCopy ( NULL , ( void * ) & file_str ) ;
+          if ( imgo != NULL ) {
+              fileimg = kgThumbNailImage ( imgo , size , size ) ;
+              kgFreeImage ( imgo ) ;
+          }
+      }
+      if ( linkimg == NULL ) {
+          imgo = ( void * ) kgGetImageCopy ( NULL , ( void * ) & link_str ) ;
+          if ( imgo != NULL ) {
+              linkimg = kgThumbNailImage ( imgo , size , size ) ;
+              kgFreeImage ( imgo ) ;
+          }
+      }
+      i = 0;
+      while ( th [ i ] != NULL ) {
+          sprintf ( fullname , "%-s/%-s" , Folder , th [ i ] -> name ) ;
+          fret = ( char * ) kgCheckImageFile ( fullname ) ;
+          if ( fret != NULL ) {
+              switch ( fret [ 0 ] ) {
+                  case 'I':
+                  imgo = kgGetImage ( fullname ) ;
+                  if ( imgo != NULL ) {
+                      th [ i ] -> img = kgThumbNailImage ( imgo , size , size ) ;
+                      kgFreeImage ( imgo ) ;
+                  }
+                  else th [ i ] -> img = kgCopyImage ( fileimg ) ;
+		  Dadd(Tlist,th[i]);
+                  break;
+                  case 'L':
+                  if ( linkimg == NULL ) linkimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & link_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( linkimg , size , size ) ;
+                  break;
+                  case 'M':
+                  if ( musicimg == NULL ) musicimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & music_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( musicimg , size , size ) ;
+                  break;
+                  case 'V':
+                  if ( videoimg == NULL ) videoimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & video_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( videoimg , size , size ) ;
+                  break;
+                  case 'O':
+                  if ( binaryimg == NULL ) binaryimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & binary_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( binaryimg , size , size ) ;
+                  break;
+                  case 'E':
+                  if ( exeimg == NULL ) exeimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & exec_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( exeimg , size , size ) ;
+                  break;
+                  case 'G':
+                  if ( gzipimg == NULL ) gzipimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & gzip_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( gzipimg , size , size ) ;
+                  break;
+                  case 'T':
+                  if ( tarimg == NULL ) tarimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & tar2_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( tarimg , size , size ) ;
+                  break;
+                  case 'C':
+                  if ( cimg == NULL ) cimg = kgGetImageCopy 
+                      ( NULL , ( void * ) & source_c_str ) ;
+                  th [ i ] -> img = kgThumbNailImage ( cimg , size , size ) ;
+                  break;
+                  default:
+                  kgFreeThumbNail(th[i]);
+		  th[i]=NULL;
+                  break;
+              }
+          }
+          else {
+                  kgFreeThumbNail(th[i]);
+		  th[i]=NULL;
+	  }
+          i++;
+      }
+      i=0;
+      Resetlink(Tlist);
+      while( (tmp=Getrecord(Tlist)) != NULL) th[i++]=(ThumbNail *)tmp;
+      th[i]=NULL;
+      return th;
+  }
   int FileListBrowserbutton1callback ( int butno , int i , void *Tmp ) {
   /*********************************** 
     butno : selected item (1 to max_item) 
@@ -530,14 +923,27 @@ static   char *kgCheckMediaFile ( char *name ) {
       kgSetList ( X1 , th ) ;
       th = ( void ** ) kgGetList ( Y1 ) ;
       if ( th != NULL ) kgFreeThumbNails ( ( ThumbNail ** ) th ) ;
+#if 1
       switch(FileType) {
 	      case 1:
-              th = ( void ** ) GetMediaFileThumbNails ( Folder , 24 ) ;
+              th = ( void ** ) GetMediaFileThumbNails ( Folder , 48 ) ;
+	      break;
+	      case 2:
+              th = ( void ** ) GetAudioFileThumbNails ( Folder , 48 ) ;
+	      break;
+	      case 3:
+              th = ( void ** ) GetVideoFileThumbNails ( Folder , 48 ) ;
+	      break;
+	      case 4:
+              th = ( void ** ) GetImageFileThumbNails ( Folder , 48 ) ;
 	      break;
 	      default:
-	      th = ( void ** ) GetFileThumbNails ( Folder , 24 ) ;
+	      th = ( void ** ) GetFileThumbNails ( Folder , 48 ) ;
 	      break;
       }
+#else
+      th = ( void ** ) GetFileThumbNails ( Folder , 48 ) ;
+#endif
       kgCloseBusy ( bs ) ;
       kgSetList ( Y1 , th ) ;
       kgUpdateWidget ( X1 ) ;
@@ -606,14 +1012,27 @@ static   char *kgCheckMediaFile ( char *name ) {
       th = ( void ** ) GetMediaFileThumbNails ( Home , 20 ) ;
 #endif
 #endif
+#if 1
       switch(FileType) {
 	      case 1:
-              th = ( void ** ) GetMediaFileThumbNails ( Home , 24 ) ;
+              th = ( void ** ) GetMediaFileThumbNails ( Home , 48 ) ;
+	      break;
+	      case 2:
+              th = ( void ** ) GetAudioFileThumbNails ( Home , 48 ) ;
+	      break;
+	      case 3:
+              th = ( void ** ) GetVideoFileThumbNails ( Home , 48 ) ;
+	      break;
+	      case 4:
+              th = ( void ** ) GetImageFileThumbNails ( Home , 48 ) ;
 	      break;
 	      default:
-	      th = ( void ** ) GetFileThumbNails ( Home , 24 ) ;
+	      th = ( void ** ) GetFileThumbNails ( Home , 48 ) ;
 	      break;
       }
+#else
+      th = ( void ** ) GetFileThumbNails ( Folder , 48 ) ;
+#endif
 
       kgSetList ( Y , th ) ;
   }
@@ -647,12 +1066,31 @@ static   char *kgCheckMediaFile ( char *name ) {
    ***********************************/ 
       DIALOG *D;DIN *B;
       int n , ret = 0;
+      ThumbNail **th;
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B-> nx*B-> ny;
-      DeleteSelection ( Y2 ) ;
-      kgUpdateWidget ( Y2 ) ;
-      kgUpdateOn ( Tmp ) ;
+      switch ( butno ) {
+          case 1:
+	  th = (ThumbNail **) kgGetList(Y2);
+          ClearThumbNails(th);
+          kgSetList(Y2,(void **)th);
+          kgUpdateWidget(Y2);
+          kgUpdateOn(D);
+          break;
+          case 2:
+	  th = (ThumbNail **) kgGetList(Y2);
+          SetThumbNails(th);
+          kgSetList(Y2,(void **)th);
+          kgUpdateWidget(Y2);
+          kgUpdateOn(D);
+          break;
+          case 3:
+          DeleteSelection ( Y2 ) ;
+          kgUpdateWidget ( Y2 ) ;
+          kgUpdateOn ( Tmp ) ;
+          break;
+      }
       return ret;
   }
   void FileListBrowserbutton2init ( DIN *B , void *pt ) {
@@ -697,11 +1135,20 @@ static   char *kgCheckMediaFile ( char *name ) {
   static int CopyItems ( void *Tmp , void *fw ) {
       DIY *FY , *TY;
       int item = 0 , i = 0 , j = 0;
+      int Added=0;
       ThumbNail **th;
       FY = ( DIY * ) fw;
       int x = -1 , y = -1;
       void *tw = NULL;
-      if ( ! kgCheckMenu ( Tmp , 30 , 100 , "Add Selected" , 0 ) ) return 0;
+      j = 0;
+      while ( th [ j ] != NULL ) {
+          if ( kgGetSwitch ( Y1 , j ) == 1 ) {
+		  Added =1;
+	  }
+	  j++;
+      }
+      if(Added==0) return 0;
+      if ( ! kgCheckMenu ( Tmp , 200 , 250 , "Add Selected" , 0 ) ) return 0;
       th = ( ThumbNail ** ) kgGetList ( Y1 ) ;
       j = 0;
       while ( th [ j ] != NULL ) {
@@ -716,6 +1163,7 @@ static   char *kgCheckMediaFile ( char *name ) {
               free ( TH-> name ) ;
               TH-> name = name;
               kgAddThumbNail ( Y2 , TH , 1000000 ) ;
+	      Added=1;
           }
           j++;
       }

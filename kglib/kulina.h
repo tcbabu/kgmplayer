@@ -1094,8 +1094,18 @@ ThumbNail ** kgMakeThumbNails(char *dir,int size);
 ThumbNail **kgStringToThumbNails(char **menu);
 ThumbNail ** kgFolderThumbNails(char *dir);
 ThumbNail ** kgFileThumbNails(char *dir,char *filter);
+//Added 28 th June
 char **kgGetMediaFiles(void *arg); // multiple media files
+char **kgGetImageFiles(void *arg); // multiple Audio files
+char **kgGetAudioFiles(void *arg); // multiple Video files
+char **kgGetVideoFiles(void *arg); // multiple Image files
 char **kgGetFiles(void *arg); // multiple files
+char *kgGetMediaFile(void *arg); // single media files
+char *kgGetImageFile(void *arg); // single Audio files
+char *kgGetAudioFile(void *arg); // single Video files
+char *kgGetVideoFile(void *arg); // single Image files
+char *kgGetFile(void *arg); // single files
+//Over
 void kgFreeThumbNails(ThumbNail **tb);
 void kgFreeThumbNail(ThumbNail *tb);
 void * kgOpenBusy(void *arg,int xo,int yo);

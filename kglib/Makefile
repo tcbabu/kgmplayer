@@ -8,11 +8,13 @@ all	: libkulina.a
 libkulina.a  : kgl.o kgui.o kgui1.o kgui2.o lowlib.o gkernel.o \
 	file_pro.o dlink.o printerdia.o shade.o PngImage.o \
 	gminterface.o makeimg.o drawimg.o  ogl.o threadtool.o hlib.o\
-	FileListBrowser.o FileListBrowserCallbacks.o
+	FileListBrowser.o FileListBrowserCallbacks.o \
+	        GetFile.o GetFileCallbacks.o
 	ar -r libkulina.a kgl.o kgui.o kgui1.o kgui2.o lowlib.o \
 	gkernel.o file_pro.o  printerdia.o shade.o PngImage.o \
 	gminterface.o makeimg.o drawimg.o dlink.o ogl.o threadtool.o hlib.o \
-	FileListBrowser.o FileListBrowserCallbacks.o
+	FileListBrowser.o FileListBrowserCallbacks.o \
+	        GetFile.o GetFileCallbacks.o
 kgl.o : kgl.c kulina.h gprivate.h
 	$(CC) -c  -I$(PREFIX)/include/GraphicsMagick kgl.c
 hlib.o : hlib.c kulina.h gprivate.h
@@ -49,6 +51,11 @@ FileListBrowser.o	: FileListBrowser.c kulina.h
 		$(CC)  -c -I$(PREFIX)/include -I$(PREFIX)/include/GraphicsMagick FileListBrowser.c
 FileListBrowserCallbacks.o	: FileListBrowserCallbacks.c kulina.h
 	$(CC)  -c -I$(PREFIX)/include -I$(PREFIX)/include/GraphicsMagick FileListBrowserCallbacks.c
+GetFile.o	: GetFile.c kulina.h
+	$(CC)  -c -I$(PREFIX)/include -I$(PREFIX)/include/GraphicsMagick GetFile.c
+GetFileCallbacks.o	: GetFileCallbacks.c kulina.h
+	$(CC)  -c -I$(PREFIX)/include -I$(PREFIX)/include/GraphicsMagick GetFileCallbacks.c
+
 clean	:
 	 rm -f *.o gph2ps gph2eps gph2jpg ps2jpg imagetoc cleantmpdir glib.a
 install	: libkulina.a

@@ -138,6 +138,58 @@ ThumbNail **AddItemtoList(char *newlist) {
   fclose(fp);
   return kgStringToThumbNails(menu);
 }
+ThumbNail **AddItemstoList(char **newlist) {
+  char buff[300],*pt;
+  FILE *fp;
+  Dlink *L;
+  int ln,i,Cond=0,index;
+  char **menu;
+  char *file;
+  
+  file = kgGetSelectedString(X1);
+  if(file==NULL) return NULL;
+  sprintf(buff,"%-s/.kgMplayer/%-s",HomeDir,file);
+  fp =fopen(buff,"r");
+  L = Dopen();
+  while( fgets(buff,299,fp) != NULL) {
+    ln=strlen(buff);
+    buff[ln-1]='\0';
+    pt= (char *)malloc(ln+5);
+    strcpy(pt,buff);
+    Dadd(L,pt);
+  }
+#if 0
+  Resetlink(L);
+  while( (pt=(char *)Getrecord(L))!= NULL) {
+     if(DupCond(newlist,pt)) Cond=1;
+  }
+  if(Cond==0) Dappend(L,(void *)newlist);
+#else
+  i=0;
+  while(newlist[i] != NULL) {
+    Dappend(L,(void *)(newlist[i]));
+    i++;
+  }
+#endif
+  ln = Dcount(L);
+  menu = (char **)malloc(sizeof(char *)*(ln+1));
+  menu[ln]=NULL;
+  Resetlink(L);
+  i=0;
+  fclose(fp);
+  sprintf(buff,"%-s/.kgMplayer/%-s",HomeDir,file);
+  fp =fopen(buff,"w");
+  while( (pt=(char *)Getrecord(L))!= NULL) {
+    index= GetBaseIndex(pt);
+    fprintf(fp,"%s\n",pt);
+    menu[i]=pt+index;
+    kgTruncateString(pt+index,30);
+    i++;
+  }
+  Dfree(L);
+  fclose(fp);
+  return kgStringToThumbNails(menu);
+}
 ThumbNail **DeleteItemsfromList(void) {
   char buff[300],*pt;
   FILE *fp;
@@ -368,9 +420,10 @@ int  PlayListbutton1callback(int butno,int i,void *Tmp) {
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
   DIALOG *D;DIN *B; 
-  int n,ret =0; 
+  int n,ret =0,j=0; 
   char filename[200];
   ThumbNail **th;
+  char **Mfiles=NULL;
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
@@ -387,6 +440,7 @@ int  PlayListbutton1callback(int butno,int i,void *Tmp) {
       kgUpdateOn(Tmp);
       break;
     case 2: 
+#if 0
       if(kgFolderBrowser(NULL,100,100,filename,(char *)"*")) {
         th = AddItemtoList(filename);
         kgFreeThumbNails((ThumbNail **)kgGetList(X2));
@@ -394,6 +448,16 @@ int  PlayListbutton1callback(int butno,int i,void *Tmp) {
         kgUpdateWidget(X2);
         kgUpdateOn(Tmp);
       }
+#else
+      Mfiles = kgGetMediaFiles(NULL);
+      if(Mfiles != NULL) {
+              th = AddItemstoList(Mfiles);
+      }
+      kgFreeThumbNails((ThumbNail **)kgGetList(X2));
+      kgSetList(X2,(void **)th);
+      kgUpdateWidget(X2);
+      kgUpdateOn(Tmp);
+#endif
       break;
   }
   return ret;

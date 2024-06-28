@@ -280,7 +280,7 @@ int MakekgGetFilesGroup(DIALOG *D,void *arg) {
    return GrpId;
 }
 
-int kgGetFiles( void *parent,void **v,void *pt) {
+int kgGetFilesOld( void *parent,void **v,void *pt) {
   int ret=1,GrpId,k;
   DIALOG D;
   DIA *d=NULL;
@@ -370,6 +370,6 @@ void *RunkgGetFiles(void *arg,char *Filter) {
    pt = (void *)rpt;
    rpt[0]= (void *) Filter;
    rpt[1]=NULL;
-   kgGetFiles(NULL,v,pt );
+   kgGetFilesOld(NULL,v,pt );
    return rpt[1];
 }

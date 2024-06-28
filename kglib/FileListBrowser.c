@@ -1,4 +1,5 @@
-#include "kulina.h"
+
+#include <kulina.h>
 #include "FileListBrowserCallbacks.h"
 #include "GclrFileListBrowser.c"
 
@@ -7,7 +8,6 @@
 #define B 120
 #define D_NOCLEANCC
 int uiSetFileType(int type);
-
 int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   int GrpId=0,oitems=0,i,j;
   DIA *d=NULL,*dtmp;
@@ -29,8 +29,8 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   butn0[1].butncode='';
   DIN b0 = { 
     'n',
-    11,5,  
-    95,47,
+    11,1,  
+    95,43,
     2,2,  
     36, 
     36, 
@@ -53,8 +53,8 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   e1[0].img=NULL;
   DIT t1 = { 
     't',
-    77,13,  
-    369,41,
+    78,6,  
+    370,34,
     20, 
     1,1, 
     e1,
@@ -67,13 +67,13 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   t1.item = -1;
   DIX x2 = { 
     'x',
-    4,46,  
-    168,542,   
+    7,41,  
+    532,231,   
     10,2,  
-    108, 
+    210, 
     25, 
     1,1, 
-    0,12, 
+    0,6, 
     (int *)v[1], 
     NULL, 
     NULL, 
@@ -90,11 +90,11 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   x2.item = -1;
   DIY y3 = { 
     'y',
-    169,46,  
-    851,542,   
-    135,24,  
-    24, 
-    24, 
+    544,41,  
+    1039,560,   
+    100,40,  
+    48, 
+    48, 
     1,1, 
     0,5, 
     (int *)v[2], 
@@ -113,13 +113,13 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   y3.item = -1;
   DIY y4 = { 
     'y',
-    852,46,  
-    1152,542,   
-    270,24,  
-    -4, 
-    24, 
+    6,261,  
+    533,560,   
+    195,40,  
+    48, 
+    48, 
     1,1, 
-    0,10, 
+    0,3, 
     (int *)v[3], 
     NULL, 
     NULL, 
@@ -135,22 +135,36 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   strcpy(y4.Wid,(char *)"Selections");
   y4.item = -1;
   BUT_STR  *butn5=NULL; 
-  butn5= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn5= (BUT_STR *)malloc(sizeof(BUT_STR)*3);
   butn5[0].sw=1;
-  strcpy(butn5[0].title,(char *)"!c03!f23!w32Remove");
+  strcpy(butn5[0].title,(char *)"!f23!w32Clear");
   butn5[0].xpmn=NULL;
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
-  butn5[0].bkgr=-130160130;
+  butn5[0].bkgr=-1;
   butn5[0].butncode='';
+  butn5[1].sw=1;
+  strcpy(butn5[1].title,(char *)"!f23!w32Select all");
+  butn5[1].xpmn=NULL;
+  butn5[1].xpmp=NULL;
+  butn5[1].xpmh=NULL;
+  butn5[1].bkgr=-1;
+  butn5[1].butncode='';
+  butn5[2].sw=1;
+  strcpy(butn5[2].title,(char *)"!c03!f23!w32Remove");
+  butn5[2].xpmn=NULL;
+  butn5[2].xpmp=NULL;
+  butn5[2].xpmh=NULL;
+  butn5[2].bkgr=-130160130;
+  butn5[2].butncode='';
   DIN b5 = { 
     'n',
-    1058,17,  
-    1149,48,
+    4,231,  
+    270,262,
     2,2,  
     84, 
     24, 
-    1,1, 
+    3,1, 
     5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn5, 
@@ -170,8 +184,8 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   butn6[0].butncode='';
   DIL h6 = { 
     'h',
-    756,18,  
-    851,48,
+    880,6,  
+    975,37,
     2,0,  
     84, 
     24, 
@@ -209,8 +223,8 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   butn7[2].butncode='';
   DIN b7 = { 
     'n',
-    403,17,  
-    680,48,
+    603,6,  
+    880,37,
     2,2,  
     82, 
     24, 
@@ -267,8 +281,7 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   while(d[j].t!=NULL){ kgAddtoGrp(D,GrpId,(void *)(d[j].t));j++;}
   return GrpId;
 } 
-
-#define D_NOCLEANCC
+#define D_CLEANCC
 /* One can also use the following code to add Widgets to an existing Dialog */
 
 int MakeFileListBrowserGroup(DIALOG *D,void *arg) {
@@ -330,8 +343,8 @@ int FileListBrowser( void *parent,void **v,void *pt) {
   D.rw = 4;
   D.xo = 10;   /* Position of Dialog */ 
   D.yo = 7;
-  D.xl = 1155;    /*  Length of Dialog */
-  D.yl = 546;    /*  Width  of Dialog */
+  D.xl = 1044;    /*  Length of Dialog */
+  D.yl = 569;    /*  Width  of Dialog */
   D.Initfun = FileListBrowserinit;    /*   init fuction for Dialog */
   D.Cleanupfun = FileListBrowsercleanup;    /*   init fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
@@ -435,6 +448,102 @@ char **kgGetMediaFiles(void *arg) {
    v[2]=(void *)(&v2);
    v[3]=(void *)(&v3);
    uiSetFileType(1);
+   void *pt=NULL; /* pointer to send any extra information */
+   FileListBrowser(NULL,v,(void *)&Strs);
+#if 0
+   i=0;
+   while(Strs[i] != NULL) {
+	   printf("%d : %s\n",i,Strs[i]);
+	   i++;
+   }
+#endif
+   return Strs;
+}
+char **kgGetAudioFiles(void *arg) {
+/*************************************************
+
+    Text_Box1  1 data values
+    Selectmenu1  1 data value
+    ThumbnailBrowser2  1 data value
+    ThumbnailBrowser3  1 data value
+
+*************************************************/
+   char  v0[500]="" ;
+   int   v1 = 1;
+   int   v2 = 1;
+   int   v3 = 1;
+   void* v[4];
+   char **Strs=NULL;
+   int i=0;
+   v[0]=(void *)(v0);
+   v[1]=(void *)(&v1);
+   v[2]=(void *)(&v2);
+   v[3]=(void *)(&v3);
+   uiSetFileType(2);
+   void *pt=NULL; /* pointer to send any extra information */
+   FileListBrowser(NULL,v,(void *)&Strs);
+#if 0
+   i=0;
+   while(Strs[i] != NULL) {
+	   printf("%d : %s\n",i,Strs[i]);
+	   i++;
+   }
+#endif
+   return Strs;
+}
+char **kgGetVideoFiles(void *arg) {
+/*************************************************
+
+    Text_Box1  1 data values
+    Selectmenu1  1 data value
+    ThumbnailBrowser2  1 data value
+    ThumbnailBrowser3  1 data value
+
+*************************************************/
+   char  v0[500]="" ;
+   int   v1 = 1;
+   int   v2 = 1;
+   int   v3 = 1;
+   void* v[4];
+   char **Strs=NULL;
+   int i=0;
+   v[0]=(void *)(v0);
+   v[1]=(void *)(&v1);
+   v[2]=(void *)(&v2);
+   v[3]=(void *)(&v3);
+   uiSetFileType(3);
+   void *pt=NULL; /* pointer to send any extra information */
+   FileListBrowser(NULL,v,(void *)&Strs);
+#if 0
+   i=0;
+   while(Strs[i] != NULL) {
+	   printf("%d : %s\n",i,Strs[i]);
+	   i++;
+   }
+#endif
+   return Strs;
+}
+char **kgGetImageFiles(void *arg) {
+/*************************************************
+
+    Text_Box1  1 data values
+    Selectmenu1  1 data value
+    ThumbnailBrowser2  1 data value
+    ThumbnailBrowser3  1 data value
+
+*************************************************/
+   char  v0[500]="" ;
+   int   v1 = 1;
+   int   v2 = 1;
+   int   v3 = 1;
+   void* v[4];
+   char **Strs=NULL;
+   int i=0;
+   v[0]=(void *)(v0);
+   v[1]=(void *)(&v1);
+   v[2]=(void *)(&v2);
+   v[3]=(void *)(&v3);
+   uiSetFileType(4);
    void *pt=NULL; /* pointer to send any extra information */
    FileListBrowser(NULL,v,(void *)&Strs);
 #if 0
