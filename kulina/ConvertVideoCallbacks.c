@@ -26,6 +26,19 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
 
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
+static int FolderBrowser(char *FileName) {
+	char *Str=NULL;
+	int ret=0,ln;
+	if( (Str=kgGetVideoFile(NULL)) != NULL) {
+		ln = strlen(Str);
+		if(ln>1) {
+			ret =1;
+			strcpy(FileName,Str);
+			free(Str);
+		}
+	}
+	return ret;
+}
 int FileStat(char *flname) {
   int ret;
   struct stat buff;
@@ -116,7 +129,8 @@ int  ConvertVideobutton1callback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-  kgFolderBrowser(NULL,100,100,FileName,(char *)"*");
+//  kgFolderBrowser(NULL,100,100,FileName,(char *)"*");
+  if(!FolderBrowser(FileName))return 0;
   if(CheckMedia(FileName) == 0) {
     sprintf(buf," NOT A VIDEO FILE");
     kgWrite(Msg,buf);

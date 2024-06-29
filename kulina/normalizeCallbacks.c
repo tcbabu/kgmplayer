@@ -23,6 +23,19 @@ int FileStat(char *flname);
 int kgffmpeg(int,char **);
 int ffmpegfun(int,char **);
 
+static int FolderBrowser(char *FileName) {
+	char *Str=NULL;
+	int ret=0,ln;
+	if( (Str=kgGetMediaFile(NULL)) != NULL) {
+		ln = strlen(Str);
+		if(ln>1) {
+			ret =1;
+			strcpy(FileName,Str);
+			free(Str);
+		}
+	}
+	return ret;
+}
 #if 1
 int ProcessVolume(int pip0,int pip1,int Pid) {
      char buff[1000],dummy[100];
@@ -132,7 +145,8 @@ int  normalizebutton1callback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-  kgFolderBrowser(NULL,100,100,FileName,"*");
+//  kgFolderBrowser(NULL,100,100,FileName,"*");
+  if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
 #if 0
   sprintf(OutFile,"%-s/Music/",getenv("HOME"));

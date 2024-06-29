@@ -5,6 +5,19 @@ extern char CurPlayList[200];
 Dlink *Plink=NULL;
 ThumbNail **MakeItemList(char *file);
 int GetBaseIndex(char *s);
+static int FolderBrowser(char *FileName) {
+	char *Str=NULL;
+	int ret=0,ln;
+	if( (Str=kgGetMediaFile(NULL)) != NULL) {
+		ln = strlen(Str);
+		if(ln>1) {
+			ret =1;
+			strcpy(FileName,Str);
+			free(Str);
+		}
+	}
+	return ret;
+}
 int DupCond(void *s1,void *s2) {
   if(strcmp((char *)s1,(char *)s2)==0) return 1;
   else return 0;
@@ -451,8 +464,16 @@ int  PlayListbutton1callback(int butno,int i,void *Tmp) {
 #else
       Mfiles = kgGetMediaFiles(NULL);
       if(Mfiles != NULL) {
+	      int j=0;
               th = AddItemstoList(Mfiles);
+	      while(Mfiles[j] != NULL) {
+		free(Mfiles[j]);
+		j++;
+	      }
+	      free(Mfiles);
+	      Mfiles== NULL;
       }
+      else break;
       kgFreeThumbNails((ThumbNail **)kgGetList(X2));
       kgSetList(X2,(void **)th);
       kgUpdateWidget(X2);

@@ -41,6 +41,19 @@ int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessToPipe(int pip0,int pip1,int Pid);
 int GetWavHeaderLength(char *flname);
 
+static int FolderBrowser(char *FileName) {
+	char *Str=NULL;
+	int ret=0,ln;
+	if( (Str=kgGetMediaFile(NULL)) != NULL) {
+		ln = strlen(Str);
+		if(ln>1) {
+			ret =1;
+			strcpy(FileName,Str);
+			free(Str);
+		}
+	}
+	return ret;
+}
 int ProcessToAudioPipe(int pip0,int pip1,int Pid) {
      char buff[1000],work[100];
      int ret =0;
@@ -408,7 +421,8 @@ int  AudioJoinbutton1callback(int butno,int i,void *Tmp) {
   filename[0]='\0';
   switch(butno) {
     case 1:  
-      if(kgFolderBrowser(NULL,100,100,filename,(char *)"*")) {
+//      if(kgFolderBrowser(NULL,100,100,filename,(char *)"*")) {
+      if(FolderBrowser(filename)) {
         CheckMedia(filename);
         if(Minfo.Audio !=0 ) { 
           th = AddItemtoAlist(filename);

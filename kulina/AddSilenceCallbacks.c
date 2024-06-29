@@ -45,6 +45,19 @@ int GetWavHeaderLength(char *flname);
 void *RunGetSinfo(void *arg);
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
 
+static int FolderBrowser(char *FileName) {
+	char *Str=NULL;
+	int ret=0,ln;
+	if( (Str=kgGetMediaFile(NULL)) != NULL) {
+		ln = strlen(Str);
+		if(ln>1) {
+			ret =1;
+			strcpy(FileName,Str);
+			free(Str);
+		}
+	}
+	return ret;
+}
 int InsertSilences( CONVDATA *cn) {
   int pid,status,id,Qty;
   char Folder[500];
@@ -452,7 +465,8 @@ int  AddSilencebutton2callback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-  kgFolderBrowser(NULL,100,100,FileName,(char *)"*");
+//  kgFolderBrowser(NULL,100,100,FileName,(char *)"*");
+  FolderBrowser(FileName);
   kgSetString(T,0,FileName);
   sprintf(OutFile,"%-s/Music",getenv("HOME"));
 //  MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp3");

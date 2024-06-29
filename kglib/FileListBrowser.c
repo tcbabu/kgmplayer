@@ -381,7 +381,8 @@ int FileListBrowser( void *parent,void **v,void *pt) {
   if(D.fullscreen!=1) {    /*  if not fullscreen mode */
      int xres,yres; 
      kgDisplaySize(&xres,&yres); 
-      // D.xo=D.yo=0; D.xl = xres-10; D.yl=yres-80;
+      D.xo= (xres-D.xl)/2;
+      D.yo=(yres-D.yl)/2; 
   }
   else {    // for fullscreen
      int xres,yres; 

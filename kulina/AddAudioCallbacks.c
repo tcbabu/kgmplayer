@@ -138,6 +138,19 @@ int  AddAudiotextbox1callback(int cellno,int i,void *Tmp) {
   e = T->elmt;
   return ret;
 }
+static int FolderBrowser(char *FileName) {
+	char *Str=NULL;
+	int ret=0,ln;
+	if( (Str=kgGetMediaFile(NULL)) != NULL) {
+		ln = strlen(Str);
+		if(ln>1) {
+			ret =1;
+			strcpy(FileName,Str);
+			free(Str);
+		}
+	}
+	return ret;
+}
 int  AddAudiobutton1callback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
@@ -153,7 +166,8 @@ int  AddAudiobutton1callback(int butno,int i,void *Tmp) {
   T = (DIT *)kgGetNamedWidget(Tmp,"AddTbox1");
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-  kgFolderBrowser(NULL,100,100,FileName,"*");
+//  kgFolderBrowser(NULL,100,100,FileName,"*");
+  FolderBrowser(FileName);
   CheckMedia(FileName);
   if(Minfo.Audio !=0 ) {
     kgSetString(T,0,FileName);
@@ -271,7 +285,8 @@ int  AddAudiobutton2callback(int butno,int i,void *Tmp) {
   T = (DIT *)kgGetNamedWidget(Tmp,"AddTbox3");
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-  kgFolderBrowser(NULL,100,100,FileName,"*");
+//  kgFolderBrowser(NULL,100,100,FileName,"*");
+  FolderBrowser(FileName);
   CheckMedia(FileName);
   if(Minfo.Video !=0 ) {
     kgSetString(T,0,FileName);

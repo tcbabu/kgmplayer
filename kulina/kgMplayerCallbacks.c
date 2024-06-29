@@ -3215,10 +3215,16 @@ int  kgMplayerbutton1callback(int butno,int i,void *Tmp) {
   DIALOG *D;DIN *B; 
   char buff[50];
   int n,ret =0,index; 
+  char *fstr=NULL;
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
-  if(kgFolderBrowser(NULL,100,100,FileName,(char *)"*")) {
+//  if(kgFolderBrowser(NULL,100,100,FileName,(char *)"*")) {
+  fstr = kgGetMediaFile(NULL);
+  if(fstr != NULL) {
+      strcpy(FileName,fstr);
+      free(fstr);
+      fstr=NULL;
       ResetSubTitle(&Minfo);
       index = GetBaseIndex(FileName);
       kgTruncateString(FileName+index,40);

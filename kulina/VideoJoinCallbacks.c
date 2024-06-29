@@ -445,6 +445,45 @@ ThumbNail **AddItemtoVlist(char *newitem) {
   }
   return kgStringToThumbNails(menu);
 }
+ThumbNail **AddItemstoVlist(char **newitems) {
+  char buff[500];
+  MEDIAINFO *pt;
+  FILE *fp;
+  Dlink *L;
+  int ln,i,Cond=0,index,j=0;
+  char **menu;
+  char *file;
+  L = (Dlink *) cndata.Vlist;
+  if(L==NULL) L = Dopen();
+  cndata.Vlist = L;
+  if(newitems != NULL) {
+    j=0;
+    while(newitems[j] != NULL) {
+      CheckMedia(newitems[j]);
+      if(Minfo.Video !=0 ) {
+        pt = (MEDIAINFO *)malloc(sizeof(MEDIAINFO));
+        *pt = Minfo;
+        strcpy(pt->Flname,newitems[j]);
+        Dappend(L,(void *)pt);
+      }
+      j++;
+    }
+  }
+  ln = Dcount(L);
+  menu = (char **)malloc(sizeof(char *)*(ln+1));
+  menu[ln]=NULL;
+  Resetlink(L);
+  i=0;
+  while( (pt=(MEDIAINFO *)Getrecord(L))!= NULL) {
+    index= GetBaseIndex(pt->Flname);
+    menu[i]=(char *)malloc(strlen(pt->Flname+index)+6);
+    strcpy(menu[i],pt->Flname+index);
+    kgTruncateString(menu[i],50);
+//    printf("%s\n",menu[i]);
+    i++;
+  }
+  return kgStringToThumbNails(menu);
+}
 ThumbNail **DeleteItemsfromVlist(void) {
   char buff[500];
   MEDIAINFO *pt;
@@ -517,6 +556,7 @@ int  VideoJoinbutton1callback(int butno,int i,void *Tmp) {
   DIALOG *D;DIN *B; 
   static char filename[500]="";
   ThumbNail **th;
+  char **Str=NULL;
 
   int n,ret =0; 
   D = (DIALOG *)Tmp;
@@ -525,6 +565,7 @@ int  VideoJoinbutton1callback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   switch(butno) {
     case 1: 
+#if 0
       if(kgFolderBrowser(NULL,100,100,filename,(char *)"*")) {
         CheckMedia(filename);
         if(Minfo.Video !=0 ) {
@@ -535,6 +576,18 @@ int  VideoJoinbutton1callback(int butno,int i,void *Tmp) {
           kgUpdateOn(Tmp);
         }
       }
+#else
+      Str = kgGetVideoFiles(NULL);
+      if(Str != NULL) {
+          th = AddItemstoVlist(Str);
+          kgFreeThumbNails((ThumbNail **)kgGetList(VX2));
+          kgSetList(VX2,(void **)th);
+          kgUpdateWidget(VX2);
+          kgUpdateOn(Tmp);
+	  kgFreeDouble((void **)Str);
+	  Str=NULL;
+      }
+#endif
       break;
     case 2: 
       th = (ThumbNail **) kgGetList(VX2);

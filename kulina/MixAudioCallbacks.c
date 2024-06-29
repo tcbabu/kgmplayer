@@ -33,6 +33,19 @@ int ProcessPrint(int pip0,int pip1,int Pid);
 int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessToPipe(int pip0,int pip1,int Pid);
 
+static int FolderBrowser(char *FileName) {
+	char *Str=NULL;
+	int ret=0,ln;
+	if( (Str=kgGetMediaFile(NULL)) != NULL) {
+		ln = strlen(Str);
+		if(ln>1) {
+			ret =1;
+			strcpy(FileName,Str);
+			free(Str);
+		}
+	}
+	return ret;
+}
 char * MakeMixFile(void) {
   char buff[500],*pt;
   int id=0,ln;
@@ -456,7 +469,8 @@ int  MixAudiobutton1callback(int butno,int i,void *Tmp) {
   T = (DIT *)kgGetNamedWidget(Tmp,"MixTbox1");
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-  kgFolderBrowser(NULL,100,100,FileName,"*");
+//  kgFolderBrowser(NULL,100,100,FileName,"*");
+  if(!FolderBrowser(FileName))return 0;
   CheckMedia(FileName);
   if(Minfo.Audio !=0 ) {
     kgSetString(T,0,FileName);
@@ -574,7 +588,8 @@ int  MixAudiobutton2callback(int butno,int i,void *Tmp) {
   T = (DIT *)kgGetNamedWidget(Tmp,"MixTbox3");
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-  kgFolderBrowser(NULL,100,100,FileName,"*");
+//  kgFolderBrowser(NULL,100,100,FileName,"*");
+  if(!FolderBrowser(FileName))return 0;
   CheckMedia(FileName);
   if((Minfo.Video !=0)||(Minfo.Audio !=0) ) {
     kgSetString(T,0,FileName);
@@ -679,7 +694,8 @@ int  AmixAudiobutton1callback(int butno,int i,void *Tmp) {
   T = (DIT *)kgGetNamedWidget(Tmp,"AmixTbox1");
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-  kgFolderBrowser(NULL,100,100,FileName,"*");
+//  kgFolderBrowser(NULL,100,100,FileName,"*");
+  if(!FolderBrowser(FileName))return 0;
   CheckMedia(FileName);
   if(Minfo.Audio !=0 ) {
     kgSetString(T,0,FileName);
@@ -795,7 +811,8 @@ int  AmixAudiobutton2callback(int butno,int i,void *Tmp) {
   T = (DIT *)kgGetNamedWidget(Tmp,"AmixTbox3");
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-  kgFolderBrowser(NULL,100,100,FileName,"*");
+//  kgFolderBrowser(NULL,100,100,FileName,"*");
+  if(!FolderBrowser(FileName))return 0;
   CheckMedia(FileName);
   if((Minfo.Video !=0)||(Minfo.Audio !=0) ) {
     kgSetString(T,0,FileName);

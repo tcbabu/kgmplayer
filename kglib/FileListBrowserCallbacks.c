@@ -1141,6 +1141,7 @@ static   char *kgCheckAudioFile ( char *name ) {
       int x = -1 , y = -1;
       void *tw = NULL;
       j = 0;
+      th = ( ThumbNail ** ) kgGetList ( Y1 ) ;
       while ( th [ j ] != NULL ) {
           if ( kgGetSwitch ( Y1 , j ) == 1 ) {
 		  Added =1;
@@ -1149,13 +1150,14 @@ static   char *kgCheckAudioFile ( char *name ) {
       }
       if(Added==0) return 0;
       if ( ! kgCheckMenu ( Tmp , 200 , 250 , "Add Selected" , 0 ) ) return 0;
-      th = ( ThumbNail ** ) kgGetList ( Y1 ) ;
+//      th = ( ThumbNail ** ) kgGetList ( Y1 ) ;
       j = 0;
       while ( th [ j ] != NULL ) {
           if ( kgGetSwitch ( Y1 , j ) == 1 ) {
               ThumbNail *TH = NULL;
               char *name;
-              TH = kgCopyThumbNail ( kgGetThumbNail ( fw , j ) ) ;
+//              TH = kgCopyThumbNail ( kgGetThumbNail ( FY , j ) ) ;
+              TH = kgCopyThumbNail ( th[j] ) ;
               name = ( char * ) malloc ( strlen ( Folder ) +strlen ( TH-> name ) +4 ) ;
               strcpy ( name , Folder ) ;
               strcat ( name , "/" ) ;

@@ -42,6 +42,19 @@ int ProcessToPipe(int pip0,int pip1,int Pid);
 static void *InfoBox=NULL,*Dia=NULL;
 
 
+static int FolderBrowser(char *FileName) {
+	char *Str=NULL;
+	int ret=0,ln;
+	if( (Str=kgGetVideoFile(NULL)) != NULL) {
+		ln = strlen(Str);
+		if(ln>1) {
+			ret =1;
+			strcpy(FileName,Str);
+			free(Str);
+		}
+	}
+	return ret;
+}
 int MakeFolder(char *Infile,char *Folder,char *Outfile) {
    int index,i;
    char buff[500],*pt;
@@ -244,7 +257,8 @@ int  slicebutton1callback(int butno,int i,void *Tmp) {
   TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"sliceOutput");
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-  kgFolderBrowser(NULL,100,100,FileName,(char *)"*");
+//  kgFolderBrowser(NULL,100,100,FileName,(char *)"*");
+  if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
   sprintf(OutFile,"%-s/Video",getenv("HOME"));
   MakeFolder(FileName,OutFile,OutFile);

@@ -14,6 +14,19 @@ MEDIAINFO Minfo;
 extern char FileName[500];
 int GetBaseIndex(char *s);
 DIN *SubBut=NULL;
+static int FolderBrowser(char *FileName) {
+	char *Str=NULL;
+	int ret=0,ln;
+	if( (Str=kgGetMediaFile(NULL)) != NULL) {
+		ln = strlen(Str);
+		if(ln>1) {
+			ret =1;
+			strcpy(FileName,Str);
+			free(Str);
+		}
+	}
+	return ret;
+}
 int ResetSubTitle(MEDIAINFO *Minfo) {
   Minfo->SubFile[0]='\0';
   Minfo->SubTitle=0;

@@ -20,6 +20,19 @@ int ProcessToPipe(int pip0,int pip1,int Pid);
 
 static void *InfoBox=NULL,*Dia=NULL;
 
+static int FolderBrowser(char *FileName) {
+	char *Str =NULL;
+	int ret=0,ln;
+	if( (Str=kgGetVideoFile(NULL)) != NULL) {
+		ln = strlen(Str);
+		if(ln>1) {
+			ret =1;
+			strcpy(FileName,Str);
+			free(Str);
+		}
+	}
+	return ret;
+}
 int  vtobwtextbox1callback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
@@ -84,7 +97,8 @@ int  vtobwbutton1callback(int butno,int i,void *Tmp) {
   TO = (DIT *)kgGetNamedWidget(Tmp,"v2bwOutput");
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-  kgFolderBrowser(NULL,100,100,FileName,"*");
+//  kgFolderBrowser(NULL,100,100,FileName,"*");
+  if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
   sprintf(OutFile,"%-s/Video",getenv("HOME"));
   MakeFileInFolder(FileName,OutFile,OutFile,"mp4");
