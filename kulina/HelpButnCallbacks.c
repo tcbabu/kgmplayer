@@ -10,16 +10,18 @@ int  HelpButnbutton1callback(int butno,int i,void *Tmp) {
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
   DIALOG *D;DIN *B; 
-  int n,ret =0; 
+  int n,ret =0i,j=0; 
   DIS *S;
+  char **menu;
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
 #ifdef D_HELPGRP
   S = (DIS *)kgGetNamedWidget(Tmp,(char *)"ToolHelpBox");
-  S->menu = GetHelperMenu();
-  kgUpdateWidget(S);
+  menu = GetHelperMenu();
+  S->menu = menu;
   kgSetGrpVisibility(Tmp,ToolHelpGrp,1);
+  kgUpdateWidget(S);
   kgUpdateOn(Tmp);
 #else
   RunToolHelp(Tmp);

@@ -9,6 +9,25 @@ char ** GetHelperMenu(void);
 
 
 
+static char *GetNextString_o(char *str,int *pos) {
+  int i=0,j,k,l,len;
+  char *pt=NULL;
+  i = *pos;
+  k = *pos;
+  j = 0;
+  len = strlen(str);
+  if( str[i]!='\0') {
+    while(str[i]>= ' ') {i++; j++; }
+    pt = (char *)malloc(j+2+5);
+    *pos=i+1;
+    if(*pos>len) *pos=len;
+    l=0;
+    while(l<=(j)) pt[l++]=str[k++];
+    pt[l]='\0';
+  }
+  return pt;
+  
+}
 static char *GetNextString(char *str,int *pos) {
   int i=0,j,k,l,len;
   char *pt=NULL;
@@ -17,12 +36,22 @@ static char *GetNextString(char *str,int *pos) {
   j = 0;
   len = strlen(str);
   if( str[i]!='\0') {
-    while(str[i]>= ' ') {i++; j++;}
-    pt = (char *)malloc(j+2);
+    while (1) {
+            if(str[i+1]=='\0') break;		    
+//	    if(str[i]=='\n') break;
+//	    if(str[i]=='\n') str[i]=' ';
+	    if((j>30) &&(str[i]==' '))break;
+	    i++; j++;
+    }
+    pt = (char *)malloc(j+2+10);
     *pos=i+1;
     if(*pos>len) *pos=len;
-    l=0;
-    while(l<=j) pt[l++]=str[k++];
+    strcpy(pt,"!w32");
+    l=4;
+    while(l<=(j+4)) {
+	    if(str[k]=='\n'){pt[l++]= ' ';k++;}
+	    else pt[l++]=str[k++];
+    }
     pt[l]='\0';
   }
   return pt;
@@ -37,11 +66,13 @@ char ** GetHelperMenu() {
   if(HelperMsg!= NULL) {
     Dlink *L=NULL;
     L = Dopen();
+    pos=0;
     while((spt=GetNextString(HelperMsg,&pos))!= NULL) {
        Dadd(L,spt);
     }
     menu = (char **)malloc(sizeof(char *)*(Dcount(L)+1));
     Resetlink(L);
+    i=0;
     while ((spt=(char *)Getrecord(L)) != NULL) {
      menu[i++]=spt;
     }

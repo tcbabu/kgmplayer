@@ -45,7 +45,7 @@ int ToolHelpGroup( DIALOG *D,void **v,void *pt) {
     NULL,
     NULL ,
     NULL,NULL, /* *args, callback */
-    20,6,22,1,1,1,0
+    22,6,22,1,1,1,0
   };
   strcpy(s1.Wid,(char *)"ToolHelpBox");
   s1.item = -1;
@@ -135,7 +135,7 @@ int ToolHelp( void *parent,void **v,void *pt) {
   D.rw = 1;
   D.xo = 196;   /* Position of Dialog */ 
   D.yo = 2;
-  D.xl = 435;    /*  Length of Dialog */
+  D.xl = 495;    /*  Length of Dialog */
   D.yl = 280;    /*  Width  of Dialog */
   D.Initfun = ToolHelpinit;    /*   init fuction for Dialog */
   D.Cleanupfun = ToolHelpcleanup;    /*   init fuction for Dialog */

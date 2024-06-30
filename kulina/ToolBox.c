@@ -41,26 +41,38 @@ int MakevtobwGroup(DIALOG *D,void *arg);
 int MakevflipGroup(DIALOG *D,void *arg);
 int MakehflipGroup(DIALOG *D,void *arg);
 int MakesliceGroup(DIALOG *D,void *arg);
+int MakeNormaliseGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"Convert/Extract Audio",196,0,RunHelper,0,
        "\nYou can extract audio from a media file\n"
-       "One can also use it to convert audio to a different format.\n"
-       "The extension decides the OUTPUT format. \n"
-       "If it is planned to cut and join audio for further use,\n"
-       "then a lossless format like WAV or FLAC may be preferred\n"
-       "\nOne can also extract a portion, a negetive value\n"
-       "for end of selection can be used to discard from end\n"
-       "If CUTS and JOINS are planned opt for a lossless "
+       "One can also use it to convert audio to a \n"
+       "different format."
+       "The extension decides the \n"
+       "OUTPUT format. "
+       "If it is planned to cut and \n"
+       "join audio for further use,\n"
+       "then a lossless format like WAV or FLAC \n"
+       "may be preferred\n"
+       "\nOne can also extract a portion, \n"
+       "a negetive value "
+       "for end of selection can be \n"
+       "used to discard from end\n"
+       "If CUTS and JOINS are planned opt for \n"
+       "a lossless "
        "format like wav or flac\n"
   },
 
   { 0, MakeConvertVideoGroup,"Convert Video to mp4",30,10,RunHelper,0,
-      "\n\n\nConverting video to mp4 can reduce the file size substantially\n"
-      "without much loss of quality. One can opt for different compression\n"
-      "levels by changing the quality level. Higher quality is at the expense\n"
+      "\n\n\nConverting video to mp4 can reduce "
+	      "the file size substantially\n"
+      "without much loss of quality. One can opt \n"
+      "for different compression\n"
+      "levels by changing the quality level. \n"
+      "Higher quality is at the expense\n"
       "of file size, but it is generally affordable.\n"
-      " If there is a plan to edit further, opt for the best quality.\n"
+      " If there is a plan to edit further, \n"
+      "opt for the best quality.\n"
       "\nThanks to libx264/265, generally a good job is done\n"
       "\n Aspect value 1 means the original aspect ratio,\n"
       "greater than (>) 1.0 means a decrease in y resolution\n"
@@ -118,6 +130,7 @@ TOOLGRP ToolList[ ] = {
        "quality video for cartoons\n"
        "Another tool is there for making video from frames.\n"
   },
+  /*
   { 0, MakenormalizeGroup,"Normalize Audio File Volume",196,0,RunHelper,0,
        "\nCan be used to normalize volume to a common level for audio\n"
        "the maximum volume level is 0, hence levels are always negetive\n"
@@ -125,6 +138,14 @@ TOOLGRP ToolList[ ] = {
        "Convert one by one to make same level for a set of media files\n"
        "Output is an audio file, in case one need to change in the media\n"
        "use the tool for changing media audio, using the output audio.\n"
+       "Remember lossless formats are best for further editing.\n"
+  },
+  */
+  { 0, MakeNormaliseGroup,"Normalize Audio Files Volume",196,0,RunHelper,0,
+       "\nCan be used to normalize volume to a common level for audio\n"
+       "the maximum volume level is 0, hence levels are always negetive\n"
+       "Output is an audio file, in case one need to change in the media\n"
+       "use the tool for extracting  media audio, and add output audio.\n"
        "Remember lossless formats are best for further editing.\n"
   },
   { 0, MakevtobwGroup,"Convert Video to Black&White", 196,0 ,RunHelper,0,
@@ -226,7 +247,7 @@ int ToolBoxGroup( DIALOG *D,void **v,void *pt) {
   menu0 = GetMenuList(ToolList);
   th0 = (ThumbNail **)kgStringToThumbNails((char **)menu0);
   r0.list=(void **)th0;
-  strcpy(r0.Wid,(char *)"ToolsWidget1");
+  strcpy(r0.Wid,(char *)"ToolsBox");
   r0.item = -1;
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);

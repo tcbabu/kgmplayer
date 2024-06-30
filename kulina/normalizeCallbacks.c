@@ -97,7 +97,17 @@ int ProcessVolume(int pip0,int pip1,int Pid) {
      return 1;
 }
 #endif
-
+static int MakeOutFile(char *Infile,char *Outfile) {
+	int i=0,ln=strlen(Infile);
+	char buff[200];
+	i = ln-1;
+	strcpy(Outfile,Infile);
+	while((i>=0) &&(Infile[i] != '/')) i--;
+	Outfile[i+1]='\0';
+	strcat(Outfile,"_");
+	strcat(Outfile,Infile+i+1);
+	return 1;
+}
 int  normalizetextbox1callback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
@@ -118,7 +128,8 @@ int  normalizetextbox1callback(int cellno,int i,void *Tmp) {
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp3");
 #else
   sprintf(OutFile,"%-s/Music",getenv("HOME"));
-  MakeFileInFolder(FileName,OutFile,OutFile,"mp3");
+//  MakeFileInFolder(FileName,OutFile,OutFile,"mp3");
+  MakeOutFile(FileName,OutFile);
 #endif
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(T);
@@ -153,7 +164,8 @@ int  normalizebutton1callback(int butno,int i,void *Tmp) {
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp3");
 #else
   sprintf(OutFile,"%-s/Music",getenv("HOME"));
-  MakeFileInFolder(FileName,OutFile,OutFile,"mp3");
+//  MakeFileInFolder(FileName,OutFile,OutFile,"mp3");
+  MakeOutFile(FileName,OutFile);
 #endif
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(T);
