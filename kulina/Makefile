@@ -27,6 +27,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 AddSilence.o AddSilenceCallbacks.o \
 	 MakeCuts.o MakeCutsCallbacks.o \
 	 MonitorJoin.o MonitorJoinCallbacks.o \
+	 MonitorVol.o MonitorVolCallbacks.o \
 	 kgGetFolder.o kgGetFolderCallbacks.o \
 	 subtitle.o subtitleCallbacks.o \
 	 HdmiAudio.o HdmiAudioCallbacks.o \
@@ -73,6 +74,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 AddSilence.o AddSilenceCallbacks.o \
 	 MakeCuts.o MakeCutsCallbacks.o \
 	 MonitorJoin.o MonitorJoinCallbacks.o \
+	 MonitorVol.o MonitorVolCallbacks.o \
 	 kgGetFolder.o kgGetFolderCallbacks.o \
 	 subtitle.o subtitleCallbacks.o \
 	 HdmiAudio.o HdmiAudioCallbacks.o \
@@ -133,6 +135,10 @@ MonitorJoin.o   : MonitorJoin.c
 	 $(CC) -c MonitorJoin.c
 MonitorJoinCallbacks.o  : MonitorJoinCallbacks.c
 	 $(CC) -c MonitorJoinCallbacks.c
+MonitorVol.o   : MonitorVol.c
+	 $(CC) -c MonitorVol.c
+MonitorVolCallbacks.o  : MonitorVolCallbacks.c
+	 $(CC) -c MonitorVolCallbacks.c
 AddAudio.o	: AddAudio.c ConvertData.h
 	 $(CC) -c AddAudio.c
 AddAudioCallbacks.o	: AddAudioCallbacks.c ConvertData.h

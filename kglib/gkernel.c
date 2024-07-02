@@ -377,7 +377,7 @@ int kgRunJob(char *job,int (*ProcessOut)(int,int,int)){
       buff[pos]='\0';
       i++;
      }
-     if(pt[0]=='\\') {
+     else if(pt[0]=='\\') {
       pos++;
       args[i]=buff+pos;
       while(buff[pos]!='\\')pos++;
@@ -446,7 +446,7 @@ int kgChangeJob(char *job){
       buff[pos]='\0';
       i++;
      }
-     if(pt[0]=='\\') {
+     else if(pt[0]=='\\') {
       pos++;
       args[i]=buff+pos;
       while(buff[pos]!='\\')pos++;

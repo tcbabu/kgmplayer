@@ -1,1 +1,1 @@
-  if(!FolderBrowser(FileName))return 0;
+int ProcessToPipe(int pip0,int pip1,int Pid);

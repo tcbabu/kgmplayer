@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <kulina.h>
 #include <signal.h>
+#include <fcntl.h>
 
-void *RunMonitorJoin(void *arg);
+int RunMonitorJoin(void *arg);
 
+int MonitorJob(void *arg,int Pipe,int Pid);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int kgffmpeg(int,char **);
 int ProcessSkip(int pip0,int pip1,int Pid);
@@ -12,6 +14,18 @@ int ProcessToPipe(int pip0,int pip1,int Pid);
 int Mencoder(int,char **);
 void *RunkgGetFiles(void *arg,char *Filter);
 int updateoutfile(char *outfile);
+int ffmpegfun(int,char **);
+int GetBaseIndex(char *s);
+int GetLine(int pip0,char *buff);
+int SearchString(char *s1,char *s2);
+
+
+typedef struct _volstr {
+	char Infile[200];
+	char Outfile[200];
+	int  MeanDb;
+	double corval;
+} VOLSTR;
 
 extern int Jpipe[2];
 extern int Jstat[2];
@@ -128,7 +142,7 @@ int runnormalisebkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(in
      exit(0);
   }
 }
-int RunNormalisebkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **),char *infile,char *outfile) {
+int RunNormalisebkgr_o(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **),char *infile,char *outfile) {
   int pid=0,id;
   int status;
   char buff[500];
@@ -168,15 +182,188 @@ int RunNormalisebkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(in
      close(Jpipe[1]);
      close(Jstat[0]);
      RunMonitorJoin(NULL);
-#if 0
-     kill(pid,9);
-     waitpid(pid,&status,0);
-#else
      KillJob(pid);
-#endif
      sprintf(buff,"cp %s %s",outfile,infile);
      system(buff);
      remove(outfile);
      exit(0);
   }
+}
+
+int RunNormalisebkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **),char *infile,char *outfile) {
+  int pid=0,id;
+  int status;
+  char buff[500];
+
+  
+  id = getpid();
+  if(pipe(Jpipe) < 0) exit(0);
+  if(pipe(Jstat) < 0) exit(0);
+  MonPipe = Jpipe[0];
+  
+  if ((pid=fork())==0) {
+    close(Jpipe[0]);
+    close(Jstat[1]);
+#if 1  // modify as required
+     sprintf(buff,"Executing... PLEASE WAIT\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"Files: %s %s\n",infile,outfile);
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"PLEASE WAIT till the window closes\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"You can cancel job if you wish\n");
+     write(Jpipe[1],buff,strlen(buff));
+     runfunction(job,ProcessOut,function);
+#endif 
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     exit(0);
+  }
+  else {
+     char buff[500];
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     MonitorJob(NULL,Jpipe[0],pid);
+//     KillJob(pid);
+     WAIT(pid);
+        sprintf(buff,"cp %s %s",outfile,infile);
+        system(buff);
+        remove(outfile);
+     return pid;
+  }
+}
+char *AddMonMessage(Dlink *L,char *msg) {
+	char *pt;
+	pt = (char *)malloc(strlen(msg)+1);
+	strcpy(pt,msg);
+	Dadd(L,pt);
+	return pt;
+}
+
+int RunVolJob(char *job,void *Msglines,int (*ProcessOut)(void *,int,int)){
+   FILE *fp,*fp1;
+   int pip[2],pid,status,pip2[2];
+   char *args[100],buff[1000],pt[300];
+   char *pgrpath=NULL;
+   int i=0,pos=0,argc;
+   char *Infile=NULL,*Outfile=NULL;
+   Dlink *L = (Dlink *)Msglines;
+   if(job==NULL) return 0;
+   if(L != NULL) {
+       Resetlink(L);
+       Outfile= (char *)Getrecord(L);
+       Infile= (char *)Getrecord(L);
+       Resetlink(L);
+   }
+   if( pipe(pip) < 0) return 0;
+   if( pipe(pip2) < 0) return 0;
+   while(job[i]==' ') i++;
+   strcpy(buff,job+i);
+   i=0;
+   while ( sscanf(buff+pos,"%s",pt) > 0 ) {
+     if(pt[0]=='\"') {
+      pos++;
+      args[i]=buff+pos;
+      while(buff[pos]!='\"')pos++;
+      buff[pos]='\0';
+      i++;
+     }
+     else if(pt[0]=='\\') {
+      pos++;
+      args[i]=buff+pos;
+      while(buff[pos]!='\\')pos++;
+      buff[pos]='\0';
+      i++;
+     }
+     else {
+       args[i]=buff+pos;
+       pos +=strlen(pt);
+       i++;
+       if(buff[pos]< ' ') break;
+       buff[pos]='\0';
+     }
+     pos++;
+     while(buff[pos]==' ') pos++;
+   }
+   args[i]=NULL;
+   if(i==0) return 0;
+   argc =i;
+   pid = fork();
+   if(pid == 0) { /* child process */
+//     if(fork()!=0) exit(0); /* to avoid zombie */
+     close(0);
+     dup(pip2[0]);
+     close(pip2[0]);
+     close(1);
+     dup(pip[1]);
+     close(2);
+     dup(pip[1]);
+     close(pip[1]);
+     ffmpegfun(argc,args);
+     printf("END:\n");
+     if((Outfile!=NULL)&&(Outfile[0]>=' ')){
+	  sprintf(buff,"cp %s %s",Outfile,Infile);
+          system(buff);
+          remove(Outfile);
+     }
+     exit(0);
+   }
+   else {   /* parent process */
+//     printf("Waiting pid: %d\n",pid);
+     int ret =0;
+     close(pip2[0]);
+     close(pip[1]);
+     if(ProcessOut != NULL){
+	     ret=ProcessOut(Msglines,pip[0],pid);
+//             KillJob(pid);
+     }
+//     WAIT(pid);
+     waitpid(pid,&status,0);
+     return pid;
+   }
+}
+static int MakeOutFile(char Infile[],char Outfile[]) {
+	int i=0,ln=strlen(Infile);
+	char buff[200];
+	i = ln-1;
+	strcpy(Outfile,"/tmp/out");
+	while((i>=0) &&(Infile[i] != '/')) i--;
+	strcat(Outfile,Infile+i+1);
+	return 1;
+}
+void *RunVolumeNormalise(void *stmp) {
+	VOLSTR *Istr=(VOLSTR *)stmp;
+	char Infile[200],Outfile[200],buff[500];
+	double corval=0.0;
+	int meanlevel;
+	int pid;
+	Dlink *L=Dopen();
+	char *tpt;
+	strcpy(Infile,Istr->Infile);
+	strcpy(Outfile,Istr->Outfile);
+	meanlevel = Istr->MeanDb;
+	corval = Istr->corval;
+
+	AddMonMessage(L,Outfile);
+	AddMonMessage(L,Infile);
+#if 1
+	sprintf(buff,"Processing file: %s",Infile);
+	AddMonMessage(L,buff);
+	strcpy(buff,"!w32!c08 Press !c03Cancel!c08 to kill");
+	AddMonMessage(L,buff);
+        sprintf(buff,"ffmpegfun -i \"%s\" -af \"volume=%lfdB\" -y \"%s\"", 
+                      Infile,corval,Outfile);
+//        RunNormalisebkgr(buff,ProcessToPipe,ffmpegfun,Infile,Outfile);
+        Resetlink(L);
+        pid = RunVolJob(buff,L,MonitorJob);
+//        pid = RunVolJob(buff,NULL,NULL);
+	free(stmp);
+#if 0
+        sprintf(buff,"cp %s %s",Outfile,Infile);
+        system(buff);
+        remove(Outfile);
+#endif
+	Dempty(L);
+#endif
+	return NULL;
 }
