@@ -13,7 +13,11 @@ int  toolsbutton1callback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   switch(butno) {
     case 1: 
-      RunToolBox(Tmp);
+//      RunToolBox(Tmp);
+      if(fork()==0){
+	     if(fork()== 0) RunToolBox(NULL);
+	     else exit(0);
+      }
       break;
   }
   return ret;

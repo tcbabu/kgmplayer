@@ -17,8 +17,8 @@ int EnVolumeGroup( DIALOG *D,void **v,void *pt) {
   DIA *d=NULL,*dtmp;
   DIHB d0 = { 
     'P',
-    280,90,  
-    368,108,   
+    480,130,  
+    568,148,   
     -100,100,  
     64,  
     (int *)v[0],
@@ -30,8 +30,8 @@ int EnVolumeGroup( DIALOG *D,void **v,void *pt) {
   d0.item = -1;
   DIM m1 = { 
     'm',
-    195,85,  
-    279,110,  
+    395,125,  
+    479,150,  
     1,0  
   };
   strncpy(m1.msg,(char *)"Change Volume",499);
@@ -46,8 +46,8 @@ int EnVolumeGroup( DIALOG *D,void **v,void *pt) {
   ThumbNail **th0 ;
   DIRA r2 = { 
     'r',
-    367,85,  
-    593,111,   
+    567,125,  
+    793,151,   
     8,0,  
     60, 
     20, 

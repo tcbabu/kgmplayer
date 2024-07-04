@@ -43,9 +43,10 @@ int SetGrpVis(DIALOG *Tmp,TOOLGRP *T,int item) {
   }
   return 1;
 }
-int ResetGrpVis(DIALOG *Tmp,TOOLGRP *T) {
+int ResetGrpVis(void *Tmp) {
   int k,id;
   DIRA *ToolsBox = (DIRA *)kgGetNamedWidget(Tmp,"ToolsBox");
+  TOOLGRP *T = ToolList;
   kgSetGrpVisibility(Tmp,HelpButnGrp,0);
   k=0;
   while(T[k].MakeGroup != NULL){
@@ -85,7 +86,7 @@ int  ToolBoxbrowser1callback(int item,int i,void *Tmp) {
   switch(item) {
     case 2:
     SetGrpVis(D,ToolList,item);
-    kgSetGrpVisibility(D,EnVoGrp,1);
+//    kgSetGrpVisibility(D,EnVoGrp,1);
 
     cndata.Enhfac=1.0;
     if(cndata.FullRange!=1) {

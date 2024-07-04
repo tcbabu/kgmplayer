@@ -18,6 +18,7 @@ int ffmpegfun(int,char **);
 int GetBaseIndex(char *s);
 int GetLine(int pip0,char *buff);
 int SearchString(char *s1,char *s2);
+int ProcessVolumeNew(void *stmp,int pip0,int Pid);
 
 
 typedef struct _volstr {
@@ -25,6 +26,10 @@ typedef struct _volstr {
 	char Outfile[200];
 	int  MeanDb;
 	double corval;
+	double meanVol;
+	double histVol;
+	double maxVol;
+	double duration;
 } VOLSTR;
 
 extern int Jpipe[2];
@@ -339,15 +344,28 @@ void *RunVolumeNormalise(void *stmp) {
 	int pid;
 	Dlink *L=Dopen();
 	char *tpt;
+	int hr,min,sec,tot;
 	strcpy(Infile,Istr->Infile);
 	strcpy(Outfile,Istr->Outfile);
 	meanlevel = Istr->MeanDb;
 	corval = Istr->corval;
+	tot = (int)Istr->duration;
+	hr = tot/3600;
+	min = tot %3600;
+	sec = min%60;
+	min = min/60;
 
 	AddMonMessage(L,Outfile);
 	AddMonMessage(L,Infile);
 #if 1
+	sprintf(buff,"Meandb: %d Corval: %lf",meanlevel,corval);
+	AddMonMessage(L,buff);
+	sprintf(buff,"meanVol: %lf histVol-%lf maxVol=%lf",Istr->meanVol,
+			Istr->histVol,Istr->maxVol);
+	AddMonMessage(L,buff);
 	sprintf(buff,"Processing file: %s",Infile);
+	AddMonMessage(L,buff);
+	sprintf(buff,"Duration: %2.2d:%2.2d:%2.2d ",hr,min,sec);
 	AddMonMessage(L,buff);
 	strcpy(buff,"!w32!c08 Press !c03Cancel!c08 to kill");
 	AddMonMessage(L,buff);
@@ -358,6 +376,44 @@ void *RunVolumeNormalise(void *stmp) {
         pid = RunVolJob(buff,L,MonitorJob);
 //        pid = RunVolJob(buff,NULL,NULL);
 	free(stmp);
+#if 0
+        sprintf(buff,"cp %s %s",Outfile,Infile);
+        system(buff);
+        remove(Outfile);
+#endif
+	Dempty(L);
+#endif
+	return NULL;
+}
+void *RunVolumeDetect(void *stmp) {
+	VOLSTR *Istr=(VOLSTR *)stmp;
+	char Infile[200],Outfile[200],buff[500];
+	double corval=0.0;
+	int meanlevel;
+	int pid;
+	Dlink *L=Dopen();
+	char *tpt;
+	FILE *fp;
+	fp = fopen("/home/kulina/Junk","w");
+	strcpy(Infile,Istr->Infile);
+	strcpy(Outfile,Istr->Outfile);
+	meanlevel = Istr->MeanDb;
+	corval = Istr->corval;
+
+	AddMonMessage(L,Infile);
+#if 1
+	sprintf(buff,"Processing file: %s",Infile);
+	AddMonMessage(L,buff);
+	strcpy(buff,"!w32!c08 Press !c03Cancel!c08 to kill");
+	AddMonMessage(L,buff);
+        sprintf(buff,"ffmpegfun -i \"%s\" -af \"volumedetect\" -vn -sn "
+            " -dn -f null /dev/null", Infile);
+	fprintf(fp,"%s\n",buff);
+	fclose(fp);
+	AddMonMessage(L,buff);
+        Resetlink(L);
+        pid = RunVolJob(buff,L,ProcessVolumeNew);
+//	free(stmp);
 #if 0
         sprintf(buff,"cp %s %s",Outfile,Infile);
         system(buff);

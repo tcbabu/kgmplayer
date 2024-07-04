@@ -25,11 +25,11 @@ int ToolHelpGroup( DIALOG *D,void **v,void *pt) {
   int GrpId=0,oitems=0,i,j;
   DIA *d=NULL,*dtmp;
 //  char *xpm0= (char *)kgBorderedRectangle(444,286,FillClr,0.0);
-  char *xpm0= (char *)RectFillImage(444,286,FillClr);
+  char *xpm0= (char *)RectFillImage(494,436,FillClr);
   DIP p0 = { 
     'p',
     1,2,  
-    434,278,  
+    484,428,  
     (void *)xpm0,
     -1, /* bkgr colour */ 
       0,0,0.000000 /* border hide transparency*/ 
@@ -39,7 +39,7 @@ int ToolHelpGroup( DIALOG *D,void **v,void *pt) {
   DIS s1 = { 
     's',
     8,6,  
-    433,244,   
+    483,426,   
     6,  
     NULL,
     NULL,
@@ -60,8 +60,8 @@ int ToolHelpGroup( DIALOG *D,void **v,void *pt) {
   butn2[0].butncode='';
   DIL h2 = { 
     'h',
-    7,244,  
-    89,277,
+    207,428,  
+    289,457,
     2,0,  
     72, 
     25, 

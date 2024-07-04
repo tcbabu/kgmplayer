@@ -44,7 +44,7 @@ int MakesliceGroup(DIALOG *D,void *arg);
 int MakeNormaliseGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
-  { 0, MakeAudioConvertGroup,"Convert/Extract Audio",196,0,RunHelper,0,
+  { 0, MakeAudioConvertGroup,"Convert/Extract Audio",346,40,RunHelper,0,
        "\nYou can extract audio from a media file\n"
        "One can also use it to convert audio to a \n"
        "different format."
@@ -63,7 +63,7 @@ TOOLGRP ToolList[ ] = {
        "format like wav or flac\n"
   },
 
-  { 0, MakeConvertVideoGroup,"Convert Video to mp4",30,10,RunHelper,0,
+  { 0, MakeConvertVideoGroup,"Convert Video to mp4",230,50,RunHelper,0,
       "\n\n\nConverting video to mp4 can reduce "
 	      "the file size substantially\n"
       "without much loss of quality. One can opt \n"
@@ -83,26 +83,26 @@ TOOLGRP ToolList[ ] = {
       "new Yres and a value < 1.0 means an increase in new Yres\n"
       "So new Yres if adjusted to maintain the new aspect ratio\n"
   },
-  { 0, MakeVideoJoinGroup,"Join Video Files",0,0 ,RunHelper,0,
+  { 0, MakeVideoJoinGroup,"Join Video Files",200,40 ,RunHelper,0,
       "\nMuliple video files can be joined together to a single one\n"
       "Files can be of diffrent aspect ratio or format and the output\n"
       "is a file with aspect ratio\n"
   },
-  { 0, MakeAudioJoinGroup,"Join Audio from Media Files",0,0,RunHelper,0,
+  { 0, MakeAudioJoinGroup,"Join Audio from Media Files",200,40,RunHelper,0,
       "\n\n\nJoin audios from multiple input files (can be audio or video)\n"
       "If there is a plan to edit further, select output format as lossless\n"
       "audio, either wav or flac\n"
   },
-  { 0, MakeAddAudioGroup,"Add/Change Media audio ",0,0,RunHelper,0,
+  { 0, MakeAddAudioGroup,"Add/Change Media audio ",200,40,RunHelper,0,
       "\n\n\nAdd (or replace) audio to a video file\n"
       "If there is already an audio in the media it will be discarded\n"
       "and new audio will be inserted\n"
   },
-  { 0, MakeMixAudioGroup,"Mix Audio to Media",0,0,RunHelper,0,
+  { 0, MakeMixAudioGroup,"Mix Audio to Media",200,40,RunHelper,0,
       "\n\n\nThis tool can be used to mix an audio to an existing\n"
       "audio in a media(video or audio) file.\n"
   },
-  { 0, MakeAmixAudioGroup,"Mix Audios from two media",0,0,RunHelper,0,
+  { 0, MakeAmixAudioGroup,"Mix Audios from two media",200,40,RunHelper,0,
       "\n\n\nThis tool can be used to mix two audio inputs from two media\n"
       "files (audio or video) and creates a new audio file\n"
       "If further editing to audio is planned, select a lossless format\n"
@@ -110,20 +110,20 @@ TOOLGRP ToolList[ ] = {
       "wav or flac by changing the output extension\n"
   },
 
-  { 0, MakeMakeKaraokeGroup,"Karaoke from stereo audio",0,0,RunHelper,0,
+  { 0, MakeMakeKaraokeGroup,"Karaoke from stereo audio",200,40,RunHelper,0,
       "\n\n\nKaraoke may not be successful always\n"
       "It works only in certain type of stero recording\n"
       "One can just make a try\n",
   },
-  { 0, MakeAddSilenceGroup,"Insert Silences to audio",0,0,RunHelper,0,
+  { 0, MakeAddSilenceGroup,"Insert Silences to audio",180,40,RunHelper,0,
        "\n\n\nInserting silence in audio is useful in mixing audio\n"
   },
-  { 0, MakeMakeCutsGroup,"Make Cuts in  audio",0,0,RunHelper,0,
+  { 0, MakeMakeCutsGroup,"Make Cuts in  audio",340,40,RunHelper,0,
        "\n\n\nMaking cuts in audio is useful in mixing audio\n"
        "or adding audio to media\n"
   },
 
-  { 0, Makeimgs2vGroup,"Images to Video",196,0,RunHelper,0,
+  { 0, Makeimgs2vGroup,"Images to Video",346,40,RunHelper,0,
        "Useful in creating a video from a set of photographs or images\n"
        "May not be the one for creating video from frames, though one\n"
        "can attempt by reducing time for each image, probably for low\n"
@@ -131,7 +131,7 @@ TOOLGRP ToolList[ ] = {
        "Another tool is there for making video from frames.\n"
   },
   /*
-  { 0, MakenormalizeGroup,"Normalize Audio File Volume",196,0,RunHelper,0,
+  { 0, MakenormalizeGroup,"Normalize Audio File Volume",346,40,RunHelper,0,
        "\nCan be used to normalize volume to a common level for audio\n"
        "the maximum volume level is 0, hence levels are always negetive\n"
        "only one file can be selected at a time\n"
@@ -141,23 +141,23 @@ TOOLGRP ToolList[ ] = {
        "Remember lossless formats are best for further editing.\n"
   },
   */
-  { 0, MakeNormaliseGroup,"Normalize Audio Files Volume",196,0,RunHelper,0,
+  { 0, MakeNormaliseGroup,"Normalize Audio Files Volume",346,40,RunHelper,0,
        "\nCan be used to normalize volume to a common level for audio\n"
        "the maximum volume level is 0, hence levels are always negetive\n"
        "Output is an audio file, in case one need to change in the media\n"
        "use the tool for extracting  media audio, and add output audio.\n"
        "Remember lossless formats are best for further editing.\n"
   },
-  { 0, MakevtobwGroup,"Convert Video to Black&White", 196,0 ,RunHelper,0,
+  { 0, MakevtobwGroup,"Convert Video to Black&White", 346,40 ,RunHelper,0,
        "\n\n\nConverts a video to gray scale or Balck&White\n"
   },
-  { 0, MakevflipGroup,"Vertically flip Video", 196,0,RunHelper,0,
+  { 0, MakevflipGroup,"Vertically flip Video", 346,40,RunHelper,0,
        "\n\n\nFlips each frame vertically\n"
   },
-  { 0, MakehflipGroup,"Horizontaly flip Video", 196,0,RunHelper,0,
+  { 0, MakehflipGroup,"Horizontaly flip Video", 346,40,RunHelper,0,
        "\n\n\nFlips each frame Horizontally\n"
   },
-  { 0, MakesliceGroup,"Make slices of Video", 196,0,RunHelper,0,
+  { 0, MakesliceGroup,"Make slices of Video", 346,40,RunHelper,0,
        "\nCreates slices of a video in to many slices\n"
        "of video of fixed time of slice, may be useful in\n"
        "editing further or converting to frames of images,\n"
@@ -226,10 +226,10 @@ int ToolBoxGroup( DIALOG *D,void **v,void *pt) {
   DIRA r0 = { 
     'r',
     7,2,  
-    195,240,   
+    340,440,   
     8,0,  
-    140, 
-    25, 
+    340, 
+    35, 
     1,6, 
     0,6, 
     (int *)v[0], 
@@ -237,7 +237,7 @@ int ToolBoxGroup( DIALOG *D,void **v,void *pt) {
     NULL ,
     NULL,ToolBoxbrowser1callback, /* *args, callback */
     2,  /* Border Offset  */
-     16,  /* Scroll width  */
+     22,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
     1, /* bordr */
@@ -252,18 +252,18 @@ int ToolBoxGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"Go Back");
+  strcpy(butn1[0].title,(char *)"!c03!w32Done");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
-  butn1[0].bkgr=-83201083;
+  butn1[0].bkgr=-245255245;
   butn1[0].butncode='';
   DIL h1 = { 
     'h',
 //    51,240,  
 //    145,270,
-    1,244,  
-    95,272,
+    1,444,  
+    95,472,
     2,0,  
     84, 
     25, 
@@ -383,17 +383,18 @@ int ToolBox( void *parent,void **v,void *pt) {
   SetHelpMsgs();
 
 
-  kgShiftGrp(&D,ImageBoxGrp,196,0);
+  kgShiftGrp(&D,ImageBoxGrp,346,1);
   kgShiftGrp(&D,VaspGrp,0,-3);
   kgShiftGrp(&D,VsizeGrp,0,2);
   kgShiftGrp(&D,VrangeGrp,35,9);
   kgShiftGrp(&D,EnVoGrp,0,10);
+  kgShiftGrp(&D,RangeGrp,200,100);
 
 #ifdef D_HELPGRP
-  kgShiftGrp(&D,ToolHelpGrp,196,0);
+  kgShiftGrp(&D,ToolHelpGrp,346,10);
 #endif
 //  kgShiftGrp(&D,HelpButnGrp,196,0);
-  kgShiftGrp(&D,HelpButnGrp,100,4);
+  kgShiftGrp(&D,HelpButnGrp,300,204);
 
 #if 0
   kgShiftGrp(&D,AConGrp,190,0);
@@ -405,6 +406,7 @@ int ToolBox( void *parent,void **v,void *pt) {
     if( (ToolList[k].xsh!=0)|| (ToolList[k].ysh!=0) ) {
       kgShiftGrp(&D,ToolList[k].GrpId, ToolList[k].xsh, ToolList[k].ysh);
     }
+//    else kgMoveGrp(&D,ToolList[k].GrpId, 356,40);
     k++;
   }
   
@@ -449,6 +451,10 @@ int ToolBox( void *parent,void **v,void *pt) {
   D.yo = 0;
   D.xl = 635;    /*  Length of Dialog */
   D.yl = 280;    /*  Width  of Dialog */
+  if(parent == NULL ) {
+    D.xl = 840;    /*  Length of Dialog */
+    D.yl = 480;    /*  Width  of Dialog */
+  }
   D.Initfun = ToolBoxinit;    /*   init fuction for Dialog */
   D.Cleanupfun = ToolBoxcleanup;    /*   init fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
@@ -480,7 +486,13 @@ int ToolBox( void *parent,void **v,void *pt) {
   D.Shapexpm = NULL;    /*  PNG/jpeg file for window shape;Black color will not be drawn */
   D.parent = parent;    /*  1 for not showing in task bar*/
   D.pt = pt;    /*  any data to be passed by user*/
-//  strcpy(D.name,"Kulina Designer ver 1.0");    /*  Dialog name you may change */
+  strcpy(D.name,"Kulina Media Tool Box");    /*  Dialog name you may change */
+  if(parent == NULL) {
+     int xres,yres; 
+     kgDisplaySize(&xres,&yres); 
+     D.xo = (xres-D.xl)/2;
+     D.yo = (yres-D.yl)/2;
+  }
   if(D.fullscreen!=1) {    /*  if not fullscreen mode */
      int xres,yres; 
      kgDisplaySize(&xres,&yres); 
@@ -509,5 +521,6 @@ void *RunToolBox(void *arg) {
    v[0]=(void *)(&v0);
    void *pt=NULL; /* pointer to send any extra information */
    ToolBox(arg,v,pt );
-   return NULL;
+//   return NULL;
+   exit(0);
 }

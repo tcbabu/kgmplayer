@@ -1,1 +1,1 @@
-int ProcessToPipe(int pip0,int pip1,int Pid);
+int kgffmpeg(int,char **);

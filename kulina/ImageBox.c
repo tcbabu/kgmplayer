@@ -26,7 +26,7 @@ int ImageBoxGroup( DIALOG *D,void **v,void *pt) {
   DIP p0 = { 
     'p',
     1,1,  
-    436,279,  
+    480,479,  
     (void *)xpm0,
     -1, /* bkgr colour */ 
       0,0,0.000000 /* border hide transparency*/ 

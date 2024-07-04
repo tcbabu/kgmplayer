@@ -1,3 +1,4 @@
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <math.h>
@@ -17,6 +18,7 @@ extern int Jstat[2];
 
 extern char GrabFileName[300];
 extern int Pval;
+int ResetGrpVis(void *Tmp);
 int CheckMedia(char *);
 int kgLame(int,char **);
 int kgffmpeg(int,char **);
@@ -527,9 +529,48 @@ int  AudioConvertsplbutton1callback(int butno,int i,void *Tmp) {
   write(ToTools[1],buff,strlen(buff));
   kgSplashMessage(Tmp,100,100,300,40,(char *)"Send for Processing",1,0,15);
   ret = 0;
+  ResetGrpVis(Tmp);
   return ret;
 }
 void  AudioConvertsplbutton1init(DIL *B,void *pt) {
+}
+int  AudioConvertdslide1callback(int val,int i,void *Tmp) {
+  /*********************************** 
+    val : current value 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIHB *SD; 
+  int ret=1; 
+  D = (DIALOG *)Tmp;
+  SD = (DIHB *) kgGetWidget(Tmp,i);
+  if(val < 0) {
+    cndata.Enhfac = (100.0+(float)val)/100.0;
+    if(cndata.Enhfac<0.01) cndata.Enhfac=0.01;
+  }
+  else {
+    val =val*2+100;
+    cndata.Enhfac = (float)val/100.0;
+  }
+  return ret;
+}
+int  AudioConvertbrowser3callback(int item,int i,void *Tmp) {
+  /*********************************** 
+    item : selected item (1 to max_item)  not any specific relevence
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIRA *R;DIALOG *D;void *pt; 
+  ThumbNail **th; 
+  int ret=1; 
+  D = (DIALOG *)Tmp;
+  pt = D->pt;
+  R = (DIRA *)kgGetWidget(Tmp,i);
+  th = (ThumbNail **) R->list;
+  cndata.VolEnh = item;
+  return ret;
+}
+void  AudioConvertbrowser3init(DIRA *R,void *pt) {
 }
 int AudioConvertinit(void *Tmp) {
   /*********************************** 
@@ -553,6 +594,19 @@ int AudioConvertcleanup(void *Tmp) {
   pt = D->pt;
   return ret;
 }
+int ModifyAudioConvert(void *Tmp,int GrpId) {
+  DIALOG *D;
+  D = (DIALOG *)Tmp;
+  DIA *d;
+  int i,n;
+  d = D->d;
+  i=0;while(d[i].t!= NULL) {;
+     i++;
+  };
+  n=1;
+  return GrpId;
+}
+
 int AudioConvertCallBack(void *Tmp,void *tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  

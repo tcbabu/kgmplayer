@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "mediainfo.h"
+#include "ToolGroup.h"
 
 extern MEDIAINFO Minfo;
 extern CONVDATA cndata;
@@ -18,6 +19,10 @@ extern MEDIAINFO Minfo;
 extern int Tools;
 extern int Jpipe[2];
 extern int Jstat[2];
+extern TOOLGRP ToolList[];
+
+int SetGrpVis(DIALOG *Tmp,TOOLGRP *T,int item); 
+int ResetGrpVis(DIALOG *Tmp,TOOLGRP *T); 
 
 int FileStat(char *flname);
 int CheckVideo(char *flname);
@@ -265,7 +270,7 @@ ThumbNail **DeleteItemsfromClist(void) {
   }
   return kgStringToThumbNails(menu);
 }
-int  MakeCutsbutton1callback(int butno,int i,void *Tmp) {
+int  MakeCutsbutton2callback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -394,6 +399,7 @@ int  MakeCutssplbutton1callback(int butno,int i,void *Tmp) {
   }
 
   kgSplashMessage(Tmp,100,100,300,40,(char *)"Send for Processing",1,0,15);
+  ResetGrpVis(Tmp,ToolList);
   ret = 0;
   return ret;
 }
@@ -413,7 +419,7 @@ int  MakeCutstextbox2callback(int cellno,int i,void *Tmp) {
   e = T->elmt;
   return ret;
 }
-int  MakeCutsbutton2callback(int butno,int i,void *Tmp) {
+int  MakeCutsbutton1callback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -515,3 +521,16 @@ int MakeCutsWaitCallBack(void *Tmp) {
   int ret = 0;
   return ret;
 }
+int ModifyMakeCuts(void *Tmp,int GrpId) {
+  DIALOG *D;
+  D = (DIALOG *)Tmp;
+  DIA *d;
+  int i,n;
+  d = D->d;
+  i=0;while(d[i].t!= NULL) {;
+     i++;
+  };
+  n=1;
+  return GrpId;
+}
+
