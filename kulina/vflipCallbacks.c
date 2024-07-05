@@ -4,6 +4,7 @@
 
 static char infile[500]="",outfile[500]="";
 
+int ResetGrpVis(void *);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
 int GetBaseIndex(char *s);
@@ -156,6 +157,12 @@ int  vflipsplbutton1callback(int butno,int i,void *Tmp) {
       ret = 0;
       break;
   }
+  DIT *T,*TO;
+  T = (DIT *)kgGetNamedWidget(Tmp,"vflipInput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,"vflipOutput");
+  kgSetString(T,0,(char *)"");
+  kgSetString(TO,0,(char *)"");
+  ResetGrpVis(Tmp);
   return ret;
 }
 void  vflipsplbutton1init(DIL *B,void *pt) {

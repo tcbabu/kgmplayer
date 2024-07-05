@@ -21,6 +21,7 @@ extern int Jpipe[2];
 extern int Jstat[2];
 
 float GetTimeval(char *);
+int ResetGrpVis(void *);
 int FileStat(char *flname);
 int CheckVideo(char *flname);
 int CheckMedia(char *flname);
@@ -511,6 +512,10 @@ int  AudioJoinsplbutton1callback(int butno,int i,void *Tmp) {
       break;
   }
   kgSplashMessage(Tmp,100,100,300,40,(char *)"Send for Processing",1,0,15);
+  kgSetString(T,0,(char *)"");
+  kgFreeThumbNails((ThumbNail **)kgGetList(AX2));
+  kgSetList(AX2,NULL);
+  ResetGrpVis(Tmp);
   return ret;
 }
 void  AudioJoinsplbutton1init(DIL *B,void *pt) {

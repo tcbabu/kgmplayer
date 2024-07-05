@@ -17,6 +17,7 @@ extern int Tools;
 
 extern char GrabFileName[300];
 extern int Pval;
+int ResetGrpVis(void *);
 int CheckMedia(char *);
 int kgLame(int,char **);
 int kgffmpeg(int,char **);
@@ -442,7 +443,9 @@ int  ConvertVideosplbutton1callback(int butno,int i,void *Tmp) {
   write(ToTools[1],buff,strlen(buff));
   kgSplashMessage(Tmp,100,100,300,40,(char *)"Send for Processing",1,0,15);
   ret = 0;
-
+  kgSetString(T,0,(char *)"");
+  kgSetString(TO,0,(char *)"");
+  ResetGrpVis(Tmp);
   return ret;
 }
 void  ConvertVideosplbutton1init(DIL *B,void *pt) {

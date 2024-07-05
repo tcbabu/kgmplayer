@@ -22,7 +22,7 @@ extern int Jstat[2];
 extern TOOLGRP ToolList[];
 
 int SetGrpVis(DIALOG *Tmp,TOOLGRP *T,int item); 
-int ResetGrpVis(DIALOG *Tmp,TOOLGRP *T); 
+int ResetGrpVis(void *);
 
 int FileStat(char *flname);
 int CheckVideo(char *flname);
@@ -399,7 +399,11 @@ int  MakeCutssplbutton1callback(int butno,int i,void *Tmp) {
   }
 
   kgSplashMessage(Tmp,100,100,300,40,(char *)"Send for Processing",1,0,15);
-  ResetGrpVis(Tmp,ToolList);
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"CutInput");
+  kgSetString(T,0,(char *)"");
+  kgFreeThumbNails((ThumbNail **)kgGetList(SX3));
+  kgSetList(SX3,NULL);
+  ResetGrpVis(Tmp);
   ret = 0;
   return ret;
 }

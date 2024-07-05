@@ -8,6 +8,7 @@ static DIX *IX2=NULL;
 static DIT *TOUT=NULL;
 extern int ScrFit;
 
+int ResetGrpVis(void *);
 int FileStat(char *flname);
 int MakeMp4File(char *Infile,char *Outfile,int id);
 int GetBaseIndex(char *s);
@@ -282,6 +283,9 @@ int  imgs2vsplbutton1callback(int butno,int i,void *Tmp) {
       GetRadioValue(Tmp);
       is2vdata.fittoscrn = ScrFit%2;;
       Imgs2Videos(&is2vdata);
+      kgFreeThumbNails((ThumbNail **)kgGetList(IX2));
+      kgSetList(IX2,NULL);
+      ResetGrpVis(Tmp);
 
       ret=0;
 

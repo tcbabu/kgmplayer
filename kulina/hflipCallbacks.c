@@ -3,7 +3,7 @@
 #include <sys/stat.h>
 
 static char infile[500]="",outfile[500]="";
-
+int ResetGrpVis(void *);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
 int GetBaseIndex(char *s);
@@ -156,6 +156,12 @@ int  hflipsplbutton1callback(int butno,int i,void *Tmp) {
       ret = 0;
       break;
   }
+  DIT *T,*TO;
+  T = (DIT *)kgGetNamedWidget(Tmp,"hflipInput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,"hflipOutput");
+  kgSetString(T,0,(char *)"");
+  kgSetString(TO,0,(char *)"");
+  ResetGrpVis(Tmp);
   return ret;
 }
 void  hflipsplbutton1init(DIL *B,void *pt) {

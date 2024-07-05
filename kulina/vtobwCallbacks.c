@@ -4,6 +4,7 @@
 
 static char infile[500]="",outfile[500]="";
 
+int ResetGrpVis(void *);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
 int GetBaseIndex(char *s);
@@ -158,6 +159,18 @@ int  vtobwsplbutton1callback(int butno,int i,void *Tmp) {
       ret = 0;
       break;
   }
+  DIT *T,*TO;
+  kgWrite(InfoBox,(char *)"\n");
+  kgWrite(InfoBox,(char *)"\n");
+  kgWrite(InfoBox,(char *)"\n");
+  kgWrite(InfoBox,(char *)"\n");
+  kgWrite(InfoBox,(char *)"\n");
+  kgWrite(InfoBox,(char *)"\n");
+  T = (DIT *)kgGetNamedWidget(Tmp,"v2bwInput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,"v2bwOutput");
+  kgSetString(T,0,(char *)"");
+  kgSetString(TO,0,(char *)"");
+  ResetGrpVis(Tmp);
   return ret;
 }
 void  vtobwsplbutton1init(DIL *B,void *pt) {

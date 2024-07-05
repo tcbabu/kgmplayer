@@ -6,7 +6,7 @@
 #include "mediainfo.h"
 #include "kgutils.h"
 
-
+int ResetGrpVis(void *);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int kgffmpeg(int,char **);
 int ffmpegfun(int,char **);
@@ -306,6 +306,12 @@ int  slicesplbutton1callback(int butno,int i,void *Tmp) {
       ret = 0;
       break;
   }
+  DIT *T,*TO;
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"sliceInput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"sliceOutput");
+  kgSetString(T,0,(char *)"");
+  kgSetString(TO,0,(char *)"");
+  ResetGrpVis(Tmp);
   return ret;
 }
 void  slicesplbutton1init(DIL *B,void *pt) {

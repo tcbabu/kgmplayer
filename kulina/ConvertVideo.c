@@ -3,13 +3,24 @@
 #include "ConvertData.h"
 extern CONVDATA cndata;
 extern int AConGrp,RangeGrp,EnVoGrp,VConGrp,VaspGrp,VsizeGrp,VrangeGrp;
-void ModifyConvertVideoGc(Gclr *gc) {
+
+void ModifyConvertVideoGc(void *Tmp) {
+   DIALOG *D;
+   Gclr *gc;
+   D = (DIALOG *)Tmp;
+   gc = &(D->gc);
 /*
 //  You may change default settings here 
 //  probably you can allow the user to create a config in $HOME
 //  and try to read that file (if exits); so dynamic configuration is possible
+   kgColorTheme(D,220,220,200);
+   kgColorTheme1(D,220,220,200);
+   kgColorTheme2(D,220,220,200);
+   kgDefaultGuiTheme(gc);
+   kgGrayGuiTheme(gc);
    gc->FontSize =8;
    gc->Font=23;
+   kgMkgclr("ConvertVideo",Tmp);
 */
 }
 int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
@@ -17,29 +28,30 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   DIA *d=NULL,*dtmp;
   T_ELMT *e0  ; 
   e0 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e0[0].fmt = (char *)malloc(10);
-  strcpy(e0[0].fmt,(char *)"Input%25s");
+  e0[0].fmt = (char *)malloc(18);
+  strcpy(e0[0].fmt,(char *)"!w32!f23Input%25s");
   e0[0].v=(void *)v[0];
   e0[0].sw=1;
   e0[0].noecho=0;
+  e0[0].img=NULL;
   DIT t0 = { 
     't',
-    190,5,  
-    509,35,
+    7,25,  
+    398,59,
     20, 
     1,1, 
     e0,
     1,1,
     NULL,ConvertVideotextbox1callback,0,0,18,9 /* args,Call back */
   };
-  strcpy(t0.Wid,(char *)"VInputWidget");
+  strcpy(t0.Wid,(char *)"VinputWidget");
   t0.pt=NULL;
   t0.type = 0;
   t0.item = -1;
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"Browse");
+  strcpy(butn1[0].title,(char *)"!w32!f23Browse");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
@@ -47,13 +59,13 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].butncode='';
   DIN b1 = { 
     'n',
-    514,4,  
-    588,38,
+    397,25,  
+    481,59,
     2,2,  
-    64, 
+    74, 
     24, 
     1,1, 
-    5,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn1, 
     ConvertVideobutton1callback, /*  Callbak */
@@ -63,15 +75,16 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   b1.item = -1;
   T_ELMT *e2  ; 
   e2 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e2[0].fmt = (char *)malloc(11);
-  strcpy(e2[0].fmt,(char *)"Output%30s");
+  e2[0].fmt = (char *)malloc(19);
+  strcpy(e2[0].fmt,(char *)"!w32!f23Output%30s");
   e2[0].v=(void *)v[1];
   e2[0].sw=1;
-  e2[0].noecho =0;
+  e2[0].noecho=0;
+  e2[0].img=NULL;
   DIT t2 = { 
     't',
-    181,42,  
-    556,72,
+    17,68,  
+    466,102,
     20, 
     1,1, 
     e2,
@@ -83,19 +96,18 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   t2.type = 0;
   t2.item = -1;
   char *menu3[]  = { 
-    (char *)"Very Good",
-    (char *)"Good",
-    (char *)"Medium",
-    (char *)"Low",
+    (char *)"!w32!f23Very Good",
+    (char *)"!w32!f23Good",
+    (char *)"!w32!f23Low",
     NULL 
   };
   ThumbNail **th0 ;
   DIRA r3 = { 
     'r',
-    243,74,  
-    594,101,   
+    107,122,  
+    482,159,   
     8,0,  
-    75, 
+    95, 
     25, 
     1,3, 
     0,1, 
@@ -103,8 +115,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
     NULL, 
     NULL ,
     NULL,ConvertVideobrowser1callback, /* *args, callback */
-    1,  /* Border Offset  */
-     2,  /* Scroll width  */
+    6,  /* Border Offset  */
+     22,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
     1, /* bordr */
@@ -113,38 +125,38 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
    };
   th0 = (ThumbNail **)kgStringToThumbNails((char **)menu3);
   r3.list=(void **)th0;
-  strcpy(r3.Wid,(char *)"ConvertVideoWidget6");
+  strcpy(r3.Wid,(char *)"VRadioWidget");
   r3.item = -1;
   DIM m4 = { 
     'm',
-    170,75,  
-    240,99,  
+    8,128,  
+    108,152,  
     1,0  
   };
-  strncpy(m4.msg,(char *)"Quality",499);
+  strncpy(m4.msg,(char *)"!w32!f23Quality",499);
   strcpy(m4.Wid,(char *)"ConvertVideoWidget7");
   m4.item = -1;
   char *menu5[]  = { 
-    (char *)"Original",
-    (char *)"Change",
+    (char *)"!w32!f23Original",
+    (char *)"!w32!f23Change",
     NULL 
   };
   ThumbNail **th1 ;
   DIRA r5 = { 
     'r',
-    269,103,  
-    435,130,   
+    146,172,  
+    438,209,   
     8,0,  
-    70, 
+    95, 
     25, 
     1,2, 
-    -2302756,1, 
+    0,1, 
     (int *)v[3], 
     NULL, 
     NULL ,
     NULL,ConvertVideobrowser2callback, /* *args, callback */
-    1,  /* Border Offset  */
-     2,  /* Scroll width  */
+    6,  /* Border Offset  */
+     22,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
     1, /* bordr */
@@ -153,38 +165,38 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
    };
   th1 = (ThumbNail **)kgStringToThumbNails((char **)menu5);
   r5.list=(void **)th1;
-  strcpy(r5.Wid,(char *)"ConvertVideoWidget8");
+  strcpy(r5.Wid,(char *)"VRadioWidget2");
   r5.item = -1;
   DIM m6 = { 
     'm',
-    190,103,  
-    268,127,  
+    48,178,  
+    148,202,  
     1,0  
   };
-  strcpy(m6.msg,(char *)"Aspect Ratio");
-  strcpy(m6.Wid,(char *)"ConvertVideoWidget9");
+  strncpy(m6.msg,(char *)"!w32!f23Aspect Ratio",499);
+  strcpy(m6.Wid,(char *)"ConvertVideoWidget10");
   m6.item = -1;
   char *menu7[]  = { 
-    (char *)"No",
-    (char *)"Yes",
+    (char *)"!w32!f23No",
+    (char *)"!w32!f23Yes",
     NULL 
   };
   ThumbNail **th2 ;
   DIRA r7 = { 
     'r',
-    248,133,  
-    402,160,   
+    146,218,  
+    431,260,   
     8,0,  
-    60, 
+    95, 
     25, 
     1,2, 
-    -2302756,1, 
+    0,1, 
     (int *)v[4], 
     NULL, 
     NULL ,
     NULL,ConvertVideobrowser3callback, /* *args, callback */
-    1,  /* Border Offset  */
-     2,  /* Scroll width  */
+    6,  /* Border Offset  */
+     22,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
     1, /* bordr */
@@ -193,63 +205,63 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
    };
   th2 = (ThumbNail **)kgStringToThumbNails((char **)menu7);
   r7.list=(void **)th2;
-  strcpy(r7.Wid,(char *)"ConvertVideoWidget10");
+  strcpy(r7.Wid,(char *)"VRadioWidget3");
   r7.item = -1;
   DIM m8 = { 
     'm',
-    198,134,  
-    246,158,  
+    51,227,  
+    151,251,  
     1,0  
   };
-  strncpy(m8.msg,(char *)"Scale",499);
-  strcpy(m8.Wid,(char *)"ConvertVideoWidget11");
+  strncpy(m8.msg,(char *)"!w32!f23Scale",499);
+  strcpy(m8.Wid,(char *)"ConvertVideoWidget9");
   m8.item = -1;
   BUT_STR  *butn9=NULL; 
   butn9= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn9[0].sw=1;
-  strcpy(butn9[0].title,(char *)"Convert");
+  strcpy(butn9[0].title,(char *)"!w32!f23Convert");
   butn9[0].xpmn=NULL;
   butn9[0].xpmp=NULL;
   butn9[0].xpmh=NULL;
-  butn9[0].bkgr=-132206206;
+  butn9[0].bkgr=-190250190;
   butn9[0].butncode='';
   DIL h9 = { 
     'h',
-    472,202,  
-    586,235,
+    210,408,  
+    310,441,
     2,0,  
-    104, 
+    90, 
     25, 
     1,1, 
-    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn9, 
     ConvertVideosplbutton1callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(h9.Wid,(char *)"ConvertVideoWidget13");
+  strcpy(h9.Wid,(char *)"ConvertVideoWidget10");
   h9.item = -1;
   char *menu10[]  = { 
-    (char *)"Full",
-    (char *)"Select",
+    (char *)"!w32!f23Full",
+    (char *)"!w32!f23Select",
     NULL 
   };
   ThumbNail **th3 ;
   DIRA r10 = { 
     'r',
-    287,163,  
-    437,187,   
+    146,263,  
+    396,308,   
     8,0,  
-    60, 
-    22, 
+    95, 
+    25, 
     1,2, 
-    1,1, 
+    0,1, 
     (int *)v[5], 
     NULL, 
     NULL ,
     NULL,ConvertVideobrowser4callback, /* *args, callback */
-    1,  /* Border Offset  */
-     2,  /* Scroll width  */
+    6,  /* Border Offset  */
+     22,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
     1, /* bordr */
@@ -262,20 +274,20 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   r10.item = -1;
   DIM m11 = { 
     'm',
-    233,162,  
-    286,187,  
+    52,272,  
+    152,296,  
     1,0  
   };
-  strncpy(m11.msg,(char *)"Range",499);
+  strncpy(m11.msg,(char *)"!w32!f23Range",499);
   strcpy(m11.Wid,(char *)"ConvertVideoWidget12");
   m11.item = -1;
   DIM m12 = { 
     'm',
-    166,188,  
-    482,205,  
+    108,307,  
+    437,321,  
     0,0  
   };
-  strncpy(m12.msg,(char *)"!c01(Play and Stop to detemine range in secs)",499);
+  strncpy(m12.msg,(char *)"!w32!f21!c01(Note: Play and Stop to detemine range in secs)",499);
   strcpy(m12.Wid,(char *)"ConvertMsg");
   m12.item = -1;
   dtmp = D->d;
@@ -288,41 +300,41 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   *d[0].t = t0;
   d[0].t->item = -1;
   d[1].t = (DIT *)malloc(sizeof(DIN));
-  ConvertVideobutton1init(&b1,pt) ;
   *d[1].N = b1;
   d[1].N->item = -1;
+  ConvertVideobutton1init(d[1].N,pt) ;
   d[2].t = (DIT *)malloc(sizeof(DIT));
   *d[2].t = t2;
   d[2].t->item = -1;
   d[3].t = (DIT *)malloc(sizeof(DIRA));
-  ConvertVideobrowser1init(&r3,pt) ;
   *d[3].r = r3;
   d[3].r->item = -1;
+  ConvertVideobrowser1init(d[3].r,pt) ;
   d[4].t = (DIT *)malloc(sizeof(DIM));
   *d[4].m = m4;
   d[4].m->item = -1;
   d[5].t = (DIT *)malloc(sizeof(DIRA));
-  ConvertVideobrowser2init(&r5,pt) ;
   *d[5].r = r5;
   d[5].r->item = -1;
+  ConvertVideobrowser2init(d[5].r,pt) ;
   d[6].t = (DIT *)malloc(sizeof(DIM));
   *d[6].m = m6;
   d[6].m->item = -1;
   d[7].t = (DIT *)malloc(sizeof(DIRA));
-  ConvertVideobrowser3init(&r7,pt) ;
   *d[7].r = r7;
   d[7].r->item = -1;
+  ConvertVideobrowser3init(d[7].r,pt) ;
   d[8].t = (DIT *)malloc(sizeof(DIM));
   *d[8].m = m8;
   d[8].m->item = -1;
   d[9].t = (DIT *)malloc(sizeof(DIL));
-  ConvertVideosplbutton1init(&h9,pt) ;
   *d[9].h = h9;
   d[9].h->item = -1;
+  ConvertVideosplbutton1init(d[9].h,pt) ;
   d[10].t = (DIT *)malloc(sizeof(DIRA));
-  ConvertVideobrowser4init(&r10,pt) ;
   *d[10].r = r10;
   d[10].r->item = -1;
+  ConvertVideobrowser4init(d[10].r,pt) ;
   d[11].t = (DIT *)malloc(sizeof(DIM));
   *d[11].m = m11;
   d[11].m->item = -1;

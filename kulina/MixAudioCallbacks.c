@@ -16,6 +16,7 @@ extern int Tools;
 extern int Jpipe[2];
 extern int Jstat[2];
 
+int ResetGrpVis(void *);
 int FileStat(char *flname);
 int CheckVideo(char *flname);
 int CheckMedia(char *flname);
@@ -523,21 +524,24 @@ int  MixAudiosplbutton1callback(int butno,int i,void *Tmp) {
   char buff[2000];
   int n,ret=1,Qty; 
   D = (DIALOG *)Tmp;
-  DIT *T;
+  DIT *T,*T1,*T2,*T3;
   DIRA *R;
   B = (DIL *) kgGetWidget(Tmp,i);
   T = (DIT *)kgGetNamedWidget(Tmp,"MixTbox1");
+  T1 = T;
   strcpy(cndata.audiofile,kgGetString(T,0));
 //  printf("%s\n",cndata.audiofile);
   n=0;
   while(cndata.audiofile[n]==' ') n++;
   if(cndata.audiofile[n]< ' ') return 0;
   T = (DIT *)kgGetNamedWidget(Tmp,"MixTbox3");
+  T2 = T;
   strcpy(cndata.infile,kgGetString(T,0));
   n=0;
   while(cndata.infile[n]==' ') n++;
   if(cndata.infile[n]< ' ') return 0;
   T = (DIT *)kgGetNamedWidget(Tmp,"MixTbox2");
+  T3 = T;
   strcpy(cndata.outfile,kgGetString(T,0));
   n=0;
   while(cndata.outfile[n]==' ') n++;
@@ -553,6 +557,9 @@ int  MixAudiosplbutton1callback(int butno,int i,void *Tmp) {
   write(ToTools[1],buff,strlen(buff));
   kgSplashMessage(Tmp,100,100,300,40,"Send for Processing",1,0,15);
   ret =0;
+  kgSetString(T1,0,(char *)"");
+  kgSetString(T2,0,(char *)"");
+  ResetGrpVis(Tmp);
   return ret;
 }
 void  MixAudiosplbutton1init(DIL *B,void *pt) {
@@ -748,21 +755,24 @@ int  AmixAudiosplbutton1callback(int butno,int i,void *Tmp) {
   char buff[2000];
   int n,ret=1,Qty; 
   D = (DIALOG *)Tmp;
-  DIT *T;
+  DIT *T,*T1,*T2,*T3;
   DIRA *R;
   B = (DIL *) kgGetWidget(Tmp,i);
   T = (DIT *)kgGetNamedWidget(Tmp,"AmixTbox1");
+  T1 = T;
   strcpy(cndata.audiofile,kgGetString(T,0));
 //  printf("%s\n",cndata.audiofile);
   n=0;
   while(cndata.audiofile[n]==' ') n++;
   if(cndata.audiofile[n]< ' ') return 0;
   T = (DIT *)kgGetNamedWidget(Tmp,"AmixTbox3");
+  T2 = T;
   strcpy(cndata.infile,kgGetString(T,0));
   n=0;
   while(cndata.infile[n]==' ') n++;
   if(cndata.infile[n]< ' ') return 0;
   T = (DIT *)kgGetNamedWidget(Tmp,"AmixTbox2");
+  T3 = T;
   strcpy(cndata.outfile,kgGetString(T,0));
   n=0;
   while(cndata.outfile[n]==' ') n++;
@@ -776,6 +786,10 @@ int  AmixAudiosplbutton1callback(int butno,int i,void *Tmp) {
   sprintf(buff,"%d \"%-s\" \"%-s\" \"%-s\" %d \n",
        cndata.code, cndata.audiofile,cndata.infile,cndata.outfile,Qty);
   write(ToTools[1],buff,strlen(buff));
+  kgSetString(T1,0,(char *)"");
+  kgSetString(T2,0,(char *)"");
+  ResetGrpVis(Tmp);
+  ret = 0;
   return ret;
 }
 void  AmixAudiosplbutton1init(DIL *B,void *pt) {

@@ -16,7 +16,7 @@ int HelpButnGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn0=NULL; 
   butn0= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn0[0].sw=1;
-  strcpy(butn0[0].title,(char *)"Help");
+  strcpy(butn0[0].title,(char *)"!w32!f23!c36Help");
   butn0[0].xpmn=NULL;
   butn0[0].xpmp=NULL;
   butn0[0].xpmh=NULL;

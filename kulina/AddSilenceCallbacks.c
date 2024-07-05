@@ -20,6 +20,7 @@ extern int Tools;
 extern int Jpipe[2];
 extern int Jstat[2];
 
+int ResetGrpVis(void *);
 int FileStat(char *flname);
 int CheckVideo(char *flname);
 int CheckMedia(char *flname);
@@ -395,6 +396,11 @@ int  AddSilencesplbutton1callback(int butno,int i,void *Tmp) {
   ret=0;
   
  
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"SilInput");
+  kgSetString(T,0,(char *)"");
+  kgFreeThumbNails((ThumbNail **)kgGetList(SX2));
+  kgSetList(SX2,NULL);
+  ResetGrpVis(Tmp);
   switch(butno) {
     case 1: 
       break;

@@ -127,11 +127,11 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn5=NULL; 
   butn5= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn5[0].sw=1;
-  strcpy(butn5[0].title,(const char *)"Mix Audio");
+  strcpy(butn5[0].title,(const char *)"!w32!f23Mix Media");
   butn5[0].xpmn=NULL;
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
-  butn5[0].bkgr=-132206206;
+  butn5[0].bkgr=-240250240;
   butn5[0].butncode='';
   DIL h5 = { 
     'h',
@@ -141,7 +141,7 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
     104, 
     25, 
     1,1, 
-    2,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn5, 
     MixAudiosplbutton1callback, /*  Callbak */
@@ -416,11 +416,11 @@ int AmixAudioGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn5=NULL; 
   butn5= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn5[0].sw=1;
-  strcpy(butn5[0].title,(char *)"Mix Audio");
+  strcpy(butn5[0].title,(char *)"!w32!f23Mix Audio");
   butn5[0].xpmn=NULL;
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
-  butn5[0].bkgr=-132206206;
+  butn5[0].bkgr=-250255250;
   butn5[0].butncode='';
   DIL h5 = { 
     'h',
@@ -430,7 +430,7 @@ int AmixAudioGroup( DIALOG *D,void **v,void *pt) {
     104, 
     25, 
     1,1, 
-    2,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn5, 
     AmixAudiosplbutton1callback, /*  Callbak */
