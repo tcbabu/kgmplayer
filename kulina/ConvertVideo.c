@@ -44,7 +44,7 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
     1,1,
     NULL,ConvertVideotextbox1callback,0,0,18,9 /* args,Call back */
   };
-  strcpy(t0.Wid,(char *)"VinputWidget");
+  strcpy(t0.Wid,(char *)"VInputWidget");
   t0.pt=NULL;
   t0.type = 0;
   t0.item = -1;

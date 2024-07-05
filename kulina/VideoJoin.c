@@ -30,14 +30,14 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"Add");
+  strcpy(butn1[0].title,(char *)"!w32!f23Add");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-1;
   butn1[0].butncode='';
   butn1[1].sw=1;
-  strcpy(butn1[1].title,(char *)"Delete");
+  strcpy(butn1[1].title,(char *)"!w32!f23Delete");
   butn1[1].xpmn=NULL;
   butn1[1].xpmp=NULL;
   butn1[1].xpmh=NULL;
@@ -65,20 +65,20 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
     338,34,  
     -1,0  
   };
-  strncpy(m2.msg,(char *)"Input Files(Video)",499);
+  strncpy(m2.msg,(char *)"!w32!f23Input Files(Video)",499);
   strcpy(m2.Wid,(char *)"VideoJoinWidget3");
   m2.item = -1;
   T_ELMT *e3  ; 
   e3 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e3[0].fmt = (char *)malloc(11);
-  strcpy(e3[0].fmt,(char *)"Output%30s");
+  strcpy(e3[0].fmt,(char *)"!w32!f23Output%30s");
   e3[0].v=(void *)v[1];
   e3[0].sw=1;
   e3[0].noecho=0;
   DIT t3 = { 
     't',
-    207,143,  
-    584,177,
+    207,163,  
+    584,197,
     20, 
     1,1, 
     e3,
@@ -92,21 +92,21 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn4=NULL; 
   butn4= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn4[0].sw=1;
-  strcpy(butn4[0].title,(char *)"Join Videos");
+  strcpy(butn4[0].title,(char *)"!w32!f23Join Videos");
   butn4[0].xpmn=NULL;
   butn4[0].xpmp=NULL;
   butn4[0].xpmh=NULL;
-  butn4[0].bkgr=-132206230;
+  butn4[0].bkgr=-230252230;
   butn4[0].butncode='';
   DIL h4 = { 
     'h',
-    468,199,
-    574,232,
+    428,299,
+    534,332,
     2,0,  
     96, 
     25, 
     1,1, 
-    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn4, 
     VideoJoinsplbutton1callback, /*  Callbak */
@@ -115,16 +115,16 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   strcpy(h4.Wid,(char *)"VideoJoinWidget11");
   h4.item = -1;
   char *menu5[]  = { 
-    (char *)"Very Good",
-    (char *)"Good",
-    (char *)"Mediaum",
+    (char *)"!w32!f23Very Good",
+    (char *)"!w32!f23Good",
+    (char *)"!w32!f23Mediaum",
     NULL 
   };
   ThumbNail **th0 ;
   DIRA r5 = { 
     'r',
-    279,174,  
-    568,200,   
+    279,204,  
+    568,230,   
     8,0,  
     80, 
     25, 
@@ -148,11 +148,11 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   r5.item = -1;
   DIM m6 = { 
     'm',
-    206,173,  
-    278,198,  
+    206,213,  
+    278,228,  
     1,0  
   };
-  strncpy(m6.msg,(char *)"Quality",499);
+  strncpy(m6.msg,(char *)"!w32!f23Quality",499);
   strcpy(m6.Wid,(char *)"VideoJoinWidget8");
   m6.item = -1;
   dtmp = D->d;
