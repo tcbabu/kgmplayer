@@ -385,7 +385,8 @@ int ToolBox( void *parent,void **v,void *pt) {
   kgShiftGrp(&D,ImageBoxGrp,346,1);
   kgShiftGrp(&D,VaspGrp,0,-3);
   kgShiftGrp(&D,VsizeGrp,0,2);
-  kgShiftGrp(&D,VrangeGrp,10,10);
+//  kgShiftGrp(&D,VrangeGrp,10,10);
+  kgShiftGrp(&D,VrangeGrp,35,9);
   kgShiftGrp(&D,EnVoGrp,0,10);
   kgShiftGrp(&D,RangeGrp,200,100);
 
