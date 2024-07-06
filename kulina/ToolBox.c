@@ -83,7 +83,7 @@ TOOLGRP ToolList[ ] = {
       "new Yres and a value < 1.0 means an increase in new Yres\n"
       "So new Yres if adjusted to maintain the new aspect ratio\n"
   },
-  { 0, MakeVideoJoinGroup,"!w32!f23Join Video Files",200,40 ,RunHelper,0,
+  { 0, MakeVideoJoinGroup,"!w32!f23Join Video Files",346,0 ,RunHelper,0,
       "\nMuliple video files can be joined together to a single one\n"
       "Files can be of diffrent aspect ratio or format and the output\n"
       "is a file with aspect ratio\n"

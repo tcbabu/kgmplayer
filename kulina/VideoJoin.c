@@ -1,24 +1,44 @@
 #include <kulina.h>
 #include "VideoJoinCallbacks.h"
 char * MakeVjoinFile(void);
+
+void ModifyVideoJoinGc(void *Tmp) {
+   DIALOG *D;
+   Gclr *gc;
+   D = (DIALOG *)Tmp;
+   gc = &(D->gc);
+/*
+//  You may change default settings here 
+//  probably you can allow the user to create a config in $HOME
+//  and try to read that file (if exits); so dynamic configuration is possible
+   kgColorTheme(D,220,220,200);
+   kgColorTheme1(D,220,220,200);
+   kgColorTheme2(D,220,220,200);
+   kgDefaultGuiTheme(gc);
+   kgGrayGuiTheme(gc);
+   gc->FontSize =8;
+   gc->Font=23;
+   kgMkgclr("VideoJoin",Tmp);
+*/
+}
 int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   int GrpId=0,oitems=0,i,j;
   DIA *d=NULL,*dtmp;
   DIX x0 = { 
     'x',
-    209,40,  
-    579,140,   
+    32,65,  
+    459,233,   
     10,2,  
-    352, 
-    20, 
-    1,1, 
-    0,3, 
+    308, 
+    25, 
+    1,9812683, 
+    0,5, 
     (int *)v[0], 
     NULL, 
     NULL, 
     NULL,VideoJoinbrowser1callback, /* *args, callback */
-    4,  /* Border Offset  */
-     16,  /* Scroll width  */
+    6,  /* Border Offset  */
+     22,  /* Scroll width  */
      0,  /* Type  */
      1, /* item highlight */
     1, /* bordr */
@@ -45,13 +65,13 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   butn1[1].butncode='';
   DIN b1 = { 
     'n',
-    435,8,  
-    575,38,
+    301,31,  
+    457,65,
     2,2,  
-    64, 
-    20, 
+    72, 
+    24, 
     2,1, 
-    5,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn1, 
     VideoJoinbutton1callback, /*  Callbak */
@@ -61,24 +81,25 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   b1.item = -1;
   DIM m2 = { 
     'm',
-    208,14,  
-    338,34,  
+    33,33,  
+    215,63,  
     -1,0  
   };
-  strncpy(m2.msg,(char *)"!w32!f23Input Files(Video)",499);
+  strncpy(m2.msg,(char *)"!w32!f21Input Files(Video)",499);
   strcpy(m2.Wid,(char *)"VideoJoinWidget3");
   m2.item = -1;
   T_ELMT *e3  ; 
   e3 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e3[0].fmt = (char *)malloc(11);
-  strcpy(e3[0].fmt,(char *)"!w32!f23Output%30s");
+  e3[0].fmt = (char *)malloc(19);
+  strcpy(e3[0].fmt,(char *)"!w32!f21Output%30s");
   e3[0].v=(void *)v[1];
   e3[0].sw=1;
   e3[0].noecho=0;
+  e3[0].img=NULL;
   DIT t3 = { 
     't',
-    207,163,  
-    584,197,
+    19,249,  
+    459,283,
     20, 
     1,1, 
     e3,
@@ -92,18 +113,18 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn4=NULL; 
   butn4= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn4[0].sw=1;
-  strcpy(butn4[0].title,(char *)"!w32!f23Join Videos");
+  strcpy(butn4[0].title,(char *)"!w32!f23 Join Videos");
   butn4[0].xpmn=NULL;
   butn4[0].xpmp=NULL;
   butn4[0].xpmh=NULL;
-  butn4[0].bkgr=-230252230;
+  butn4[0].bkgr=-235255250;
   butn4[0].butncode='';
   DIL h4 = { 
     'h',
-    428,299,
-    534,332,
+    193,359,  
+    287,392,
     2,0,  
-    96, 
+    84, 
     25, 
     1,1, 
     5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
@@ -112,30 +133,30 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
     VideoJoinsplbutton1callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(h4.Wid,(char *)"VideoJoinWidget11");
+  strcpy(h4.Wid,(char *)"JoinVideos");
   h4.item = -1;
   char *menu5[]  = { 
-    (char *)"!w32!f23Very Good",
-    (char *)"!w32!f23Good",
-    (char *)"!w32!f23Mediaum",
+    (char *)"!w32!f21Very Good",
+    (char *)"!w32!f21Good",
+    (char *)"!w32!f21Medium",
     NULL 
   };
   ThumbNail **th0 ;
   DIRA r5 = { 
     'r',
-    279,204,  
-    568,230,   
+    82,291,  
+    461,332,   
     8,0,  
-    80, 
+    100, 
     25, 
     1,3, 
-    0,1, 
+    32648,1, 
     (int *)v[2], 
     NULL, 
     NULL ,
     NULL,VideoJoinbrowser2callback, /* *args, callback */
-    0,  /* Border Offset  */
-     2,  /* Scroll width  */
+    6,  /* Border Offset  */
+     22,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
     1, /* bordr */
@@ -148,11 +169,11 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   r5.item = -1;
   DIM m6 = { 
     'm',
-    206,213,  
-    278,228,  
+    5,299,  
+    84,323,  
     1,0  
   };
-  strncpy(m6.msg,(char *)"!w32!f23Quality",499);
+  strncpy(m6.msg,(char *)"!w32!f21Quality",499);
   strcpy(m6.Wid,(char *)"VideoJoinWidget8");
   m6.item = -1;
   dtmp = D->d;
@@ -162,13 +183,13 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   d =dtmp+i; 
   d[7].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIX));
-  VideoJoinbrowser1init(&x0,pt) ;
   *d[0].x = x0;
   d[0].x->item = -1;
+  VideoJoinbrowser1init(d[0].x,pt) ;
   d[1].t = (DIT *)malloc(sizeof(DIN));
-  VideoJoinbutton1init(&b1,pt) ;
   *d[1].N = b1;
   d[1].N->item = -1;
+  VideoJoinbutton1init(d[1].N,pt) ;
   d[2].t = (DIT *)malloc(sizeof(DIM));
   *d[2].m = m2;
   d[2].m->item = -1;
@@ -176,13 +197,13 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   *d[3].t = t3;
   d[3].t->item = -1;
   d[4].t = (DIT *)malloc(sizeof(DIL));
-  VideoJoinsplbutton1init(&h4,pt) ;
   *d[4].h = h4;
   d[4].h->item = -1;
+  VideoJoinsplbutton1init(d[4].h,pt) ;
   d[5].t = (DIT *)malloc(sizeof(DIRA));
-  VideoJoinbrowser2init(&r5,pt) ;
   *d[5].r = r5;
   d[5].r->item = -1;
+  VideoJoinbrowser2init(d[5].r,pt) ;
   d[6].t = (DIT *)malloc(sizeof(DIM));
   *d[6].m = m6;
   d[6].m->item = -1;
