@@ -1,13 +1,24 @@
 #include <kulina.h>
 #include "MakeKaraokeCallbacks.h"
 char * MakeKaraokeFile(void);
-void ModifyMakeKaraokeGc(Gclr *gc) {
+
+void ModifyMakeKaraokeGc(void *Tmp) {
+   DIALOG *D;
+   Gclr *gc;
+   D = (DIALOG *)Tmp;
+   gc = &(D->gc);
 /*
 //  You may change default settings here 
 //  probably you can allow the user to create a config in $HOME
 //  and try to read that file (if exits); so dynamic configuration is possible
+   kgColorTheme(D,220,220,200);
+   kgColorTheme1(D,220,220,200);
+   kgColorTheme2(D,220,220,200);
+   kgDefaultGuiTheme(gc);
+   kgGrayGuiTheme(gc);
    gc->FontSize =8;
    gc->Font=23;
+   kgMkgclr("MakeKaraoke",Tmp);
 */
 }
 int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
@@ -15,15 +26,16 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
   DIA *d=NULL,*dtmp;
   T_ELMT *e0  ; 
   e0 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e0[0].fmt = (char *)malloc(16);
-  strcpy(e0[0].fmt,(char *)"Audio Media%20s");
+  e0[0].fmt = (char *)malloc(5);
+  strcpy(e0[0].fmt,(char *)"%20s");
   e0[0].v=(void *)v[0];
   e0[0].sw=1;
   e0[0].noecho=0;
+  e0[0].img=NULL;
   DIT t0 = { 
     't',
-    192,34,  
-    519,65,
+    119,59,  
+    343,93,
     20, 
     1,1, 
     e0,
@@ -37,7 +49,7 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"Browse");
+  strcpy(butn1[0].title,(char *)"!w32!f23Browse");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
@@ -45,13 +57,13 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].butncode='';
   DIN b1 = { 
     'n',
-    520,33,  
-    594,67,
+    342,58,  
+    424,92,
     2,2,  
-    64, 
+    72, 
     24, 
     1,1, 
-    5,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn1, 
     MakeKaraokebutton1callback, /*  Callbak */
@@ -61,15 +73,16 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
   b1.item = -1;
   T_ELMT *e2  ; 
   e2 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e2[0].fmt = (char *)malloc(11);
-  strcpy(e2[0].fmt,(char *)"Output%30s");
+  e2[0].fmt = (char *)malloc(8);
+  strcpy(e2[0].fmt,(char *)"!g %30s");
   e2[0].v=(void *)v[1];
   e2[0].sw=1;
   e2[0].noecho=0;
+  e2[0].img=NULL;
   DIT t2 = { 
     't',
-    193,80,  
-    568,110,
+    66,231,  
+    434,265,
     20, 
     1,1, 
     e2,
@@ -81,27 +94,27 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
   t2.type = 0;
   t2.item = -1;
   char *menu3[]  = { 
-    (char *)"Very Good",
-    (char *)"Good",
-    (char *)"Medium",
+    (char *)"!w32!f23Very Good",
+    (char *)"!w32!f23Good",
+    (char *)"!w21!f23Medium",
     NULL 
   };
   ThumbNail **th0 ;
   DIRA r3 = { 
     'r',
-    273,116,  
-    584,143,   
+    84,151,  
+    461,192,   
     8,0,  
-    80, 
+    100, 
     25, 
     1,3, 
-    -2302756,1, 
+    0,1, 
     (int *)v[2], 
     NULL, 
     NULL ,
     NULL,MakeKaraokebrowser1callback, /* *args, callback */
-    1,  /* Border Offset  */
-     2,  /* Scroll width  */
+    6,  /* Border Offset  */
+     22,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
     1, /* bordr */
@@ -114,31 +127,31 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
   r3.item = -1;
   DIM m4 = { 
     'm',
-    201,117,  
-    273,141,  
+    3,159,  
+    88,183,  
     1,0  
   };
-  strncpy(m4.msg,(char *)"Quality",499);
-  strcpy(m4.Wid,(char *)"KaraokeWidget7");
+  strncpy(m4.msg,(char *)"!w32!f21Quality",499);
+  strcpy(m4.Wid,(char *)"KaraokeAudioWidget11");
   m4.item = -1;
   BUT_STR  *butn5=NULL; 
   butn5= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn5[0].sw=1;
-  strcpy(butn5[0].title,(char *)"Make Karaoke");
+  strcpy(butn5[0].title,(char *)"!w32!f23Make Karaoke");
   butn5[0].xpmn=NULL;
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
-  butn5[0].bkgr=-132206206;
+  butn5[0].bkgr=-235255250;
   butn5[0].butncode='';
   DIL h5 = { 
     'h',
-    472,202,  
-    586,235,
+    187,349,  
+    281,382,
     2,0,  
-    104, 
+    84, 
     25, 
     1,1, 
-    2,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn5, 
     MakeKaraokesplbutton1callback, /*  Callbak */
@@ -148,63 +161,86 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
   h5.item = -1;
   DIM m6 = { 
     'm',
-    194,3,  
-    594,27,  
-    0,0  
+    18,64,  
+    118,88,  
+    1,0  
   };
-  strncpy(m6.msg,(char *)"Making karaoke; success depends on input ",499);
-  strcpy(m6.Wid,(char *)"KaraokeWidget10");
+  strncpy(m6.msg,(char *)"!w32!f21Input Media",499);
+  strcpy(m6.Wid,(char *)"KaraokeAudioWidget9");
   m6.item = -1;
   DIM m7 = { 
     'm',
-    200,206,  
-    468,233,  
+    3,236,  
+    103,260,  
+    1,0  
+  };
+  strncpy(m7.msg,(char *)"!w32!f21Output File",499);
+  strcpy(m7.Wid,(char *)"KaraokeAudioWidget11");
+  m7.item = -1;
+  DIM m8 = { 
+    'm',
+    12,15,  
+    457,34,  
     0,0  
   };
-  strncpy(m7.msg,(char *)"!c01Extension decides Output format",499);
-  strcpy(m7.Wid,(char *)"KaraokeWidget12");
-  m7.item = -1;
+  strncpy(m8.msg,(char *)"Making karaoke; success depends on input",499);
+  strcpy(m8.Wid,(char *)"KaraokeAudioWidget12");
+  m8.item = -1;
+  DIM m9 = { 
+    'm',
+    10,266,  
+    459,284,  
+    0,0  
+  };
+  strncpy(m9.msg,(char *)"!c01Extension decides Output format",499);
+  strcpy(m9.Wid,(char *)"KaraokeAudioWidget13");
+  m9.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+9));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+11));
   d =dtmp+i; 
-  d[8].t=NULL;
+  d[10].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
   d[1].t = (DIT *)malloc(sizeof(DIN));
-  MakeKaraokebutton1init(&b1,pt) ;
   *d[1].N = b1;
   d[1].N->item = -1;
+  MakeKaraokebutton1init(d[1].N,pt) ;
   d[2].t = (DIT *)malloc(sizeof(DIT));
   *d[2].t = t2;
   d[2].t->item = -1;
   d[3].t = (DIT *)malloc(sizeof(DIRA));
-  MakeKaraokebrowser1init(&r3,pt) ;
   *d[3].r = r3;
   d[3].r->item = -1;
+  MakeKaraokebrowser1init(d[3].r,pt) ;
   d[4].t = (DIT *)malloc(sizeof(DIM));
   *d[4].m = m4;
   d[4].m->item = -1;
   d[5].t = (DIT *)malloc(sizeof(DIL));
-  MakeKaraokesplbutton1init(&h5,pt) ;
   *d[5].h = h5;
   d[5].h->item = -1;
+  MakeKaraokesplbutton1init(d[5].h,pt) ;
   d[6].t = (DIT *)malloc(sizeof(DIM));
   *d[6].m = m6;
   d[6].m->item = -1;
   d[7].t = (DIT *)malloc(sizeof(DIM));
   *d[7].m = m7;
   d[7].m->item = -1;
-  d[8].t = NULL;
+  d[8].t = (DIT *)malloc(sizeof(DIM));
+  *d[8].m = m8;
+  d[8].m->item = -1;
+  d[9].t = (DIT *)malloc(sizeof(DIM));
+  *d[9].m = m9;
+  d[9].m->item = -1;
+  d[10].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
   while(d[j].t!=NULL){ kgAddtoGrp(D,GrpId,(void *)(d[j].t));j++;}
   return GrpId;
 } 
-
 /* One can also use the following code to add Widgets to an existing Dialog */
 
 int MakeMakeKaraokeGroup(DIALOG *D,void *arg) {

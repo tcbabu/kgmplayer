@@ -4,13 +4,24 @@ extern int Tools;
 char * MakeMixFile(void);
 char * MakeAudioMixFile(void);
 
-void ModifyMixAudioGc(Gclr *gc) {
+
+void ModifyMixAudioGc(void *Tmp) {
+   DIALOG *D;
+   Gclr *gc;
+   D = (DIALOG *)Tmp;
+   gc = &(D->gc);
 /*
 //  You may change default settings here 
 //  probably you can allow the user to create a config in $HOME
 //  and try to read that file (if exits); so dynamic configuration is possible
+   kgColorTheme(D,220,220,200);
+   kgColorTheme1(D,220,220,200);
+   kgColorTheme2(D,220,220,200);
+   kgDefaultGuiTheme(gc);
+   kgGrayGuiTheme(gc);
    gc->FontSize =8;
    gc->Font=23;
+   kgMkgclr("MixAudio",Tmp);
 */
 }
 int MixAudioGroup( DIALOG *D,void **v,void *pt) {
@@ -18,29 +29,30 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
   DIA *d=NULL,*dtmp;
   T_ELMT *e0  ; 
   e0 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e0[0].fmt = (char *)malloc(16);
-  strcpy(e0[0].fmt,(const char *)"Audio Media%20s");
+  e0[0].fmt = (char *)malloc(5);
+  strcpy(e0[0].fmt,(char *)"%20s");
   e0[0].v=(void *)v[0];
   e0[0].sw=1;
   e0[0].noecho=0;
+  e0[0].img=NULL;
   DIT t0 = { 
     't',
-    192,34,  
-    519,65,
+    119,59,  
+    343,93,
     20, 
     1,1, 
     e0,
     1,1,
     NULL,MixAudiotextbox1callback,0,0,18,9 /* args,Call back */
   };
-  strcpy(t0.Wid,(const char *)"MixTbox1");
+  strcpy(t0.Wid,(char *)"MixTbox1");
   t0.pt=NULL;
   t0.type = 0;
   t0.item = -1;
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(const char *)"Browse");
+  strcpy(butn1[0].title,(char *)"!w32!f23Browse");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
@@ -48,63 +60,64 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].butncode='';
   DIN b1 = { 
     'n',
-    520,33,  
-    594,67,
+    342,58,  
+    424,92,
     2,2,  
-    64, 
+    72, 
     24, 
     1,1, 
-    5,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn1, 
     MixAudiobutton1callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(b1.Wid,(const char *)"MixAudioWidget3");
+  strcpy(b1.Wid,(char *)"MixBut1");
   b1.item = -1;
   T_ELMT *e2  ; 
   e2 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e2[0].fmt = (char *)malloc(11);
-  strcpy(e2[0].fmt,(const char *)"Output%30s");
+  e2[0].fmt = (char *)malloc(8);
+  strcpy(e2[0].fmt,(char *)"!g %30s");
   e2[0].v=(void *)v[1];
   e2[0].sw=1;
   e2[0].noecho=0;
+  e2[0].img=NULL;
   DIT t2 = { 
     't',
-    200,119,  
-    575,149,
+    66,231,  
+    434,265,
     20, 
     1,1, 
     e2,
     1,1,
     NULL,MixAudiotextbox2callback,0,0,18,9 /* args,Call back */
   };
-  strcpy(t2.Wid,(const char *)"MixTbox2");
+  strcpy(t2.Wid,(char *)"MixTbox2");
   t2.pt=NULL;
   t2.type = 0;
   t2.item = -1;
   char *menu3[]  = { 
-    (char *)"Very Good",
-    (char *)"Good",
-    (char *)"Medium",
+    (char *)"!w32!f23Very Good",
+    (char *)"!w32!f23Good",
+    (char *)"!w21!f23Medium",
     NULL 
   };
   ThumbNail **th0 ;
   DIRA r3 = { 
     'r',
-    272,158,  
-    583,185,   
+    84,151,  
+    461,192,   
     8,0,  
-    80, 
+    100, 
     25, 
     1,3, 
-    -2302756,1, 
+    0,1, 
     (int *)v[2], 
     NULL, 
     NULL ,
     NULL,MixAudiobrowser1callback, /* *args, callback */
-    1,  /* Border Offset  */
-     2,  /* Scroll width  */
+    6,  /* Border Offset  */
+     22,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
     1, /* bordr */
@@ -113,32 +126,32 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
    };
   th0 = (ThumbNail **)kgStringToThumbNails((char **)menu3);
   r3.list=(void **)th0;
-  strcpy(r3.Wid,(const char *)"MixQty");
+  strcpy(r3.Wid,(char *)"MixQty");
   r3.item = -1;
   DIM m4 = { 
     'm',
-    200,159,  
-    272,183,  
+    3,159,  
+    88,183,  
     1,0  
   };
-  strncpy(m4.msg,(char *)"Quality",499);
-  strcpy(m4.Wid,(const char *)"MixAudioWidget7");
+  strncpy(m4.msg,(char *)"!w32!f21Quality",499);
+  strcpy(m4.Wid,(char *)"MixAudioWidget11");
   m4.item = -1;
   BUT_STR  *butn5=NULL; 
   butn5= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn5[0].sw=1;
-  strcpy(butn5[0].title,(const char *)"!w32!f23Mix Media");
+  strcpy(butn5[0].title,(char *)"!w32!f23Mix Audio");
   butn5[0].xpmn=NULL;
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
-  butn5[0].bkgr=-240250240;
+  butn5[0].bkgr=-235255250;
   butn5[0].butncode='';
   DIL h5 = { 
     'h',
-    472,202,  
-    586,235,
+    187,349,  
+    281,382,
     2,0,  
-    104, 
+    84, 
     25, 
     1,1, 
     5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
@@ -147,120 +160,156 @@ int MixAudioGroup( DIALOG *D,void **v,void *pt) {
     MixAudiosplbutton1callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(h5.Wid,(const char *)"MixAudioWidget13");
+  strcpy(h5.Wid,(char *)"MixAudioWidget12");
   h5.item = -1;
   T_ELMT *e6  ; 
   e6 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e6[0].fmt = (char *)malloc(16);
-  strcpy(e6[0].fmt,(const char *)"2nd   Media%20s");
+  e6[0].fmt = (char *)malloc(5);
+  strcpy(e6[0].fmt,(char *)"%20s");
   e6[0].v=(void *)v[3];
   e6[0].sw=1;
   e6[0].noecho=0;
+  e6[0].img=NULL;
   DIT t6 = { 
     't',
-    191,75,  
-    519,109,
+    118,95,  
+    342,129,
     20, 
     1,1, 
     e6,
     1,1,
-    NULL,MixAudiotextbox3callback,1,0,18,9 /* args,Call back */
+    NULL,MixAudiotextbox3callback,0,0,18,9 /* args,Call back */
   };
-  strcpy(t6.Wid,(const char *)"MixTbox3");
+  strcpy(t6.Wid,(char *)"MixTbox3");
   t6.pt=NULL;
   t6.type = 0;
   t6.item = -1;
   BUT_STR  *butn7=NULL; 
   butn7= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn7[0].sw=1;
-  strcpy(butn7[0].title,(const char *)"Browse");
+  strcpy(butn7[0].title,(char *)"!w32!f23Browse");
   butn7[0].xpmn=NULL;
   butn7[0].xpmp=NULL;
   butn7[0].xpmh=NULL;
-  butn7[0].bkgr=-1;
+  butn7[0].bkgr=-235255250;
   butn7[0].butncode='';
   DIN b7 = { 
     'n',
-    520,74,  
-    591,106,
+    341,93,  
+    423,127,
     2,2,  
-    64, 
+    72, 
     24, 
     1,1, 
-    5,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn7, 
     MixAudiobutton2callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(b7.Wid,(const char *)"MixAudioWidget9");
+  strcpy(b7.Wid,(char *)"MixAudioWidget15");
   b7.item = -1;
   DIM m8 = { 
     'm',
-    194,3,  
-    594,27,  
-    0,0  
+    18,64,  
+    118,88,  
+    1,0  
   };
-  strncpy(m8.msg,(char *)"Mixing audio from first to audio of second media(audio/video)",499);
-  strcpy(m8.Wid,(const char *)"MixAudioWidget10");
+  strncpy(m8.msg,(char *)"!w32!f21Audio Media",499);
+  strcpy(m8.Wid,(char *)"MixAudioWidget9");
   m8.item = -1;
   DIM m9 = { 
     'm',
-    200,206,  
-    468,233,  
+    17,101,  
+    117,125,  
+    1,0  
+  };
+  strncpy(m9.msg,(char *)"!w32!f212nd Media",499);
+  strcpy(m9.Wid,(char *)"MixAudioWidget10");
+  m9.item = -1;
+  DIM m10 = { 
+    'm',
+    3,236,  
+    103,260,  
+    1,0  
+  };
+  strncpy(m10.msg,(char *)"!w32!f21Output File",499);
+  strcpy(m10.Wid,(char *)"MixAudioWidget11");
+  m10.item = -1;
+  DIM m11 = { 
+    'm',
+    12,15,  
+    457,34,  
     0,0  
   };
-  strncpy(m9.msg,(char *)"Output format is MP4",499);
-  strcpy(m9.Wid,(const char *)"MixAudioWidget12");
-  m9.item = -1;
+  strncpy(m11.msg,(char *)"Mixing Audio From first to audio of second media(audo/video)",499);
+  strcpy(m11.Wid,(char *)"MixAudioWidget12");
+  m11.item = -1;
+  DIM m12 = { 
+    'm',
+    10,266,  
+    459,284,  
+    0,0  
+  };
+  strncpy(m12.msg,(char *)"(Output format is MP4)",499);
+  strcpy(m12.Wid,(char *)"MixAudioWidget13");
+  m12.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+11));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+14));
   d =dtmp+i; 
-  d[10].t=NULL;
+  d[13].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
   d[1].t = (DIT *)malloc(sizeof(DIN));
-  MixAudiobutton1init(&b1,pt) ;
   *d[1].N = b1;
   d[1].N->item = -1;
+  MixAudiobutton1init(d[1].N,pt) ;
   d[2].t = (DIT *)malloc(sizeof(DIT));
   *d[2].t = t2;
   d[2].t->item = -1;
   d[3].t = (DIT *)malloc(sizeof(DIRA));
-  MixAudiobrowser1init(&r3,pt) ;
   *d[3].r = r3;
   d[3].r->item = -1;
+  MixAudiobrowser1init(d[3].r,pt) ;
   d[4].t = (DIT *)malloc(sizeof(DIM));
   *d[4].m = m4;
   d[4].m->item = -1;
   d[5].t = (DIT *)malloc(sizeof(DIL));
-  MixAudiosplbutton1init(&h5,pt) ;
   *d[5].h = h5;
   d[5].h->item = -1;
+  MixAudiosplbutton1init(d[5].h,pt) ;
   d[6].t = (DIT *)malloc(sizeof(DIT));
   *d[6].t = t6;
   d[6].t->item = -1;
   d[7].t = (DIT *)malloc(sizeof(DIN));
-  MixAudiobutton2init(&b7,pt) ;
   *d[7].N = b7;
   d[7].N->item = -1;
+  MixAudiobutton2init(d[7].N,pt) ;
   d[8].t = (DIT *)malloc(sizeof(DIM));
   *d[8].m = m8;
   d[8].m->item = -1;
   d[9].t = (DIT *)malloc(sizeof(DIM));
   *d[9].m = m9;
   d[9].m->item = -1;
-  d[10].t = NULL;
+  d[10].t = (DIT *)malloc(sizeof(DIM));
+  *d[10].m = m10;
+  d[10].m->item = -1;
+  d[11].t = (DIT *)malloc(sizeof(DIM));
+  *d[11].m = m11;
+  d[11].m->item = -1;
+  d[12].t = (DIT *)malloc(sizeof(DIM));
+  *d[12].m = m12;
+  d[12].m->item = -1;
+  d[13].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
   while(d[j].t!=NULL){ kgAddtoGrp(D,GrpId,(void *)(d[j].t));j++;}
   return GrpId;
 } 
-
 
 int MakeMixAudioGroup(DIALOG *D,void *arg) {
    int GrpId;
@@ -302,20 +351,41 @@ int MakeMixAudioGroup(DIALOG *D,void *arg) {
    return GrpId;
 }
 
+
+void ModifyAmixAudioGc(void *Tmp) {
+   DIALOG *D;
+   Gclr *gc;
+   D = (DIALOG *)Tmp;
+   gc = &(D->gc);
+/*
+//  You may change default settings here 
+//  probably you can allow the user to create a config in $HOME
+//  and try to read that file (if exits); so dynamic configuration is possible
+   kgColorTheme(D,220,220,200);
+   kgColorTheme1(D,220,220,200);
+   kgColorTheme2(D,220,220,200);
+   kgDefaultGuiTheme(gc);
+   kgGrayGuiTheme(gc);
+   gc->FontSize =8;
+   gc->Font=23;
+   kgMkgclr("AmixAudio",Tmp);
+*/
+}
 int AmixAudioGroup( DIALOG *D,void **v,void *pt) {
   int GrpId=0,oitems=0,i,j;
   DIA *d=NULL,*dtmp;
   T_ELMT *e0  ; 
   e0 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e0[0].fmt = (char *)malloc(16);
-  strcpy(e0[0].fmt,(char *)"Audio Media%20s");
+  e0[0].fmt = (char *)malloc(5);
+  strcpy(e0[0].fmt,(char *)"%20s");
   e0[0].v=(void *)v[0];
   e0[0].sw=1;
   e0[0].noecho=0;
+  e0[0].img=NULL;
   DIT t0 = { 
     't',
-    192,34,  
-    519,65,
+    119,59,  
+    343,93,
     20, 
     1,1, 
     e0,
@@ -329,7 +399,7 @@ int AmixAudioGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"Browse");
+  strcpy(butn1[0].title,(char *)"!w32!f23Browse");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
@@ -337,31 +407,32 @@ int AmixAudioGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].butncode='';
   DIN b1 = { 
     'n',
-    520,33,  
-    594,67,
+    342,58,  
+    424,92,
     2,2,  
-    64, 
+    72, 
     24, 
     1,1, 
-    5,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn1, 
     AmixAudiobutton1callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(b1.Wid,(char *)"AmixAudioWidget3");
+  strcpy(b1.Wid,(char *)"AmixBut1");
   b1.item = -1;
   T_ELMT *e2  ; 
   e2 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e2[0].fmt = (char *)malloc(11);
-  strcpy(e2[0].fmt,(char *)"Output%30s");
+  e2[0].fmt = (char *)malloc(8);
+  strcpy(e2[0].fmt,(char *)"!g %30s");
   e2[0].v=(void *)v[1];
   e2[0].sw=1;
   e2[0].noecho=0;
+  e2[0].img=NULL;
   DIT t2 = { 
     't',
-    200,119,  
-    575,149,
+    66,231,  
+    434,265,
     20, 
     1,1, 
     e2,
@@ -373,27 +444,27 @@ int AmixAudioGroup( DIALOG *D,void **v,void *pt) {
   t2.type = 0;
   t2.item = -1;
   char *menu3[]  = { 
-    (char *)"Very Good",
-    (char *)"Good",
-    (char *)"Medium",
+    (char *)"!w32!f23Very Good",
+    (char *)"!w32!f23Good",
+    (char *)"!w21!f23Medium",
     NULL 
   };
   ThumbNail **th0 ;
   DIRA r3 = { 
     'r',
-    272,158,  
-    583,185,   
+    84,151,  
+    461,192,   
     8,0,  
-    80, 
+    100, 
     25, 
     1,3, 
-    -2302756,1, 
+    0,1, 
     (int *)v[2], 
     NULL, 
     NULL ,
     NULL,AmixAudiobrowser1callback, /* *args, callback */
-    1,  /* Border Offset  */
-     2,  /* Scroll width  */
+    6,  /* Border Offset  */
+     22,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
     1, /* bordr */
@@ -406,12 +477,12 @@ int AmixAudioGroup( DIALOG *D,void **v,void *pt) {
   r3.item = -1;
   DIM m4 = { 
     'm',
-    200,159,  
-    272,183,  
+    3,159,  
+    88,183,  
     1,0  
   };
-  strncpy(m4.msg,(char *)"Quality",499);
-  strcpy(m4.Wid,(char *)"AmixAudioWidget7");
+  strncpy(m4.msg,(char *)"!w32!f21Quality",499);
+  strcpy(m4.Wid,(char *)"AmixAudioWidget11");
   m4.item = -1;
   BUT_STR  *butn5=NULL; 
   butn5= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
@@ -420,14 +491,14 @@ int AmixAudioGroup( DIALOG *D,void **v,void *pt) {
   butn5[0].xpmn=NULL;
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
-  butn5[0].bkgr=-250255250;
+  butn5[0].bkgr=-235255250;
   butn5[0].butncode='';
   DIL h5 = { 
     'h',
-    472,202,  
-    586,235,
+    187,349,  
+    281,382,
     2,0,  
-    104, 
+    84, 
     25, 
     1,1, 
     5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
@@ -436,24 +507,25 @@ int AmixAudioGroup( DIALOG *D,void **v,void *pt) {
     AmixAudiosplbutton1callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(h5.Wid,(char *)"AmixAudioWidget13");
+  strcpy(h5.Wid,(char *)"AmixAudioWidget12");
   h5.item = -1;
   T_ELMT *e6  ; 
   e6 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e6[0].fmt = (char *)malloc(16);
-  strcpy(e6[0].fmt,(char *)"2nd   Media%20s");
+  e6[0].fmt = (char *)malloc(5);
+  strcpy(e6[0].fmt,(char *)"%20s");
   e6[0].v=(void *)v[3];
   e6[0].sw=1;
   e6[0].noecho=0;
+  e6[0].img=NULL;
   DIT t6 = { 
     't',
-    191,75,  
-    519,109,
+    118,95,  
+    342,129,
     20, 
     1,1, 
     e6,
     1,1,
-    NULL,AmixAudiotextbox3callback,1,0,18,9 /* args,Call back */
+    NULL,AmixAudiotextbox3callback,0,0,18,9 /* args,Call back */
   };
   strcpy(t6.Wid,(char *)"AmixTbox3");
   t6.pt=NULL;
@@ -462,95 +534,129 @@ int AmixAudioGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn7=NULL; 
   butn7= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn7[0].sw=1;
-  strcpy(butn7[0].title,(char *)"Browse");
+  strcpy(butn7[0].title,(char *)"!w32!f23Browse");
   butn7[0].xpmn=NULL;
   butn7[0].xpmp=NULL;
   butn7[0].xpmh=NULL;
-  butn7[0].bkgr=-1;
+  butn7[0].bkgr=-235255250;
   butn7[0].butncode='';
   DIN b7 = { 
     'n',
-    520,74,  
-    591,106,
+    341,93,  
+    423,127,
     2,2,  
-    64, 
+    72, 
     24, 
     1,1, 
-    5,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn7, 
     AmixAudiobutton2callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(b7.Wid,(char *)"AmixAudioWidget9");
+  strcpy(b7.Wid,(char *)"AmixAudioWidget15");
   b7.item = -1;
   DIM m8 = { 
     'm',
-    194,3,  
-    594,27,  
-    0,0  
+    18,64,  
+    118,88,  
+    1,0  
   };
-  strncpy(m8.msg,(char *)"Mixing audios of first and "
-        "second to make audio file",499);
-  strcpy(m8.Wid,(char *)"AmixAudioWidget10");
+  strncpy(m8.msg,(char *)"!w32!f21Audio Media",499);
+  strcpy(m8.Wid,(char *)"AmixAudioWidget9");
   m8.item = -1;
   DIM m9 = { 
     'm',
-    200,206,  
-    468,233,  
+    17,101,  
+    117,125,  
+    1,0  
+  };
+  strncpy(m9.msg,(char *)"!w32!f212nd Media",499);
+  strcpy(m9.Wid,(char *)"AmixAudioWidget10");
+  m9.item = -1;
+  DIM m10 = { 
+    'm',
+    3,236,  
+    103,260,  
+    1,0  
+  };
+  strncpy(m10.msg,(char *)"!w32!f21Output File",499);
+  strcpy(m10.Wid,(char *)"AmixAudioWidget11");
+  m10.item = -1;
+  DIM m11 = { 
+    'm',
+    12,15,  
+    457,34,  
     0,0  
   };
-  strncpy(m9.msg,(char *)"!c01Extension decides Output format",499);
-  strcpy(m9.Wid,(char *)"AmixAudioWidget12");
-  m9.item = -1;
+  strncpy(m11.msg,(char *)"Mixing audios of first and second to make a new audio file)",499);
+  strcpy(m11.Wid,(char *)"AmixAudioWidget12");
+  m11.item = -1;
+  DIM m12 = { 
+    'm',
+    10,266,  
+    459,284,  
+    0,0  
+  };
+  strncpy(m12.msg,(char *)"!c01Extension decides Output format",499);
+  strcpy(m12.Wid,(char *)"AmixAudioWidget13");
+  m12.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+11));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+14));
   d =dtmp+i; 
-  d[10].t=NULL;
+  d[13].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
   d[1].t = (DIT *)malloc(sizeof(DIN));
-  AmixAudiobutton1init(&b1,pt) ;
   *d[1].N = b1;
   d[1].N->item = -1;
+  AmixAudiobutton1init(d[1].N,pt) ;
   d[2].t = (DIT *)malloc(sizeof(DIT));
   *d[2].t = t2;
   d[2].t->item = -1;
   d[3].t = (DIT *)malloc(sizeof(DIRA));
-  AmixAudiobrowser1init(&r3,pt) ;
   *d[3].r = r3;
   d[3].r->item = -1;
+  AmixAudiobrowser1init(d[3].r,pt) ;
   d[4].t = (DIT *)malloc(sizeof(DIM));
   *d[4].m = m4;
   d[4].m->item = -1;
   d[5].t = (DIT *)malloc(sizeof(DIL));
-  AmixAudiosplbutton1init(&h5,pt) ;
   *d[5].h = h5;
   d[5].h->item = -1;
+  AmixAudiosplbutton1init(d[5].h,pt) ;
   d[6].t = (DIT *)malloc(sizeof(DIT));
   *d[6].t = t6;
   d[6].t->item = -1;
   d[7].t = (DIT *)malloc(sizeof(DIN));
-  AmixAudiobutton2init(&b7,pt) ;
   *d[7].N = b7;
   d[7].N->item = -1;
+  AmixAudiobutton2init(d[7].N,pt) ;
   d[8].t = (DIT *)malloc(sizeof(DIM));
   *d[8].m = m8;
   d[8].m->item = -1;
   d[9].t = (DIT *)malloc(sizeof(DIM));
   *d[9].m = m9;
   d[9].m->item = -1;
-  d[10].t = NULL;
+  d[10].t = (DIT *)malloc(sizeof(DIM));
+  *d[10].m = m10;
+  d[10].m->item = -1;
+  d[11].t = (DIT *)malloc(sizeof(DIM));
+  *d[11].m = m11;
+  d[11].m->item = -1;
+  d[12].t = (DIT *)malloc(sizeof(DIM));
+  *d[12].m = m12;
+  d[12].m->item = -1;
+  d[13].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
   while(d[j].t!=NULL){ kgAddtoGrp(D,GrpId,(void *)(d[j].t));j++;}
   return GrpId;
 } 
-
 int MakeAmixAudioGroup(DIALOG *D,void *arg) {
    int GrpId;
    WIDGETGRP *Gpt;

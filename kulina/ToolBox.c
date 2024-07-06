@@ -88,21 +88,21 @@ TOOLGRP ToolList[ ] = {
       "Files can be of diffrent aspect ratio or format and the output\n"
       "is a file with aspect ratio\n"
   },
-  { 0, MakeAudioJoinGroup,"!w32!f23Join Audio from Media Files",200,40,RunHelper,0,
+  { 0, MakeAudioJoinGroup,"!w32!f23Join Audio from Media Files",346,0,RunHelper,0,
       "\n\n\nJoin audios from multiple input files (can be audio or video)\n"
       "If there is a plan to edit further, select output format as lossless\n"
       "audio, either wav or flac\n"
   },
-  { 0, MakeAddAudioGroup,"!w32!f23Add/Change Media audio ",200,40,RunHelper,0,
+  { 0, MakeAddAudioGroup,"!w32!f23Add/Change Media audio ",346,0,RunHelper,0,
       "\n\n\nAdd (or replace) audio to a video file\n"
       "If there is already an audio in the media it will be discarded\n"
       "and new audio will be inserted\n"
   },
-  { 0, MakeMixAudioGroup,"!w32!f23Mix Audio to Media",200,40,RunHelper,0,
+  { 0, MakeMixAudioGroup,"!w32!f23Mix Audio to Media",346,0,RunHelper,0,
       "\n\n\nThis tool can be used to mix an audio to an existing\n"
       "audio in a media(video or audio) file.\n"
   },
-  { 0, MakeAmixAudioGroup,"!w32!f23Mix Audios from two media",200,40,RunHelper,0,
+  { 0, MakeAmixAudioGroup,"!w32!f23Mix Audios from two media",346,0,RunHelper,0,
       "\n\n\nThis tool can be used to mix two audio inputs from two media\n"
       "files (audio or video) and creates a new audio file\n"
       "If further editing to audio is planned, select a lossless format\n"
@@ -110,12 +110,12 @@ TOOLGRP ToolList[ ] = {
       "wav or flac by changing the output extension\n"
   },
 
-  { 0, MakeMakeKaraokeGroup,"!w32!f23Karaoke from stereo audio",200,40,RunHelper,0,
+  { 0, MakeMakeKaraokeGroup,"!w32!f23Karaoke from stereo audio",346,0,RunHelper,0,
       "\n\n\nKaraoke may not be successful always\n"
       "It works only in certain type of stero recording\n"
       "One can just make a try\n",
   },
-  { 0, MakeAddSilenceGroup,"!w32!f23Insert Silences to audio",180,40,RunHelper,0,
+  { 0, MakeAddSilenceGroup,"!w32!f23Insert Silences to audio",346,0,RunHelper,0,
        "\n\n\nInserting silence in audio is useful in mixing audio\n"
   },
   { 0, MakeMakeCutsGroup,"!w32!f23Make Cuts in  audio",340,40,RunHelper,0,

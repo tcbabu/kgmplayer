@@ -1,13 +1,23 @@
 #include <kulina.h>
 #include "AddAudioCallbacks.h"
 char * MakeAddFile(void);
-void ModifyAddAudioGc(Gclr *gc) {
+void ModifyAddAudioGc(void *Tmp) {
+   DIALOG *D;
+   Gclr *gc;
+   D = (DIALOG *)Tmp;
+   gc = &(D->gc);
 /*
 //  You may change default settings here 
 //  probably you can allow the user to create a config in $HOME
 //  and try to read that file (if exits); so dynamic configuration is possible
+   kgColorTheme(D,220,220,200);
+   kgColorTheme1(D,220,220,200);
+   kgColorTheme2(D,220,220,200);
+   kgDefaultGuiTheme(gc);
+   kgGrayGuiTheme(gc);
    gc->FontSize =8;
    gc->Font=23;
+   kgMkgclr("AddAudio",Tmp);
 */
 }
 int AddAudioGroup( DIALOG *D,void **v,void *pt) {
@@ -15,15 +25,16 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
   DIA *d=NULL,*dtmp;
   T_ELMT *e0  ; 
   e0 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e0[0].fmt = (char *)malloc(16);
-  strcpy(e0[0].fmt,(char *)"Audio Media%20s");
+  e0[0].fmt = (char *)malloc(5);
+  strcpy(e0[0].fmt,(char *)"%20s");
   e0[0].v=(void *)v[0];
   e0[0].sw=1;
   e0[0].noecho=0;
+  e0[0].img=NULL;
   DIT t0 = { 
     't',
-    192,26,  
-    519,57,
+    119,47,  
+    343,81,
     20, 
     1,1, 
     e0,
@@ -37,7 +48,7 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"Browse");
+  strcpy(butn1[0].title,(char *)"!w32!f23Browse");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
@@ -45,31 +56,32 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].butncode='';
   DIN b1 = { 
     'n',
-    520,25,  
-    594,59,
+    342,46,  
+    424,80,
     2,2,  
-    64, 
+    72, 
     24, 
     1,1, 
-    5,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn1, 
     AddAudiobutton1callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(b1.Wid,(char *)"AddAudioWidget3");
+  strcpy(b1.Wid,(char *)"AddBut1");
   b1.item = -1;
   T_ELMT *e2  ; 
   e2 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e2[0].fmt = (char *)malloc(11);
-  strcpy(e2[0].fmt,(char *)"Output%30s");
+  e2[0].fmt = (char *)malloc(8);
+  strcpy(e2[0].fmt,(char *)"!g %30s");
   e2[0].v=(void *)v[1];
   e2[0].sw=1;
   e2[0].noecho=0;
+  e2[0].img=NULL;
   DIT t2 = { 
     't',
-    200,102,  
-    575,132,
+    66,215,  
+    434,249,
     20, 
     1,1, 
     e2,
@@ -81,27 +93,27 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
   t2.type = 0;
   t2.item = -1;
   char *menu3[]  = { 
-    (char *)"Very Good",
-    (char *)"Good",
-    (char *)"Medium",
+    (char *)"!w32!f23Very Good",
+    (char *)"!w32!f23Good",
+    (char *)"!w21!f23Medium",
     NULL 
   };
   ThumbNail **th0 ;
   DIRA r3 = { 
     'r',
-    272,141,  
-    583,168,   
+    84,139,  
+    461,180,   
     8,0,  
-    80, 
+    100, 
     25, 
     1,3, 
-    -2302756,1, 
+    0,1, 
     (int *)v[2], 
     NULL, 
     NULL ,
     NULL,AddAudiobrowser1callback, /* *args, callback */
-    1,  /* Border Offset  */
-     2,  /* Scroll width  */
+    6,  /* Border Offset  */
+     22,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
     1, /* bordr */
@@ -114,54 +126,55 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
   r3.item = -1;
   DIM m4 = { 
     'm',
-    200,141,  
-    272,165,  
+    3,147,  
+    88,171,  
     1,0  
   };
-  strncpy(m4.msg,(char *)"Quality",499);
-  strcpy(m4.Wid,(char *)"AddAudioWidget7");
+  strncpy(m4.msg,(char *)"!w32!f21Quality",499);
+  strcpy(m4.Wid,(char *)"AddAudioWidget11");
   m4.item = -1;
   BUT_STR  *butn5=NULL; 
   butn5= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn5[0].sw=1;
-  strcpy(butn5[0].title,(char *)"Add Audio");
+  strcpy(butn5[0].title,(char *)"!w32!f23Add Audio");
   butn5[0].xpmn=NULL;
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
-  butn5[0].bkgr=-132206206;
+  butn5[0].bkgr=-235255250;
   butn5[0].butncode='';
   DIL h5 = { 
     'h',
-    472,202,  
-    586,235,
+    187,349,  
+    281,382,
     2,0,  
-    104, 
+    84, 
     25, 
     1,1, 
-    2,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn5, 
     AddAudiosplbutton1callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(h5.Wid,(char *)"AddWidget13");
+  strcpy(h5.Wid,(char *)"AddAudioWidget12");
   h5.item = -1;
   T_ELMT *e6  ; 
   e6 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e6[0].fmt = (char *)malloc(16);
-  strcpy(e6[0].fmt,(char *)"Video Media%20s");
+  e6[0].fmt = (char *)malloc(5);
+  strcpy(e6[0].fmt,(char *)"%20s");
   e6[0].v=(void *)v[3];
   e6[0].sw=1;
   e6[0].noecho=0;
+  e6[0].img=NULL;
   DIT t6 = { 
     't',
-    191,60,  
-    519,94,
+    118,83,  
+    342,117,
     20, 
     1,1, 
     e6,
     1,1,
-    NULL,AddAudiotextbox3callback,1,0,18,9 /* args,Call back */
+    NULL,AddAudiotextbox3callback,0,0,18,9 /* args,Call back */
   };
   strcpy(t6.Wid,(char *)"AddTbox3");
   t6.pt=NULL;
@@ -170,63 +183,99 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn7=NULL; 
   butn7= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn7[0].sw=1;
-  strcpy(butn7[0].title,(char *)"Browse");
+  strcpy(butn7[0].title,(char *)"!w32!f23Browse");
   butn7[0].xpmn=NULL;
   butn7[0].xpmp=NULL;
   butn7[0].xpmh=NULL;
-  butn7[0].bkgr=-1;
+  butn7[0].bkgr=-235255250;
   butn7[0].butncode='';
   DIN b7 = { 
     'n',
-    520,59,  
-    591,91,
+    341,81,  
+    423,115,
     2,2,  
-    64, 
+    72, 
     24, 
     1,1, 
-    5,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn7, 
     AddAudiobutton2callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(b7.Wid,(char *)"AddAudioWidget9");
+  strcpy(b7.Wid,(char *)"AddAudioWidget15");
   b7.item = -1;
+  DIM m8 = { 
+    'm',
+    18,52,  
+    118,76,  
+    1,0  
+  };
+  strncpy(m8.msg,(char *)"!w32!f21Audio Media",499);
+  strcpy(m8.Wid,(char *)"AddAudioWidget9");
+  m8.item = -1;
+  DIM m9 = { 
+    'm',
+    17,89,  
+    117,113,  
+    1,0  
+  };
+  strncpy(m9.msg,(char *)"!w32!f21Video Media",499);
+  strcpy(m9.Wid,(char *)"AddAudioWidget10");
+  m9.item = -1;
+  DIM m10 = { 
+    'm',
+    3,221,  
+    103,245,  
+    1,0  
+  };
+  strncpy(m10.msg,(char *)"!w32!f21Output File",499);
+  strcpy(m10.Wid,(char *)"AddAudioWidget11");
+  m10.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+9));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+12));
   d =dtmp+i; 
-  d[8].t=NULL;
+  d[11].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
   d[1].t = (DIT *)malloc(sizeof(DIN));
-  AddAudiobutton1init(&b1,pt) ;
   *d[1].N = b1;
   d[1].N->item = -1;
+  AddAudiobutton1init(d[1].N,pt) ;
   d[2].t = (DIT *)malloc(sizeof(DIT));
   *d[2].t = t2;
   d[2].t->item = -1;
   d[3].t = (DIT *)malloc(sizeof(DIRA));
-  AddAudiobrowser1init(&r3,pt) ;
   *d[3].r = r3;
   d[3].r->item = -1;
+  AddAudiobrowser1init(d[3].r,pt) ;
   d[4].t = (DIT *)malloc(sizeof(DIM));
   *d[4].m = m4;
   d[4].m->item = -1;
   d[5].t = (DIT *)malloc(sizeof(DIL));
-  AddAudiosplbutton1init(&h5,pt) ;
   *d[5].h = h5;
   d[5].h->item = -1;
+  AddAudiosplbutton1init(d[5].h,pt) ;
   d[6].t = (DIT *)malloc(sizeof(DIT));
   *d[6].t = t6;
   d[6].t->item = -1;
   d[7].t = (DIT *)malloc(sizeof(DIN));
-  AddAudiobutton2init(&b7,pt) ;
   *d[7].N = b7;
   d[7].N->item = -1;
-  d[8].t = NULL;
+  AddAudiobutton2init(d[7].N,pt) ;
+  d[8].t = (DIT *)malloc(sizeof(DIM));
+  *d[8].m = m8;
+  d[8].m->item = -1;
+  d[9].t = (DIT *)malloc(sizeof(DIM));
+  *d[9].m = m9;
+  d[9].m->item = -1;
+  d[10].t = (DIT *)malloc(sizeof(DIM));
+  *d[10].m = m10;
+  d[10].m->item = -1;
+  d[11].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;

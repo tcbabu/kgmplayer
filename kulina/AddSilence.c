@@ -1,13 +1,24 @@
 #include <kulina.h>
 #include "AddSilenceCallbacks.h"
 char * MakeSilFile(void);
-void ModifyAddSilenceGc(Gclr *gc) {
+
+void ModifyAddSilenceGc(void *Tmp) {
+   DIALOG *D;
+   Gclr *gc;
+   D = (DIALOG *)Tmp;
+   gc = &(D->gc);
 /*
 //  You may change default settings here 
 //  probably you can allow the user to create a config in $HOME
 //  and try to read that file (if exits); so dynamic configuration is possible
+   kgColorTheme(D,220,220,200);
+   kgColorTheme1(D,220,220,200);
+   kgColorTheme2(D,220,220,200);
+   kgDefaultGuiTheme(gc);
+   kgGrayGuiTheme(gc);
    gc->FontSize =8;
    gc->Font=23;
+   kgMkgclr("AddSilence",Tmp);
 */
 }
 int AddSilenceGroup( DIALOG *D,void **v,void *pt) {
@@ -15,19 +26,19 @@ int AddSilenceGroup( DIALOG *D,void **v,void *pt) {
   DIA *d=NULL,*dtmp;
   DIX x0 = { 
     'x',
-    209,85,  
-    594,187,   
+    32,113,  
+    459,281,   
     10,2,  
-    252, 
+    308, 
     25, 
-    1,0, 
-    0,3, 
+    1,9812683, 
+    -1077952577,5, 
     (int *)v[0], 
     NULL, 
     NULL, 
     NULL,AddSilencebrowser1callback, /* *args, callback */
-    4,  /* Border Offset  */
-     16,  /* Scroll width  */
+    6,  /* Border Offset  */
+     22,  /* Scroll width  */
      0,  /* Type  */
      1, /* item highlight */
     1, /* bordr */
@@ -39,14 +50,14 @@ int AddSilenceGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"Add");
+  strcpy(butn1[0].title,(char *)"!w32!f23Add");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-1;
   butn1[0].butncode='';
   butn1[1].sw=1;
-  strcpy(butn1[1].title,(char *)"Delete");
+  strcpy(butn1[1].title,(char *)"!w32!f23Delete");
   butn1[1].xpmn=NULL;
   butn1[1].xpmp=NULL;
   butn1[1].xpmh=NULL;
@@ -54,13 +65,13 @@ int AddSilenceGroup( DIALOG *D,void **v,void *pt) {
   butn1[1].butncode='';
   DIN b1 = { 
     'n',
-    448,53,  
-    588,83,
+    301,79,  
+    457,113,
     2,2,  
-    64, 
-    20, 
+    72, 
+    24, 
     2,1, 
-    5,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn1, 
     AddSilencebutton1callback, /*  Callbak */
@@ -70,24 +81,25 @@ int AddSilenceGroup( DIALOG *D,void **v,void *pt) {
   b1.item = -1;
   DIM m2 = { 
     'm',
-    208,58,  
-    308,78,  
+    33,81,  
+    215,111,  
     -1,0  
   };
-  strncpy(m2.msg,(char *)"Silence info",499);
+  strncpy(m2.msg,(char *)"!w32!f21Silence list",499);
   strcpy(m2.Wid,(char *)"AddSilenceWidget3");
   m2.item = -1;
   T_ELMT *e3  ; 
   e3 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e3[0].fmt = (char *)malloc(11);
-  strcpy(e3[0].fmt,(char *)"Output%30s");
+  e3[0].fmt = (char *)malloc(19);
+  strcpy(e3[0].fmt,(char *)"!w32!f21Output%30s");
   e3[0].v=(void *)v[1];
   e3[0].sw=1;
   e3[0].noecho=0;
+  e3[0].img=NULL;
   DIT t3 = { 
     't',
-    219,189,  
-    596,223,
+    19,289,  
+    459,323,
     20, 
     1,1, 
     e3,
@@ -101,21 +113,21 @@ int AddSilenceGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn4=NULL; 
   butn4= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn4[0].sw=1;
-  strcpy(butn4[0].title,(char *)"Add Silence");
+  strcpy(butn4[0].title,(char *)"!w32!f23Add Silences");
   butn4[0].xpmn=NULL;
   butn4[0].xpmp=NULL;
   butn4[0].xpmh=NULL;
-  butn4[0].bkgr=-132206230;
+  butn4[0].bkgr=-235255250;
   butn4[0].butncode='';
   DIL h4 = { 
     'h',
-    501,227,  
-    607,260,
+    177,359,  
+    293,393,
     2,0,  
-    96, 
+    104, 
     25, 
     1,1, 
-    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn4, 
     AddSilencesplbutton1callback, /*  Callbak */
@@ -125,15 +137,16 @@ int AddSilenceGroup( DIALOG *D,void **v,void *pt) {
   h4.item = -1;
   T_ELMT *e5  ; 
   e5 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e5[0].fmt = (char *)malloc(16);
-  strcpy(e5[0].fmt,(char *)"Audio Media%20s");
+  e5[0].fmt = (char *)malloc(5);
+  strcpy(e5[0].fmt,(char *)"%20s");
   e5[0].v=(void *)v[2];
   e5[0].sw=1;
   e5[0].noecho=0;
+  e5[0].img=NULL;
   DIT t5 = { 
     't',
-    202,15,  
-    532,46,
+    148,23,  
+    373,57,
     20, 
     1,1, 
     e5,
@@ -147,51 +160,60 @@ int AddSilenceGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn6=NULL; 
   butn6= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn6[0].sw=1;
-  strcpy(butn6[0].title,(char *)"Browse");
+  strcpy(butn6[0].title,(char *)"!w32!f23Browse");
   butn6[0].xpmn=NULL;
   butn6[0].xpmp=NULL;
   butn6[0].xpmh=NULL;
-  butn6[0].bkgr=-1;
-  butn6[0].butncode='B';
+  butn6[0].bkgr=-235255250;
+  butn6[0].butncode='';
   DIN b6 = { 
     'n',
-    531,14,  
-    605,48,
+    374,22,  
+    456,56,
     2,2,  
-    64, 
+    72, 
     24, 
     1,1, 
-    4,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn6, 
     AddSilencebutton2callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(b6.Wid,(char *)"AddSilenceWidget11");
+  strcpy(b6.Wid,(char *)"AddSilenceWidget7");
   b6.item = -1;
   DIM m7 = { 
     'm',
-    263,243,  
-    488,267,  
-    -1,0  
+    47,30,  
+    147,54,  
+    1,0  
   };
-  strncpy(m7.msg,(char *)"!c00Note: Extension decides output format",499);
+  strncpy(m7.msg,(char *)"!w32!f21Audio File",499);
   strcpy(m7.Wid,(char *)"AddSilenceWidget8");
   m7.item = -1;
+  DIM m8 = { 
+    'm',
+    79,322,  
+    460,340,  
+    0,0  
+  };
+  strncpy(m8.msg,(char *)"!c01!f21Note:Extension decides output format",499);
+  strcpy(m8.Wid,(char *)"AddSilenceWidget9");
+  m8.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+9));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+10));
   d =dtmp+i; 
-  d[8].t=NULL;
+  d[9].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIX));
-  AddSilencebrowser1init(&x0,pt) ;
   *d[0].x = x0;
   d[0].x->item = -1;
+  AddSilencebrowser1init(d[0].x,pt) ;
   d[1].t = (DIT *)malloc(sizeof(DIN));
-  AddSilencebutton1init(&b1,pt) ;
   *d[1].N = b1;
   d[1].N->item = -1;
+  AddSilencebutton1init(d[1].N,pt) ;
   d[2].t = (DIT *)malloc(sizeof(DIM));
   *d[2].m = m2;
   d[2].m->item = -1;
@@ -199,27 +221,29 @@ int AddSilenceGroup( DIALOG *D,void **v,void *pt) {
   *d[3].t = t3;
   d[3].t->item = -1;
   d[4].t = (DIT *)malloc(sizeof(DIL));
-  AddSilencesplbutton1init(&h4,pt) ;
   *d[4].h = h4;
   d[4].h->item = -1;
+  AddSilencesplbutton1init(d[4].h,pt) ;
   d[5].t = (DIT *)malloc(sizeof(DIT));
   *d[5].t = t5;
   d[5].t->item = -1;
   d[6].t = (DIT *)malloc(sizeof(DIN));
-  AddSilencebutton2init(&b6,pt) ;
   *d[6].N = b6;
   d[6].N->item = -1;
+  AddSilencebutton2init(d[6].N,pt) ;
   d[7].t = (DIT *)malloc(sizeof(DIM));
   *d[7].m = m7;
   d[7].m->item = -1;
-  d[8].t = NULL;
+  d[8].t = (DIT *)malloc(sizeof(DIM));
+  *d[8].m = m8;
+  d[8].m->item = -1;
+  d[9].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
   while(d[j].t!=NULL){ kgAddtoGrp(D,GrpId,(void *)(d[j].t));j++;}
   return GrpId;
 } 
-
 /* One can also use the following code to add Widgets to an existing Dialog */
 
 int MakeAddSilenceGroup(DIALOG *D,void *arg) {

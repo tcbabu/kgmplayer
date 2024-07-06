@@ -4,13 +4,24 @@
 extern IMGS2VDATA is2vdata;
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int ScrFit=1;
-void Modifyimgs2vGc(Gclr *gc) {
+
+void Modifyimgs2vGc(void *Tmp) {
+   DIALOG *D;
+   Gclr *gc;
+   D = (DIALOG *)Tmp;
+   gc = &(D->gc);
 /*
 //  You may change default settings here 
 //  probably you can allow the user to create a config in $HOME
 //  and try to read that file (if exits); so dynamic configuration is possible
+   kgColorTheme(D,220,220,200);
+   kgColorTheme1(D,220,220,200);
+   kgColorTheme2(D,220,220,200);
+   kgDefaultGuiTheme(gc);
+   kgGrayGuiTheme(gc);
    gc->FontSize =8;
    gc->Font=23;
+   kgMkgclr("imgs2v",Tmp);
 */
 }
 int imgs2vGroup( DIALOG *D,void **v,void *pt) {
@@ -18,45 +29,45 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   DIA *d=NULL,*dtmp;
   DIM m0 = { 
     'm',
-    18,11,  
-    118,35,  
+    32,41,  
+    132,65,  
     -1,0  
   };
-  strncpy(m0.msg,(char *)"Input Images",499);
+  strncpy(m0.msg,(char *)"!w32!f21Image Files",499);
   strcpy(m0.Wid,(char *)"imgs2vWidget1");
   m0.item = -1;
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*3);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"Add");
+  strcpy(butn1[0].title,(char *)"!w32!f23Add");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
-  butn1[0].bkgr=-1;
+  butn1[0].bkgr=-240245255;
   butn1[0].butncode='';
   butn1[1].sw=1;
-  strcpy(butn1[1].title,(char *)"Del");
+  strcpy(butn1[1].title,(char *)"!w32!f23Delete");
   butn1[1].xpmn=NULL;
   butn1[1].xpmp=NULL;
   butn1[1].xpmh=NULL;
-  butn1[1].bkgr=-1;
+  butn1[1].bkgr=-240245255;
   butn1[1].butncode='';
   butn1[2].sw=1;
-  strcpy(butn1[2].title,(char *)"Reorder");
+  strcpy(butn1[2].title,(char *)"!w32!f23Reorder");
   butn1[2].xpmn=NULL;
   butn1[2].xpmp=NULL;
   butn1[2].xpmh=NULL;
-  butn1[2].bkgr=-1;
+  butn1[2].bkgr=-240245255;
   butn1[2].butncode='';
   DIN b1 = { 
     'n',
-    236,9,  
-    404,41,
+    227,30,  
+    457,64,
     2,2,  
-    48, 
-    22, 
+    72, 
+    24, 
     3,1, 
-    5,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn1, 
     imgs2vbutton1callback, /*  Callbak */
@@ -66,13 +77,13 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   b1.item = -1;
   DIX x2 = { 
     'x',
-    12,41,  
-    412,166,   
+    32,65,  
+    459,233,   
     10,2,  
-    358, 
+    180, 
     25, 
-    1,22, 
-    0,4, 
+    1,24, 
+    0,5, 
     (int *)v[0], 
     NULL, 
     NULL, 
@@ -89,15 +100,16 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   x2.item = -1;
   T_ELMT *e3  ; 
   e3 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e3[0].fmt = (char *)malloc(15);
-  strcpy(e3[0].fmt,(char *)"Video File%30s");
+  e3[0].fmt = (char *)malloc(5);
+  strcpy(e3[0].fmt,(char *)"%30s");
   e3[0].v=(void *)v[1];
   e3[0].sw=1;
   e3[0].noecho=0;
+  e3[0].img=NULL;
   DIT t3 = { 
     't',
-    3,167,  
-    411,199,
+    142,235,  
+    457,269,
     20, 
     1,1, 
     e3,
@@ -108,151 +120,165 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   t3.pt=NULL;
   t3.type = 0;
   t3.item = -1;
-  T_ELMT *e4  ; 
-  e4 =(T_ELMT *)malloc(sizeof(T_ELMT)*3);
-  e4[0].fmt = (char *)malloc(8);
-  strcpy(e4[0].fmt,(char *)"Xres%4d");
-  e4[0].v=(void *)v[2];
-  e4[0].sw=1;
-  e4[0].noecho=0;
-  e4[1].fmt = (char *)malloc(8);
-  strcpy(e4[1].fmt,(char *)"Yres%4d");
-  e4[1].v=(void *)v[3];
-  e4[1].sw=1;
-  e4[1].noecho=0;
-  e4[2].fmt = (char *)malloc(14);
-  strcpy(e4[2].fmt,(char *)"Image Time%3F");
-  e4[2].v=(void *)v[4];
-  e4[2].sw=1;
-  e4[2].noecho=0;
-  DIT t4 = { 
+  DIM m4 = { 
+    'm',
+    8,242,  
+    142,265,  
+    1,0  
+  };
+  strncpy(m4.msg,(char *)"!w32!f21Video Output File",499);
+  strcpy(m4.Wid,(char *)"imgs2vWidget5");
+  m4.item = -1;
+  T_ELMT *e5  ; 
+  e5 =(T_ELMT *)malloc(sizeof(T_ELMT)*3);
+  e5[0].fmt = (char *)malloc(10);
+  strcpy(e5[0].fmt,(char *)"Xres  %4d");
+  e5[0].v=(void *)v[2];
+  e5[0].sw=1;
+  e5[0].noecho=0;
+  e5[0].img=NULL;
+  e5[1].fmt = (char *)malloc(10);
+  strcpy(e5[1].fmt,(char *)"Yres  %4d");
+  e5[1].v=(void *)v[3];
+  e5[1].sw=1;
+  e5[1].noecho=0;
+  e5[1].img=NULL;
+  e5[2].fmt = (char *)malloc(14);
+  strcpy(e5[2].fmt,(char *)"Image Time%3F");
+  e5[2].v=(void *)v[4];
+  e5[2].sw=1;
+  e5[2].noecho=0;
+  e5[2].img=NULL;
+  DIT t5 = { 
     't',
-    7,197,  
-    415,228,
+    6,269,  
+    459,304,
     20, 
     3,1, 
-    e4,
+    e5,
     1,1,
-    NULL,imgs2vtextbox2callback,0,0,18,9 /* args,Call back */
+    NULL,imgs2vtextbox2callback,0,0,28,20 /* args,Call back */
   };
-  strcpy(t4.Wid,(char *)"OptionsWidget");
-  t4.pt=NULL;
-  t4.type = 0;
-  t4.item = -1;
-  char *menu5[]  = { 
-    (char *)"Yes",
-    (char *)"No",
+  strcpy(t5.Wid,(char *)"OptionsWidget");
+  t5.pt=NULL;
+  t5.type = 0;
+  t5.item = -1;
+  char *menu6[]  = { 
+    (char *)"!w32!f21Yes",
+    (char *)"!w32!f21No",
     NULL 
   };
   ThumbNail **th0 ;
-  DIRA r5 = { 
+  DIRA r6 = { 
     'r',
-    124,233,  
-    282,260,   
+    214,309,  
+    458,344,   
     8,0,  
-    50, 
+    90, 
     25, 
     1,2, 
-    -1800891242,1, 
+    32584,1, 
     (int *)v[5], 
     NULL, 
     NULL ,
     NULL,imgs2vbrowser2callback, /* *args, callback */
-    1,  /* Border Offset  */
-     3,  /* Scroll width  */
+    4,  /* Border Offset  */
+     22,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
     1, /* bordr */
     0, /* bkgr */
     0  /* =1 hide  */
    };
-  th0 = (ThumbNail **)kgStringToThumbNails((char **)menu5);
-  r5.list=(void **)th0;
-  strcpy(r5.Wid,(char *)"FitWidget");
-  r5.item = -1;
-  DIM m6 = { 
+  th0 = (ThumbNail **)kgStringToThumbNails((char **)menu6);
+  r6.list=(void **)th0;
+  strcpy(r6.Wid,(char *)"FitWidget");
+  r6.item = -1;
+  DIM m7 = { 
     'm',
-    21,232,  
-    126,260,  
+    9,316,  
+    216,339,  
     1,0  
   };
-  strncpy(m6.msg,(char *)"Cover Full Frame",499);
-  strcpy(m6.Wid,(char *)"imgs2vWidget8");
-  m6.item = -1;
-  BUT_STR  *butn7=NULL; 
-  butn7= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
-  butn7[0].sw=1;
-  strcpy(butn7[0].title,(char *)"Create");
-  butn7[0].xpmn=NULL;
-  butn7[0].xpmp=NULL;
-  butn7[0].xpmh=NULL;
-  butn7[0].bkgr=-107226121;
-  butn7[0].butncode='';
-  butn7[1].sw=1;
-  strcpy(butn7[1].title,(char *)"Clear");
-  butn7[1].xpmn=NULL;
-  butn7[1].xpmp=NULL;
-  butn7[1].xpmh=NULL;
-  butn7[1].bkgr=-255162162;
-  butn7[1].butncode='';
-  DIL h7 = { 
+  strncpy(m7.msg,(char *)"!w32!f21Cover Full Frame",499);
+  strcpy(m7.Wid,(char *)"imgs2vWidget8");
+  m7.item = -1;
+  BUT_STR  *butn8=NULL; 
+  butn8= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
+  butn8[0].sw=1;
+  strcpy(butn8[0].title,(char *)"!w32!f23Create");
+  butn8[0].xpmn=NULL;
+  butn8[0].xpmp=NULL;
+  butn8[0].xpmh=NULL;
+  butn8[0].bkgr=-235255250;
+  butn8[0].butncode='';
+  butn8[1].sw=1;
+  strcpy(butn8[1].title,(char *)"!c12!w32!f23Clear");
+  butn8[1].xpmn=NULL;
+  butn8[1].xpmp=NULL;
+  butn8[1].xpmh=NULL;
+  butn8[1].bkgr=-142142142;
+  butn8[1].butncode='';
+  DIL h8 = { 
     'h',
-    277,229,  
-    417,262,
+    160,360,  
+    316,393,
     2,0,  
-    64, 
+    72, 
     25, 
     2,1, 
-    2,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
-    butn7, 
+    butn8, 
     imgs2vsplbutton1callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(h7.Wid,(char *)"imgs2vWidget9");
-  h7.item = -1;
+  strcpy(h8.Wid,(char *)"imgs2vWidget9");
+  h8.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+9));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+10));
   d =dtmp+i; 
-  d[8].t=NULL;
+  d[9].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIM));
   *d[0].m = m0;
   d[0].m->item = -1;
   d[1].t = (DIT *)malloc(sizeof(DIN));
-  imgs2vbutton1init(&b1,pt) ;
   *d[1].N = b1;
   d[1].N->item = -1;
+  imgs2vbutton1init(d[1].N,pt) ;
   d[2].t = (DIT *)malloc(sizeof(DIX));
-  imgs2vbrowser1init(&x2,pt) ;
   *d[2].x = x2;
   d[2].x->item = -1;
+  imgs2vbrowser1init(d[2].x,pt) ;
   d[3].t = (DIT *)malloc(sizeof(DIT));
   *d[3].t = t3;
   d[3].t->item = -1;
-  d[4].t = (DIT *)malloc(sizeof(DIT));
-  *d[4].t = t4;
-  d[4].t->item = -1;
-  d[5].t = (DIT *)malloc(sizeof(DIRA));
-  imgs2vbrowser2init(&r5,pt) ;
-  *d[5].r = r5;
-  d[5].r->item = -1;
-  d[6].t = (DIT *)malloc(sizeof(DIM));
-  *d[6].m = m6;
-  d[6].m->item = -1;
-  d[7].t = (DIT *)malloc(sizeof(DIL));
-  imgs2vsplbutton1init(&h7,pt) ;
-  *d[7].h = h7;
-  d[7].h->item = -1;
-  d[8].t = NULL;
+  d[4].t = (DIT *)malloc(sizeof(DIM));
+  *d[4].m = m4;
+  d[4].m->item = -1;
+  d[5].t = (DIT *)malloc(sizeof(DIT));
+  *d[5].t = t5;
+  d[5].t->item = -1;
+  d[6].t = (DIT *)malloc(sizeof(DIRA));
+  *d[6].r = r6;
+  d[6].r->item = -1;
+  imgs2vbrowser2init(d[6].r,pt) ;
+  d[7].t = (DIT *)malloc(sizeof(DIM));
+  *d[7].m = m7;
+  d[7].m->item = -1;
+  d[8].t = (DIT *)malloc(sizeof(DIL));
+  *d[8].h = h8;
+  d[8].h->item = -1;
+  imgs2vsplbutton1init(d[8].h,pt) ;
+  d[9].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
   while(d[j].t!=NULL){ kgAddtoGrp(D,GrpId,(void *)(d[j].t));j++;}
   return GrpId;
 } 
-
 /* One can also use the following code to add Widgets to an existing Dialog */
 
 int Makeimgs2vGroup(DIALOG *D,void *arg) {
