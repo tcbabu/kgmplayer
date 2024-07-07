@@ -45,7 +45,7 @@ int SetGrpVis(DIALOG *Tmp,TOOLGRP *T,int item) {
 }
 int ResetGrpVis(void *Tmp) {
   int k,id;
-  DIRA *ToolsBox = (DIRA *)kgGetNamedWidget(Tmp,"ToolsBox");
+  DIX *ToolsBox = (DIX *)kgGetNamedWidget(Tmp,"ToolsBox");
   TOOLGRP *T = ToolList;
   kgSetGrpVisibility(Tmp,HelpButnGrp,0);
   k=0;
@@ -66,12 +66,12 @@ int  ToolBoxbrowser1callback(int item,int i,void *Tmp) {
     i :  Index of Widget  (0 to max_widgets-1) 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
-  DIRA *R;DIALOG *D;void *pt; 
+  DIX *R;DIALOG *D;void *pt; 
   ThumbNail **th; 
   int ret=1; 
   D = (DIALOG *)Tmp;
   pt = D->pt;
-  R = (DIRA *)kgGetWidget(Tmp,i);
+  R = (DIX *)kgGetWidget(Tmp,i);
   th = (ThumbNail **) R->list;
   Tools=item -1;
 #ifdef D_HELPGRP
@@ -111,7 +111,7 @@ int  ToolBoxbrowser1callback(int item,int i,void *Tmp) {
   kgUpdateOn(D);
   return ret;
 }
-void  ToolBoxbrowser1init(DIRA *R,void *pt) {
+void  ToolBoxbrowser1init(DIX *X,void *pt) {
 }
 int  ToolBoxsplbutton1callback(int butno,int i,void *Tmp) {
   /*********************************** 
