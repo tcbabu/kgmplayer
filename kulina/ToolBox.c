@@ -180,9 +180,9 @@ char **GetMenuList(TOOLGRP *T) {
   while(T[k++].MakeGroup != NULL);
   k += 2;
   Ostrs = (char **)malloc(sizeof(char *)*(k));
-  Ostrs[0] = kgCopyString("!w32!f23Select Action ");
-  j=1;
-  while(T[j-1].MakeGroup != NULL) {Ostrs[j] = kgCopyString(T[j-1].disc);j++;}
+//  Ostrs[0] = kgCopyString("!w32!f23Select Action ");
+  j=0;
+  while(T[j].MakeGroup != NULL) {Ostrs[j] = kgCopyString(T[j].disc);j++;}
   Ostrs[j]=NULL;
   return Ostrs;
 }
@@ -209,36 +209,47 @@ int InitConvertData(CONVDATA *cnd) {
   cnd->Vlist=NULL;
   cnd->Alist=NULL;
 }
-void ModifyToolBoxGc(Gclr *gc) {
+
+void ModifyToolBoxGc(void *Tmp) {
+   DIALOG *D;
+   Gclr *gc;
+   D = (DIALOG *)Tmp;
+   gc = &(D->gc);
 /*
 //  You may change default settings here 
 //  probably you can allow the user to create a config in $HOME
 //  and try to read that file (if exits); so dynamic configuration is possible
+   kgColorTheme(D,220,220,200);
+   kgColorTheme1(D,220,220,200);
+   kgColorTheme2(D,220,220,200);
+   kgDefaultGuiTheme(gc);
+   kgGrayGuiTheme(gc);
    gc->FontSize =8;
    gc->Font=23;
+   kgMkgclr("ToolBox",Tmp);
 */
 }
 int ToolBoxGroup( DIALOG *D,void **v,void *pt) {
   int GrpId=0,oitems=0,i,j;
   DIA *d=NULL,*dtmp;
-  char **menu0 = NULL;
+  char **menu0=NULL;
   ThumbNail **th0 ;
-  DIRA r0 = { 
-    'r',
-    7,2,  
-    340,440,   
+  DICH c0 = { 
+    'c',
+    10,10,  
+    344,445,   
     8,0,  
-    340, 
+    292, 
     35, 
-    1,6, 
-    0,6, 
+    1,4, 
+    0,4, 
     (int *)v[0], 
     NULL, 
-    NULL ,
+    NULL, 
     NULL,ToolBoxbrowser1callback, /* *args, callback */
-    2,  /* Border Offset  */
+    6,  /* Border Offset  */
      22,  /* Scroll width  */
-     0,  /* Type  */
+     1,  /* Type  */
      0, /* item highlight */
     1, /* bordr */
     0, /* bkgr */
@@ -246,29 +257,27 @@ int ToolBoxGroup( DIALOG *D,void **v,void *pt) {
    };
   menu0 = GetMenuList(ToolList);
   th0 = (ThumbNail **)kgStringToThumbNails((char **)menu0);
-  r0.list=(void **)th0;
-  strcpy(r0.Wid,(char *)"ToolsBox");
-  r0.item = -1;
+  c0.list=(void **)th0;
+  strcpy(c0.Wid,(char *)"ToolsBox");
+  c0.item = -1;
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"!c03!w32!f23Done");
+  strcpy(butn1[0].title,(char *)"!w32!f23Done");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
-  butn1[0].bkgr=-245255245;
+  butn1[0].bkgr=-235255250;
   butn1[0].butncode='';
   DIL h1 = { 
     'h',
-//    51,240,  
-//    145,270,
-    1,444,  
-    95,472,
+    3,447,  
+    85,480,
     2,0,  
-    84, 
+    72, 
     25, 
     1,1, 
-    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn1, 
     ToolBoxsplbutton1callback, /*  Callbak */
@@ -282,14 +291,14 @@ int ToolBoxGroup( DIALOG *D,void **v,void *pt) {
   dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+3));
   d =dtmp+i; 
   d[2].t=NULL;
-  d[0].t = (DIT *)malloc(sizeof(DIRA));
-  ToolBoxbrowser1init(&r0,pt) ;
-  *d[0].r = r0;
-  d[0].r->item = -1;
+  d[0].t = (DIT *)malloc(sizeof(DICH));
+  *d[0].c = c0;
+  d[0].c->item = -1;
+  ToolBoxbrowser1init(d[0].c,pt) ;
   d[1].t = (DIT *)malloc(sizeof(DIL));
-  ToolBoxsplbutton1init(&h1,pt) ;
   *d[1].h = h1;
   d[1].h->item = -1;
+  ToolBoxsplbutton1init(d[1].h,pt) ;
   d[2].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
@@ -297,7 +306,6 @@ int ToolBoxGroup( DIALOG *D,void **v,void *pt) {
   while(d[j].t!=NULL){ kgAddtoGrp(D,GrpId,(void *)(d[j].t));j++;}
   return GrpId;
 } 
-
 /* One can also use the following code to add Widgets to an existing Dialog */
 
 int MakeToolBoxGroup(DIALOG *D,void *arg) {

@@ -3,13 +3,24 @@
 #include "ConvertData.h"
 extern CONVDATA cndata;
 extern int AConGrp,RangeGrp,EnVoGrp,VConGrp,VaspGrp,VsizeGrp,VrangeGrp;
-void ModifyVrangeGc(Gclr *gc) {
+
+void ModifyVrangeGc(void *Tmp) {
+   DIALOG *D;
+   Gclr *gc;
+   D = (DIALOG *)Tmp;
+   gc = &(D->gc);
 /*
 //  You may change default settings here 
 //  probably you can allow the user to create a config in $HOME
 //  and try to read that file (if exits); so dynamic configuration is possible
+   kgColorTheme(D,220,220,200);
+   kgColorTheme1(D,220,220,200);
+   kgColorTheme2(D,220,220,200);
+   kgDefaultGuiTheme(gc);
+   kgGrayGuiTheme(gc);
    gc->FontSize =8;
    gc->Font=23;
+   kgMkgclr("Vrange",Tmp);
 */
 }
 int VrangeGroup( DIALOG *D,void **v,void *pt) {
@@ -17,17 +28,16 @@ int VrangeGroup( DIALOG *D,void **v,void *pt) {
   DIA *d=NULL,*dtmp;
   T_ELMT *e0  ; 
   e0 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e0[0].fmt = (char *)malloc(9);
-  strcpy(e0[0].fmt,(char *)"Start%8F");
+  e0[0].fmt = (char *)malloc(4);
+  strcpy(e0[0].fmt,(char *)"%8F");
   e0[0].v=(void *)v[0];
   e0[0].sw=1;
   e0[0].noecho=0;
+  e0[0].img=NULL;
   DIT t0 = { 
     't',
-//    146,204,  
-//    316,238,
-    10,10,
-    180,44,
+    162,41,  
+    279,75,
     20, 
     1,1, 
     e0,
@@ -40,16 +50,16 @@ int VrangeGroup( DIALOG *D,void **v,void *pt) {
   t0.item = -1;
   T_ELMT *e1  ; 
   e1 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e1[0].fmt = (char *)malloc(7);
-  strcpy(e1[0].fmt,(char *)"End%8F");
+  e1[0].fmt = (char *)malloc(4);
+  strcpy(e1[0].fmt,(char *)"%8F");
   e1[0].v=(void *)v[1];
   e1[0].sw=1;
+  e1[0].noecho=0;
+  e1[0].img=NULL;
   DIT t1 = { 
     't',
-//    317,204,  
-//    469,238,
-    181,10,
-    351,44,
+    280,41,  
+    397,75,
     20, 
     1,1, 
     e1,
@@ -60,26 +70,49 @@ int VrangeGroup( DIALOG *D,void **v,void *pt) {
   t1.pt=NULL;
   t1.type = 0;
   t1.item = -1;
+  DIM m2 = { 
+    'm',
+    67,46,  
+    167,70,  
+    1,0  
+  };
+  strncpy(m2.msg,(char *)"!w32!f21Start",499);
+  strcpy(m2.Wid,(char *)"VRangeWidget3");
+  m2.item = -1;
+  DIM m3 = { 
+    'm',
+    398,45,  
+    498,69,  
+    -1,0  
+  };
+  strncpy(m3.msg,(char *)"!w32!f21End",499);
+  strcpy(m3.Wid,(char *)"VRangeWidget4");
+  m3.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+3));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+5));
   d =dtmp+i; 
-  d[2].t=NULL;
+  d[4].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
   d[1].t = (DIT *)malloc(sizeof(DIT));
   *d[1].t = t1;
   d[1].t->item = -1;
-  d[2].t = NULL;
+  d[2].t = (DIT *)malloc(sizeof(DIM));
+  *d[2].m = m2;
+  d[2].m->item = -1;
+  d[3].t = (DIT *)malloc(sizeof(DIM));
+  *d[3].m = m3;
+  d[3].m->item = -1;
+  d[4].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
   while(d[j].t!=NULL){ kgAddtoGrp(D,GrpId,(void *)(d[j].t));j++;}
   return GrpId;
 } 
-
 /* One can also use the following code to add Widgets to an existing Dialog */
 
 int MakeVrangeGroup(DIALOG *D,void *arg) {

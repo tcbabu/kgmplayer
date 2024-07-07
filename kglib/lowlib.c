@@ -10205,7 +10205,7 @@ void uiMakeEbrowserImages(DIE *w,int lng) {
 #else
    w->imgs= (void **) uiMenuStringImages(D,w->menu,
                  lng,w->width,D->gc.MenuFont,D->gc.menu_char,
-                 D->gc.FontSize,-1,8);
+                 D->gc.FontSize,-1,2);
 #endif
    return;
 }
@@ -11001,10 +11001,10 @@ int _uiMake_Y(DIY *y)
     n++;
    }
    y->nitems=n;
-   if(*(y->df) < 1) *(y->df)=1;
+   if(*(y->df) < 1) *(y->df)=0;
    if(*(y->df) >n)  *(y->df)=n;
    df =*(y->df)-1;
-   if((((y->type)%10)!=0)&&(menu!=NULL)&&(menu[0]!=NULL)) menu[df]->sw=1;
+   if((((y->type)%10)!=0)&&(menu!=NULL)&&(menu[0]!=NULL)&&(df>=0)) menu[df]->sw=1;
    n=0;
 #if 0
    y->nx = (y->x2 -y->x1-2*y->offset-y->w)/(y->width+y->xgap);
@@ -11304,11 +11304,11 @@ int _uiMake_X(DIX *y)
      n++;
    }
    y->nitems=n;
-   if(*(y->df) < 1) *(y->df)=1;
+   if(*(y->df) < 1) *(y->df)=0;
    if(*(y->df) >n)  *(y->df)=n;
 //   y->nx = 1;
    df =*(y->df)-1;
-   if((((y->type)%10)!=0)&&(menu!=NULL)&&(menu[0]!=NULL)) menu[df]->sw=1;
+   if((((y->type)%10)!=0)&&(menu!=NULL)&&(menu[0]!=NULL)&&(df>= 0)) menu[df]->sw=1;
    bwsr = (BRW_STR *)y->bwsr;
    bwsr->D= (DIALOG*)D; 
    bwsr->x1 =y->x1+x1;
@@ -13565,10 +13565,31 @@ void _ui_cleantablecursor (TX_STR *tx) {
 //  uiDefaultGuiFontSize(D);
   return;
 }
+static int GetStrlen(char *s) {
+	int i=0;
+	int ch;
+	int ln =0;
+	while((ch=s[i])!='\0') {
+		if(ch=='!') {
+	          i++;
+		  switch(s[i]) {
+			  case '!': i++;ln++; break;
+		          case 'g': i++; break;
+		          case '\0':  break;
+		          default : i = i+3;
+
+		  }
+		}
+		else {ln++;i++;}
+	}
+	return ln;
+}
 static int Size(char *t)
  {
    int j=0,lng=0;
-   lng =  strlen(t+j)*9;
+//   lng =  strlen(t+j)*9;
+   lng =  GetStrlen(t+j)*9;
+   lng = lng*1.0;
    if(lng != 0) lng +=(8);
    return ( lng);
  }
@@ -13611,7 +13632,7 @@ int _ui_drawtextbox (DIALOG *D,DIT *T) {
 #else
 // TCB as on 25/9/12 may need further checking
      size=get_t_item_size(elmt[k].fmt);
-     l = strlen(elmt[k].df);
+     l = GetStrlen(elmt[k].df);
      if(l>size){
        elmt[k].startchar=l-size;
        l=size;
@@ -13702,7 +13723,7 @@ int _ui_drawtextbox (DIALOG *D,DIT *T) {
          int ln,i;
          uiSetNoechoFontSize(D,D->gc.InputFontSize/2);
          str = elmt[k].df+elmt[k].startchar;
-         ln = strlen(str)+1;
+         ln = GetStrlen(str)+1;
          stars= (char *)Malloc(sizeof(char)*ln);
          for(i=0;i<(ln-1);i++){
            if(str[i]>' ') stars[i]='l';

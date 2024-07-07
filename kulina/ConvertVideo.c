@@ -23,6 +23,7 @@ void ModifyConvertVideoGc(void *Tmp) {
    kgMkgclr("ConvertVideo",Tmp);
 */
 }
+
 int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   int GrpId=0,oitems=0,i,j;
   DIA *d=NULL,*dtmp;
@@ -36,8 +37,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   e0[0].img=NULL;
   DIT t0 = { 
     't',
-    7,25,  
-    398,59,
+    76,28,  
+    400,63,
     20, 
     1,1, 
     e0,
@@ -59,8 +60,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].butncode='';
   DIN b1 = { 
     'n',
-    397,25,  
-    481,59,
+    396,27,  
+    480,61,
     2,2,  
     74, 
     24, 
@@ -83,8 +84,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   e2[0].img=NULL;
   DIT t2 = { 
     't',
-    17,68,  
-    466,102,
+    24,69,  
+    400,103,
     20, 
     1,1, 
     e2,
@@ -104,8 +105,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   ThumbNail **th0 ;
   DIRA r3 = { 
     'r',
-    107,122,  
-    482,159,   
+    105,122,  
+    480,159,   
     8,0,  
     95, 
     25, 
@@ -144,8 +145,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   ThumbNail **th1 ;
   DIRA r5 = { 
     'r',
-    146,172,  
-    438,209,   
+    150,172,  
+    442,209,   
     8,0,  
     95, 
     25, 
@@ -169,8 +170,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   r5.item = -1;
   DIM m6 = { 
     'm',
-    48,178,  
-    148,202,  
+    50,178,  
+    150,202,  
     1,0  
   };
   strncpy(m6.msg,(char *)"!w32!f23Aspect Ratio",499);
@@ -184,8 +185,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   ThumbNail **th2 ;
   DIRA r7 = { 
     'r',
-    146,218,  
-    431,260,   
+    150,218,  
+    435,260,   
     8,0,  
     95, 
     25, 
@@ -209,8 +210,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   r7.item = -1;
   DIM m8 = { 
     'm',
-    51,227,  
-    151,251,  
+    50,227,  
+    150,251,  
     1,0  
   };
   strncpy(m8.msg,(char *)"!w32!f23Scale",499);
@@ -249,8 +250,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   ThumbNail **th3 ;
   DIRA r10 = { 
     'r',
-    146,263,  
-    396,308,   
+    150,263,  
+    400,308,   
     8,0,  
     95, 
     25, 
@@ -274,8 +275,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   r10.item = -1;
   DIM m11 = { 
     'm',
-    52,272,  
-    152,296,  
+    50,272,  
+    150,296,  
     1,0  
   };
   strncpy(m11.msg,(char *)"!w32!f23Range",499);
@@ -283,8 +284,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   m11.item = -1;
   DIM m12 = { 
     'm',
-    108,307,  
-    437,321,  
+    106,307,  
+    435,321,  
     0,0  
   };
   strncpy(m12.msg,(char *)"!w32!f21!c01(Note: Play and Stop to detemine range in secs)",499);
@@ -348,7 +349,6 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   while(d[j].t!=NULL){ kgAddtoGrp(D,GrpId,(void *)(d[j].t));j++;}
   return GrpId;
 } 
-
 /* One can also use the following code to add Widgets to an existing Dialog */
 
 int MakeConvertVideoGroup(DIALOG *D,void *arg) {

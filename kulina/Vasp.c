@@ -18,14 +18,14 @@ int VaspGroup( DIALOG *D,void **v,void *pt) {
   T_ELMT *e0  ; 
   e0 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e0[0].fmt = (char *)malloc(7);
-  strcpy(e0[0].fmt,(char *)"Val%8F");
+  strcpy(e0[0].fmt,(char *)"!w32!f23Val%4F");
   e0[0].v=(void *)v[0];
   e0[0].sw=1;
   e0[0].noecho=0;
   DIT t0 = { 
     't',
-    454,117,  
-    576,147,
+    614,207,  
+    766,237,
     20, 
     1,1, 
     e0,
