@@ -180,9 +180,9 @@ char **GetMenuList(TOOLGRP *T) {
   while(T[k++].MakeGroup != NULL);
   k += 2;
   Ostrs = (char **)malloc(sizeof(char *)*(k));
-  Ostrs[0] = kgCopyString("!w32!f23Select Action ");
-  j=1;
-  while(T[j-1].MakeGroup != NULL) {Ostrs[j] = kgCopyString(T[j-1].disc);j++;}
+//  Ostrs[0] = kgCopyString("!w32!f23Select Action ");
+  j=0;
+  while(T[j].MakeGroup != NULL) {Ostrs[j] = kgCopyString(T[j].disc);j++;}
   Ostrs[j]=NULL;
   return Ostrs;
 }
@@ -232,18 +232,17 @@ void ModifyToolBoxGc(void *Tmp) {
 int ToolBoxGroup( DIALOG *D,void **v,void *pt) {
   int GrpId=0,oitems=0,i,j;
   DIA *d=NULL,*dtmp;
-  char **menu0 = NULL;
+  char **menu0=NULL;
   ThumbNail **th0 ;
-
-  DIX x0 = { 
-    'x',
-    5,8,  
-    345,440,   
-    10,2,  
-    298, 
-    45, 
-    1,9812683, 
-    32560,8, 
+  DICH c0 = { 
+    'c',
+    10,10,  
+    344,445,   
+    8,0,  
+    292, 
+    35, 
+    1,4, 
+    0,4, 
     (int *)v[0], 
     NULL, 
     NULL, 
@@ -252,15 +251,15 @@ int ToolBoxGroup( DIALOG *D,void **v,void *pt) {
      22,  /* Scroll width  */
      1,  /* Type  */
      0, /* item highlight */
-    0, /* bordr */
+    1, /* bordr */
     0, /* bkgr */
     0  /* =1 hide  */
    };
   menu0 = GetMenuList(ToolList);
   th0 = (ThumbNail **)kgStringToThumbNails((char **)menu0);
-  x0.list=(void **)th0;
-  strcpy(x0.Wid,(char *)"ToolsBox");
-  x0.item = -1;
+  c0.list=(void **)th0;
+  strcpy(c0.Wid,(char *)"ToolsBox");
+  c0.item = -1;
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn1[0].sw=1;
@@ -292,10 +291,10 @@ int ToolBoxGroup( DIALOG *D,void **v,void *pt) {
   dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+3));
   d =dtmp+i; 
   d[2].t=NULL;
-  d[0].t = (DIT *)malloc(sizeof(DIX));
-  *d[0].x = x0;
-  d[0].x->item = -1;
-  ToolBoxbrowser1init(d[0].x,pt) ;
+  d[0].t = (DIT *)malloc(sizeof(DICH));
+  *d[0].c = c0;
+  d[0].c->item = -1;
+  ToolBoxbrowser1init(d[0].c,pt) ;
   d[1].t = (DIT *)malloc(sizeof(DIL));
   *d[1].h = h1;
   d[1].h->item = -1;

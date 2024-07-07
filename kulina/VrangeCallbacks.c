@@ -1,7 +1,4 @@
 #include <kulina.h>
-#include "ConvertData.h"
-extern CONVDATA cndata;
-extern int AConGrp,RangeGrp,EnVoGrp,VConGrp,VaspGrp,VsizeGrp,VrangeGrp;
 int  Vrangetextbox1callback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
@@ -14,7 +11,6 @@ int  Vrangetextbox1callback(int cellno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   T = (DIT *)kgGetWidget(Tmp,i);
   e = T->elmt;
-  cndata.VStartSec = kgGetDouble(T,0);
   return ret;
 }
 int  Vrangetextbox2callback(int cellno,int i,void *Tmp) {
@@ -29,7 +25,6 @@ int  Vrangetextbox2callback(int cellno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   T = (DIT *)kgGetWidget(Tmp,i);
   e = T->elmt;
-  cndata.VEndSec = kgGetDouble(T,0);
   return ret;
 }
 int Vrangeinit(void *Tmp) {
@@ -54,6 +49,19 @@ int Vrangecleanup(void *Tmp) {
   pt = D->pt;
   return ret;
 }
+int ModifyVrange(void *Tmp,int GrpId) {
+  DIALOG *D;
+  D = (DIALOG *)Tmp;
+  DIA *d;
+  int i,n;
+  d = D->d;
+  i=0;while(d[i].t!= NULL) {;
+     i++;
+  };
+  n=1;
+  return GrpId;
+}
+
 int VrangeCallBack(void *Tmp,void *tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  

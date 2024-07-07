@@ -10251,7 +10251,7 @@ void uiMakeYImages(DIY *w) {
 #else
    w->imgs= (void **) uiMenuNailImages(D,menu,
                  lng,width,D->gc.MsgFont,D->gc.twin_char,
-                 D->gc.FontSize,0,4);
+                 D->gc.FontSize,0,8);
 #endif
    return;
 }
@@ -10277,7 +10277,7 @@ void uiMakeXImages(DIX *w,int lng) {
    DIALOG *D;
    D = w->D;
    TextQua=(w->type/10);
-   Mag = 2;
+   Mag = 8;
    if(TextQua) Mag=8;
    
    if(w->imgs != NULL) {
