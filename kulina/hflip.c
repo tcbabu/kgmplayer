@@ -82,11 +82,11 @@ int hflipGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn3=NULL; 
   butn3= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn3[0].sw=1;
-  strcpy(butn3[0].title,(char *)"Do it");
+  strcpy(butn3[0].title,(char *)"!w32!f23Do it");
   butn3[0].xpmn=NULL;
   butn3[0].xpmp=NULL;
   butn3[0].xpmh=NULL;
-  butn3[0].bkgr=-1;
+  butn3[0].bkgr=-235255250;
   butn3[0].butncode='';
   DIL h3 = { 
     'h',
@@ -96,7 +96,7 @@ int hflipGroup( DIALOG *D,void **v,void *pt) {
     72, 
     25, 
     1,1, 
-    2,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    5,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn3, 
     hflipsplbutton1callback, /*  Callbak */

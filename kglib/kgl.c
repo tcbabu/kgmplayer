@@ -13288,7 +13288,7 @@ void *kgPressedRectangle(int width,int height,int fillclr,float rfac) {
   if(height<100) small=1;
   fid = kgInitImage(width,height,RESIZE);
    if(fid != NULL ) {
-      kgUserFrame(fid,-3.0,-3.0,(float)l+3,(float)w+3);
+      kgUserFrame(fid,-0.5,-0.5,(float)l+0.5,(float)w+0.5);
       if(fillclr>0)
           kgGetRGB((DIG *)fid,fillclr,&r,&g,&b);
       else {
@@ -13298,22 +13298,26 @@ void *kgPressedRectangle(int width,int height,int fillclr,float rfac) {
          r = fillclr;
       }
       RGBtoHSV((float)r,(float)g,(float)b,&h,&s,&v);
-      Vb = 1.5*v;
+      Vb = 2.0*v;
       if(Vb >1.) Vb=1.;
       HSVtoRGB(&rf,&gf,&bf,h,s,Vb);
-      kgChangeColor(fid,252,(int)rf,(int)gf,(int)bf);
-      HSVtoRGB(&rf,&gf,&bf,h,s,0.4*v);
       kgChangeColor(fid,253,(int)rf,(int)gf,(int)bf);
+      HSVtoRGB(&rf,&gf,&bf,h,s,0.7*Vb);
+      kgChangeColor(fid,252,(int)rf,(int)gf,(int)bf);
       kgChangeColor(fid,251,(int)r,(int)g,(int)b);
       if(small) {
-      kgSmallRectangleFill(fid,xo,yo,(float)l+2,(float)w+2,0,252,rfac);
-      kgSmallRectangleFill(fid,xo,yo,(float)l+1,(float)w+1,0,253,rfac);
-      kgSmallRectangleFill(fid,xo,yo,(float)l,(float)w,0,251,rfac);
+      kgSmallRectangleFill(fid,xo,yo,(float)l,(float)w,0,252,rfac);
+      kgSmallRectangleFill(fid,xo,yo,(float)l-1.5,(float)w-1.5,0,253,rfac);
+      kgSmallRectangleFill(fid,xo,yo,(float)l-1.0,(float)w-1.0,0,253,rfac);
+      kgSmallRectangleFill(fid,xo,yo,(float)l-0.5,(float)w-0.5,0,253,rfac);
+      kgSmallRectangleFill(fid,xo,yo,(float)l-2,(float)w-2,0,251,rfac);
       }
       else {
-      kgRoundedRectangleFill(fid,xo,yo,(float)l+2,(float)w+2,0,252,rfac);
-      kgRoundedRectangleFill(fid,xo,yo,(float)l+1,(float)w+1,0,253,rfac);
-      kgRoundedRectangleFill(fid,xo,yo,(float)l,(float)w,0,251,rfac);
+      kgSmallRectangleFill(fid,xo,yo,(float)l,(float)w,0,252,rfac);
+      kgSmallRectangleFill(fid,xo,yo,(float)l-1.5,(float)w-1.5,0,253,rfac);
+      kgSmallRectangleFill(fid,xo,yo,(float)l-1.0,(float)w-1.0,0,253,rfac);
+      kgSmallRectangleFill(fid,xo,yo,(float)l-0.5,(float)w-0.5,0,253,rfac);
+      kgSmallRectangleFill(fid,xo,yo,(float)l-2,(float)w-2,0,251,rfac);
       }
 //      kgRoundedRectangle(fid,xo,yo,(float)l,(float)w,bodrclr,0.5,1);
 //      img=kgGetSharpImage(fid);
