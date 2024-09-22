@@ -7,7 +7,7 @@ static int RED=120,GREEN=125,BLUE=115;
 static int Btype=1;
 
 static char BUFF[100];
-static char Sfac[10]="53";
+static char Sfac[10]="54";
 static int Bfont=16,Bclr=0;
 static int FillClr=101;
 static float Btrans=0.1;
@@ -1414,8 +1414,8 @@ int kgMakeKeybrd0(DIALOG *D,int Bx,int By,int Xg,int Yg,int Vis,int btype,int bf
    Kbrd->trans = transparency;
    Btrans = transparency;
    ButClr = ConvertColor(butclr,82);
-   if (By<30) strcpy(Kbrd->Sfac,"11");
-   else if(By < 42) strcpy(Kbrd->Sfac,"54");
+   if (By<30) strcpy(Kbrd->Sfac,"12");
+   else if(By < 42) strcpy(Kbrd->Sfac,"11");
         else strncpy(Kbrd->Sfac,Sfac,3);
    Kbrd->Sfac[2]='\0';
    Kbrd->Bclr = Bclr;

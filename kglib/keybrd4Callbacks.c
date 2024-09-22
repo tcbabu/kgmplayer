@@ -139,23 +139,28 @@ static char *kgButtonTitle1(char * str,void *pt,char *ustr) {
   KEYBRD *Kbrd;
   Kbrd = (KEYBRD *)pt;
 //  sprintf(BUFF,"!h15!d!h51!z%-s!f%2.2d!c%2.2d%-s!g !c%2.2d!z23!u%-s",Kbrd->Sfac,Kbrd->Bfont,Kbrd->Bclr,str,Kbrd->FillClr,ustr);
-  sprintf(BUFF,"!h15!d!h51!z%-s!f%2.2d!c%2.2d%-s!g !c%2.2d!z23!u%-s",Kbrd->Sfac,Kbrd->Bfont,Kbrd->Bclr,str,Kbrd->Bclr,ustr);
+  sprintf(BUFF,"!z%-s!f%2.2d!c%2.2d%-s!c%2.2d!u %-s",Kbrd->Sfac,Kbrd->Bfont,Kbrd->Bclr,str,Kbrd->Bclr,ustr);
 //  printf("%s\n",BUFF);
   return BUFF;
 }
 static char *Procpy1(char *des,char *src,void *pt,char *ustr) {
    strcpy(des,kgButtonTitle1(src,pt,ustr));
+//   strcpy(des,src);
+//   strcat(des,"!u ");
+//   strcat(des,ustr);
    return des;
 }
 static char *kgButtonTitle(char * str,void *pt) {
   KEYBRD *Kbrd;
   Kbrd = (KEYBRD *)pt;
-  sprintf(BUFF,"!h15!d!h51!z%-s!f%2.2d!c%2.2d%-s!g !g",Kbrd->Sfac,Kbrd->Bfont,Kbrd->Bclr,str);
+//  sprintf(BUFF,"!h15!d!h51!z%-s!f%2.2d!c%2.2d%-s!g !g",Kbrd->Sfac,Kbrd->Bfont,Kbrd->Bclr,str);
+  sprintf(BUFF,"!z%-s!f%2.2d!c%2.2d %-s!g !g",Kbrd->Sfac,Kbrd->Bfont,Kbrd->Bclr,str);
 //  printf("%s\n",BUFF);
   return BUFF;
 }
 static char *Procpy(char *des,char *src,void *pt) {
    strcpy(des,kgButtonTitle(src,pt));
+//   strcpy(des,src);
    return des;
 }
 

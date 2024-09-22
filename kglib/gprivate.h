@@ -200,6 +200,18 @@ typedef struct{
    char      *fields[MAXITEMS];
 }Tmenu;
 void set_menu_position(int xmenu,int ymenu);
+  typedef struct _img_str {
+      int xln;
+      int yln;
+      void *img;
+  } IMG_STR;
+  typedef struct _font_str {
+      char code; //i internal , t char table f fontnane
+      int fontno; // for internal
+      char *name; // font name for f type
+      void *Imgs; // ( IMG_STR ** ) pointer for character table;
+      int Size;   // fot f and i
+  } FONT_STR;
 typedef struct txt_str {
      int x1;
      int y1;
@@ -215,6 +227,7 @@ typedef struct txt_str {
      DIALOG *D;
      Gclr gc;
      DIT *T;
+     FONT_STR F;
    } TX_STR;
 typedef struct st_str {
      int x;
@@ -380,9 +393,12 @@ int _ui_processtextboxpress(TX_STR *t,KBEVENT kbe);
 void _uiGetResolution(void);
 void _ui_drawtextcursor (TX_STR *tx);
 int _ui_textboxstringlength(TX_STR *tx);
+int _ui_tableboxstringlength(TX_STR *tx);
 int _ui_cuthighlightstring(TX_STR *tx);
+int _ui_cuttablehighlightstring(TX_STR *tx);
 void _ui_cleartexthigh (TX_STR *tx);
 char *_ui_gethighlightstring(TX_STR *tx);
+char *_ui_gettablehighlightstring(TX_STR *tx);
 void _ui_cleantextcursor (TX_STR *tx);
 int _uiGetSItem(KBEVENT kbe,int x1,int y1,int x2,int y2);
 int _uiCheckBox(KBEVENT kbe,int x1,int y1,int x2,int y2);
@@ -615,6 +631,7 @@ int  uiset_atribs(DIG *G);
  void uidrarrow(DIG *G,float x1,float y1, float x2,float y2,float fac);
 void uiborder(DIG *G,float x1,float y1,float x2,float y2,int wd,int clr);
 void _ui_drawtablecursor (TX_STR *tx);
+void _ui_updatetablecursor (TX_STR *tx);
 void _ui_cleantablecursor (TX_STR *tx);
 int _ui_processtableboxpress(TX_STR *t,KBEVENT kbe);
 int MousePressInTableBox(TX_STR *tptr,KBEVENT kbevent);
@@ -1394,4 +1411,17 @@ int uiSearchClr(kgColor *kgcolors,XColor C) ;
 int SearchClr(XColor C);
 int RefreshWindowThread(void *junk);
 void uiwrite_buf(DIG *G,unsigned char *ch, int n );
+/* New Code for FT interface */
+  void * kgMakeFixedFontImg ( char *filename , char *text , int Size ,int Gap);
+  void * kgMakeFontImg ( char *filename , char *text , int Size ,int Gap);
+  void **kgFontChars ( char *Font , int Size );
+  void **kgFixedFontChars ( char *Font , int Size );
+  void *uiMakeString ( void *Fstr , char *str , int Ht , int Gap );
+  void *uiMakeFixedString ( void *Fstr , char *str , int Ht , int Gap );
+  void *uiFreeImgStr(void *);
+  void *uiFreeImgStrs(void *);
+  int uiInitFontLists(void *);
+  int uiFreeFontLists();
+  void *uiComplexString ( char *str ,void *Imgtmp, int font , int color , int FontSize ,int height ) ;
+  void *uiComplexFixedString ( char *str ,void *Imgtmp, int font , int color , int FontSize ,int height ) ;
 #endif

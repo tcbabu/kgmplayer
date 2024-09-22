@@ -806,7 +806,7 @@ typedef struct _GboxInfo {
 typedef union dia_u { DIT *t;DIB *b;DIN *N;DIF *f;DID *d;DIBN *n;DIO *o;
                       DIV *v;DIZ *z; DIW *w;DIM *m;DIX *x;DIY *y;DIL *h;
                       DILN *H;DIP *p; DIG *g;DII *i;DIE *e;DIS *s;DIHB *B;
-                      DICH *c;DIRA *r; 
+                      DICH *c;DIRA *r;
 } DIA;
 typedef struct _kbevent {
  int event; /* 0:mouse movement,1:button press,2:button release,3:mouse move+button press,
@@ -873,6 +873,7 @@ typedef struct Dia_str {
   void *ThInfo;  // internal
   void *Kbrd; //for keyboard 
   int InputWid;
+  int NoTabProcess;
 } DIALOG;
 
 typedef struct _WidgetGroup {
@@ -968,7 +969,9 @@ void  kgGetClickedPosition(void *Dtmp,int *x,int *y);
 void * kgGetLocationWidget(void *Dtmp,int x1,int y1);
 int  kgGetWidgetLocation(void *wid,int *x1,int *y1);
 int  kgSetCurrentWidget(void *Tmp,int Wid);
+int  kgSetAttnWidget(void *Tmp,void *Widget);
 int  kgSetDefaultWidget(void *Tmp,int Wid); // to be used only in Ui init function
+int  kgSetDefaultAttnWidget(void *Tmp,void *Widget); // to be used only in Ui init function
 int  kgSetWidgetVisibility(void *Widget,int vis);
 int  kgGetWidgetVisibility(void *Widget);
 int  kgUpdateTextBox(void *tmp,int no);
@@ -1003,13 +1006,25 @@ long   kgGetLong(void *Widget,int item) ;
 long   kgSetLong(void *Widget,int item,long val) ;
 char * kgGetString(void *Widget,int item) ;
 char * kgSetString(void *Widget,int item,char * val) ;
+int kgSetOffTableCell(void *Tmp,int cell);
+int kgSetOnTableCell(void *Tmp,int cell);
+int kgGetTableColumn(void *Tmp);
+int kgGetTableRow(void *Tmp);
+int kgGetTableCell(void *Tmp);
+int kgSetTableCursor(void * Tmp,int cell);
+int kgSetTableCursorPos ( void * Tmp , int cell,int pos);
+int kgGetTableCurpos ( void *Tmp );
+int kgGetTableStartChar ( void *Tmp );
+int kgScrollDownTable(void *Tmp,int row) ;
+int kgScrollUpTable(void *Tmp,int row) ;
 void * kgSetWidgetImage(void *Widget,void *img);
 void * kgGetWidgetImage(void *Widget);
 void kgSetTextItemEcho(void *Tmp,int item, int echo);
-void kgSetScrollLength(void *widget,int percent);
-void kgSetScrollPos(void *widget,int percent);
-int  kgGetScrollPos(void *widget);
-int  kgGetScrollLength(void *widget);
+void kgSetScrollLength(void *widget,double percent);
+void kgSetScrollPos(void *widget,double percent);
+int kgSetScrollMovement ( void *Tmp , double mvnt) ;
+double  kgGetScrollPos(void *widget);
+double  kgGetScrollLength(void *widget);
 int    kgWrite(void *Widget, char *str) ;
 int    kgPrintf(void *Tmp, int infob,char *str) ;
 int    kgSplash(void *Tmp,int item,char *msg);
@@ -1219,11 +1234,16 @@ void *kgImageModifyColor(void *img,float rfac,float gfac,float bfac);
 void *kgModifyImageHSV(void *Img,float hfac,float sfac,float vfac);
 void *kgShadowImage(void* img,int xoffset,int yoffset,void *shimg);
 void *kgMergeImages(void  *img1,void  *img2,int Xshft,int Yshft); /* second on first */
+void *kgAddImages(void  *img1,void  *img2,int Xshft,int Yshft); /* second on first */
+void *kgReplaceImage(void  *img1,void  *img2,int Xshft,int Yshft); /* second on first */
 void *kgMergeTransparentImage(void  *img1,void  *img2,int Xshft,int Yshft); /* second on first */
+void *kgAddTransparentImage ( void *png1 , void *png2 , int Xshft , int Yshft );
 int  kgGetImageSize(void *img,int *xsize,int *ysize);
 void *kgMaskImage(void *png,void *mask);
 void *kgCopyImage(void *img);
 void *kgCreateImage(int xzise,int ysize);
+int kgSetImageColor(void *img,int r,int g,int b);
+int kgSetPixelAlpha(void *img,int col, int row,int alpha);
 void *kgCleanImage(void *img);
 void *kgFlipImage(void *img); // About X refledction overwrites img
 void *kgFlopImage(void *img); // About Y refledction overwrites img
@@ -1296,6 +1316,7 @@ void kgClearBuffer(DIG *G);
 void kgMove2f(DIG *G,float x,float y);
 void kgMarkerType(DIG *G,int mtype);
 void kgDraw2f(DIG *G,float x,float y);
+int  kgImagePixel(DIG *G,int col,int row,int r,int g,int b,int a);
 void kgMarker2f(DIG *G,float x,float y);
 void kgDefaultGuiTheme(Gclr *Gc);
 void kgGrayGuiTheme(Gclr *Gc);
@@ -1415,6 +1436,13 @@ void *kgFreeDouble(void **mem);
 void kgCleanDir(char *folder);
 void kgCheckAndRemoveParent(char *dir);
 char *kgWhich(char *pgr);
+ char *kgWhichFont ( char *pgr );
+int kgAddFixedFont(char *);
+int kgAddFont(char *);
+char **kgGetFixedFontList();
+char **kgGetFontList();
+char *kgGetMonoFont(int);
+char *kgGetOthFont(int);
 int kgSearchString(char *s1,char *s2);
 char *kgGetIcon(char *pgr,char *theme);
 void *kgSearchIcon(char *IconName);
@@ -1496,6 +1524,7 @@ DIF * kgCreateDoubleSlide(int xo,int yo,int length,double min,double max,double 
 /* end of create widgets */
 void kgPrintWidgetData(void *W,FILE *fp1); // prints widget data
 int kgGetWidgetSize(void *wid,int *xsize,int *ysize);
+void *kgGetArgPointer(void *Tmp);
 /***********************************/
 
 /* String Manupulation       */
@@ -1503,6 +1532,7 @@ int kgGetWidgetSize(void *wid,int *xsize,int *ysize);
 void kgTruncateString(char *m,int size);
 void kgRestoreString(char *m,int size);
 void gphUserFrame(int fid,float x1,float y1, float x2, float y2);
+void *RunkgGetStrings(void *parent ,void *args); // Dialog to get Strings
 /*
    Version 3.0
    Dated 27/05/2024
@@ -1559,6 +1589,9 @@ void Dadd(Dlink *F,void  *buf) ;
 Dlink *Dcopy(Dlink *LN) ;
 Dlink *Dsublist(Dlink *LN,void *s,int Dcondition(void *,void *)) ;
 Dlink *Dnewlist(Dlink *LN,void * Dnewrule(void *)) ;
+int Dcomplist ( Dlink *L1 , Dlink *L2 , int comprecord
+      ( void *tmp1 , void *tmp2 ) ) ;
+
 /*
   The comparison return 1 if the criteria satisfied
   and repositioning is done
@@ -1650,6 +1683,10 @@ int CompareAction(void *rec, char *name) {
  
 #endif
 void *Dsearch(Dlink *L, char *val  ,int (*Compare)(void *,char *));
+/* You may Dfree link if link is no more needed */
+Dlink *Darraytolink(void **Array);
+/* you may free Array is its no more needed */
+void **Dlinktoarray(Dlink *L);
 
 
 #endif /* end of dlink.h */

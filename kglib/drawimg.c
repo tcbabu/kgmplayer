@@ -140,6 +140,29 @@ static unsigned long imgGetColor(DIG *G,int no,int loc) {
 #endif
   return color;
 }
+int  kgImagePixel(DIG *G,int col,int row,int r,int g,int b,int a) {
+  unsigned long color=1;
+  int addr,MAXB,row1,loc;
+  kgWC *wc;
+  kgDC *dc;
+  dc = G->dc;
+//  if(G->D != NULL) wc = WC(G->D);
+//  else wc = G->wc; 
+  wc = G->wc; 
+  MAXB = dc->EVGAX;
+  if(col >= MAXB) return 0;
+  row1 = dc->EVGAY-1-row;
+  if ((col > wc->c_v_x2) || (col <wc->c_v_x1) || 
+    (row1 > wc->c_v_y2) || (row1 <wc->c_v_y1)) return 0;
+  loc = ((row)*MAXB + col);
+  PixelPacket *pixels;
+  pixels = G->pixels;
+  pixels[loc].red = r;
+  pixels[loc].green = g;
+  pixels[loc].blue = b;
+  pixels[loc].opacity = a;
+  return color;
+}
 void imgCopyImage(DIG *G,int x0,int y0,GMIMG *img) {
   GMIMG *Dimg,*Simg;
   kgDC *dc;

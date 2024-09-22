@@ -1176,7 +1176,10 @@
       FILE *fp;
       int i;
       fp = fopen ( flname , "w" ) ;
-      if ( fp == NULL ) return 0;
+      if ( fp == NULL ) {
+	      fprintf(stderr,"Failed to Open (%s) to write\n",flname);
+	      return 0;
+      }
       i = 0;
       while ( ( bf = ( char * ) Drecord ( L , i ) ) != NULL ) {
           fprintf ( fp , "%s" , bf ) ;
@@ -1190,7 +1193,8 @@
       if ( L == NULL ) {
           fprintf ( stderr , "Empty Link in Dpush\n" ) ;
           exit ( -1 ) ;
-      } Resetlink ( L ) ;
+      };
+      Resetlink ( L ) ;
       Dinsert ( L , bf ) ;
       Resetlink ( L ) ;
       return 1;
@@ -1200,7 +1204,8 @@
       if ( L == NULL ) {
           fprintf ( stderr , "Empty Link in Dpop\n" ) ;
           exit ( -1 ) ;
-      } if ( Dcount ( L ) == 0 ) return NULL;
+      };
+      if ( Dcount ( L ) == 0 ) return NULL;
       Resetlink ( L ) ;
       bf = Dpick ( L ) ;
       Resetlink ( L ) ;
@@ -1211,7 +1216,8 @@
       if ( L == NULL ) {
           fprintf ( stderr , "Empty Link in Dfifoout\n" ) ;
           exit ( -1 ) ;
-      } Dend ( L ) ;
+      };
+      Dend ( L ) ;
       bf = Dpick ( L ) ;
       Dend ( L ) ;
       return bf;
@@ -1220,20 +1226,33 @@
       if ( L == NULL ) {
           fprintf ( stderr , "Empty Link in Dfifoin\n" ) ;
           exit ( -1 ) ;
-      } Resetlink ( L ) ;
+      };
+      Resetlink ( L ) ;
       Dinsert ( L , bf ) ;
       Resetlink ( L ) ;
       return 1;
   }
   int Dreplace ( Dlink *L , void *bf , int pos ) {
+	  /* pos (0,max) */
       if ( L == NULL ) {
           fprintf ( stderr , "Empty Link in Dreplace\n" ) ;
           exit ( -1 ) ;
-      } Dlocation ( L , pos ) ;
+      };
+      pos++;
+
+      Dposition ( L , pos ) ;
       Ddelete ( L ) ;
-      Dlocation ( L , pos-1 ) ;
+#if 1
+      if(pos == 1) {
+	      Dposition(L,pos);
+	      Dinsert(L,bf);
+      }
+      else {
+      Dposition ( L , pos-1 ) ;
       Dadd ( L , bf ) ;
-      Dlocation ( L , pos ) ;
+      Dposition( L , pos ) ;
+      }
+#endif
       return 1;
   }
 #if 0
@@ -1282,3 +1301,25 @@
           else up = mid-1;
       }
   }
+
+Dlink *Darraytolink(void **Array) {
+	int k;
+	Dlink *L=Dopen();
+	k=0;
+	if(Array!= NULL) while(Array[k]!= NULL) Dadd(L,Array[k++]);
+	Resetlink(L);
+	return L;
+}
+void **Dlinktoarray(Dlink *L) {
+	int k;
+	void **Array=NULL;
+	void *pt;
+	if(L==NULL) return NULL;
+	k = Dcount(L);
+	Array = (void **)malloc(sizeof(void *)*(k+1));
+	k=0;
+	Resetlink(L);
+	while( (pt =Getrecord(L))!= NULL) Array[k++]=pt;
+	Array[k]=NULL;
+	return Array;
+}

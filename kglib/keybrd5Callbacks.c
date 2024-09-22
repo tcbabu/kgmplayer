@@ -130,11 +130,12 @@ static void *MakeStringImage4(int xl,int yl,int bclr,float fac, int tc,int utc,i
    kgCloseImage(fid);
    return Img;
 }
+
 static char *kgButtonTitle1(char * str,void *pt,char *ustr) {
   KEYBRD *Kbrd;
   Kbrd = (KEYBRD *)pt;
-//  sprintf(BUFF,"!h15!d!h51!z%-s!f%2.2d!c%2.2d%-s!g !c%2.2d!z23!u%-s",Kbrd->Sfac,Kbrd->Bfont,Kbrd->Bclr,str,Kbrd->FillClr,ustr);
-  sprintf(BUFF,"!h15!d!h51!z%-s!f%2.2d!c%2.2d%-s!g !c%2.2d!z23!u%-s",Kbrd->Sfac,Kbrd->Bfont,Kbrd->Bclr,str,Kbrd->Bclr,ustr);
+//  sprintf(BUFF,"!h15!d!h51!z%-s!f%2.2d!c%2.2d%-s!g !c%2.2d!z23!u%-s",Kbrd->Sfac,Kbrd->Bfont,Kbrd->Bclr,str,Kbrd->Bclr,ustr);
+  sprintf(BUFF,"!z%-s!f%2.2d!c%2.2d%-s!g !c%2.2d!z23!u%-s",Kbrd->Sfac,Kbrd->Bfont,Kbrd->Bclr,str,Kbrd->Bclr,ustr);
 //  printf("%s\n",BUFF);
   return BUFF;
 }
@@ -145,7 +146,8 @@ static char *Procpy1(char *des,char *src,void *pt,char *ustr) {
 static char *kgButtonTitle(char * str,void *pt) {
   KEYBRD *Kbrd;
   Kbrd = (KEYBRD *)pt;
-  sprintf(BUFF,"!h15!d!h51!z%-s!f%2.2d!c%2.2d%-s!g !g",Kbrd->Sfac,Kbrd->Bfont,Kbrd->Bclr,str);
+//  sprintf(BUFF,"!h15!d!h51!z%-s!f%2.2d!c%2.2d%-s!g !g",Kbrd->Sfac,Kbrd->Bfont,Kbrd->Bclr,str);
+  sprintf(BUFF,"!z%-s!f%2.2d!c%2.2d %-s!g !g",Kbrd->Sfac,Kbrd->Bfont,Kbrd->Bclr,str);
 //  printf("%s\n",BUFF);
   return BUFF;
 }
@@ -153,7 +155,6 @@ static char *Procpy(char *des,char *src,void *pt) {
    strcpy(des,kgButtonTitle(src,pt));
    return des;
 }
-
 static int kgProcessShift(void *Tmp) {
   DIALOG *D;
   D = (DIALOG *)Tmp;
