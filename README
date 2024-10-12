@@ -1,3 +1,5 @@
+"kgmplayer" is more than a media player, it is contains many tools for
+media editing.
 This is full source code for 'kgmplayer' and includes all necessary
 dependencies including 'kglib' and OpenSource components including the
 necessary CD libraries and tools.
