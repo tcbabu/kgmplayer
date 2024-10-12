@@ -12,6 +12,7 @@ install -m 644 empty.idx /usr/share/kgmplayer
 install -m 644 empty.sub /usr/share/kgmplayer
 install -m 644 kgmplayer.desktop /usr/share/applications
 install -m 644 kgMplayer.desktop /usr/share/applications
+tar xzvf fonts.tar -C /usr/share/fonts
 #not always good
 #cp  lib/* /usr/share/kgmplayer/lib/
 

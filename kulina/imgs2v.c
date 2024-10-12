@@ -33,32 +33,32 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
     132,65,  
     -1,0  
   };
-  strncpy(m0.msg,(char *)"!w32!f21Image Files",499);
+  strncpy(m0.msg,(char *)"!f21Image Files",499);
   strcpy(m0.Wid,(char *)"imgs2vWidget1");
   m0.item = -1;
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*3);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"!w32!f23Add");
+  strcpy(butn1[0].title,(char *)"!f23Add");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-240245255;
-  butn1[0].butncode='';
+  butn1[0].butncode=127;
   butn1[1].sw=1;
-  strcpy(butn1[1].title,(char *)"!w32!f23Delete");
+  strcpy(butn1[1].title,(char *)"!f23Delete");
   butn1[1].xpmn=NULL;
   butn1[1].xpmp=NULL;
   butn1[1].xpmh=NULL;
   butn1[1].bkgr=-240245255;
-  butn1[1].butncode='';
+  butn1[1].butncode=127;
   butn1[2].sw=1;
-  strcpy(butn1[2].title,(char *)"!w32!f23Reorder");
+  strcpy(butn1[2].title,(char *)"!f23Reorder");
   butn1[2].xpmn=NULL;
   butn1[2].xpmp=NULL;
   butn1[2].xpmh=NULL;
   butn1[2].bkgr=-240245255;
-  butn1[2].butncode='';
+  butn1[2].butncode=127;
   DIN b1 = { 
     'n',
     227,30,  
@@ -126,7 +126,7 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
     142,265,  
     1,0  
   };
-  strncpy(m4.msg,(char *)"!w32!f21Video Output File",499);
+  strncpy(m4.msg,(char *)"!f21Video Output File",499);
   strcpy(m4.Wid,(char *)"imgs2vWidget5");
   m4.item = -1;
   T_ELMT *e5  ; 
@@ -164,8 +164,8 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   t5.type = 0;
   t5.item = -1;
   char *menu6[]  = { 
-    (char *)"!w32!f21Yes",
-    (char *)"!w32!f21No",
+    (char *)"!f21Yes",
+    (char *)"!f21No",
     NULL 
   };
   ThumbNail **th0 ;
@@ -200,25 +200,25 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
     216,339,  
     1,0  
   };
-  strncpy(m7.msg,(char *)"!w32!f21Cover Full Frame",499);
+  strncpy(m7.msg,(char *)"!f21Cover Full Frame",499);
   strcpy(m7.Wid,(char *)"imgs2vWidget8");
   m7.item = -1;
   BUT_STR  *butn8=NULL; 
   butn8= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
   butn8[0].sw=1;
-  strcpy(butn8[0].title,(char *)"!w32!f23Create");
+  strcpy(butn8[0].title,(char *)"!f23Create");
   butn8[0].xpmn=NULL;
   butn8[0].xpmp=NULL;
   butn8[0].xpmh=NULL;
   butn8[0].bkgr=-235255250;
-  butn8[0].butncode='';
+  butn8[0].butncode=127;
   butn8[1].sw=1;
-  strcpy(butn8[1].title,(char *)"!c12!w32!f23Clear");
+  strcpy(butn8[1].title,(char *)"!c12!f23Clear");
   butn8[1].xpmn=NULL;
   butn8[1].xpmp=NULL;
   butn8[1].xpmh=NULL;
   butn8[1].bkgr=-142142142;
-  butn8[1].butncode='';
+  butn8[1].butncode=127;
   DIL h8 = { 
     'h',
     160,360,  

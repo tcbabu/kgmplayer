@@ -46,7 +46,7 @@ static char *GetNextString(char *str,int *pos) {
     pt = (char *)malloc(j+2+10);
     *pos=i+1;
     if(*pos>len) *pos=len;
-    strcpy(pt,"!w32");
+    strcpy(pt,"!c01");
     l=4;
     while(l<=(j+4)) {
 	    if(str[k]=='\n'){pt[l++]= ' ';k++;}

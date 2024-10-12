@@ -670,16 +670,6 @@
       for ( i = 0;i < item;i++ ) {free ( field [ i ] ) ;free ( prompt [ i ] ) ;}
   }
 #endif
-  void arrange ( char **m , int n ) {
-      int i , j;
-      char *pt;
-      for ( i = 0;i < n-1;i++ ) {
-          for ( j = i+1;j < n;j++ ) {
-              if ( strcmp ( m [ i ] , m [ j ] ) > 0 ) {pt = m [ j ] ;
-              m [ j ] = m [ i ] ;m [ i ] = pt;}
-          }
-      }
-  }
   int Up_Tx_Table ( int code , int i , DIA *d ) {
       DIALOG *D;
       int ret = 1;

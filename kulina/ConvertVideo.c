@@ -30,7 +30,7 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   T_ELMT *e0  ; 
   e0 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e0[0].fmt = (char *)malloc(18);
-  strcpy(e0[0].fmt,(char *)"!w32!f23Input%25s");
+  strcpy(e0[0].fmt,(char *)"!f23Input%25s");
   e0[0].v=(void *)v[0];
   e0[0].sw=1;
   e0[0].noecho=0;
@@ -52,12 +52,12 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"!w32!f23Browse");
+  strcpy(butn1[0].title,(char *)"!f23Browse");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-1;
-  butn1[0].butncode='';
+  butn1[0].butncode=127;
   DIN b1 = { 
     'n',
     396,27,  
@@ -77,7 +77,7 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   T_ELMT *e2  ; 
   e2 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e2[0].fmt = (char *)malloc(19);
-  strcpy(e2[0].fmt,(char *)"!w32!f23Output%30s");
+  strcpy(e2[0].fmt,(char *)"!f23Output%30s");
   e2[0].v=(void *)v[1];
   e2[0].sw=1;
   e2[0].noecho=0;
@@ -97,9 +97,9 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   t2.type = 0;
   t2.item = -1;
   char *menu3[]  = { 
-    (char *)"!w32!f23Very Good",
-    (char *)"!w32!f23Good",
-    (char *)"!w32!f23Low",
+    (char *)"!f23Very Good",
+    (char *)"!f23Good",
+    (char *)"!f23Low",
     NULL 
   };
   ThumbNail **th0 ;
@@ -134,12 +134,12 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
     108,152,  
     1,0  
   };
-  strncpy(m4.msg,(char *)"!w32!f23Quality",499);
+  strncpy(m4.msg,(char *)"!f23Quality",499);
   strcpy(m4.Wid,(char *)"ConvertVideoWidget7");
   m4.item = -1;
   char *menu5[]  = { 
-    (char *)"!w32!f23Original",
-    (char *)"!w32!f23Change",
+    (char *)"!f23Original",
+    (char *)"!f23Change",
     NULL 
   };
   ThumbNail **th1 ;
@@ -174,12 +174,12 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
     150,202,  
     1,0  
   };
-  strncpy(m6.msg,(char *)"!w32!f23Aspect Ratio",499);
+  strncpy(m6.msg,(char *)"!f23Aspect Ratio",499);
   strcpy(m6.Wid,(char *)"ConvertVideoWidget10");
   m6.item = -1;
   char *menu7[]  = { 
-    (char *)"!w32!f23No",
-    (char *)"!w32!f23Yes",
+    (char *)"!f23No",
+    (char *)"!f23Yes",
     NULL 
   };
   ThumbNail **th2 ;
@@ -214,18 +214,18 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
     150,251,  
     1,0  
   };
-  strncpy(m8.msg,(char *)"!w32!f23Scale",499);
+  strncpy(m8.msg,(char *)"!f23Scale",499);
   strcpy(m8.Wid,(char *)"ConvertVideoWidget9");
   m8.item = -1;
   BUT_STR  *butn9=NULL; 
   butn9= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn9[0].sw=1;
-  strcpy(butn9[0].title,(char *)"!w32!f23Convert");
+  strcpy(butn9[0].title,(char *)"!f23Convert");
   butn9[0].xpmn=NULL;
   butn9[0].xpmp=NULL;
   butn9[0].xpmh=NULL;
   butn9[0].bkgr=-190250190;
-  butn9[0].butncode='';
+  butn9[0].butncode=127;
   DIL h9 = { 
     'h',
     210,408,  
@@ -243,8 +243,8 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
   strcpy(h9.Wid,(char *)"ConvertVideoWidget10");
   h9.item = -1;
   char *menu10[]  = { 
-    (char *)"!w32!f23Full",
-    (char *)"!w32!f23Select",
+    (char *)"!f23Full",
+    (char *)"!f23Select",
     NULL 
   };
   ThumbNail **th3 ;
@@ -279,7 +279,7 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
     150,296,  
     1,0  
   };
-  strncpy(m11.msg,(char *)"!w32!f23Range",499);
+  strncpy(m11.msg,(char *)"!f23Range",499);
   strcpy(m11.Wid,(char *)"ConvertVideoWidget12");
   m11.item = -1;
   DIM m12 = { 
@@ -288,7 +288,7 @@ int ConvertVideoGroup( DIALOG *D,void **v,void *pt) {
     435,321,  
     0,0  
   };
-  strncpy(m12.msg,(char *)"!w32!f21!c01(Note: Play and Stop to detemine range in secs)",499);
+  strncpy(m12.msg,(char *)"!f21!c01(Note: Play and Stop to detemine range in secs)",499);
   strcpy(m12.Wid,(char *)"ConvertMsg");
   m12.item = -1;
   dtmp = D->d;

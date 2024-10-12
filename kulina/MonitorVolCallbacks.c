@@ -177,9 +177,9 @@ int MonitorVolWaitCallBack(void *Tmp) {
   count++;
   count = count%3;
   switch(count) {
-	  case 0: kgWrite(I2,"!w32Please Wait /");break;
-	  case 1: kgWrite(I2,"!w32Please Wait -");break;
-	  case 2: kgWrite(I2,"!w32Please Wait \\");break;
+	  case 0: kgWrite(I2,"Please Wait /");break;
+	  case 1: kgWrite(I2,"Please Wait -");break;
+	  case 2: kgWrite(I2,"Please Wait \\");break;
   }
 #else
   if(rval > 0) kgWrite(I2,buff);

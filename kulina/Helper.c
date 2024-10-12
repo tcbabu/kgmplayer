@@ -34,7 +34,7 @@ int HelperGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-1;
-  butn1[0].butncode='';
+  butn1[0].butncode=127;
   DIL h1 = { 
     'h',
     266,237,  

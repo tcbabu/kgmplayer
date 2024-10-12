@@ -2934,40 +2934,46 @@ int  kgSetImageColor ( void *Img , int r,int g,int b ) {
 */
       int w , h , bkgrclr , xsize , ysize;
       float rzfac;
-      int i , j , k = 0 , kk;
+      int i , j , k = 0 , kk,ii,jj;
       unsigned int opacity , alpha , alphas;
       int xoff , yoff;
       float f , f1;
       GMIMG *dpng = NULL;
-      Image *image , *tmpimg , *dimage , *oimage;
+      Image *image , *tmpimg , *sndimage , *oimage;
       PixelPacket *pixels , *spixels , *opixels;
       unsigned char r , g , b , bg_r , bg_g , bg_b;
       unsigned int red , green , blue;
-      if ( png1 == NULL ) return NULL;
-      if ( png2 == NULL ) return NULL;
+      if ( png1 == NULL ) return png2;
+      if ( png2 == NULL ) return png1;
       image = ( Image * ) ( png1->image ) ;
-      dimage = ( Image * ) ( png2->image ) ;
+      sndimage = ( Image * ) ( png2->image ) ;
       uiInitGm ( ) ;
-      pixels = GetImagePixels ( dimage , 0 , 0 , dimage->columns , dimage->rows ) ;
+      pixels = GetImagePixels ( sndimage , 0 , 0 , sndimage->columns , sndimage->rows ) ;
       spixels = GetImagePixels ( image , 0 , 0 , image->columns , image->rows ) ;
-      w = image->columns;
-      h = image->rows;
+      w = sndimage->columns;
+      h = sndimage->rows;
       xsize = image->columns;
       ysize = image->rows;
       xoff = Xshft;
       yoff = Yshft;
       k = 0;
-      for ( j = yoff;j < ( yoff+dimage->rows ) ;j++ ) {
-          for ( i = xoff;i < ( xoff+dimage->columns ) ;i++ ) {
+      for ( j = 0;j < ( sndimage->rows ) ;j++ ) {
+          jj = j+yoff;
+          if(jj >= ysize ) continue;
+          if(jj<0) continue;
+          for ( i = 0;i < ( sndimage->columns ) ;i++ ) {
+              ii = i+xoff;
+              if(ii>=xsize) continue;
+              if(ii< 0) continue;
+              kk = jj*xsize+ii;
+              k = j*w+i;
               opacity = pixels [ k ] .opacity;
-              kk = ( j*xsize+i ) ;
             if(opacity != 255) {
               spixels [ kk ] .blue  = pixels[k].blue;
               spixels [ kk ] .green = pixels[k].green;
               spixels [ kk ] .red   = pixels[k].red;
               spixels [ kk ] .opacity = opacity;
             }
-              k++;
           }
       }
       SyncImagePixels ( image ) ;

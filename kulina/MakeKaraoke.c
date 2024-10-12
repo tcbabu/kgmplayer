@@ -49,12 +49,12 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"!w32!f23Browse");
+  strcpy(butn1[0].title,(char *)"!f23Browse");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-1;
-  butn1[0].butncode='';
+  butn1[0].butncode=127;
   DIN b1 = { 
     'n',
     342,58,  
@@ -74,7 +74,7 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
   T_ELMT *e2  ; 
   e2 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e2[0].fmt = (char *)malloc(8);
-  strcpy(e2[0].fmt,(char *)"!g %30s");
+  strcpy(e2[0].fmt,(char *)"%30s");
   e2[0].v=(void *)v[1];
   e2[0].sw=1;
   e2[0].noecho=0;
@@ -94,9 +94,9 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
   t2.type = 0;
   t2.item = -1;
   char *menu3[]  = { 
-    (char *)"!w32!f23Very Good",
-    (char *)"!w32!f23Good",
-    (char *)"!w21!f23Medium",
+    (char *)"!f23Very Good",
+    (char *)"!f23Good",
+    (char *)"!f23Medium",
     NULL 
   };
   ThumbNail **th0 ;
@@ -117,7 +117,7 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
      22,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
-    1, /* bordr */
+    0, /* bordr */
     0, /* bkgr */
     0  /* =1 hide  */
    };
@@ -131,18 +131,18 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
     88,183,  
     1,0  
   };
-  strncpy(m4.msg,(char *)"!w32!f21Quality",499);
+  strncpy(m4.msg,(char *)"!f21Quality",499);
   strcpy(m4.Wid,(char *)"KaraokeAudioWidget11");
   m4.item = -1;
   BUT_STR  *butn5=NULL; 
   butn5= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn5[0].sw=1;
-  strcpy(butn5[0].title,(char *)"!w32!f23Make Karaoke");
+  strcpy(butn5[0].title,(char *)"!f23Make Karaoke");
   butn5[0].xpmn=NULL;
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
   butn5[0].bkgr=-235255250;
-  butn5[0].butncode='';
+  butn5[0].butncode=127;
   DIL h5 = { 
     'h',
     187,349,  
@@ -165,7 +165,7 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
     118,88,  
     1,0  
   };
-  strncpy(m6.msg,(char *)"!w32!f21Input Media",499);
+  strncpy(m6.msg,(char *)"!f21Input Media",499);
   strcpy(m6.Wid,(char *)"KaraokeAudioWidget9");
   m6.item = -1;
   DIM m7 = { 
@@ -174,7 +174,7 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
     103,260,  
     1,0  
   };
-  strncpy(m7.msg,(char *)"!w32!f21Output File",499);
+  strncpy(m7.msg,(char *)"!f21Output File",499);
   strcpy(m7.Wid,(char *)"KaraokeAudioWidget11");
   m7.item = -1;
   DIM m8 = { 

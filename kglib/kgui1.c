@@ -28,8 +28,9 @@
           free ( m ) ;
       }
   }
-  int _check_menu ( void *parent , int x0 , int y0 , char *qst , int df , void *xpm )  \
-      {
+  int _check_menu ( void *parent , int x0 , int y0 , \
+  char *qst , int df , void *xpm ) \
+  {
       int ret = 1;
       int v0;
       DIALOG D;
@@ -50,7 +51,8 @@
       char *butncode2 = NULL;
       int sw [ ] = {1 , 1};
       DIB n2 = {
-          'b' , 148 , 45 , 354 , 96 , 30 , 9 , 80 , 35 , 2 , 1 , & v0 , sw , titles2 , butncode2 , NULL , NULL , /* args , Callbak */
+          'b' , 148 , 45 , 354 , 96 , 30 , 9 , 80 , 35 , 2 , 1 , & v0 , sw , \
+          titles2 , butncode2 , NULL , NULL , /* args , Callbak */
           xpm2 , bkgr2 /* pointers to xpms and colors */
        , 2 , 0.5 };
       v0 = df+1;
@@ -126,8 +128,8 @@
 #if 1
       msg = D->pt;
       if ( msg->message != NULL ) {
-          fid = kgInitImage ( ( int ) ( w_x2-w_x1 ) +1 ,  \
-              ( int ) ( w_y2-w_y1 ) +1 , 2 ) ;
+          fid = kgInitImage ( ( int ) ( w_x2-w_x1 ) +1 , \
+           ( int ) ( w_y2-w_y1 ) +1 , 2 ) ;
           kgUserFrame ( fid , w_x1 , w_y1 , w_x2 , w_y2 ) ;
           kgTextColor ( fid , msg->fontcolor ) ;
           kgTextFont ( fid , msg->font ) ;
@@ -145,8 +147,8 @@
               while ( pt [ i ] != '\0' ) {
                   OK = 0;
                   if ( ( pt [ i ] == '\n' ) ) { pt [ i ] = '\0';break;}
-                  if ( ( ( pt [ i ] == '\\' ) && ( pt [ i+1 ] == 'n' ) ) )  \
-                      { pt [ i ] = '\0';i++;break;}
+                  if ( ( ( pt [ i ] == '\\' ) && ( pt [ i+1 ] == 'n' ) ) ) \
+                  { pt [ i ] = '\0';i++;break;}
                   i++;
                   OK = 1;
               }
@@ -228,8 +230,10 @@
       }
       return ret;
   }
-  int kgSplashDia ( int xo , int yo , int xl , int yl , char *xpm , char *message , int font , int fontcolor , unsigned long bkcolor )  \
-      {
+  int kgSplashDia ( int xo , int yo , int xl , \
+       int yl , char *xpm , char *message , \
+  int font , int fontcolor , unsigned long bkcolor ) \
+  {
       int ret = 1;
       DIALOG D;
       DIA d [ 2 ] ;
@@ -312,8 +316,8 @@
       return ret;
   }
   int kgSplashMessageinit ( void *Tmp ) {
-      int ret = 0 , i , j , OK , xl , yl , count = 0 , k , color , r , g , b , fcolor;
-          
+      int ret = 0 , i , j , OK , xl , yl , count = 0 , \
+      k , color , r , g , b , fcolor;
       float ln , length = 0 , fac = 1.0;
       float w_x1 = 0.0 , w_y1 = 0.0 , w_x2 = 686 , w_y2 = 226 , dyl , dxl , yy;
       float h , s , v , Vb , rf , gf , bf;
@@ -375,12 +379,12 @@
           kgTextSize ( fid , 30. , 20. , 0. ) ;
           xo = ( w_x1+w_x2 ) *.5;
           yo = ( w_y1+w_y2 ) *.5;
-          kgRoundedRectangleFill ( fid , xo , yo , ( float ) l+2 ,  \
-              ( float ) w+2 , 0 , 153 , rfac ) ;
-          kgRoundedRectangleFill ( fid , xo , yo , ( float ) l+1 ,  \
-              ( float ) w+1 , 0 , 152 , rfac ) ;
-          kgRoundedRectangleFill ( fid , xo , yo , ( float ) l-4 ,  \
-              ( float ) w-4 , 0 , 151 , rfac ) ;
+          kgRoundedRectangleFill ( fid , xo , yo , ( float ) l+2 , \
+           ( float ) w+2 , 0 , 153 , rfac ) ;
+          kgRoundedRectangleFill ( fid , xo , yo , ( float ) l+1 , \
+           ( float ) w+1 , 0 , 152 , rfac ) ;
+          kgRoundedRectangleFill ( fid , xo , yo , ( float ) l-4 , \
+           ( float ) w-4 , 0 , 151 , rfac ) ;
 //    kgRoundedRectangleFill(fid,(w_x1+w_x2)*.5+3,(w_y1+w_y2)*.5-2,w_x2-6,w_y2-6,0,0,0.1);
 //    kgRoundedRectangleFill(fid,(w_x1+w_x2)*.5,(w_y1+w_y2)*.5,w_x2-6,w_y2-6,0,color,0.1);
           strcpy ( buf , ( char * ) msg->message ) ;
@@ -396,8 +400,8 @@
               while ( pt [ i ] != '\0' ) {
                   OK = 0;
                   if ( ( pt [ i ] == '\n' ) ) { pt [ i ] = '\0';break;}
-                  if ( ( ( pt [ i ] == '\\' ) && ( pt [ i+1 ] == 'n' ) ) )  \
-                      { pt [ i ] = '\0';i++;break;}
+                  if ( ( ( pt [ i ] == '\\' ) && ( pt [ i+1 ] == 'n' ) ) ) \
+                  { pt [ i ] = '\0';i++;break;}
                   i++;
                   OK = 1;
               }
@@ -429,8 +433,8 @@
 //      uiWriteImage(Img,"Junk.png");
               kgCloseImage ( fid ) ;
               if ( msg->message != NULL ) {
-                  if ( p0->xpm != NULL ) kgImage ( D , p0->xpm , D->xo , D->yo , xl , yl , 0.0 , 1.0 ) ;
-                      
+                  if ( p0->xpm != NULL ) kgImage ( D , p0->xpm , \
+                  D->xo , D->yo , xl , yl , 0.0 , 1.0 ) ;
                   kgImage ( D , Img , D->xo , D->yo , xl , yl , 0.0 , 1.0 ) ;
                   uiFreeImage ( Img ) ;
               }
@@ -465,8 +469,9 @@
       }
       return ret;
   }
-  int kgSplashMessage ( void *Parent , int xo , int yo , int xl , int yl , char *message , int font , int fontcolor , int bkcolor )  \
-      {
+  int kgSplashMessage ( void *Parent , int xo , int yo , int xl , int yl , \
+  char *message , int font , int fontcolor , int bkcolor ) \
+  {
       int ret = 1;
       DIALOG D;
       DIA d [ 2 ] ;
@@ -547,8 +552,8 @@
 *************************************************/
       SPLASHMSG *pt;
       pt = ( SPLASHMSG * ) arg;
-      kgSplashDia ( -1 , -1 , pt->xsize , pt->ysize , pt->xpm , pt->message , pt->font , pt->fontcolor , pt->bkcolor ) ;
-          
+      kgSplashDia ( -1 , -1 , pt->xsize , pt->ysize , pt->xpm , pt->message , \
+      pt->font , pt->fontcolor , pt->bkcolor ) ;
       return NULL;
   }
   void kgInitDialog ( DIALOG *D , int xo , int yo , char **menu , int size ) {
@@ -592,8 +597,9 @@
       D->evgax = WC ( D )->EVGAX;
       return ;
   }
-  int kgMenu ( void *parent , int xx1 , int yy1 , int pos , int df , char **menu , int size )  \
-      {
+  int kgMenu ( void *parent , int xx1 , int yy1 , int pos , \
+  int df , char **menu , int size ) \
+  {
       char **x;
       int NOK = 1 , item , ok , tempc;
       float fac = 1.;
@@ -705,7 +711,8 @@
       char *menu0 [ ] = {
        ( char * ) "" , NULL };
       DIE e0 = {
-          'e' , 3 , 4 , 407 , 380 , 16 , ( int * ) v0 , NULL , menu0 , NULL , kgFontListDiabrowser1callback , /* *args , callback */
+          'e' , 3 , 4 , 407 , 380 , 16 , ( int * ) v0 , NULL , menu0 , NULL , \
+          kgFontListDiabrowser1callback , /* *args , callback */
       20 , 6 , 22 , 1 , 1 , 1 , 0 };
       e0.menu = kgFontNames ( ) ;
       d [ 0 ] .e = & e0;
@@ -782,33 +789,52 @@
       DIALOG D;
       DIA d [ 2 ] ;
       char *titles0 [ ] = {
-       ( char * ) "0" , ( char * ) "1" , ( char * ) "2" , ( char * ) "3" , ( char * ) "4" ,  \
-           ( char * ) "5" , ( char * ) "6" , ( char * ) "7" , ( char * ) "8" , ( char * ) "9" ,  \
-           ( char * ) "10" , ( char * ) "11" , ( char * ) "12" , ( char * ) "13" ,  \
-           ( char * ) "14" , ( char * ) "15" , ( char * ) "16" , ( char * ) "17" ,  \
-           ( char * ) "18" , ( char * ) "19" , ( char * ) "20" , ( char * ) "21" ,  \
-           ( char * ) "22" , ( char * ) "23" , ( char * ) "24" , ( char * ) "25" ,  \
-           ( char * ) "26" , ( char * ) "27" , ( char * ) "28" , ( char * ) "29" ,  \
-           ( char * ) "30" , ( char * ) "31" , ( char * ) "32" , ( char * ) "33" ,  \
-           ( char * ) "34" , ( char * ) "35" , ( char * ) "36" , ( char * ) "37" ,  \
-           ( char * ) "38" , ( char * ) "39" , ( char * ) "40" , ( char * ) "41" ,  \
-           ( char * ) "42" , ( char * ) "43" , ( char * ) "44" , ( char * ) "45" ,  \
-           ( char * ) "46" , ( char * ) "47" , ( char * ) "48" , ( char * ) "49" ,  \
-           ( char * ) "50" , ( char * ) "51" , ( char * ) "52" , ( char * ) "53" ,  \
-           ( char * ) "54" , ( char * ) "55" , ( char * ) "56" , ( char * ) "57" ,  \
-           ( char * ) "58" , ( char * ) "59" , ( char * ) "60" , ( char * ) "61" ,  \
-           ( char * ) "62" , ( char * ) "63" , NULL };
+           ( char * ) "0" , ( char * ) "1" , ( char * ) "2" , \
+           ( char * ) "3" , ( char * ) "4" , \
+           ( char * ) "5" , ( char * ) "6" , ( char * ) "7" , \
+           ( char * ) "8" , ( char * ) "9" , \
+           ( char * ) "10" , ( char * ) "11" , ( char * ) "12" , ( char * ) "13" , \
+           ( char * ) "14" , ( char * ) "15" , ( char * ) "16" , ( char * ) "17" , \
+           ( char * ) "18" , ( char * ) "19" , ( char * ) "20" , ( char * ) "21" , \
+           ( char * ) "22" , ( char * ) "23" , ( char * ) "24" , ( char * ) "25" , \
+           ( char * ) "26" , ( char * ) "27" , ( char * ) "28" , ( char * ) "29" , \
+           ( char * ) "30" , ( char * ) "31" , ( char * ) "32" , ( char * ) "33" , \
+           ( char * ) "34" , ( char * ) "35" , ( char * ) "36" , ( char * ) "37" , \
+           ( char * ) "38" , ( char * ) "39" , ( char * ) "40" , ( char * ) "41" , \
+           ( char * ) "42" , ( char * ) "43" , ( char * ) "44" , ( char * ) "45" , \
+           ( char * ) "46" , ( char * ) "47" , ( char * ) "48" , ( char * ) "49" , \
+           ( char * ) "50" , ( char * ) "51" , ( char * ) "52" , ( char * ) "53" , \
+           ( char * ) "54" , ( char * ) "55" , ( char * ) "56" , ( char * ) "57" , \
+           ( char * ) "58" , ( char * ) "59" , ( char * ) "60" , ( char * ) "61" , \
+       ( char * ) "62" , ( char * ) "63" , NULL };
       void *xpm0 [ ] = {
-      NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL };
-          
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+      NULL , NULL , NULL , NULL , NULL , NULL };
       int bkgr0 [ ] = {
-      0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 , 30 , 31 , 32 , 33 , 34 , 35 , 36 , 37 , 38 , 39 , 40 , 41 , 42 , 43 , 44 , 45 , 46 , 47 , 48 , 49 , 50 , 51 , 52 , 53 , 54 , 55 , 56 , 57 , 58 , 59 , 60 , 61 , 62 , 63 , -1 };
-          
+          0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , \
+          17 , 18 , 19 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 , 30 , 31 , \
+          32 , 33 , 34 , 35 , 36 , 37 , 38 , 39 , 40 , 41 , 42 , 43 , 44 , 45 , 46 , \
+          47 , 48 , 49 , 50 , 51 , 52 , 53 , 54 , 55 , 56 , \
+      57 , 58 , 59 , 60 , 61 , 62 , 63 , -1 };
       char *butncode0 = NULL;
-      int sw0 [ ] = {1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1};
-          
+      int sw0 [ ] = {1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , \
+          1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , \
+          1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , \
+      1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1};
       DIB n0 = {
-          'b' , 6 , 4 , 339 , 331 , 0 , 0 , 40 , 40 , 8 , 8 , ( int * ) v0 , sw0 , titles0 , butncode0 , NULL , NULL , xpm0 , bkgr0 , /* pointers to xpms and colors */
+          'b' , 6 , 4 , 339 , 331 , 0 , 0 , 40 , 40 , 8 , 8 , ( int * ) v0 , sw0 , \
+          titles0 , butncode0 , NULL , NULL , xpm0 , bkgr0 , \
+               /* pointers to xpms and colors */
           1 , 0.200000 /* button type and roundinfg factor ( 0-0.5 ) */
       };
       d [ 0 ] .b = & n0;
@@ -871,8 +897,9 @@
       ret = kgUi ( & D ) ;
       return ret;
   }
-  int kgGetColor_o ( void *parent , int xo , int yo , int *r , int *g , int *b )  \
-      {
+  int kgGetColor_o ( void *parent , int xo , \
+  int yo , int *r , int *g , int *b ) \
+  {
 /*************************************************
 
     Buttonbox1 (new) 1 data value
@@ -896,8 +923,8 @@
       r = uiGetDslide ( Tmp , 1 ) ;
       g = uiGetDslide ( Tmp , 2 ) ;
       b = uiGetDslide ( Tmp , 3 ) ;
-      if ( ( abs ( r-ioldclr [ 3 ] ) +abs ( g-ioldclr [ 4 ] ) +abs  \
-          ( b-ioldclr [ 5 ] ) ) < 5 ) return;
+      if ( ( abs ( r-ioldclr [ 3 ] ) +abs ( g-ioldclr [ 4 ] ) +abs \
+       ( b-ioldclr [ 5 ] ) ) < 5 ) return;
       ioldclr [ 3 ] = r; ioldclr [ 4 ] = g; ioldclr [ 5 ] = b;
       tmpdir = kgMakeTmpDir ( ) ;
       sprintf ( flname , "%-s/Tmp.gph" , tmpdir ) ;
@@ -958,8 +985,8 @@
       r = uiGetDslide ( Tmp , 1 ) ;
       g = uiGetDslide ( Tmp , 2 ) ;
       b = uiGetDslide ( Tmp , 3 ) ;
-      if ( ( abs ( r-ioldclr [ 3 ] ) +abs ( g-ioldclr [ 4 ] ) +abs  \
-          ( b-ioldclr [ 5 ] ) ) < 5 ) return;
+      if ( ( abs ( r-ioldclr [ 3 ] ) +abs ( g-ioldclr [ 4 ] ) +abs \
+       ( b-ioldclr [ 5 ] ) ) < 5 ) return;
       ioldclr [ 3 ] = r; ioldclr [ 4 ] = g; ioldclr [ 5 ] = b;
       p5 = ( DIP * ) uiGetWidget ( Tmp , 5 ) ;
       uiFreeImage ( p5->xpm ) ;
@@ -1108,49 +1135,81 @@
       }
       return ret;
   }
-  int _uiGetColor ( void *parent , int xo , int yo , void *v1 , void *v2 , void *v3 )  \
-      {
+  int _uiGetColor ( void *parent , int xo , int yo , \
+  void *v1 , void *v2 , void *v3 ) \
+  {
       int ret = 1;
       int v0 = 1;
       int ioldclr [ 6 ] ;
       DIALOG D;
       DIA d [ 13 ] ;
       char *titles0 [ ] = {
-       ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" ,  \
-           ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" ,  \
-           ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" ,  \
-           ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" ,  \
-           ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" ,  \
-           ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" ,  \
-           ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" ,  \
-           ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" ,  \
-           ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" ,  \
-           ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" ,  \
-           ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" ,  \
-           ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" ,  \
-           ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , NULL };
+           ( char * ) "" , ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , ( char * ) "" , \
+           ( char * ) "" , ( char * ) "" , \
+       ( char * ) "" , ( char * ) "" , ( char * ) "" , ( char * ) "" , NULL };
       void *xpm0 [ ] = {
-      NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL };
-          
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+      NULL , NULL , NULL , NULL , NULL };
       int bkgr0 [ ] = {
-      0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 , 30 , 31 , 32 , 33 , 34 , 35 , 36 , 37 , 38 , 39 , 40 , 41 , 42 , 43 , 44 , 45 , 46 , 47 , 48 , 49 , 50 , 51 , 52 , 53 , 54 , 55 , 56 , 57 , 58 , 59 , 60 , 61 , 62 , 63 , -1 };
-          
+          0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , \
+          17 , 18 , 19 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 , 30 , 31 , \
+          32 , 33 , 34 , 35 , 36 , 37 , 38 , 39 , 40 , 41 , 42 , 43 , 44 , 45 , 46 , \
+          47 , 48 , 49 , 50 , 51 , 52 , 53 , 54 , 55 , 56 , \
+      57 , 58 , 59 , 60 , 61 , 62 , 63 , -1 };
       char *butncode0 = NULL;
-      int sw0 [ ] = {1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1};
-          
+      int sw0 [ ] = {1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , \
+          1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , \
+          1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , \
+      1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1};
       DIB n0 = {
-          'b' , 23 , 16 , 290 , 279 , 0 , 0 , 32 , 32 , 8 , 8 , ( int * ) & v0 , sw0 , titles0 , butncode0 , NULL , GetColorbutnbox1callback , /* args , Callbak */
+          'b' , 23 , 16 , 290 , 279 , 0 , 0 , 32 , 32 , 8 , 8 , ( int * ) & v0 , sw0 , \
+          titles0 , butncode0 , NULL , GetColorbutnbox1callback , /* args , Callbak */
           xpm0 , bkgr0 , /* pointers to xpms and colors */
           1 , 0.000000 /* button type and roundinfg factor ( 0-0.5 ) */
       };
       DID d1 = {
-          'd' , 335 , 20 , 435 , 65 , 0 , 255 , 52 , ( int * ) v1 , ( char * ) "" , NULL , GetColordslide1callback /* *args , callback */
+          'd' , 335 , 20 , 435 , 65 , 0 , 255 , 52 , ( int * ) v1 , ( char * ) "" , \
+          NULL , GetColordslide1callback /* *args , callback */
       };
       DID d2 = {
-          'd' , 335 , 66 , 435 , 112 , 0 , 255 , 52 , ( int * ) v2 , ( char * ) "" , NULL , GetColordslide2callback /* *args , callback */
+          'd' , 335 , 66 , 435 , 112 , 0 , 255 , 52 , ( int * ) v2 , ( char * ) "" , \
+          NULL , GetColordslide2callback /* *args , callback */
       };
       DID d3 = {
-          'd' , 335 , 113 , 435 , 158 , 0 , 255 , 52 , ( int * ) v3 , ( char * ) "" , NULL , GetColordslide3callback /* *args , callback */
+          'd' , 335 , 113 , 435 , 158 , 0 , 255 , 52 , ( int * ) v3 , ( char * ) "" , \
+          NULL , GetColordslide3callback /* *args , callback */
       };
       DIP p4 = {
           'p' , 320 , 185 , 370 , 235 , NULL , // Pixmap info
@@ -1182,7 +1241,8 @@
       -1 , -1 , -1 };
       char *butncode9 = NULL;
       DILN H9 = {
-          'H' , 309 , 241 , 439 , 272 , 4 , 0 , 60 , 25 , 2 , 1 , & butn1 , sw9 , titles9 , butncode9 , NULL , GetColorhoribar1callback , /* arg , Callbak */
+          'H' , 309 , 241 , 439 , 272 , 4 , 0 , 60 , 25 , 2 , 1 , & butn1 , sw9 , \
+          titles9 , butncode9 , NULL , GetColorhoribar1callback , /* arg , Callbak */
           xpm9 , bkgr9 , /* pointers to xpms and colors */
           6 , 0.250000 /* button type and roundinfg factor ( 0-0.5 ) */
        , 0 };
@@ -1321,8 +1381,8 @@
       int k , ln;
       k = 0;
       if ( strlen ( m ) == size ) {
-          if ( ( m [ size-3 ] == '.' ) && ( m [ size-2 ] == '.' ) &&  \
-              ( m [ size-1 ] == '.' ) ) {
+          if ( ( m [ size-3 ] == '.' ) && ( m [ size-2 ] == '.' ) && \
+           ( m [ size-1 ] == '.' ) ) {
               m [ size ] = '.';
               ln = strlen ( m ) ;
               m [ size-3 ] = m [ ln+1 ] ;
@@ -1356,8 +1416,8 @@
       int k , ln;
       k = 0;
       if ( strlen ( m ) == size ) {
-          if ( ( m [ size-3 ] == '.' ) && ( m [ size-2 ] == '.' ) &&  \
-              ( m [ size-1 ] == '.' ) ) {
+          if ( ( m [ size-3 ] == '.' ) && ( m [ size-2 ] == '.' ) && \
+           ( m [ size-1 ] == '.' ) ) {
               m [ size ] = '.';
               ln = strlen ( m ) ;
               m [ size-3 ] = m [ ln+1 ] ;
@@ -1379,6 +1439,16 @@
       }
       return;
   }
+  static void arrange ( char **m , int n ) {
+      int i , j;
+      char *pt;
+      for ( i = 0;i < n-1;i++ ) {
+          for ( j = i+1;j < n;j++ ) {
+              if ( strcmp ( m [ i ] , m [ j ] ) > 0 ) {pt = m [ j ] ;
+              m [ j ] = m [ i ] ;m [ i ] = pt;}
+          }
+      }
+  }
   char ** _uiFolderMenu ( char *d_name ) {
       DIR *dp;
       char **menu , *item;
@@ -1389,7 +1459,7 @@
       char buf [ 500 ] ;
       dp = opendir ( d_name ) ;
       if ( dp == NULL ) {
-          printf ( "No such dir:%s\n" , d_name ) ;
+//          printf ( "No such dir:%s\n" , d_name ) ;
           return NULL;
       }
       L = Dopen ( ) ;
@@ -1426,6 +1496,73 @@
   char ** kgFolderMenu ( char *d_name ) {
       return _uiFolderMenu ( d_name ) ;
   }
+  Dlink *uiFolderTree(char *Folder) {
+     char **Fpt;
+     void *pt;
+     char *dpt;
+     char SubFolder[1000];
+     int i;
+     Dlink *L, *LD;
+     Fpt = _uiFolderMenu(Folder);
+     if(Fpt == NULL) return NULL;
+     if(Fpt[0]== NULL) {free(Fpt);return NULL;}
+//     if(Fpt[0]=='\0') {kgFreeDouble(Fpt); return NULL;}
+     if(Fpt[0][0]=='\0') {free(Fpt); return NULL;}
+     i=0;
+     L = Dopen();
+     while(Fpt[i]!= NULL) {
+        strcpy(SubFolder,Folder); 
+        strcat(SubFolder,"/");
+        strcat(SubFolder,Fpt[i]);   
+        dpt = (char *)malloc(strlen(SubFolder)+1);
+        strcpy(dpt,SubFolder);
+//        printf("SubFolder: %s\n",SubFolder);
+        Dadd(L,dpt);
+        LD = uiFolderTree(SubFolder);
+        if(LD != NULL) {        
+           Resetlink(LD);          
+           while ((pt=Getrecord(LD))!= NULL) {
+             Dadd(L,pt);
+           }
+           Dfree(LD);
+        }
+        i++;
+     }
+     return L;    
+  }
+  char **kgFolderTree(char *Folder) {
+     char **ret=NULL;
+     int i=0;
+     char *pt;
+      DIR *dp;
+      dp = opendir ( Folder ) ;
+      if ( dp == NULL ) {
+//        printf ( "No such dir:%s\n" , d_name ) ;
+          closedir ( dp ) ;
+          return NULL;
+      }
+     Dlink *L = uiFolderTree(Folder);
+     if(L != NULL) {
+         ret = (char **)malloc(sizeof(char *)*(Dcount(L)+2));
+         ret[0]= (char *)malloc(strlen(Folder)+1);
+         strcpy(ret[0],Folder);
+         Resetlink(L);         
+         i=1;
+         while( (pt=(char *)Getrecord(L)) != NULL) {
+            ret[i++] = pt;
+//            printf("%s\n",pt);
+         }
+         ret[i]=NULL;
+         Dfree(L);
+     }
+     else {
+         ret = (char **)malloc(sizeof(char *)*(2));
+         ret[0]= (char *)malloc(strlen(Folder)+1);
+         strcpy(ret[0],Folder);
+         ret[1]=NULL;
+     }
+     return ret;
+  }
   int FileBrowsertextbox1callback ( int key , int i , void *Tmp ) {
       int k , ln;
       DIRS *dirs;
@@ -1460,8 +1597,8 @@
       folder = Dgetmenustring ( Tmp , i ) ;
       uiRestoreString ( folder , 35 ) ;
       strcat ( dirs->CurDir , folder ) ;
-      uiinfo_wprintf ( ( DIALOG * ) Tmp , ( ( DIALOG * ) Tmp )->d [ 1 ] .i->twin , dirs->CurDir ) ;
-          
+      uiinfo_wprintf ( ( DIALOG * ) Tmp , ( ( DIALOG * ) Tmp )->d [ 1 ] .i->twin , \
+      dirs->CurDir ) ;
       m = _uiFolderMenu ( dirs->CurDir ) ;
       uiTruncateString ( m , 35 ) ;
       dir = m;
@@ -1532,11 +1669,11 @@
       switch ( key ) {
           case 1:
           k = strlen ( dirs->CurDir ) ;
-          while ( ( dirs->CurDir [ k ] != '/' ) && ( k > 1 ) )  \
-              {dirs->CurDir [ k ] = '\0';k--;}
+          while ( ( dirs->CurDir [ k ] != '/' ) && ( k > 1 ) ) \
+          {dirs->CurDir [ k ] = '\0';k--;}
           dirs->CurDir [ k ] = '\0';
-          uiinfo_wprintf ( ( DIALOG * ) Tmp , ( ( DIALOG * ) Tmp )->d [ 1 ] .i->twin , dirs->CurDir ) ;
-              
+          uiinfo_wprintf ( ( DIALOG * ) Tmp , ( ( DIALOG * ) Tmp )->d [ 1 ] .i->twin , \
+          dirs->CurDir ) ;
           m = _uiFolderMenu ( dirs->CurDir ) ;
           uiTruncateString ( m , 35 ) ;
           dir = m;
@@ -1575,8 +1712,8 @@
       switch ( key ) {
           case 1:
           strcpy ( dirs->CurDir , dirs->HomeDir ) ;
-          uiinfo_wprintf ( ( DIALOG * ) Tmp , ( ( DIALOG * ) Tmp )->d [ 1 ] .i->twin , dirs->CurDir ) ;
-              
+          uiinfo_wprintf ( ( DIALOG * ) Tmp , ( ( DIALOG * ) Tmp )->d [ 1 ] .i->twin , \
+          dirs->CurDir ) ;
           m = _uiFolderMenu ( dirs->CurDir ) ;
           uiTruncateString ( m , 35 ) ;
           dir = m;
@@ -1633,25 +1770,26 @@
       }
       return 1;
   }
-char * kgGetFolderName ( char *flname ) {
+  char * kgGetFolderName ( char *flname ) {
       int i , j;
-      char basename[500];
-      char *fpt=NULL;
+      char basename [ 500 ] ;
+      char *fpt = NULL;
       i = 0;
       i = strlen ( flname ) ;
       i--;
       while ( flname [ i ] != '/' ) { i--; if ( i < 0 ) break; }
       i++;
-      if(i!=0) {          
-        strcpy(basename,flname);
-        basename[i]='\0';
-        fpt = (char *) malloc(strlen(basename)+1);
-        strcpy(fpt,basename);
+      if ( i != 0 ) {
+          strcpy ( basename , flname ) ;
+          basename [ i ] = '\0';
+          fpt = ( char * ) malloc ( strlen ( basename ) +1 ) ;
+          strcpy ( fpt , basename ) ;
       }
       return fpt;
   }
-  int kgFolderBrowser ( void *parent , int xo , int yo , char *flname , char *fltr )  \
-      {
+  int kgFolderBrowser ( void *parent , int xo , \
+  int yo , char *flname , char *fltr ) \
+  {
       int v2 = 1 , v3 = 1;
       int v4 = 1 , v5 = 1;
       int ret = 1;
@@ -1663,20 +1801,23 @@ char * kgGetFolderName ( char *flname ) {
       char filter [ 300 ] , w_file [ 300 ] = {" "};
       DIRS Dir;
       T_ELMT e0 [ 2 ] = {
-          {"File Name:%30s" , flname , 1 , 0 , NULL} ,  \
-              {"Filter   :%30s" , fltr , 1 , 0 , NULL}
+          {"File Name:%30s" , flname , 1 , 0 , NULL} , \
+          {"Filter   :%30s" , fltr , 1 , 0 , NULL}
       };
       DIT t0 = {
-          't' , 20 , 18 , 439 , 88 , 24 , 1 , 2 , e0 , 1 , 1 , NULL , FileBrowsertextbox1callback /* args , Call back */
+          't' , 20 , 18 , 439 , 88 , 24 , 1 , 2 , e0 , 1 , 1 , NULL , \
+          FileBrowsertextbox1callback /* args , Call back */
       };
       t0.type = 1;
       DII i1 = {
       'i' , 15 , 94 , 489 , 127 , 65 , 1 };
       DIE w2 = {
-          'e' , 7 , 137 , 310 , 400 , 8 , & v2 , "" , NULL , NULL , FileBrowserbrowser1callback , /* *args , callback */
+          'e' , 7 , 137 , 310 , 400 , 8 , & v2 , "" , NULL , NULL , \
+          FileBrowserbrowser1callback , /* *args , callback */
       24 , 6 , 24 , 1 , 1 , 1 , 0 };
       DIE w3 = {
-          'e' , 310 , 137 , 630 , 400 , 8 , & v3 , "" , NULL , NULL , FileBrowserbrowser2callback , /* *args , callback */
+          'e' , 310 , 137 , 630 , 400 , 8 , & v3 , "" , NULL , NULL , \
+          FileBrowserbrowser2callback , /* *args , callback */
       24 , 6 , 24 , 1 , 1 , 1 , 0 };
       int butn1 = 1;
       int sw4 [ 2 ] = {
@@ -1693,7 +1834,9 @@ char * kgGetFolderName ( char *flname ) {
       -1 , -1 , -1 };
       char *butncode4 = NULL;
       DILN H4 = {
-          'H' , 258 , 408 , 384 , 471 , 9 , 0 , 54 , 54 , 2 , 1 , & butn1 , sw4 , titles4 , butncode4 , NULL , FileBrowserhoribar1callback , /* arg , Callbak */
+          'H' , 258 , 408 , 384 , 471 , 9 , 0 , 54 , 54 , 2 , 1 , & butn1 , sw4 , \
+          titles4 , butncode4 , NULL , FileBrowserhoribar1callback , \
+               /* arg , Callbak */
           xpm4 , bkgr4 /* pointers to xpms and colors */
        , 4 , 0.2 };
       char *titles5 [ ] = {
@@ -1705,9 +1848,10 @@ char * kgGetFolderName ( char *flname ) {
       -1 , -1 };
       char *butncode5 = NULL;
       int sw5 [ ] = {1 , 1};
-      char *fpt=NULL;
+      char *fpt = NULL;
       DIB n5 = {
-          'b' , 465 , 28 , 520 , 83 , 9 , 9 , 45 , 45 , 1 , 1 , & v4 , sw5 , titles5 , butncode5 , NULL , FileBrowserbutnbox1callback , /* args , Callbak */
+          'b' , 465 , 28 , 520 , 83 , 9 , 9 , 45 , 45 , 1 , 1 , & v4 , sw5 , titles5 , \
+          butncode5 , NULL , FileBrowserbutnbox1callback , /* args , Callbak */
           xpm5 , bkgr5 /* pointers to xpms and colors */
        , 2 , 0.5 };
       char *titles6 [ ] = {
@@ -1719,14 +1863,15 @@ char * kgGetFolderName ( char *flname ) {
       -1 , -1 };
       char *butncode6 = NULL;
       DIB n6 = {
-          'b' , 521 , 28 , 576 , 83 , 9 , 9 , 45 , 45 , 1 , 1 , & v5 , sw5 , titles6 , butncode6 , NULL , FileBrowserbutnbox2callback , /* args , Callbak */
+          'b' , 521 , 28 , 576 , 83 , 9 , 9 , 45 , 45 , 1 , 1 , & v5 , sw5 , titles6 , \
+          butncode6 , NULL , FileBrowserbutnbox2callback , /* args , Callbak */
           xpm6 , bkgr6 /* pointers to xpms and colors */
        , 2 , 0.5 };
-      fpt = kgGetFolderName(flname);
-      if(fpt != NULL) if(fpt[0]< ' ') {free(fpt);fpt=NULL;} 
-      if(fpt != NULL) {
-         strcpy(Dir.HomeDir ,fpt);
-         free(fpt);
+      fpt = kgGetFolderName ( flname ) ;
+      if ( fpt != NULL ) if ( fpt [ 0 ] < ' ' ) {free ( fpt ) ;fpt = NULL;}
+      if ( fpt != NULL ) {
+          strcpy ( Dir.HomeDir , fpt ) ;
+          free ( fpt ) ;
       }
       else if ( getcwd ( Dir.HomeDir , 499 ) == NULL ) return -1;
 //  strcpy(CurDir,HomeDir);
@@ -1940,7 +2085,8 @@ char * kgGetFolderName ( char *flname ) {
           {"File Name%30s" , v0 , 1 , 0 , NULL} , {"Filter   %30s" , v1 , 1 , 0 , NULL}
       };
       DIT t0 = {
-          't' , 17 , 13 , 427 , 83 , 20 , 1 , 2 , e0 , 1 , 1 , NULL , filebrowsertextbox1callback /* args , Call back */
+          't' , 17 , 13 , 427 , 83 , 20 , 1 , 2 , e0 , 1 , 1 , NULL , \
+          filebrowsertextbox1callback /* args , Call back */
       };
       t0.type = 0;
       int butn1 = 1;
@@ -1954,11 +2100,14 @@ char * kgGetFolderName ( char *flname ) {
       -1 , -1 , -1 };
       char *butncode1 = NULL;
       DILN H1 = {
-          'H' , 120 , 296 , 308 , 334 , 20 , 0 , 80 , 30 , 2 , 1 , & butn1 , sw1 , titles1 , butncode1 , NULL , filebrowserhoribar1callback , /* arg , Callbak */
+          'H' , 120 , 296 , 308 , 334 , 20 , 0 , 80 , 30 , 2 , 1 , & butn1 , sw1 , \
+          titles1 , butncode1 , NULL , filebrowserhoribar1callback , \
+               /* arg , Callbak */
           xpm1 , bkgr1 /* pointers to xpms and colors */
        , 2 , 0.2 };
       DIE w2 = {
-          'e' , 19 , 90 , 428 , 294 , 7 , & v2 , "" , NULL , NULL , filebrowserbrowser1callback , /* *args , callback */
+          'e' , 19 , 90 , 428 , 294 , 7 , & v2 , "" , NULL , NULL , \
+          filebrowserbrowser1callback , /* *args , callback */
       20 , 6 , 22 , 1 , 1 , 1 , 0 };
       getcwd ( d_name , 149 ) ;
 //  printf("Dir: %s\n",d_name);
@@ -2018,8 +2167,10 @@ char * kgGetFolderName ( char *flname ) {
       ret = ret%2;
       return ret;
   }
-  int _ui_setattrib ( void *parent , int xo , int yo , void *v0 , void *v1 , void *v2 , void *v3 , void *v4 , void *v5 , void *v6 , void *v7 , void *v14 )  \
-      {
+  int _ui_setattrib ( void *parent , int xo , int yo , void *v0 , void *v1 , \
+  void *v2 , void *v3 , void *v4 , void *v5 , \
+  void *v6 , void *v7 , void *v14 ) \
+  {
       int ret = 1;
       DIALOG D;
       DIA d [ 3 ] ;
@@ -2031,13 +2182,18 @@ char * kgGetFolderName ( char *flname ) {
 //    {"Text pattern   %2d", v12, 1},
 //    {"Border width   %2d", v13, 1},
 //    {"Arrow size     %2d", v15, 1}
-      {"Line Style     %2d" , v0 , 1 , 0 , NULL} , {"Line color     %2d" , v1 , 1 , 0 , NULL} ,  \
-          {"Line Width     %2d" , v2 , 1 , 0 , NULL} , {"Marker Type    %2d" , v3 , 1 , 0 , NULL} ,  \
-          {"Wipe/Fill color%2d" , v4 , 1 , 0 , NULL} , {"Text color     %2d" , v5 , 1 , 0 , NULL} ,  \
-          {"Text font      %2d" , v6 , 1 , 0 , NULL} , {"Text angle     %3d" , v7 , 1 , 0 , NULL} ,  \
-          {"Border color   %2d" , v14 , 1} , };
+          {"Line Style     %2d" , v0 , 1 , 0 , NULL} , {"Line color     %2d" , \
+          v1 , 1 , 0 , NULL} , \
+          {"Line Width     %2d" , v2 , 1 , 0 , NULL} , {"Marker Type    %2d" , \
+          v3 , 1 , 0 , NULL} , \
+          {"Wipe/Fill color%2d" , v4 , 1 , 0 , NULL} , {"Text color     %2d" , \
+          v5 , 1 , 0 , NULL} , \
+          {"Text font      %2d" , v6 , 1 , 0 , NULL} , {"Text angle     %3d" , \
+          v7 , 1 , 0 , NULL} , \
+      {"Border color   %2d" , v14 , 1} , };
       DIT t0 = {
-          't' , 11 , 8 , 235 , 301 , 20 , 1 , 9 , e0 , 1 , 1 , NULL , NULL /* args , Call back */
+          't' , 11 , 8 , 235 , 301 , 20 , 1 , 9 , e0 , 1 , \
+          1 , NULL , NULL /* args , Call back */
       };
       t0.type = 0;
       int butn1 = 1;
@@ -2051,7 +2207,8 @@ char * kgGetFolderName ( char *flname ) {
       -1 , -1 };
       char *butncode1 = NULL;
       DILN H1 = {
-          'H' , 94 , 319 , 170 , 365 , 9 , 0 , 60 , 30 , 1 , 1 , & butn1 , sw1 , titles1 , butncode1 , NULL , NULL , /* arg , Callbak */
+          'H' , 94 , 319 , 170 , 365 , 9 , 0 , 60 , 30 , 1 , 1 , & butn1 , \
+          sw1 , titles1 , butncode1 , NULL , NULL , /* arg , Callbak */
           xpm1 , bkgr1 /* pointers to xpms and colors */
        , 2 , 0.2 };
       d [ 0 ] .t = & t0;
@@ -2341,8 +2498,10 @@ char * kgGetFolderName ( char *flname ) {
       }
       return ret;
   }
-  int kgAttibDia ( void *parent , void *v0 , void *v1 , void *v2 , void *v3 , void *v4 , void *v5 , void *v6 , void *v7 , void *v8 , void *v9 , void *v10 , void *v11 , void *v12 , void *v13 , void *ptrs )  \
-      {
+  int kgAttibDia ( void *parent , void *v0 , void *v1 , void *v2 , void *v3 , \
+  void *v4 , void *v5 , void *v6 , void *v7 , void *v8 , void *v9 , \
+  void *v10 , void *v11 , void *v12 , void *v13 , void *ptrs ) \
+  {
       int ret = 1;
       DIALOG D;
       DIA d [ 16 ] ;
@@ -2350,7 +2509,8 @@ char * kgGetFolderName ( char *flname ) {
           { ( char * ) "Line Color%3d" , v0 , 1 , 0 , NULL}
       };
       DIT t0 = {
-          't' , 64 , 26 , 240 , 66 , 20 , 1 , 1 , e0 , 1 , 1 , NULL , kgAttibDiatextbox1callback /* args , Call back */
+          't' , 64 , 26 , 240 , 66 , 20 , 1 , 1 , e0 , 1 , 1 , NULL , \
+          kgAttibDiatextbox1callback /* args , Call back */
       };
       t0.type = 0;
       char *titles1 [ ] = {
@@ -2363,7 +2523,9 @@ char * kgGetFolderName ( char *flname ) {
       int sw1 [ ] = {1 , 1};
       char *butncode1 = NULL;
       DIB n1 = {
-          'b' , 238 , 31 , 300 , 63 , 0 , 0 , 54 , 24 , 1 , 1 , ( int * ) v1 , sw1 , titles1 , butncode1 , NULL , kgAttibDiabutnbox1callback , /* args , Callbak */
+          'b' , 238 , 31 , 300 , 63 , 0 , 0 , 54 , 24 , 1 , 1 , ( int * ) v1 , sw1 , \
+          titles1 , butncode1 , NULL , kgAttibDiabutnbox1callback , \
+               /* args , Callbak */
           xpm1 , bkgr1 , /* pointers to xpms and colors */
           2 , 0.200000 /* button type and roundinfg factor ( 0-0.5 ) */
       };
@@ -2371,7 +2533,8 @@ char * kgGetFolderName ( char *flname ) {
           { ( char * ) "Wipe/Fill Color%3d" , v2 , 1 , 0 , NULL}
       };
       DIT t2 = {
-          't' , 18 , 65 , 241 , 102 , 20 , 1 , 1 , e2 , 1 , 1 , NULL , kgAttibDiatextbox2callback /* args , Call back */
+          't' , 18 , 65 , 241 , 102 , 20 , 1 , 1 , e2 , 1 , 1 , NULL , \
+          kgAttibDiatextbox2callback /* args , Call back */
       };
       t2.type = 0;
       char *titles3 [ ] = {
@@ -2384,7 +2547,9 @@ char * kgGetFolderName ( char *flname ) {
       char *butncode3 = NULL;
       int sw3 [ ] = {1 , 1};
       DIB n3 = {
-          'b' , 238 , 69 , 300 , 101 , 0 , 0 , 54 , 24 , 1 , 1 , ( int * ) v3 , sw3 , titles3 , butncode3 , NULL , kgAttibDiabutnbox2callback , /* args , Callbak */
+          'b' , 238 , 69 , 300 , 101 , 0 , 0 , 54 , 24 , 1 , 1 , ( int * ) v3 , sw3 , \
+          titles3 , butncode3 , NULL , kgAttibDiabutnbox2callback , \
+               /* args , Callbak */
           xpm3 , bkgr3 , /* pointers to xpms and colors */
           2 , 0.200000 /* button type and roundinfg factor ( 0-0.5 ) */
       };
@@ -2392,14 +2557,16 @@ char * kgGetFolderName ( char *flname ) {
           { ( char * ) "Text Color%3d" , v4 , 1 , 0 , NULL}
       };
       DIT t4 = {
-          't' , 64 , 101 , 240 , 141 , 20 , 1 , 1 , e4 , 1 , 1 , NULL , kgAttibDiatextbox3callback /* args , Call back */
+          't' , 64 , 101 , 240 , 141 , 20 , 1 , 1 , e4 , 1 , 1 , NULL , \
+          kgAttibDiatextbox3callback /* args , Call back */
       };
       t4.type = 0;
       T_ELMT e5 [ 1 ] = {
           { ( char * ) "Border Color%3d" , v5 , 1 , 0 , NULL}
       };
       DIT t5 = {
-          't' , 46 , 141 , 240 , 181 , 20 , 1 , 1 , e5 , 1 , 1 , NULL , kgAttibDiatextbox4callback /* args , Call back */
+          't' , 46 , 141 , 240 , 181 , 20 , 1 , 1 , e5 , 1 , 1 , NULL , \
+          kgAttibDiatextbox4callback /* args , Call back */
       };
       t5.type = 0;
       char *titles6 [ ] = {
@@ -2412,7 +2579,9 @@ char * kgGetFolderName ( char *flname ) {
       char *butncode6 = NULL;
       int sw6 [ ] = {1 , 1};
       DIB n6 = {
-          'b' , 238 , 103 , 300 , 135 , 0 , 0 , 54 , 24 , 1 , 1 , ( int * ) v6 , sw6 , titles6 , butncode6 , NULL , kgAttibDiabutnbox3callback , /* args , Callbak */
+          'b' , 238 , 103 , 300 , 135 , 0 , 0 , 54 , 24 , 1 , 1 , ( int * ) v6 , sw6 , \
+          titles6 , butncode6 , NULL , kgAttibDiabutnbox3callback , \
+               /* args , Callbak */
           xpm6 , bkgr6 , /* pointers to xpms and colors */
           2 , 0.200000 /* button type and roundinfg factor ( 0-0.5 ) */
       };
@@ -2425,7 +2594,9 @@ char * kgGetFolderName ( char *flname ) {
       -1 , -1 };
       char *butncode7 = NULL;
       DIB n7 = {
-          'b' , 238 , 143 , 300 , 175 , 0 , 0 , 54 , 24 , 1 , 1 , ( int * ) v7 , sw6 , titles7 , butncode7 , NULL , kgAttibDiabutnbox4callback , /* args , Callbak */
+          'b' , 238 , 143 , 300 , 175 , 0 , 0 , 54 , 24 , 1 , 1 , ( int * ) v7 , sw6 , \
+          titles7 , butncode7 , NULL , kgAttibDiabutnbox4callback , \
+               /* args , Callbak */
           xpm7 , bkgr7 , /* pointers to xpms and colors */
           2 , 0.200000 /* button type and roundinfg factor ( 0-0.5 ) */
       };
@@ -2433,7 +2604,8 @@ char * kgGetFolderName ( char *flname ) {
           { ( char * ) "Text Font%3d" , v8 , 1 , 0 , NULL}
       };
       DIT t8 = {
-          't' , 73 , 181 , 240 , 221 , 20 , 1 , 1 , e8 , 1 , 1 , NULL , kgAttibDiatextbox5callback /* args , Call back */
+          't' , 73 , 181 , 240 , 221 , 20 , 1 , 1 , e8 , 1 , 1 , NULL , \
+          kgAttibDiatextbox5callback /* args , Call back */
       };
       t8.type = 0;
       char *titles9 [ ] = {
@@ -2445,47 +2617,56 @@ char * kgGetFolderName ( char *flname ) {
       -1 , -1 };
       char *butncode9 = NULL;
       DIB n9 = {
-          'b' , 239 , 184 , 301 , 216 , 0 , 0 , 54 , 24 , 1 , 1 , ( int * ) v9 , sw6 , titles9 , butncode9 , NULL , kgAttibDiabutnbox5callback , /* args , Callbak */
+          'b' , 239 , 184 , 301 , 216 , 0 , 0 , 54 , 24 , 1 , 1 , ( int * ) v9 , sw6 , \
+          titles9 , butncode9 , NULL , kgAttibDiabutnbox5callback , \
+               /* args , Callbak */
           xpm9 , bkgr9 , /* pointers to xpms and colors */
           2 , 0.200000 /* button type and roundinfg factor ( 0-0.5 ) */
       };
       char *menu10 [ ] = {
-       ( char * ) "0" , ( char * ) "1" , ( char * ) "2" , ( char * ) "3" ,  \
-           ( char * ) "4" , ( char * ) "5" , NULL };
+           ( char * ) "0" , ( char * ) "1" , ( char * ) "2" , ( char * ) "3" , \
+       ( char * ) "4" , ( char * ) "5" , NULL };
       DIW w10 = {
-          'w' , 317 , 31 , 475 , 60 , 4 , ( int * ) v10 , ( char * ) "Line Style" , menu10 , NULL , kgAttibDiabrowser1callback /* *args , callback */
+          'w' , 317 , 31 , 475 , 60 , 4 , ( int * ) v10 , ( char * ) "Line Style" , \
+          menu10 , NULL , kgAttibDiabrowser1callback /* *args , callback */
       };
       char *menu11 [ ] = {
-       ( char * ) "1" , ( char * ) "2" , ( char * ) "3" , ( char * ) "4" , ( char * ) "5" ,  \
-           ( char * ) "6" , ( char * ) "7" , ( char * ) "8" , NULL };
+           ( char * ) "1" , ( char * ) "2" , ( char * ) "3" , \
+           ( char * ) "4" , ( char * ) "5" , \
+       ( char * ) "6" , ( char * ) "7" , ( char * ) "8" , NULL };
       DIW w11 = {
-          'w' , 317 , 66 , 475 , 95 , 4 , ( int * ) v11 , ( char * ) "Line Width" , menu11 , NULL , kgAttibDiabrowser2callback /* *args , callback */
+          'w' , 317 , 66 , 475 , 95 , 4 , ( int * ) v11 , ( char * ) "Line Width" , \
+          menu11 , NULL , kgAttibDiabrowser2callback /* *args , callback */
       };
       char *menu12 [ ] = {
-       ( char * ) "0" , ( char * ) "1" , ( char * ) "2" , ( char * ) "3" , ( char * ) "4" ,  \
-           ( char * ) "5" , ( char * ) "6" , ( char * ) "7" , ( char * ) "8" , ( char * ) "9" ,  \
-           ( char * ) "10" , ( char * ) "11" , ( char * ) "12" , ( char * ) "13" ,  \
-           ( char * ) "14" , ( char * ) "15" , ( char * ) "16" , ( char * ) "17" ,  \
-           ( char * ) "18" , ( char * ) "19" , ( char * ) "20" , ( char * ) "21" ,  \
-           ( char * ) "22" , ( char * ) "23" , ( char * ) "24" , ( char * ) "25" ,  \
-           ( char * ) "26" , ( char * ) "27" , ( char * ) "28" ,  \
-           ( char * ) "29" , NULL };
+           ( char * ) "0" , ( char * ) "1" , ( char * ) "2" , \
+           ( char * ) "3" , ( char * ) "4" , \
+           ( char * ) "5" , ( char * ) "6" , ( char * ) "7" , \
+           ( char * ) "8" , ( char * ) "9" , \
+           ( char * ) "10" , ( char * ) "11" , ( char * ) "12" , ( char * ) "13" , \
+           ( char * ) "14" , ( char * ) "15" , ( char * ) "16" , ( char * ) "17" , \
+           ( char * ) "18" , ( char * ) "19" , ( char * ) "20" , ( char * ) "21" , \
+           ( char * ) "22" , ( char * ) "23" , ( char * ) "24" , ( char * ) "25" , \
+           ( char * ) "26" , ( char * ) "27" , ( char * ) "28" , \
+       ( char * ) "29" , NULL };
       DIW w12 = {
-          'w' , 308 , 101 , 475 , 130 , 4 , ( int * ) v12 , ( char * ) "Marker Type" , menu12 , NULL , kgAttibDiabrowser3callback /* *args , callback */
+          'w' , 308 , 101 , 475 , 130 , 4 , ( int * ) v12 , ( char * ) "Marker Type" , \
+          menu12 , NULL , kgAttibDiabrowser3callback /* *args , callback */
       };
       char *menu13 [ ] = {
-       ( char * ) "0" , ( char * ) "10" , ( char * ) "20" , ( char * ) "30" ,  \
-           ( char * ) "40" , ( char * ) "50" , ( char * ) "60" , ( char * ) "70" ,  \
-           ( char * ) "80" , ( char * ) "90" , ( char * ) "100" , ( char * ) "110" ,  \
-           ( char * ) "120" , ( char * ) "130" , ( char * ) "140" , ( char * ) "150" ,  \
-           ( char * ) "160" , ( char * ) "170" , ( char * ) "180" , ( char * ) "190" ,  \
-           ( char * ) "200" , ( char * ) "210" , ( char * ) "220" , ( char * ) "230" ,  \
-           ( char * ) "240" , ( char * ) "250" , ( char * ) "260" , ( char * ) "270" ,  \
-           ( char * ) "280" , ( char * ) "290" , ( char * ) "300" , ( char * ) "310" ,  \
-           ( char * ) "320" , ( char * ) "330" , ( char * ) "340" ,  \
-           ( char * ) "350" , NULL };
+           ( char * ) "0" , ( char * ) "10" , ( char * ) "20" , ( char * ) "30" , \
+           ( char * ) "40" , ( char * ) "50" , ( char * ) "60" , ( char * ) "70" , \
+           ( char * ) "80" , ( char * ) "90" , ( char * ) "100" , ( char * ) "110" , \
+           ( char * ) "120" , ( char * ) "130" , ( char * ) "140" , ( char * ) "150" , \
+           ( char * ) "160" , ( char * ) "170" , ( char * ) "180" , ( char * ) "190" , \
+           ( char * ) "200" , ( char * ) "210" , ( char * ) "220" , ( char * ) "230" , \
+           ( char * ) "240" , ( char * ) "250" , ( char * ) "260" , ( char * ) "270" , \
+           ( char * ) "280" , ( char * ) "290" , ( char * ) "300" , ( char * ) "310" , \
+           ( char * ) "320" , ( char * ) "330" , ( char * ) "340" , \
+       ( char * ) "350" , NULL };
       DIW w13 = {
-          'w' , 309 , 136 , 475 , 164 , 4 , ( int * ) v13 , ( char * ) "Text Angle" , menu13 , NULL , kgAttibDiabrowser4callback /* *args , callback */
+          'w' , 309 , 136 , 475 , 164 , 4 , ( int * ) v13 , ( char * ) "Text Angle" , \
+          menu13 , NULL , kgAttibDiabrowser4callback /* *args , callback */
       };
       int butn1 = 1;
       int sw14 [ 1 ] = {
@@ -2499,7 +2680,9 @@ char * kgGetFolderName ( char *flname ) {
       -1 , -1 };
       char *butncode14 = NULL;
       DILN H14 = {
-          'H' , 223 , 241 , 312 , 274 , 4 , 0 , 80 , 25 , 1 , 1 , & butn1 , sw14 , titles14 , butncode14 , NULL , kgAttibDiahoribar1callback , /* arg , Callbak */
+          'H' , 223 , 241 , 312 , 274 , 4 , 0 , 80 , 25 , 1 , 1 , & butn1 , sw14 , \
+          titles14 , butncode14 , NULL , kgAttibDiahoribar1callback , \
+               /* arg , Callbak */
           xpm14 , bkgr14 , /* pointers to xpms and colors */
           2 , 0.200000 /* button type and roundinfg factor ( 0-0.5 ) */
       };
@@ -2627,8 +2810,9 @@ char * kgGetFolderName ( char *flname ) {
       v5 = dc->bod_color;
       pt [ 0 ] = G;
       pt [ 1 ] = & count;
-      kgAttibDia ( NULL , & v0 , & v1 , & v2 , & v3 , & v4 , & v5 , & v6 , & v7 , & v8 , & v9 , & v10 , & v11 , & v12 , & v13 ,  \
-          ( void * ) pt ) ;
+      kgAttibDia ( NULL , & v0 , & v1 , & v2 , & v3 , & v4 , & v5 , & v6 , \
+       & v7 , & v8 , & v9 , & v10 , & v11 , & v12 , & v13 , \
+       ( void * ) pt ) ;
       LnStyle = v10-1;
       LnWidth = v11;
       MarkType = v12-1;
@@ -2658,7 +2842,8 @@ char * kgGetFolderName ( char *flname ) {
           {"Give Text%50s" , v0 , 1 , 0 , NULL}
       };
       DIT t0 = {
-          't' , 11 , 12 , 578 , 52 , 20 , 1 , 1 , e0 , 1 , 1 , NULL , NULL /* args , Call back */
+          't' , 11 , 12 , 578 , 52 , 20 , 1 , 1 , e0 , 1 , \
+          1 , NULL , NULL /* args , Call back */
       };
       t0.type = 0;
       d [ 0 ] .t = & t0;
@@ -2707,11 +2892,14 @@ char * kgGetFolderName ( char *flname ) {
       DIALOG D;
       DIA d [ 3 ] ;
       T_ELMT e0 [ 3 ] = {
-          {"Mul. fac for height%12F" , v0 , 1 , 0 , NULL} , {"Mul. fac for width %12F" , v1 , 1 , 0 , NULL} ,  \
-              {"Mul. fac for gap   %12F" , v2 , 1 , 0 , NULL}
+          {"Mul. fac for height%12F" , v0 , 1 , 0 , \
+               NULL} , {"Mul. fac for width %12F" , \
+          v1 , 1 , 0 , NULL} , \
+          {"Mul. fac for gap   %12F" , v2 , 1 , 0 , NULL}
       };
       DIT t0 = {
-          't' , 9 , 16 , 350 , 117 , 20 , 1 , 3 , e0 , 1 , 1 , NULL , NULL /* args , Call back */
+          't' , 9 , 16 , 350 , 117 , 20 , 1 , 3 , e0 , 1 , \
+          1 , NULL , NULL /* args , Call back */
       };
       t0.type = 0;
       int butn1 = 1;
@@ -2725,7 +2913,8 @@ char * kgGetFolderName ( char *flname ) {
       -1 , -1 };
       char *butncode1 = NULL;
       DILN H1 = {
-          'H' , 139 , 131 , 215 , 177 , 9 , 0 , 60 , 30 , 1 , 1 , & butn1 , sw1 , titles1 , butncode1 , NULL , NULL , /* arg , Callbak */
+          'H' , 139 , 131 , 215 , 177 , 9 , 0 , 60 , 30 , 1 , 1 , & butn1 , \
+          sw1 , titles1 , butncode1 , NULL , NULL , /* arg , Callbak */
           xpm1 , bkgr1 /* pointers to xpms and colors */
        , 2 , 0.2 };
       d [ 0 ] .t = & t0;
@@ -2771,8 +2960,9 @@ char * kgGetFolderName ( char *flname ) {
       ret = kgUi ( & D ) ;
       return ret;
   }
-  void get_size_factors ( void *parent , float *hfac , float *wfac , float *gfac )  \
-      {
+  void get_size_factors ( void *parent , float *hfac , \
+  float *wfac , float *gfac ) \
+  {
 /*************************************************
 
     Text_Box1  3 data values
@@ -2799,8 +2989,10 @@ char * kgGetFolderName ( char *flname ) {
       unsigned int *loc , *loco;
       char nbuf [ 30 ] ;
       char key , cr , bsp , last = 'd';
-      char *cmenu [ ] = { "Move" , "Draw" , "Arrow" , "Rectgl" , "Text" , "txtSize" , "Undo" , "Wipe" , "polyfiL" , "atrIbts" , "arC" , "rhomBus" , "marK" , "rePeat" , "bOrder" , "arc_Fill" , "Quit" , NULL};
-          
+      char *cmenu [ ] = { "Move" , "Draw" , "Arrow" , \
+           "Rectgl" , "Text" , "txtSize" , \
+          "Undo" , "Wipe" , "polyfiL" , "atrIbts" , "arC" , "rhomBus" , \
+      "marK" , "rePeat" , "bOrder" , "arc_Fill" , "Quit" , NULL};
       int ihori = 1 , item = 1 , ch;
       int nch , ncr , MAG = 0;
       int itxclr_o , i , count , k , counto;
@@ -2820,8 +3012,8 @@ char * kgGetFolderName ( char *flname ) {
           exit ( 0 ) ;
       }
       parent = G->D;
-      if ( dc->A_size > 10 ) A_fac = ( float )  \
-          ( dc->A_size/10 ) / ( dc->A_size%10 ) ;
+      if ( dc->A_size > 10 ) A_fac = ( float ) \
+       ( dc->A_size/10 ) / ( dc->A_size%10 ) ;
       tgg = 0;
       tww = ( dc->w_x2-dc->w_x1 ) /30.0;
       thh = ( dc->w_y2-dc->w_y1 ) /25.0;
@@ -2852,8 +3044,9 @@ char * kgGetFolderName ( char *flname ) {
       * ( loc++ ) = 60;count++;
       ytwtg = ( tw+tg ) / ( dc->w_x2-dc->w_x1 ) * ( dc->w_y2-dc->w_y1 ) /0.75;
 //      while((item=uiMenu(G->D,G->x1,G->y1,1,1,cmenu,17))!=17)
-      while ( ( item = kgMenu ( G->D , parent->xo+G->x2-100 , parent->yo+G->y1 , 1 , 1 , cmenu , 17 ) ) != 17 )  \
-          {
+      while ( ( item = kgMenu ( G->D , parent->xo+G->x2-100 , \
+      parent->yo+G->y1 , 1 , 1 , cmenu , 17 ) ) != 17 ) \
+      {
           if ( G->Byte > ( B_min-100 ) ) {
               uiwrite_file ( G , & ( G->rbuf ) , dc->reviewfile ) ;
               count = 0;
@@ -2928,13 +3121,14 @@ char * kgGetFolderName ( char *flname ) {
                       if ( count > 1 ) { loc--;count--;
                           uiupdate_intr ( G , count , dc->cmds ) ;
                   uiupdate_view ( G ) ;} }
-                  else { kgMove2f ( G , xx , yy ) ;kgDraw2f  \
-                      ( G , xx , y ) , kgDraw2f ( G , x , y ) ;
+                  else { kgMove2f ( G , xx , yy ) ;kgDraw2f \
+                       ( G , xx , y ) , kgDraw2f ( G , x , y ) ;
                       kgDraw2f ( G , x , yy ) , kgDraw2f ( G , xx , yy ) ;
                   * ( loc++ ) = 50;count++;}
               }
-              kgMove2f ( G , xx , yy ) ;kgDraw2f ( G , xx , y ) , kgDraw2f ( G , x , y ) , kgDraw2f  \
-                  ( G , x , yy ) , kgDraw2f ( G , xx , yy ) ;
+              kgMove2f ( G , xx , yy ) ;kgDraw2f ( G , xx , \
+              y ) , kgDraw2f ( G , x , y ) , kgDraw2f \
+               ( G , x , yy ) , kgDraw2f ( G , xx , yy ) ;
               xo = xx-x;yo = yy-y;
               last = 'r';
               * ( loc++ ) = 50;count++;
@@ -2967,8 +3161,8 @@ char * kgGetFolderName ( char *flname ) {
 //               *(loc++)=72;count++;  
               * ( loc++ ) = uiset_atribs ( G ) ;
               count++;
-              if ( dc->A_size > 10 ) A_fac = ( float )  \
-                  ( dc->A_size/10 ) / ( dc->A_size%10 ) ;
+              if ( dc->A_size > 10 ) A_fac = ( float ) \
+               ( dc->A_size/10 ) / ( dc->A_size%10 ) ;
               break;
               case 11:
               count++;
@@ -3132,8 +3326,9 @@ char * kgGetFolderName ( char *flname ) {
       ret = kgUi ( & D ) ;
       return ret;
   }
-  int uiTextMenu ( void *parent , int x1 , int y1 , int items , char **promt , char ** field )  \
-      {
+  int uiTextMenu ( void *parent , int x1 , int y1 , \
+  int items , char **promt , char ** field ) \
+  {
       int ret = 1 , i , l = 0i , maxl;
       DIALOG D;
       DIA d [ 3 ] ;
@@ -3153,7 +3348,8 @@ char * kgGetFolderName ( char *flname ) {
       -1 , -1 , -1 };
       char *butncode4 = NULL;
       DILN H4 = {
-          'H' , 10 , 10 , 95 , 51 , 9 , 0 , 75 , 30 , 1 , 1 , & butn2 , sw4 , titles4 , butncode4 , NULL , NULL , /* arg , Callbak */
+          'H' , 10 , 10 , 95 , 51 , 9 , 0 , 75 , 30 , 1 , 1 , & butn2 , sw4 , \
+          titles4 , butncode4 , NULL , NULL , /* arg , Callbak */
           xpm4 , bkgr4 /* pointers to xpms and colors */
        , 2 , 0.2 };
       t0.ny = items;
@@ -3245,24 +3441,33 @@ char * kgGetFolderName ( char *flname ) {
       char **m;
       int l , width , item = 0 , nchars = 4 , lines = 6 , n;
       DIS s0 = {
-          's' , 4 , 4 , 322 , 169 , 6 , NULL , NULL , NULL , NULL , NULL /* *args , callback */
+          's' , 4 , 4 , 322 , 169 , 6 , NULL , NULL , NULL , \
+          NULL , NULL /* *args , callback */
       };
       int butn1 = 1;
       int sw1 [ 100 ] = {
-      1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 };
-          
+          1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , \
+          1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , \
+      1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 };
       char *titles1 [ ] = {
       " Okay" , NULL };
       void *xpm1 [ ] = {
-      NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL };
-          
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+          NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , \
+      NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL };
       int bkgr1 [ ] = {
-      -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 };
-          
+          -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , \
+      -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 , -1 };
       char *butncode1 = NULL;
       DILN H1 = {
 //    NULL,Show_Filehoribar1callback,/* arg, Callbak */
-          'H' , 131 , 178 , 199 , 211 , 4 , 0 , 60 , 25 , 1 , 1 , & butn1 , sw1 , NULL , butncode1 , NULL , NULL , xpm1 , bkgr1 /* pointers to xpms and colors */
+          'H' , 131 , 178 , 199 , 211 , 4 , 0 , 60 , 25 , 1 , 1 , & butn1 , sw1 , \
+          NULL , butncode1 , NULL , NULL , xpm1 , bkgr1 /* pointers to xpms and colors */
        , 2 , 0.2 };
       n = get_lines_in_file ( & m , fp ) ;
       s0.menu = m;
@@ -4127,14 +4332,14 @@ char * kgGetFolderName ( char *flname ) {
                   if ( img != NULL ) {
                       thImgs [ k ] = ( GMIMG * ) uiThumbnailgmImage ( img , size , size ) ;
 #if 0
-                      sprintf ( name , "(%5d,%5d): %s" , img->image_width , img->image_height , flnames [ i ] ) ;
-                          
+                      sprintf ( name , "(%5d,%5d): %s" , img->image_width , \
+                      img->image_height , flnames [ i ] ) ;
                       strcpy ( thImgs [ k ]->flname , name ) ;
 #else
-                      if ( ( thImgs [ k ]->image_width > size )  \
-                          || ( thImgs [ k ]->image_height > size ) ) {
-                          printf ( "%s: %d:%d %d:%d\n" , flnames [ i ] , thImgs [ k ]->image_width , thImgs [ k ]->image_height , img->image_width , img->image_height ) ;
-                              
+                      if ( ( thImgs [ k ]->image_width > size ) \
+                       || ( thImgs [ k ]->image_height > size ) ) {
+                          printf ( "%s: %d:%d %d:%d\n" , flnames [ i ] , thImgs [ k ]->image_width , \
+                          thImgs [ k ]->image_height , img->image_width , img->image_height ) ;
                       }
                       thImgs [ k ]->image_width = img->image_width;
                       thImgs [ k ]->image_height = img->image_height;
@@ -4396,8 +4601,8 @@ char * kgGetFolderName ( char *flname ) {
       G = kgInitImage ( D->xl , D->yl , RESIZE ) ;
 #if 1
       kgUserFrame ( G , -25. , -25. , 25. , 25. ) ;
-      kgRoundedRectangleRing3 ( G , 1. , -1. , 36. , 36 , 0. , 0. , 0. , 0.5 , 4. ) ;
-          
+      kgRoundedRectangleRing3 ( G , 1. , -1. , 36. , \
+      36 , 0. , 0. , 0. , 0.5 , 4. ) ;
       img = kgGetResizedImage ( G ) ;
       kgCloseImage ( G ) ;
       kgImage ( D , img , D->xo , D->yo , D->xl , D->yl , 0. , 1.0 ) ;
@@ -4564,8 +4769,9 @@ char * kgGetFolderName ( char *flname ) {
   ThumbNail **kgStringToThumbNails ( char **menu ) {
       return uiStringToThumbNails ( menu ) ;
   }
-  void _uiWriteStrings ( DIG *fid , float xo , float yo , float xl , float yl , char *buf , float wd , float ht , int justf )  \
-      {
+  void _uiWriteStrings ( DIG *fid , float xo , float yo , float xl , \
+  float yl , char *buf , float wd , float ht , int justf ) \
+  {
       char BUF [ 1000 ] , *str [ 200 ] , *pt;
       int i , j , k , OK = 0;
       float length = 0.0 , dyl , yy , ln = 0.0 , fac , yoff , xoff;
@@ -4582,8 +4788,8 @@ char * kgGetFolderName ( char *flname ) {
           while ( pt [ i ] != '\0' ) {
               OK = 0;
               if ( ( pt [ i ] == '\n' ) ) { pt [ i ] = '\0';break;}
-              if ( ( ( pt [ i ] == '\\' ) && ( pt [ i+1 ] == 'n' ) ) )  \
-                  { pt [ i ] = '\0';i++;break;}
+              if ( ( ( pt [ i ] == '\\' ) && ( pt [ i+1 ] == 'n' ) ) ) \
+              { pt [ i ] = '\0';i++;break;}
               i++;
               OK = 1;
           }
@@ -4669,14 +4875,16 @@ char * kgGetFolderName ( char *flname ) {
       return ret;
   }
 //int kgMenu1( void *parent,int xo,int yo,int df,char **menu,int size) {
-  int kgMenu1 ( void *parent , int xo , int yo , int df , char **menu , int size , int  \
-      ( *Fun ) ( int , void * ) , void *arg ) {
+  int kgMenu1 ( void *parent , int xo , int yo , \
+  int df , char **menu , int size , int \
+   ( *Fun ) ( int , void * ) , void *arg ) {
       int ret = 1 , n = 0 , xl = 0 , yl = 0 , lng = 0 , length = 0;
       DIALOG D;
       DIA d [ 2 ] ;
       int v1;
       DIE e0 = {
-          'e' , 38 , 26 , 217 , 188 , 6 , ( int * ) & v1 , NULL , NULL , NULL , kgMenu1browser1callback , /* *args , callback */
+          'e' , 38 , 26 , 217 , 188 , 6 , ( int * ) & v1 , NULL , NULL , \
+          NULL , kgMenu1browser1callback , /* *args , callback */
       20 , 6 , 22 , 1 , 1 , 1 , 0 };
       if ( menu == NULL ) return df;
       v1 = df;
@@ -4983,10 +5191,13 @@ char * kgGetFolderName ( char *flname ) {
       DIA d [ 6 ] ;
       char **menu0;
       DIE e0 = {
-          'e' , 8 , 65 , 316 , 457 , 1 , ( int * ) & v0 , NULL , menu0 , NULL , PickImagebrowser1callback , /* *args , callback */
+          'e' , 8 , 65 , 316 , 457 , 1 , ( int * ) & v0 , NULL , menu0 , \
+          NULL , PickImagebrowser1callback , /* *args , callback */
       20 , 8 , 22 , 1 , 1 , 1 , 0 };
       DIY y1 = {
-          'y' , 326 , 65 , 843 , 457 , 16 , 16 , 72 , 72 , 1 , 32767 , 0 , 4 , ( int * ) & v1 , NULL , NULL , NULL , PickImagebrowser2callback , /* *args , callback */
+          'y' , 326 , 65 , 843 , 457 , 16 , 16 , 72 , 72 , \
+               1 , 32767 , 0 , 4 , ( int * ) & v1 , \
+          NULL , NULL , NULL , PickImagebrowser2callback , /* *args , callback */
           12 , /* Border Offset */
           22 , /* Scroll width */
           1 , /* Type */
@@ -5006,10 +5217,11 @@ char * kgGetFolderName ( char *flname ) {
       char *butncode2 = NULL;
       int sw2 [ ] = {1 , 1 , 1};
       DIB n2 = {
-          'b' , 10 , 15 , 100 , 61 , 2 , 0 , 36 , 36 , 2 , 1 , ( int * ) & v2 , sw2 , titles2 , butncode2 , NULL , PickImagebutnbox1callback , /* args , Callbak */
+          'b' , 10 , 15 , 100 , 61 , 2 , 0 , 36 , 36 , 2 , 1 , ( int * ) & v2 , sw2 , \
+          titles2 , butncode2 , NULL , PickImagebutnbox1callback , /* args , Callbak */
           xpm2 , bkgr2 , /* pointers to xpms and colors */
-          4 , 0.200000 , 0 , 0 /* button type and roundinfg factor  \
-              ( 0-0.5 ) , bordr , hide */
+          4 , 0.200000 , 0 , 0 /* button type and roundinfg factor \
+           ( 0-0.5 ) , bordr , hide */
       };
       int butn1 = 1;
       int sw3 [ 3 ] = {
@@ -5025,7 +5237,9 @@ char * kgGetFolderName ( char *flname ) {
       -1 , -1 , -1 , -1 };
       char *butncode3 = NULL;
       DILN H3 = {
-          'H' , 574 , 25 , 828 , 56 , 4 , 0 , 80 , 25 , 3 , 1 , & butn1 , sw3 , titles3 , butncode3 , NULL , PickImagehoribar1callback , /* arg , Callbak */
+          'H' , 574 , 25 , 828 , 56 , 4 , 0 , 80 , 25 , \
+               3 , 1 , & butn1 , sw3 , titles3 , \
+          butncode3 , NULL , PickImagehoribar1callback , /* arg , Callbak */
           xpm3 , bkgr3 , /* pointers to xpms and colors */
           3 , 0.500000 , /* button type and roundinfg factor ( 0-0.5 ) */
           0 , 0 /* button border , hide */
@@ -5136,11 +5350,13 @@ char * kgGetFolderName ( char *flname ) {
       DIA d [ 6 ] ;
       char **menu0;
       DIE e0 = {
-          'e' , 8 , 65 , 316 , 457 , 1 , ( int * ) & v0 , NULL , menu0 , NULL , PickImagebrowser1callback , /* *args , callback */
+          'e' , 8 , 65 , 316 , 457 , 1 , ( int * ) & v0 , NULL , menu0 , \
+          NULL , PickImagebrowser1callback , /* *args , callback */
       20 , 8 , 22 , 1 , 1 , 1 , 0 };
       DIY y1 = {
-          'y' , 326 , 65 , 843 , 457 , 16 , 16 , ThSize , ThSize , 1 , 32767 , 0 , 4 ,  \
-              ( int * ) & v1 , NULL , NULL , NULL , PickImagebrowser2callback , /* *args , callback */
+          'y' , 326 , 65 , 843 , 457 , 16 , 16 , ThSize , ThSize , 1 , 32767 , 0 , 4 , \
+           ( int * ) & v1 , NULL , NULL , NULL , PickImagebrowser2callback , \
+                /* *args , callback */
           12 , /* Border Offset */
           22 , /* Scroll width */
           1 , /* Type */
@@ -5160,10 +5376,11 @@ char * kgGetFolderName ( char *flname ) {
       char *butncode2 = NULL;
       int sw2 [ ] = {1 , 1 , 1};
       DIB n2 = {
-          'b' , 10 , 15 , 100 , 61 , 2 , 0 , 36 , 36 , 2 , 1 , ( int * ) & v2 , sw2 , titles2 , butncode2 , NULL , PickImagebutnbox1callback , /* args , Callbak */
+          'b' , 10 , 15 , 100 , 61 , 2 , 0 , 36 , 36 , 2 , 1 , ( int * ) & v2 , sw2 , \
+          titles2 , butncode2 , NULL , PickImagebutnbox1callback , /* args , Callbak */
           xpm2 , bkgr2 , /* pointers to xpms and colors */
-          4 , 0.200000 , 0 , 0 /* button type and roundinfg factor  \
-              ( 0-0.5 ) , bordr , hide */
+          4 , 0.200000 , 0 , 0 /* button type and roundinfg factor \
+           ( 0-0.5 ) , bordr , hide */
       };
       int butn1 = 1;
       int sw3 [ 3 ] = {
@@ -5179,7 +5396,9 @@ char * kgGetFolderName ( char *flname ) {
       -1 , -1 , -1 , -1 };
       char *butncode3 = NULL;
       DILN H3 = {
-          'H' , 574 , 25 , 828 , 56 , 4 , 0 , 80 , 25 , 3 , 1 , & butn1 , sw3 , titles3 , butncode3 , NULL , PickImagehoribar1callback , /* arg , Callbak */
+          'H' , 574 , 25 , 828 , 56 , 4 , 0 , 80 , 25 , \
+               3 , 1 , & butn1 , sw3 , titles3 , \
+          butncode3 , NULL , PickImagehoribar1callback , /* arg , Callbak */
           xpm3 , bkgr3 , /* pointers to xpms and colors */
           3 , 0.500000 , /* button type and roundinfg factor ( 0-0.5 ) */
           0 , 0 /* button border , hide */
@@ -5332,14 +5551,14 @@ char * kgGetFolderName ( char *flname ) {
       DIALOG D;
       DIA *d;
       DIT *T;
-      DIT Tmp = {'t' , 10L , 10L , 0 , 0 , 20L , 1L , 1L , NULL , 0 , 0 , NULL , NULL};
-          
+      DIT Tmp = {'t' , 10L , 10L , 0 , 0 , 20L , \
+      1L , 1L , NULL , 0 , 0 , NULL , NULL};
       T_ELMT *e;
       int ch;
       char *titles [ ] = {"Okay" , NULL};
       char *cpt , *pt , wrk [ 5000 ] ;
-      int i , j , k , item = 0 , it = 0 , size = 6 , ln , width , lngth , nx , ny , ret = 1 , prsize = 0 , fldsize = 0;
-          
+      int i , j , k , item = 0 , it = 0 , size = 6 , ln , width , \
+      lngth , nx , ny , ret = 1 , prsize = 0 , fldsize = 0;
       void **v = NULL;
       va_list ad;
       DIALOG *Par = NULL;
@@ -5440,8 +5659,8 @@ char * kgGetFolderName ( char *flname ) {
       D.d = ( DIA * ) Malloc ( sizeof ( DIA ) *3 ) ;
       d = D.d;
 //  H = kgCreateHButtons(T->x1+lngth/2-36,T->y2+4,1,72,25,titles,NULL);
-      H = kgCreateSplButtons ( T->x1+lngth/2-36 , T->y2+4 , 1 , 1 , 72 , 25 , titles , NULL ) ;
-          
+      H = kgCreateSplButtons ( T->x1+lngth/2-36 , T->y2+4 , \
+      1 , 1 , 72 , 25 , titles , NULL ) ;
       H->fac = 0.5;
       H->bordr = 0;
       H->type = 4;
@@ -5511,8 +5730,9 @@ char * kgGetFolderName ( char *flname ) {
  // fflush(stdout);
       return ret;
   }
-  DIT * kgCreateTable ( int xo , int yo , int nrows , char **colformats , char *name )  \
-      {
+  DIT * kgCreateTable ( int xo , int yo , int nrows , \
+  char **colformats , char *name ) \
+  {
       void **pt;
       DIT *T = NULL;
       T_ELMT *E = NULL;
@@ -5524,8 +5744,8 @@ char * kgGetFolderName ( char *flname ) {
       double *dtmp;
       int *itmp;
       char *ctmp;
-      DIT Tmp = {'T' , 10L , 10L , 0 , 0 , 20L , 1L , 1L , NULL , 0 , 0 , NULL , NULL};
-          
+      DIT Tmp = {'T' , 10L , 10L , 0 , 0 , 20L , \
+      1L , 1L , NULL , 0 , 0 , NULL , NULL};
       if ( colformats == NULL ) return NULL;
       nx = 0; while ( colformats [ nx ] != NULL ) nx++;
       if ( nx == 0 ) return NULL;
@@ -5611,9 +5831,10 @@ char * kgGetFolderName ( char *flname ) {
       T->item = -1;
       return T;
   }
-  void *kgCreateUi ( int length , int width , int ( *Initfun ) ( void * ) , int  \
-      ( *CallBack ) ( void *, void * ) , int ( *Cleanupfun )  \
-      ( void * ) , char *name ) {
+  void *kgCreateUi ( int length , int width , \
+  int ( *Initfun ) ( void * ) , int \
+   ( *CallBack ) ( void *, void * ) , int ( *Cleanupfun ) \
+   ( void * ) , char *name ) {
       DIALOG *D;
       D = ( DIALOG * ) Malloc ( sizeof ( DIALOG ) ) ;
       D->VerId = 1401010100;
@@ -5684,8 +5905,9 @@ char * kgGetFolderName ( char *flname ) {
       Dtmp = NULL;
       return ret;
   }
-  DIW * kgCreatePulldownBrowser ( int xo , int yo , char *prompt , char **menu , char *name )  \
-      {
+  DIW * kgCreatePulldownBrowser ( int xo , int yo , \
+  char *prompt , char **menu , char *name ) \
+  {
       DIW *W;
       int i , n;
       char buf [ 60 ] , buf1 [ 30 ] = " ";
@@ -5693,8 +5915,8 @@ char * kgGetFolderName ( char *flname ) {
       int min = 4 , max = 6 , df = 0 , ln = 0;
       int msize = 0;
       float x1 , y1 , x2 , y2;
-      DIW Wtmp = {'w' , 10L , 10L , 0 , 0 , 5 , NULL , NULL , NULL , NULL , NULL , 0};
-          
+      DIW Wtmp = {'w' , 10L , 10L , 0 , 0 , 5 , \
+      NULL , NULL , NULL , NULL , NULL , 0};
       W = ( DIW * ) Malloc ( sizeof ( DIW ) ) ;
       Wtmp.Wid [ 0 ] = '\0';
       *W = Wtmp;
@@ -5740,8 +5962,8 @@ char * kgGetFolderName ( char *flname ) {
       int min = 4 , max = 6 , df = 0 , ln = 0 , w = 200 , h = 200 , maxchar = 15;
       int msize = 0;
       float x1 , y1 , x2 , y2;
-      DIE Wtmp = {'e' , 10L , 10L , 0 , 0 , 5 , NULL , NULL , NULL , NULL , NULL , 20 , 6 , 22 , 1 , 1 , 1 , 0};
-          
+      DIE Wtmp = {'e' , 10L , 10L , 0 , 0 , 5 , NULL , NULL , \
+      NULL , NULL , NULL , 20 , 6 , 22 , 1 , 1 , 1 , 0};
       W = ( DIE * ) Malloc ( sizeof ( DIE ) ) ;
       Wtmp.Wid [ 0 ] = '\0';
       *W = Wtmp;
@@ -5775,8 +5997,9 @@ char * kgGetFolderName ( char *flname ) {
       W->item = -1;
       return W;
   }
-  DIS * kgCreateMessageScroll ( int xo , int yo , int nlines , int maxchar , char *name )  \
-      {
+  DIS * kgCreateMessageScroll ( int xo , int yo , \
+  int nlines , int maxchar , char *name ) \
+  {
       DIS *W;
       int i , n;
       char buf [ 60 ] , buf1 [ 30 ] = " ";
@@ -5784,8 +6007,8 @@ char * kgGetFolderName ( char *flname ) {
       int min = 4 , max = 6 , df = 0 , ln = 0 , w = 200 , h = 200;
       int msize = 0;
       float x1 , y1 , x2 , y2;
-      DIS Wtmp = {'s' , 10L , 10L , 0 , 0 , 5 , NULL , NULL , NULL , NULL , NULL , 20 , 6 , 22 , 0 , 1 , 1 , 0};
-          
+      DIS Wtmp = {'s' , 10L , 10L , 0 , 0 , 5 , NULL , NULL , \
+      NULL , NULL , NULL , 20 , 6 , 22 , 0 , 1 , 1 , 0};
       W = ( DIS * ) Malloc ( sizeof ( DIS ) ) ;
       Wtmp.Wid [ 0 ] = '\0';
       *W = Wtmp;
@@ -5806,16 +6029,17 @@ char * kgGetFolderName ( char *flname ) {
       W->Update = NULL;
       return W;
   }
-  DIHB * kgCreateHorizSlide ( int xo , int yo , int length , int min , int max , int val , char *name )  \
-      {
+  DIHB * kgCreateHorizSlide ( int xo , int yo , int length , \
+  int min , int max , int val , char *name ) \
+  {
       DIHB *W;
       int i , n;
       int lng = 100;
       int ln = 0 , wd = 25;
       int msize = 0;
       float x1 , y1 , x2 , y2;
-      DIHB Wtmp = {'P' , 0 , 100 , 0 , 0 , 0 , 100 , 101 , NULL , NULL , NULL , NULL};
-          
+      DIHB Wtmp = {'P' , 0 , 100 , 0 , 0 , 0 , 100 , \
+      101 , NULL , NULL , NULL , NULL};
       W = ( DIHB * ) Malloc ( sizeof ( DIHB ) ) ;
       Wtmp.Wid [ 0 ] = '\0';
       *W = Wtmp;
@@ -5837,16 +6061,17 @@ char * kgGetFolderName ( char *flname ) {
       W->item = -1;
       return W;
   }
-  DID * kgCreateIntSlide ( int xo , int yo , int length , int min , int max , int val , char *name )  \
-      {
+  DID * kgCreateIntSlide ( int xo , int yo , int length , \
+  int min , int max , int val , char *name ) \
+  {
       DID *W;
       int i , n;
       int lng = 100;
       int ln = 0 , wd = 46;
       int msize = 0;
       float x1 , y1 , x2 , y2;
-      DID Wtmp = {'d' , 0 , 100 , 0 , 0 , 0 , 100 , 101 , NULL , NULL , NULL , NULL};
-          
+      DID Wtmp = {'d' , 0 , 100 , 0 , 0 , 0 , 100 , \
+      101 , NULL , NULL , NULL , NULL};
       W = ( DID * ) Malloc ( sizeof ( DID ) ) ;
       Wtmp.Wid [ 0 ] = '\0';
       *W = Wtmp;
@@ -5868,8 +6093,9 @@ char * kgGetFolderName ( char *flname ) {
       W->item = -1;
       return W;
   }
-  DIF * kgCreateDoubleSlide ( int xo , int yo , int length , double min , double max , double val , char *name )  \
-      {
+  DIF * kgCreateDoubleSlide ( int xo , int yo , int length , \
+  double min , double max , double val , char *name ) \
+  {
       DIF *W;
       int i , n;
       char buf [ 60 ] , buf1 [ 30 ] = " ";
@@ -5877,8 +6103,8 @@ char * kgGetFolderName ( char *flname ) {
       int ln = 0 , wd = 46;
       int msize = 0;
       float x1 , y1 , x2 , y2;
-      DIF Wtmp = {'f' , 0 , 100 , 0 , 0 , 1 , 100 , 100 , NULL , NULL , NULL , NULL};
-          
+      DIF Wtmp = {'f' , 0 , 100 , 0 , 0 , 1 , 100 , \
+      100 , NULL , NULL , NULL , NULL};
       W = ( DIF * ) Malloc ( sizeof ( DIF ) ) ;
       Wtmp.Wid [ 0 ] = '\0';
       *W = Wtmp;
@@ -5900,13 +6126,14 @@ char * kgGetFolderName ( char *flname ) {
       W->item = -1;
       return W;
   }
-  DIX * kgCreateSelectMenu ( int xo , int yo , int length , int width , int itemlength , int type , char *name )  \
-      {
+  DIX * kgCreateSelectMenu ( int xo , int yo , int length , \
+  int width , int itemlength , int type , char *name ) \
+  {
       DIX *W;
       int i , n;
       float x1 , y1 , x2 , y2;
-      DIX Wtmp = {'x' , 0L , 0L , 150 , 120 , 8 , 2 , 120 , 25 , 1 , 4 , 1 , 1 , NULL , NULL , NULL , NULL , NULL , 6 , 22 , 0 , 1 , 1 , 1 , 0};
-          
+      DIX Wtmp = {'x' , 0L , 0L , 150 , 120 , 8 , 2 , 120 , 25 , 1 , 4 , 1 , \
+      1 , NULL , NULL , NULL , NULL , NULL , 6 , 22 , 0 , 1 , 1 , 1 , 0};
       W = ( DIX * ) Malloc ( sizeof ( DIX ) ) ;
       Wtmp.Wid [ 0 ] = '\0';
       *W = Wtmp;
@@ -5925,8 +6152,9 @@ char * kgGetFolderName ( char *flname ) {
       W->pt = NULL;
       return W;
   }
-  DIRA * kgCreateRadioButtons ( int xo , int yo , int length , int width , int itemlength , char **list , char *name )  \
-      {
+  DIRA * kgCreateRadioButtons ( int xo , int yo , int length , \
+  int width , int itemlength , char **list , char *name ) \
+  {
       DIRA *W;
       int i , n;
       ThumbNail **th;
@@ -5935,8 +6163,8 @@ char * kgGetFolderName ( char *flname ) {
       int min = 4 , max = 6 , df = 0 , ln = 0 , itemw = 25 , h = 200 , maxchar = 15;
       int msize = 0;
       float x1 , y1 , x2 , y2;
-      DIRA Wtmp = {'r' , 0L , 0L , 150 , 120 , 0 , 0 , 90 , 25 , 1 , 4 , 1 , 1 , NULL , NULL , NULL , NULL , NULL , 6 , 22 , 0 , 0 , 1 , 0 , 0};
-          
+      DIRA Wtmp = {'r' , 0L , 0L , 150 , 120 , 0 , 0 , 90 , 25 , 1 , 4 , 1 , \
+      1 , NULL , NULL , NULL , NULL , NULL , 6 , 22 , 0 , 0 , 1 , 0 , 0};
       int type = 2;
       W = ( DIRA * ) Malloc ( sizeof ( DIRA ) ) ;
       Wtmp.Wid [ 0 ] = '\0';
@@ -5959,8 +6187,9 @@ char * kgGetFolderName ( char *flname ) {
       W->Update = NULL;
       return W;
   }
-  DICH * kgCreateCheckBox ( int xo , int yo , int length , int width , int itemlength , char **list , char *name )  \
-      {
+  DICH * kgCreateCheckBox ( int xo , int yo , int length , int width , \
+  int itemlength , char **list , char *name ) \
+  {
       DICH *W;
       int i , n;
       ThumbNail **th;
@@ -5969,8 +6198,8 @@ char * kgGetFolderName ( char *flname ) {
       int min = 4 , max = 6 , df = 0 , ln = 0 , itemw = 25 , h = 200 , maxchar = 15;
       int msize = 0;
       float x1 , y1 , x2 , y2;
-      DICH Wtmp = {'c' , 0L , 0L , 150 , 120 , 0 , 0 , 90 , 25 , 1 , 4 , 1 , 1 , NULL , NULL , NULL , NULL , NULL , 6 , 22 , 0 , 0 , 1 , 0 , 0};
-          
+      DICH Wtmp = {'c' , 0L , 0L , 150 , 120 , 0 , 0 , 90 , 25 , 1 , 4 , 1 , \
+      1 , NULL , NULL , NULL , NULL , NULL , 6 , 22 , 0 , 0 , 1 , 0 , 0};
       int type = 2;
       W = ( DICH * ) Malloc ( sizeof ( DICH ) ) ;
       Wtmp.Wid [ 0 ] = '\0';
@@ -5993,13 +6222,14 @@ char * kgGetFolderName ( char *flname ) {
       W->Update = NULL;
       return W;
   }
-  DIY * kgCreateThumbnailBrowser ( int xo , int yo , int length , int width , int nailsize , int type , char *name )  \
-      {
+  DIY * kgCreateThumbnailBrowser ( int xo , int yo , int length , \
+  int width , int nailsize , int type , char *name ) \
+  {
       DIY *W;
       int i , n;
       float x1 , y1 , x2 , y2;
-      DIY Wtmp = {'y' , 0L , 0L , 150 , 120 , 8 , 20 , 120 , 25 , 1 , 4 , 1 , 1 , NULL , NULL , NULL , NULL , NULL , 6 , 22 , 0 , 1 , 1 , 1 , 0};
-          
+      DIY Wtmp = {'y' , 0L , 0L , 150 , 120 , 8 , 20 , 120 , 25 , 1 , 4 , 1 , \
+      1 , NULL , NULL , NULL , NULL , NULL , 6 , 22 , 0 , 1 , 1 , 1 , 0};
       W = ( DIY * ) Malloc ( sizeof ( DIY ) ) ;
       Wtmp.Wid [ 0 ] = '\0';
       *W = Wtmp;
@@ -6019,3 +6249,530 @@ char * kgGetFolderName ( char *flname ) {
       W->pt = NULL;
       return W;
   }
+/*kgGetFreeTypeFont code */
+  static int CheckFontFile ( char *font ) {
+      FILE *fp;
+      int ret = 0;
+      char Buff [ 300 ] ;
+      sprintf ( Buff , "file %-s" , font ) ;
+      fp = popen ( Buff , "r" ) ;
+      if ( fp == NULL ) return 0;
+      fgets ( Buff , 300 , fp ) ;
+      pclose ( fp ) ;
+      if ( strstr ( Buff , "Type 1 font" ) != NULL ) return 1;
+      if ( strstr ( Buff , "Type font" ) != NULL ) return 1;
+      if ( strstr ( Buff , "Type Font" ) != NULL ) return 1;
+      return 0;
+  }
+  static int WriteMsg ( DIALOG *D ) {
+      DIS *I;
+      DIW *W;
+      I = ( DIS * ) kgGetNamedWidget ( D , ( char * ) "Info" ) ;
+      W = ( DIW * ) kgGetNamedWidget ( D , ( char * ) "Select" ) ;
+      int Font;
+      char **List = ( char ** ) kgGetList ( W ) ;
+      char Buff [ 100 ] ;
+      char *Msg [ ] = {"\"Our lives begin to end " , \
+           " the day we become silent about" , \
+      " things that matter\"" , NULL };
+      Font = * ( W->df ) -1;
+      kgWrite ( I , List [ Font ] ) ;
+      kgWrite ( I , ( char * ) " " ) ;
+      sprintf ( Buff , "!f%2.2d  %s" , Font , Msg [ 0 ] ) ;
+      kgWrite ( I , Buff ) ;
+      sprintf ( Buff , "!f%2.2d  %s" , Font , Msg [ 1 ] ) ;
+      kgWrite ( I , Buff ) ;
+      sprintf ( Buff , "!f%2.2d  %s" , Font , Msg [ 2 ] ) ;
+      kgWrite ( I , Buff ) ;
+      kgUpdateWidget ( I ) ;
+  }
+  static int GetFontbrowser1callback ( int item , int i , void *Tmp ) {
+  /*********************************** 
+    item : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+      DIALOG *D;DIW *W;
+      DIM *M;
+      int ret = 1;
+      char Buff [ 500 ] ;
+      char *cpt;
+      int Font;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      D = ( DIALOG * ) Tmp;
+      W = ( DIW * ) kgGetWidget ( Tmp , i ) ;
+      M = ( DIM * ) kgGetNamedWidget ( D , ( char * ) "Msg" ) ;
+      Font = item-1;
+      sprintf ( Buff , "!f%2.2d%s" , Font , ( char * ) kgGetOthFont ( Font ) ) ;
+      kgWrite ( M , Buff ) ;
+      kgUpdateWidget ( M ) ;
+      kgUpdateOn ( D ) ;
+      WriteMsg ( D ) ;
+      switch ( item ) {
+          case 1:
+          break;
+      }
+      return ret;
+  }
+  static int GetFontbutton1callback ( int butno , int i , void *Tmp ) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+      DIALOG *D;DIN *B;
+      DIW *W;
+      DIM *M;
+      int n , ret = 0 , count;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      char Buff [ 500 ] = "/usr/share/fonts/";
+      char **List;
+      int Font;
+      D = ( DIALOG * ) Tmp;
+      B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
+      W = ( DIW * ) kgGetNamedWidget ( D , ( char * ) "Select" ) ;
+      M = ( DIM * ) kgGetNamedWidget ( D , ( char * ) "Msg" ) ;
+      Font = * ( W->df ) -1;
+      n = B->nx*B->ny;
+      if ( kgFolderBrowser ( NULL , 100 , 200 , Buff , ( char * ) "*" ) ) {
+          if ( ! CheckFontFile ( Buff ) ) return 0;
+          kgAddFont ( Buff ) ;
+          List = ( char ** ) kgGetList ( W ) ;
+          kgFreeDouble ( ( void ** ) List ) ;
+          List = ( char ** ) kgGetFontList ( ) ;
+          count = 0;
+          while ( List [ count ] != NULL ) count++;
+          Font = count-1;
+          * ( W->df ) = count;
+          kgSetList ( W , ( void ** ) List ) ;
+          kgWrite ( M , List [ Font ] ) ;
+          kgUpdateWidget ( W ) ;
+          kgUpdateWidget ( M ) ;
+          kgUpdateOn ( D ) ;
+          WriteMsg ( D ) ;
+      }
+      switch ( butno ) {
+          case 1:
+          break;
+      }
+      return ret;
+  }
+  static void GetFontbutton1init ( DIN *B , void *ptmp ) {
+      void **pt = ( void ** ) ptmp; //pt [ 0 ] is arg 
+  }
+  static int GetFontsplbutton1callback ( int butno , int i , void *Tmp ) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+      DIALOG *D;DIL *B;
+      DIW *W;
+      int n , ret = 1;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      D = ( DIALOG * ) Tmp;
+      B = ( DIL * ) kgGetWidget ( Tmp , i ) ;
+      int *ipt = ( int * ) pt [ 0 ] ;
+      W = ( DIW * ) kgGetNamedWidget ( D , ( char * ) "Select" ) ;
+      n = B->nx;
+      switch ( butno ) {
+          case 1:
+          break;
+          case 2:
+          *ipt = * ( W->df ) -1;
+          break;
+      }
+      return ret;
+  }
+  static void GetFontsplbutton1init ( DIL *B , void *ptmp ) {
+      void **pt = ( void ** ) ptmp; //pt [ 0 ] is arg 
+  }
+  static void GetFontbrowser2init ( DIS *S , void *ptmp ) {
+      void **pt = ( void ** ) ptmp; //pt [ 0 ] is arg 
+  }
+  static int GetFontinit ( void *Tmp ) {
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  /* you add any initialisation here */
+      int ret = 1 , k = 0;
+      DIALOG *D;
+      D = ( DIALOG * ) Tmp;
+      DIW *W;
+      DIM *M;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+ /* pt[0] is inputs, given by caller */
+      char **List;
+      int Font;
+      int *ipt = ( int * ) pt [ 0 ] ;
+      W = ( DIW * ) kgGetNamedWidget ( D , ( char * ) "Select" ) ;
+      M = ( DIM * ) kgGetNamedWidget ( D , ( char * ) "Msg" ) ;
+      List = kgGetFontList ( ) ;
+      while ( List [ k ] != NULL ) {
+//   printf("%s \n",List[k]);
+          k++;
+      }
+      Font = *ipt;
+      if ( Font < 0 ) Font = 0;
+      Font %= k;
+      kgSetList ( W , ( void ** ) List ) ;
+      * ( W->df ) = Font+1;
+      kgUpdateWidget ( W ) ;
+      kgWrite ( M , List [ Font ] ) ;
+      kgUpdateWidget ( M ) ;
+      kgUpdateOn ( D ) ;
+      WriteMsg ( D ) ;
+      return ret;
+  }
+  static int GetFontcleanup ( void *Tmp ) {
+  /* you add any cleanup/mem free here */
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+      int ret = 1;
+      DIALOG *D;
+      D = ( DIALOG * ) Tmp;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+ /* pt[1] is outputs, if any  to be given to caller */
+ /* pt[0] is inputs, given by caller */
+      return ret;
+  }
+  static int ModifyGetFont ( void *Tmp , int GrpId ) {
+      DIALOG *D;
+      D = ( DIALOG * ) Tmp;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+ /* pt[0] is inputs given by caller */
+      DIA *d;
+      int i , n , k = 0;
+      int *ipt = ( int * ) pt [ 0 ] ;
+      int Font = *ipt;
+      d = D->d;
+      i = 0;while ( d [ i ] .t != NULL ) {;
+          i++;
+      };
+      n = 1;
+//  strcpy(D->name,"Kulina Designer ver 2.0");    /*  Dialog name you may change */
+#if 0
+      if ( D->fullscreen != 1 ) { /* if not fullscreen mode */
+          int xres , yres;
+          kgDisplaySize ( & xres , & yres ) ;
+      // D->xo=D->yo=0; D->xl = xres-10; D->yl=yres-80;
+      }
+      else { // for fullscreen
+          int xres , yres;
+          kgDisplaySize ( & xres , & yres ) ;
+          D->xo = D->yo = 0; D->xl = xres; D->yl = yres;
+//     D->StackPos = 1; // you may need it
+      } /* end of fullscreen mode */
+#endif
+#if 0
+      W = ( DIW * ) kgGetNamedWidget ( D , ( char * ) "Select" ) ;
+      B = ( DIN * ) kgGetNamedWidget ( D , ( char * ) "Add" ) ;
+      M = ( DIM * ) kgGetNamedWidget ( D , ( char * ) "Msg" ) ;
+      I = ( DIS * ) kgGetNamedWidget ( D , ( char * ) "Info" ) ;
+#endif
+      return GrpId;
+  }
+  static int GetFontCallBack ( void *Tmp , void *tmp ) {
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+    tmp :  Pointer to KBEVENT  
+   ***********************************/ 
+      int ret = 0;
+      DIALOG *D;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      KBEVENT *kbe;
+      D = ( DIALOG * ) Tmp;
+      kbe = ( KBEVENT * ) tmp;
+      if ( kbe->event == 1 ) {
+          if ( kbe->button == 1 ) {
+          }
+      }
+      return ret;
+  }
+  static int GetFontResizeCallBack ( void *Tmp ) {
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+      int ret = 0;
+      int xres , yres , dx , dy;
+      DIALOG *D;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      D = ( DIALOG * ) Tmp;
+      kgGetWindowSize ( D , & xres , & yres ) ;
+      dx = xres - D->xl;
+      dy = yres - D->yl;
+  /* extra code */
+      D->xl = xres;
+      D->yl = yres;
+      kgRedrawDialog ( D ) ;
+      return ret;
+  }
+  static int GetFontWaitCallBack ( void *Tmp ) {
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+    Called while waiting for event  
+    return value 1 will close the the UI  
+   ***********************************/ 
+      int ret = 0;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      return ret;
+  }
+  static void ModifyGetFontGc ( void *Tmp ) {
+      DIALOG *D;
+      Gclr *gc;
+      D = ( DIALOG * ) Tmp;
+      gc = & ( D->gc ) ;
+/*
+//  You may change default settings here 
+//  probably you can allow the user to create a config in $HOME
+//  and try to read that file (if exits); so dynamic configuration is possible
+   kgColorTheme(D,220,220,200);
+   kgColorTheme1(D,220,220,200);
+   kgColorTheme2(D,220,220,200);
+   kgDefaultGuiTheme(gc);
+   kgGrayGuiTheme(gc);
+   gc->FontSize =9;
+   gc->FontGuiSize =9;
+   gc->InputFontSize =8;
+   gc->MenuFont = 21;
+   gc->PromptFont = 21;
+   gc->ButtonFont = 21;
+   gc->MsgFont = 21;
+   gc->Font=23;
+   kgMkgclr((char *)"GetFont",Tmp);
+*/
+  }
+  static int GetFontGroup ( DIALOG *D , void **v , void *pt ) {
+      int GrpId = 0 , oitems = 0 , i , j;
+      DIA *d = NULL , *dtmp;
+      char **menu0 ;
+      menu0 = ( char ** ) malloc ( sizeof ( char * ) *8 ) ;
+      menu0 [ 7 ] = NULL;
+      menu0 [ 0 ] = ( char * ) malloc ( 4 ) ;
+      strcpy ( menu0 [ 0 ] , ( char * ) "one" ) ;
+      menu0 [ 1 ] = ( char * ) malloc ( 4 ) ;
+      strcpy ( menu0 [ 1 ] , ( char * ) "two" ) ;
+      menu0 [ 2 ] = ( char * ) malloc ( 4 ) ;
+      strcpy ( menu0 [ 2 ] , ( char * ) "two" ) ;
+      menu0 [ 3 ] = ( char * ) malloc ( 6 ) ;
+      strcpy ( menu0 [ 3 ] , ( char * ) "three" ) ;
+      menu0 [ 4 ] = ( char * ) malloc ( 5 ) ;
+      strcpy ( menu0 [ 4 ] , ( char * ) "four" ) ;
+      menu0 [ 5 ] = ( char * ) malloc ( 5 ) ;
+      strcpy ( menu0 [ 5 ] , ( char * ) "five" ) ;
+      menu0 [ 6 ] = ( char * ) malloc ( 4 ) ;
+      strcpy ( menu0 [ 6 ] , ( char * ) "six" ) ;
+      char *prompt0 ;
+      prompt0 = ( char * ) malloc ( 13 ) ;
+      strcpy ( prompt0 , ( char * ) "Select Font " ) ;
+      DIW w0 = {
+          'w' , 10 , 15 , 380 , 55 , 6 , ( int * ) v [ 0 ] , prompt0 , menu0 , \
+          NULL , GetFontbrowser1callback , /* *args , callback */
+      0 };
+      strcpy ( w0.Wid , ( char * ) "Select" ) ;
+      w0.item = -1;
+      BUT_STR *butn1 = NULL;
+      butn1 = ( BUT_STR * ) malloc ( sizeof ( BUT_STR ) *1 ) ;
+      butn1 [ 0 ] .sw = 1;
+      strcpy ( butn1 [ 0 ] .title , ( char * ) "Add New Font" ) ;
+      butn1 [ 0 ] .xpmn = NULL;
+      butn1 [ 0 ] .xpmp = NULL;
+      butn1 [ 0 ] .xpmh = NULL;
+      butn1 [ 0 ] .bkgr = -1;
+      butn1 [ 0 ] .butncode = 31;
+      DIN b1 = {
+          'n' , 110 , 105 , 270 , 147 , 2 , 2 , 150 , 32 , 1 , 1 , 4 , 0.500000 , \
+          0 , 0 , 0 , 1 , /* button type and roundinfg factor \
+           ( 0-0.5 ) , bordr , hide , nodrawbkgr*/
+          butn1 , GetFontbutton1callback , /* Callbak */
+          NULL /* any args */
+      };
+      strcpy ( b1.Wid , ( char * ) "Add" ) ;
+      b1.item = -1;
+      BUT_STR *butn2 = NULL;
+      butn2 = ( BUT_STR * ) malloc ( sizeof ( BUT_STR ) *2 ) ;
+      butn2 [ 0 ] .sw = 1;
+      strcpy ( butn2 [ 0 ] .title , ( char * ) "!c03Cancel" ) ;
+      butn2 [ 0 ] .xpmn = NULL;
+      butn2 [ 0 ] .xpmp = NULL;
+      butn2 [ 0 ] .xpmh = NULL;
+      butn2 [ 0 ] .bkgr = -1;
+      butn2 [ 0 ] .butncode = 31;
+      butn2 [ 1 ] .sw = 1;
+      strcpy ( butn2 [ 1 ] .title , ( char * ) "!c38Okay" ) ;
+      butn2 [ 1 ] .xpmn = NULL;
+      butn2 [ 1 ] .xpmp = NULL;
+      butn2 [ 1 ] .xpmh = NULL;
+      butn2 [ 1 ] .bkgr = -1;
+      butn2 [ 1 ] .butncode = 31;
+      DIL h2 = {
+          'h' , 119 , 298 , 275 , 331 , 2 , 0 , 72 , 25 , 2 , 1 , 8 , 0.500000 , 0 , \
+          0 , 0 , 1 , /* button type and roundinfg factor \
+           ( 0-0.5 ) , bordr , hide , nodrawbkgr*/
+          butn2 , GetFontsplbutton1callback , /* Callbak */
+          NULL /* any args */
+      };
+      strcpy ( h2.Wid , ( char * ) "Spl" ) ;
+      h2.item = -1;
+      DIM m3 = {
+      'B' , 15 , 72 , 375 , 96 , 0 , 0 };
+      strncpy ( m3.msg , ( char * ) "" , 499 ) ;
+      strcpy ( m3.Wid , ( char * ) "Msg" ) ;
+      m3.item = -1;
+      DIS s4 = {
+          's' , 15 , 162 , 376 , 283 , 5 , NULL , NULL , \
+          NULL , NULL , NULL , /* *args , callback */
+//     line width,offset (not used),scroll width,highlight item(not used)
+//     border on/off,bkgr on/off,hide on/off
+//     uses Gclr items: msg_fill,msg_char,msg_bodr,scroll_fill,scroll_dim,scroll_vbright)
+      20 , 6 , 22 , 1 , 1 , 1 , 0 };
+      strcpy ( s4.Wid , ( char * ) "Info" ) ;
+      s4.item = -1;
+      dtmp = D->d;
+      i = 0;
+      if ( dtmp != NULL ) while ( dtmp [ i ] .t != NULL ) i++;
+      dtmp = ( DIA * ) realloc ( dtmp , sizeof ( DIA ) * ( i+6 ) ) ;
+      d = dtmp+i;
+      d [ 5 ] .t = NULL;
+      d [ 0 ] .t = ( DIT * ) malloc ( sizeof ( DIW ) ) ;
+      *d [ 0 ] .w = w0;
+      d [ 0 ] .w->item = -1;
+      d [ 1 ] .t = ( DIT * ) malloc ( sizeof ( DIN ) ) ;
+      *d [ 1 ] .N = b1;
+      d [ 1 ] .N->item = -1;
+      GetFontbutton1init ( d [ 1 ] .N , pt ) ;
+      d [ 2 ] .t = ( DIT * ) malloc ( sizeof ( DIL ) ) ;
+      *d [ 2 ] .h = h2;
+      d [ 2 ] .h->item = -1;
+      GetFontsplbutton1init ( d [ 2 ] .h , pt ) ;
+      d [ 3 ] .t = ( DIT * ) malloc ( sizeof ( DIM ) ) ;
+      *d [ 3 ] .m = m3;
+      d [ 3 ] .m->item = -1;
+      d [ 4 ] .t = ( DIT * ) malloc ( sizeof ( DIS ) ) ;
+      *d [ 4 ] .s = s4;
+      d [ 4 ] .s->item = -1;
+      GetFontbrowser2init ( d [ 4 ] .s , pt ) ;
+      d [ 5 ] .t = NULL;
+      GrpId = kgOpenGrp ( D ) ;
+      D->d = dtmp;
+      j = 0;
+      while ( d [ j ] .t != NULL ) { kgAddtoGrp ( D , \
+      GrpId , ( void * ) ( d [ j ] .t ) ) ;j++;}
+      return GrpId;
+  }
+/* One can also use the following code to add Widgets to an existing Dialog */
+  int MakeGetFontGroup ( DIALOG *D , void *arg ) {
+      int GrpId;
+      WIDGETGRP *Gpt;
+/*************************************************
+
+    Browser1  1 data value
+
+*************************************************/
+      int *v0 ;
+      v0 = ( int * ) malloc ( sizeof ( int ) ) ;
+      *v0 = 1;
+      void** v = ( void ** ) malloc ( sizeof ( void* ) *2 ) ;
+      v [ 1 ] = NULL;
+      v [ 0 ] = ( void * ) ( v0 ) ;
+      void *pt = NULL; /* pointer to send any extra information */
+                  /* it will be aviilable in Callbacks */
+      GrpId = GetFontGroup ( D , v , pt ) ;
+      Gpt = kgGetWidgetGrp ( D , GrpId ) ;
+      Gpt->arg = v; // kulina will double free this; you may modify
+      return GrpId;
+  }
+  int GetFont ( void *parent , void **v , void *pt ) {
+      int ret = 1 , GrpId , k;
+      DIALOG D;
+      DIA *d = NULL;
+      D.VerId = 2107030000;
+      kgInitUi ( & D ) ;
+      D.d = NULL;
+#if 1
+      GrpId = GetFontGroup ( & D , v , pt ) ;
+#else 
+      GrpId = MakeGetFontGroup ( & D , pt ) ; // can try this also
+#endif 
+      d = D.d;
+      D.d = d;
+      D.bkup = 1; /* set to 1 for backup */
+      D.bor_type = 4;
+      D.df = 4;
+      D.tw = 4;
+      D.bw = 4;
+      D.lw = 4;
+      D.rw = 4;
+      D.xo = 858; /* Position of Dialog */
+      D.yo = 254;
+      D.xl = 392; /* Length of Dialog */
+      D.yl = 337; /* Width of Dialog */
+      D.Initfun = GetFontinit; /* init fuction for Dialog */
+      D.Cleanupfun = GetFontcleanup; /* init fuction for Dialog */
+      D.kbattn = 0; /* 1 for drawing keyborad attention */
+      D.butattn = 0; /* 1 for drawing button attention */
+      D.fullscreen = 0; /* 1 for for fullscreen mode */
+      D.NoTabProcess = 0; /* 1 for disabling Tab use */
+      D.Deco = 1; /* 1 for Window Decorration */
+      D.transparency = 0.000000; /* float 1.0 for full transparency */
+      D.Newwin = 1; /* 1 for new window not yet implemented */
+      D.DrawBkgr = 1; /* 1 for drawing background */
+      D.Bkpixmap = NULL; /* background image */
+      D.Sticky = 0; /* 1 for stickyness */
+      D.Resize = 0; /* 1 for Resize option */
+      D.MinWidth = 100; /* for Resize option */
+      D.MinHeight = 100; /* for Resize option */
+#if 1 
+      D.Callback = GetFontCallBack; /* default callback */
+#else 
+      D.Callback = NULL;
+#endif
+      D.ResizeCallback = GetFontResizeCallBack; /* Resize callback */
+#if 0 
+      D.WaitCallback = NULL; /* Wait callback */
+#else 
+      D.WaitCallback = GetFontWaitCallBack; /* Wait callback */
+#endif
+      D.Fixpos = 1; /* 1 for Fixing Position */
+      D.NoTaskBar = 0; /* 1 for not showing in task bar*/
+      D.NoWinMngr = 0; /* 1 for no Window Manager*/
+      D.StackPos = 0; /* -1 , 0 , 1 for for Stack Position -1:below 0:normal 1:above*/
+      D.Shapexpm = NULL; /* PNG/jpeg file for window shape;
+      Black color will not be drawn */
+      D.parent = parent; /* 1 for not showing in task bar*/
+      D.pt = pt; /* any data to be passed by user*/
+//  strcpy(D.name,"Kulina Designer ver 2.0");    /*  Dialog name you may change */
+      if ( D.fullscreen != 1 ) { /* if not fullscreen mode */
+          int xres , yres;
+          kgDisplaySize ( & xres , & yres ) ;
+      // D.xo=D.yo=0; D.xl = xres-10; D.yl=yres-80;
+      }
+      else { // for fullscreen
+          int xres , yres;
+          kgDisplaySize ( & xres , & yres ) ;
+          D.xo = D.yo = 0; D.xl = xres; D.yl = yres;
+//     D.StackPos = 1; // you may need it
+      } /* end of fullscreen mode */
+      ModifyGetFont ( & D , GrpId ) ; /* add extras to gui*/
+      ModifyGetFontGc ( & D ) ; /* set colors for gui if do not like default*/
+      ret = kgUi ( & D ) ;
+      kgCleanUi ( & D ) ;
+      return ret;
+  }
+  void *kgGetFreeTypeFont ( void *parent , void *args ) {
+/*************************************************
+
+    Browser1  1 data value
+
+*************************************************/
+      int v0 = 1;
+      void* v [ 1 ] ;
+      v [ 0 ] = ( void * ) ( & v0 ) ;
+      void *pt [ 2 ] = {NULL , NULL}; /* pointer to send any extra information */
+                  /* it will be aviilable in Callbacks */
+      pt [ 0 ] = args;
+      GetFont ( parent , v , ( void * ) pt ) ;
+      return pt [ 1 ] ;
+  }
+/* END OF kgGetFreeTypeFont */

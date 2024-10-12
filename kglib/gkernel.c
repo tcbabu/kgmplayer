@@ -47,7 +47,8 @@
 #define uirest_clip_limits wc->c_v_x1=wc->c_v_x1_o,wc->c_v_y1=wc->c_v_y1_o,wc->c_v_x2=wc->c_v_x2_o,wc->c_v_y2=wc->c_v_y2_o
   static int Xid = 0;
   extern int TextSize , Ht , Wd , Gap , Bt; // It is Okay For Thread;
-  static long EventMask = ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask \
+  static long EventMask = ExposureMask | KeyPressMask  \
+      | KeyReleaseMask | ButtonPressMask \
    | ButtonReleaseMask | PointerMotionMask | VisibilityChangeMask \
    | StructureNotifyMask | PropertyChangeMask;
   static long EventMaskNoResize = ExposureMask | KeyPressMask | KeyReleaseMask \
@@ -172,14 +173,63 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       227 , 255 , 255 , /* light */
       220 , 0 , 0 , 105 , 89 , 206 , /* slate */
       150 , 0 , 0 , 120 , 0 , 0 , 73 , 61 , 138 , /* dark */
-      0 , 180 , 0 , 0 , 150 , 0 , 0 , 120 , 0 , 0 , 0 , 220 , 66 , 66 , 66 , 99 , 99 , 99 , 143 , 143 , 143 , 187 , 187 , 187 , 220 , 220 , 220 , 240 , 255 , 254 , 242 , 246 , 255 , 244 , 247 , 255 , /* light */
-      40 , 45 , 40 , 50 , 55 , 50 , 220 , 230 , 220 , 180 , 190 , 180 , 20 , 30 , 20 , 40 , 50 , 40 , 60 , 65 , 60 , 220 , 220 , 0 , 180 , 180 , 0 , 150 , 150 , 0 , 120 , 120 , 0 , 121 , 105 , 239 , /* medium */
-  180 , 0 , 180 , 150 , 0 , 150 , 120 , 0 , 120 , 93 , 158 , 162 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
-      
+      0 , 180 , 0 , 0 , 150 , 0 , 0 , 120 , 0 , 0 , 0 , 220 , 66 , 66 , 66 , 99 , \
+           99 , 99 , 143 , 143 , 143 , 187 , 187 , 187 , 220 , 220 , 220 , 240 , \
+           255 , 254 , 242 , 246 , 255 , 244 , 247 , 255 , /* light */
+      40 , 45 , 40 , 50 , 55 , 50 , 220 , 230 , 220 , 180 , 190 , 180 , 20 , 30 , \
+           20 , 40 , 50 , 40 , 60 , 65 , 60 , 220 , 220 , 0 , 180 , 180 , 0 , \
+           150 , 150 , 0 , 120 , 120 , 0 , 121 , 105 , 239 , /* medium */
+  180 , 0 , 180 , 150 , 0 , 150 , 120 , 0 , 120 , 93 , 158 , 162 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
        /* whilte */
   static XColor DefClrs [ 1024 ] ;
-  static unsigned long clrtbl [ 1024 ] = {0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 , 30 , 31 , 32 , 33 , 34 , 35 , 36 , 37 , 38 , 39 , 40 , 41 , 42 , 43 , 44 , 45 , 46 , 47 , 48 , 49 , 50 , 51 , 52 , 53 , 54 , 55 , 56 , 57 , 58 , 59 , 60 , 61 , 62 , 63 , 64 , 65 , 66 , 67 , 68 , 69 , 70 , 71 , 72 , 73 , 74 , 75 , 76 , 77 , 78 , 79 , 80 , 81 , 82 , 83 , 84 , 85 , 86 , 87 , 88 , 89 , 90 , 91 , 92 , 93 , 94 , 95 , 96 , 97 , 98 , 99 , 100 , 101 , 102 , 103 , 104 , 105 , 106 , 107 , 108 , 109 , 110 , 111 , 112 , 113 , 114 , 115 , 116 , 117 , 118 , 119 , 120 , 121 , 122 , 123 , 124 , 125 , 126 , 127 , 128 , 129 , 130 , 131 , 132 , 133 , 134 , 135 , 136 , 137 , 138 , 139 , 140 , 141 , 142 , 143 , 144 , 145 , 146 , 147 , 148 , 149 , 150 , 151 , 152 , 153 , 154 , 155 , 156 , 157 , 158 , 159 , 160 , 161 , 162 , 163 , 164 , 165 , 166 , 167 , 168 , 169 , 170 , 171 , 172 , 173 , 174 , 175 , 176 , 177 , 178 , 179 , 180 , 181 , 182 , 183 , 184 , 185 , 186 , 187 , 188 , 189 , 190 , 191 , 192 , 193 , 194 , 195 , 196 , 197 , 198 , 199 , 200 , 201 , 202 , 203 , 204 , 205 , 206 , 207 , 208 , 209 , 210 , 211 , 212 , 213 , 214 , 215 , 216 , 217 , 218 , 219 , 220 , 221 , 222 , 223 , 224 , 225 , 226 , 227 , 228 , 229 , 230 , 231 , 232 , 233 , 234 , 235 , 236 , 237 , 238 , 239 , 240 , 241 , 242 , 243 , 244 , 245 , 246 , 247 , 248 , 249 , 250 , 251 , 252 , 253 , 254 , 255 , -1 };
-      
+  static unsigned long clrtbl [ 1024 ] = {0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , \
+       8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 21 , 22 , \
+       23 , 24 , 25 , 26 , 27 , 28 , 29 , 30 , 31 , 32 , 33 , 34 , 35 , 36 , 37 , \
+       38 , 39 , 40 , 41 , 42 , 43 , 44 , 45 , 46 , 47 , 48 , 49 , 50 , 51 , 52 , \
+       53 , 54 , 55 , 56 , 57 , 58 , 59 , 60 , 61 , 62 , 63 , 64 , 65 , 66 , 67 , \
+       68 , 69 , 70 , 71 , 72 , 73 , 74 , 75 , 76 , 77 , 78 , 79 , 80 , 81 , 82 , \
+       83 , 84 , 85 , 86 , 87 , 88 , 89 , 90 , 91 , 92 , 93 , 94 , 95 , 96 , 97 , \
+       98 , 99 , 100 , 101 , 102 , 103 , 104 , 105 , 106 , 107 , 108 , 109 , 110 , \
+       111 , 112 , 113 , 114 , 115 , 116 , 117 , 118 , 119 , 120 , 121 , 122 , \
+       123 , 124 , 125 , 126 , 127 , 128 , 129 , 130 , 131 , 132 , 133 , 134 , \
+       135 , 136 , 137 , 138 , 139 , 140 , 141 , 142 , 143 , 144 , 145 , 146 , \
+       147 , 148 , 149 , 150 , 151 , 152 , 153 , 154 , 155 , 156 , 157 , 158 , \
+       159 , 160 , 161 , 162 , 163 , 164 , 165 , 166 , 167 , 168 , 169 , 170 , \
+       171 , 172 , 173 , 174 , 175 , 176 , 177 , 178 , 179 , 180 , 181 , 182 , \
+       183 , 184 , 185 , 186 , 187 , 188 , 189 , 190 , 191 , 192 , 193 , 194 , \
+       195 , 196 , 197 , 198 , 199 , 200 , 201 , 202 , 203 , 204 , 205 , 206 , \
+       207 , 208 , 209 , 210 , 211 , 212 , 213 , 214 , 215 , 216 , 217 , 218 , \
+       219 , 220 , 221 , 222 , 223 , 224 , 225 , 226 , 227 , 228 , 229 , 230 , \
+       231 , 232 , 233 , 234 , 235 , 236 , 237 , 238 , 239 , 240 , 241 , 242 , \
+       243 , 244 , 245 , 246 , 247 , 248 , 249 , 250 , \
+       251 , 252 , 253 , 254 , 255 , -1 };
 #define uiXDRAW(wc,x1,y1,x2,y2) XDrawLine(wc->Dsp,wc->ActWin,wc->Gc,(short)(x1),(short)(wc->EVGAY-y1),(short)(x2),(short)(wc->EVGAY-y2))
 #define dvXDRAW(wc,x1,y1,x2,y2) XDrawLine(wc->Dsp,wc->ActWin,wc->Gc,(short)(x1),(short)(y1),(short)(x2),(short)(y2))
 #define XCPix(x1,y1,x2,y2) XCreatePixmap(Dsp,Win,(short)(x2-(x1)+1),(short)(y2-(y1)+1),Dpth);
@@ -188,10 +238,22 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 #define wcXCPix(x1,y1,x2,y2) XCreatePixmap(wc->Dsp, wc->Win,(short)(x2-(x1)+1),(short)(y2-(y1)+1),wc->Dpth);
   static int Shift = 0 , Caplock = 0;
   static int Revscan_code [ 256 ] ;
-  static int Scan_code [ 256 ] = {0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 27 , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' , '9' , '0' , '-' , '=' , '\b' , 0 , 'q' , 'w' , 'e' , 'r' , 't' , 'y' , 'u' , 'i' , 'o' , 'p' , 0 , 0 , '\r' , 0 , 'a' , 's' , 'd' , 'f' , 'g' , 'h' , 'j' , 'k' , 'l' , ';' , '\'' , '`' , 0 , '\\' , 'z' , 'x' , 'c' , 'v' , 'b' , 'n' , 'm' , ',' , '.' , '/' , 0 , 0 , 0 , ' ' , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 103 , 104 , 105 , 106};
-      
-  static int Scan_sh_code [ 256 ] = {0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 27 , '!' , ' ' , '#' , '$' , '%' , '^' , '&' , '*' , '(' , ')' , '_' , '+' , '\b' , 0 , 'Q' , 'W' , 'E' , 'R' , 'T' , 'Y' , 'U' , 'I' , 'O' , 'P' , 0 , 0 , '\r' , 0 , 'A' , 'S' , 'D' , 'F' , 'G' , 'H' , 'J' , 'K' , 'L' , ':' , '"' , '~' , 0 , '|' , 'Z' , 'X' , 'C' , 'V' , 'B' , 'N' , 'M' , '<' , '>' , '?' , 0 , 0 , 0 , ' ' , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 103 , 104 , 105 , 106};
-      
+  static int Scan_code [ 256 ] = {0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 27 , '1' , \
+       '2' , '3' , '4' , '5' , '6' , '7' , '8' , '9' , '0' , '-' , '=' , '\b' , \
+       0 , 'q' , 'w' , 'e' , 'r' , 't' , 'y' , 'u' , 'i' , 'o' , 'p' , 0 , 0 , \
+       '\r' , 0 , 'a' , 's' , 'd' , 'f' , 'g' , 'h' , 'j' , 'k' , 'l' , ';' , \
+       '\'' , '`' , 0 , '\\' , 'z' , 'x' , 'c' , 'v' , 'b' , 'n' , 'm' , ',' , \
+       '.' , '/' , 0 , 0 , 0 , ' ' , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 103 , 104 , 105 , 106};
+  static int Scan_sh_code [ 256 ] = {0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 27 , \
+       '!' , ' ' , '#' , '$' , '%' , '^' , '&' , '*' , '(' , ')' , '_' , '+' , \
+       '\b' , 0 , 'Q' , 'W' , 'E' , 'R' , 'T' , 'Y' , 'U' , 'I' , 'O' , 'P' , \
+       0 , 0 , '\r' , 0 , 'A' , 'S' , 'D' , 'F' , 'G' , 'H' , 'J' , 'K' , 'L' , \
+       ':' , '"' , '~' , 0 , '|' , 'Z' , 'X' , 'C' , 'V' , 'B' , 'N' , 'M' , '<' , \
+       '>' , '?' , 0 , 0 , 0 , ' ' , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , \
+       0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 103 , 104 , 105 , 106};
   static int GetShift ( unsigned long val ) ;
   XImage * kg_GetImage ( DIALOG *D , int x , int y , int width , int height ) ;
   void kgSync ( void *Tmp ) {
@@ -202,8 +264,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
   void rmv_pointer ( ) {}
   void dsp_pointer ( ) {}
   void draw_pointer ( int x , int y ) {}
-  void _uiTileImage ( kgWC *wc , Pixmap pix , XImage *ximage , int wd , int ht ) ;
-      
+  void _uiTileImage ( kgWC *wc , Pixmap pix , \
+       XImage *ximage , int wd , int ht ) ;
   void * kgProcessSelectionRequest ( void *Tmp ) ;
   int kgEnableSelection ( void *Tmp ) ;
 /*
@@ -252,7 +314,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 /*
   to scroll a rectangular area backward to a given width
 */
-  void uiscr_scroll_back ( DIALOG *D , int x1 , int y1 , int x2 , int y2 , int width ) \
+  void uiscr_scroll_back ( DIALOG *D , int x1 , \
+       int y1 , int x2 , int y2 , int width ) \
   {
       int i , j , addr;
       XCopyArea ( ( Display * ) WC ( D )->Dsp , ( Pixmap ) WC ( D )->DspWin , \
@@ -419,8 +482,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           else {
               char command [ 500 ] ;
 //		sprintf(command,"Xorg :0.0 vt7 -quiet -allowMouseOpenFail -terminate -reset -nopn   -retro   -logfile %s",logfile);
-              sprintf ( command , "Xorg :0.0 vt7 -quiet -allowMouseOpenFail  -reset -nopn   -retro   -logfile %s" , logfile ) ;
-                  
+              sprintf ( command , "Xorg :0.0 vt7 -quiet -allowMouseOpenFail  -reset -nopn   -retro   -logfile %s" , \
+                   logfile ) ;
               kgChangeJob ( command ) ;
           }
           exit ( 1 ) ;
@@ -439,7 +502,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 /*
   Getting parent of a given routine; used only in this file
 */
-  void kgDefineColor ( int clr , unsigned char red , unsigned char green , unsigned char blue ) \
+  void kgDefineColor ( int clr , unsigned char red , \
+       unsigned char green , unsigned char blue ) \
   {
       kgIcode [ clr ] [ 0 ] = red;
       kgIcode [ clr ] [ 1 ] = green;
@@ -480,7 +544,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 /*
   Getting the color definition of a given index
 */
-  void uiget_color ( Display *Dsp , Colormap Cmap , int i , short *ir , short *ig , short *ib ) \
+  void uiget_color ( Display *Dsp , Colormap Cmap , \
+       int i , short *ir , short *ig , short *ib ) \
   {
       XColor col;
       if ( i >= NCLRS ) i = i%NCLRS +1;
@@ -907,7 +972,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //  XQueryTree(Dsp,Win,&Root,&Par,&Child,&nChild);
 //     printf("Win:par,Root,Par: %d %d %d %d,%d\n",Win,par,Root,Par,nChild);
 #if 1
-      if ( ! XQueryTree ( wc->Dsp , DefaultRootWindow ( wc->Dsp ) , & Root , & Par , & Child , & nChild ) ) \
+      if ( ! XQueryTree ( wc->Dsp , DefaultRootWindow ( wc->Dsp ) , \
+           & Root , & Par , & Child , & nChild ) ) \
       {
           fprintf ( stderr , "XQueryTree Failed\n" ) ;
           return 0;
@@ -1224,8 +1290,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       DIALOG *D;
       D = ( DIALOG * ) Tmp;
       win = ( Window * ) wtmp;
-      XSetInputFocus ( ( Display * ) WC ( D )->Dsp , *win , RevertToPointerRoot , CurrentTime ) ;
-          
+      XSetInputFocus ( ( Display * ) WC ( D )->Dsp , *win , \
+           RevertToPointerRoot , CurrentTime ) ;
       return 1;
   }
   int kgCheckMyWindow ( void *Tmp , void *wtmp ) {
@@ -1238,12 +1304,13 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       if ( *win == ( Window ) ( WC ( D )->Win ) ) return 1;
       else return 0;
   }
-  int kg_image_bitmap ( Display *Dsp , GC Gc , Pixmap bmp , void *tmp , int width , int height ) \
+  int kg_image_bitmap ( Display *Dsp , GC Gc , Pixmap bmp , \
+       void *tmp , int width , int height ) \
   {
       float transparency = 0 , highfac = 1.0;
       int x0 = 0 , y0 = 0;
-      int i , j , k , m , row , color , sx , sy , dx , dy , xoffset , yoffset , xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
-          
+      int i , j , k , m , row , color , sx , sy , dx , dy , xoffset , yoffset , \
+           xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
       unsigned long val;
       unsigned char *Imgdata = NULL , *dest;
       unsigned char r , g , b;
@@ -1378,7 +1445,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       title = D->name;
       wc = D->wc;
       Dsp = wc->Dsp;
-      if ( XMatchVisualInfo ( Dsp , DefaultScreen ( Dsp ) , 32 , TrueColor , & visualinfo ) == 0 ) \
+      if ( XMatchVisualInfo ( Dsp , DefaultScreen ( Dsp ) , \
+           32 , TrueColor , & visualinfo ) == 0 ) \
       {
           printf ( "Could not find a True Color Match\n" ) ;
           Vis = XDefaultVisual ( Dsp , DefaultScreen ( Dsp ) ) ;
@@ -1402,7 +1470,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       xswa.background_pixmap = None;
       xswa.border_pixel = 0;
       xswa.override_redirect = False;
-      Win = XCreateWindow ( Dsp , Parent , xpos , ypos , xres , yres , 0 , Dpth , InputOutput , Vis , \
+      Win = XCreateWindow ( Dsp , Parent , xpos , ypos , \
+           xres , yres , 0 , Dpth , InputOutput , Vis , \
        ( CWBackPixel | CWBackingStore | CWSaveUnder \
        | CWColormap | CWBitGravity ) , & xswa ) ;
       sWin = ( void * ) Malloc ( sizeof ( Window ) ) ;
@@ -1423,8 +1492,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           return; // color alloc failed , give up
       }
       bm_no = XCreateBitmapFromData ( disp , win , bm_no_data , 8 , 8 ) ;
-      no_ptr = XCreatePixmapCursor ( disp , bm_no , bm_no , & black , & black , 0 , 0 ) ;
-          
+      no_ptr = XCreatePixmapCursor ( disp , bm_no , \
+           bm_no , & black , & black , 0 , 0 ) ;
       XDefineCursor ( disp , win , no_ptr ) ;
       XFreeCursor ( disp , no_ptr ) ;
       if ( bm_no != None ) XFreePixmap ( disp , bm_no ) ;
@@ -1518,7 +1587,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       exit ( 0 ) ;};
       xresmax = DisplayWidth ( Dsp , DefaultScreen ( Dsp ) ) ;
       yresmax = DisplayHeight ( Dsp , DefaultScreen ( Dsp ) ) ;
-      if ( XMatchVisualInfo ( Dsp , DefaultScreen ( Dsp ) , 32 , TrueColor , & visualinfo ) == 0 ) \
+      if ( XMatchVisualInfo ( Dsp , DefaultScreen ( Dsp ) , \
+           32 , TrueColor , & visualinfo ) == 0 ) \
       {
           printf ( "Could not find a True Color Match\n" ) ;
           Vis = XDefaultVisual ( Dsp , DefaultScreen ( Dsp ) ) ;
@@ -1563,7 +1633,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       xwmpt->initial_state = NormalState;
       xwmpt->input = True;
       property = XInternAtom ( Dsp , "_MOTIF_WM_HINTS" , True ) ;
-      Win = XCreateWindow ( Dsp , parwin , xsh.x , xsh.y , xsh.width , xsh.height , 0 , Dpth , InputOutput , Vis , \
+      Win = XCreateWindow ( Dsp , parwin , xsh.x , xsh.y , xsh.width , \
+           xsh.height , 0 , Dpth , InputOutput , Vis , \
        ( CWColormap | CWBackingStore | CWBorderPixel | CWBitGravity \
        | CWOverrideRedirect ) , & xswa ) ;
       EVGAX = xwa.width;
@@ -1592,8 +1663,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           xsh.width_inc = xsh.height_inc = 0;
       }
 /* As on 18/11/12  for no decorations */ 
-      XSetStandardProperties ( Dsp , Win , title , title , None , argv , argc , & xsh ) ;
-          
+      XSetStandardProperties ( Dsp , Win , title , \
+           title , None , argv , argc , & xsh ) ;
       if ( TrClr ) {
           XChangeProperty ( Dsp , Win , property , property , 32 , PropModeReplace , \
            ( unsigned char * ) & hints , 5 ) ;
@@ -1632,8 +1703,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               Rect.y = 0;
               Rect.width = EVGAX;
               Rect.height = EVGAY;
-              if ( Resize != 1 ) XShapeCombineRectangles ( Dsp , Win , ShapeClip , 0 , 0 , & Rect , 1 , ShapeSet , 1 ) ;
-                  
+              if ( Resize != 1 ) XShapeCombineRectangles ( Dsp , Win , \
+                   ShapeClip , 0 , 0 , & Rect , 1 , ShapeSet , 1 ) ;
           }
       }
       gcv.foreground = 10;
@@ -1646,14 +1717,14 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       c0.pixel = 0;
 #if 0
       CurPix = XCreateBitmapFromData ( Dsp , win , bm_no_data , 8 , 8 ) ;
-      wc->HideCur = XCreatePixmapCursor ( Dsp , CurPix , CurPix , & c0 , & c0 , 0 , 0 ) ;
-          
+      wc->HideCur = XCreatePixmapCursor ( Dsp , CurPix , \
+           CurPix , & c0 , & c0 , 0 , 0 ) ;
 #else
       CurPix = XCPix1 ( 0 , 0 , 0 , 0 ) ;
       CurMask = XCPix1 ( 0 , 0 , 0 , 0 ) ;
 //  wc->HideCur =  XCreatePixmapCursor(Dsp,CurPix,CurMask,&c15,&c0,1,1);
-      wc->HideCur = XCreatePixmapCursor ( Dsp , CurPix , CurMask , & c0 , & c0 , 0 , 0 ) ;
-          
+      wc->HideCur = XCreatePixmapCursor ( Dsp , CurPix , \
+           CurMask , & c0 , & c0 , 0 , 0 ) ;
 #endif
       XFreePixmap ( Dsp , CurPix ) ;
       XFreePixmap ( Dsp , CurMask ) ;
@@ -1697,12 +1768,12 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_ABOVE" , True ) ;
 //    cEvent.data.l[1]= XInternAtom(Dsp,"_NET_WM_ACTION_STAYS_ON_TOP",True);
       cEvent.data.l [ 2 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_BELOW" , True ) ;
-      cEvent.data.l [ 3 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_CHANGE_DESKTOP" , True ) ;
-          
+      cEvent.data.l [ 3 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_CHANGE_DESKTOP" , \
+           True ) ;
       cEvent.data.l [ 4 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_MOVE" , True ) ;
       wcSendEvent ( wc , ( XEvent * ) & cEvent ) ;
-      cEvent.data.l [ 0 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_STAYS_ON_TOP" , True ) ;
-          
+      cEvent.data.l [ 0 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_STAYS_ON_TOP" , \
+           True ) ;
       cEvent.data.l [ 1 ] = 0;
       cEvent.data.l [ 2 ] = 0;
       cEvent.data.l [ 3 ] = 0;
@@ -1714,10 +1785,10 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       cEvent.data.l [ 4 ] = 0;
 //    if(dec==0) {
       if ( NoTaskBar == 1 ) {
-          cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_STATE_SKIP_PAGER" , True ) ;
-              
-          cEvent.data.l [ 2 ] = XInternAtom ( Dsp , "_NET_WM_STATE_SKIP_TASKBAR" , True ) ;
-              
+          cEvent.data.l [ 1 ] = XInternAtom ( Dsp , \
+               "_NET_WM_STATE_SKIP_PAGER" , True ) ;
+          cEvent.data.l [ 2 ] = XInternAtom ( Dsp , "_NET_WM_STATE_SKIP_TASKBAR" , \
+               True ) ;
           wcSendEvent ( wc , ( XEvent * ) & cEvent ) ;
       }
       if ( fixpos == 1 ) {
@@ -1729,8 +1800,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 #if 0
       switch ( StackPos ) {
           case 1:
-          cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_STATE_STAYS_ON_TOP" , True ) ;
-              
+          cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_STATE_STAYS_ON_TOP" , \
+               True ) ;
           cEvent.data.l [ 2 ] = 0;
           wcSendEvent ( wc , ( XEvent * ) & cEvent ) ;
           cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_STATE_ABOVE" , True ) ;
@@ -1750,14 +1821,14 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //  wc->IMAGE = XGetImage(Dsp,Win,0,0,xsh.min_width,xsh.min_height,0xffffffff,ZPixmap);
 //  wc->IMAGEBAK = XGetImage(Dsp,Win,0,0,xsh.min_width,xsh.min_height,0xffffffff,ZPixmap);
       wc->IMAGE = XGetImage ( Dsp , Win , 0 , 0 , 20 , 20 , 0xffffffff , ZPixmap ) ;
-      wc->IMAGEBAK = XGetImage ( Dsp , Win , 0 , 0 , 20 , 20 , 0xffffffff , ZPixmap ) ;
-          
+      wc->IMAGEBAK = XGetImage ( Dsp , Win , 0 , \
+           0 , 20 , 20 , 0xffffffff , ZPixmap ) ;
       uiMakeImageTransparent ( wc->IMAGE , transparency ) ;
       uiMakeImageTransparent ( wc->IMAGEBAK , transparency ) ;
 #if 0
       XPutImage ( Dsp , wc->Pix , Gc , wc->IMAGE , 0 , 0 , 0 , 0 , EVGAX , EVGAY ) ;
-      XPutImage ( Dsp , wc->Piximg , Gc , wc->IMAGE , 0 , 0 , 0 , 0 , EVGAX , EVGAY ) ;
-          
+      XPutImage ( Dsp , wc->Piximg , Gc , wc->IMAGE , \
+           0 , 0 , 0 , 0 , EVGAX , EVGAY ) ;
 #else
       _uiTileImage ( wc , wc->Pix , wc->IMAGE , xresmax , yresmax ) ;
       _uiTileImage ( wc , wc->Piximg , wc->IMAGE , xresmax , yresmax ) ;
@@ -1813,7 +1884,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       wc->cpCallback = NULL;
       return wc;
   }
-  void * kgGetGeometry ( void *Tmp , int *xo , int *yo , int *l , int *h , int *borwidth ) \
+  void * kgGetGeometry ( void *Tmp , int *xo , int *yo , \
+       int *l , int *h , int *borwidth ) \
   {
 /* Caller should free RootWindow Pointer (return value) */
 /* NOT USEFUL WHEN Windoe Managet is Active */
@@ -1879,8 +1951,9 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       prop = cm_atom;
       win = RootWindow ( Dsp , DefaultScreen ( Dsp ) ) ;
       target = XA_STRING;
-      wmwin = ( Window ) XGetWindowProperty ( Dsp , win , prop , 0 , 0 , False , AnyPropertyType , & prop_type , & prop_format , & prop_items , & prop_size , & txt ) ;
-          
+      wmwin = ( Window ) XGetWindowProperty ( Dsp , win , prop , 0 , 0 , False , \
+           AnyPropertyType , & prop_type , & prop_format , \
+           & prop_items , & prop_size , & txt ) ;
 //    printf("%ld %ld %ld %s\n",prop_format,prop_items,prop_size,txt);
       if ( prop_type == None ) {
 //     printf("No Window Manager\n");
@@ -1892,8 +1965,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       len = prop_size;
 //    printf("len = %d\n",len);
 #if 1
-      XGetWindowProperty ( Dsp , win , prop , 0 , len , False , prop_type , & prop_type , & prop_format , & prop_items , & prop_size , & txt ) ;
-          
+      XGetWindowProperty ( Dsp , win , prop , 0 , len , False , prop_type , & prop_type , \
+           & prop_format , & prop_items , & prop_size , & txt ) ;
 //    printf("%ld %ld %ld %d\n",prop_format,prop_items,prop_size,*((long*)txt));
       wmwin = * ( ( long * ) txt ) ;
       prop = XInternAtom ( Dsp , "_NET_WM_NAME" , 1 ) ;
@@ -1901,8 +1974,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //     printf("No Window Manager\n");
           return ret;
       }
-      XGetWindowProperty ( Dsp , wmwin , prop , 0 , 0 , False , AnyPropertyType , & prop_type , & prop_format , & prop_items , & prop_size , & txt ) ;
-          
+      XGetWindowProperty ( Dsp , wmwin , prop , 0 , 0 , False , AnyPropertyType , \
+           & prop_type , & prop_format , & prop_items , & prop_size , & txt ) ;
 //    printf("%ld %ld %ld %s\n",prop_format,prop_items,prop_size,txt);
       if ( prop_type == None ) {
 //     printf("No Window Manager\n");
@@ -1912,8 +1985,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       }
       len = prop_size;
 //    printf("len = %d\n",len);
-      XGetWindowProperty ( Dsp , wmwin , prop , 0 , len , False , prop_type , & prop_type , & prop_format , & prop_items , & prop_size , & txt ) ;
-          
+      XGetWindowProperty ( Dsp , wmwin , prop , 0 , len , False , prop_type , \
+           & prop_type , & prop_format , & prop_items , & prop_size , & txt ) ;
 //    printf("%ld %ld %ld %s\n",prop_format,prop_items,prop_size,txt);
       ret = ( char * ) malloc ( strlen ( txt ) +1 ) ;
       strcpy ( ret , txt ) ;
@@ -2012,7 +2085,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       exit ( 0 ) ;}
       xresmax = DisplayWidth ( Dsp , DefaultScreen ( Dsp ) ) ;
       yresmax = DisplayHeight ( Dsp , DefaultScreen ( Dsp ) ) ;
-      if ( XMatchVisualInfo ( Dsp , DefaultScreen ( Dsp ) , 32 , TrueColor , & visualinfo ) == 0 ) \
+      if ( XMatchVisualInfo ( Dsp , DefaultScreen ( Dsp ) , \
+           32 , TrueColor , & visualinfo ) == 0 ) \
       {
           printf ( "Could not find a True Color Match\n" ) ;
           fflush ( stdout ) ;
@@ -2071,7 +2145,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       xwmpt->initial_state = NormalState;
       xwmpt->input = True;
       property = XInternAtom ( Dsp , "_MOTIF_WM_HINTS" , True ) ;
-      Win = XCreateWindow ( Dsp , Parent , xsh.x , xsh.y , xsh.width , xsh.height , 0 , Dpth , InputOutput , Vis , \
+      Win = XCreateWindow ( Dsp , Parent , xsh.x , xsh.y , xsh.width , \
+           xsh.height , 0 , Dpth , InputOutput , Vis , \
        ( CWColormap | CWBackingStore | CWBorderPixel | CWBitGravity \
        | CWOverrideRedirect ) , & xswa ) ;
 //       (CWBackPixel|CWColormap|CWBorderPixel|CWBitGravity),&xswa);
@@ -2108,8 +2183,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           xsh.width_inc = xsh.height_inc = 2;
       }
 /* As on 18/11/12  for no decorations */ 
-      XSetStandardProperties ( Dsp , Win , title , title , None , argv , argc , & xsh ) ;
-          
+      XSetStandardProperties ( Dsp , Win , title , \
+           title , None , argv , argc , & xsh ) ;
       D->Maxl = xsh.max_width;
       D->Maxw = xsh.max_height;
       if ( NoWinMngr != 1 ) {
@@ -2152,8 +2227,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               Rect.y = 0;
               Rect.width = EVGAX;
               Rect.height = EVGAY;
-              if ( Resize != 1 ) XShapeCombineRectangles ( Dsp , Win , ShapeClip , 0 , 0 , & Rect , 1 , ShapeSet , 1 ) ;
-                  
+              if ( Resize != 1 ) XShapeCombineRectangles ( Dsp , Win , \
+                   ShapeClip , 0 , 0 , & Rect , 1 , ShapeSet , 1 ) ;
           }
       }
       gcv.foreground = 10;
@@ -2165,14 +2240,14 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       c0.pixel = 0;
 #if 0
       CurPix = XCreateBitmapFromData ( Dsp , win , bm_no_data , 8 , 8 ) ;
-      wc->HideCur = XCreatePixmapCursor ( Dsp , CurPix , CurPix , & c0 , & c0 , 0 , 0 ) ;
-          
+      wc->HideCur = XCreatePixmapCursor ( Dsp , CurPix , \
+           CurPix , & c0 , & c0 , 0 , 0 ) ;
 #else
       CurPix = XCPix1 ( 0 , 0 , 0 , 0 ) ;
       CurMask = XCPix1 ( 0 , 0 , 0 , 0 ) ;
 //  wc->HideCur =  XCreatePixmapCursor(Dsp,CurPix,CurMask,&c15,&c0,1,1);
-      wc->HideCur = XCreatePixmapCursor ( Dsp , CurPix , CurMask , & c0 , & c0 , 0 , 0 ) ;
-          
+      wc->HideCur = XCreatePixmapCursor ( Dsp , CurPix , \
+           CurMask , & c0 , & c0 , 0 , 0 ) ;
 #endif
       XFreePixmap ( Dsp , CurPix ) ;
       XFreePixmap ( Dsp , CurMask ) ;
@@ -2215,12 +2290,12 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           cEvent.data.l [ 0 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_STICK" , True ) ;
           cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_ABOVE" , True ) ;
           cEvent.data.l [ 2 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_BELOW" , True ) ;
-          cEvent.data.l [ 3 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_CHANGE_DESKTOP" , True ) ;
-              
+          cEvent.data.l [ 3 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_CHANGE_DESKTOP" , \
+               True ) ;
           cEvent.data.l [ 4 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_MOVE" , True ) ;
           wcSendEvent ( wc , ( XEvent * ) & cEvent ) ;
-          cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_STAY_ON_TOP" , True ) ;
-              
+          cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_STAY_ON_TOP" , \
+               True ) ;
           wcSendEvent ( wc , ( XEvent * ) & cEvent ) ;
           cEvent.message_type = XInternAtom ( Dsp , "_NET_WM_STATE" , True ) ;
           cEvent.data.l [ 0 ] = 1;
@@ -2228,10 +2303,10 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           cEvent.data.l [ 4 ] = 0;
 //    if(dec==0) {
           if ( NoTaskBar == 1 ) {
-              cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_STATE_SKIP_PAGER" , True ) ;
-                  
-              cEvent.data.l [ 2 ] = XInternAtom ( Dsp , "_NET_WM_STATE_SKIP_TASKBAR" , True ) ;
-                  
+              cEvent.data.l [ 1 ] = XInternAtom ( Dsp , \
+                   "_NET_WM_STATE_SKIP_PAGER" , True ) ;
+              cEvent.data.l [ 2 ] = XInternAtom ( Dsp , "_NET_WM_STATE_SKIP_TASKBAR" , \
+                   True ) ;
               wcSendEvent ( wc , ( XEvent * ) & cEvent ) ;
           }
           if ( fixpos == 1 ) {
@@ -2244,8 +2319,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_STATE_ABOVE" , True ) ;
               cEvent.data.l [ 2 ] = 0;
               wcSendEvent ( wc , ( XEvent * ) & cEvent ) ;
-              cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_STATE_STAY_ON_TOP" , True ) ;
-                  
+              cEvent.data.l [ 1 ] = XInternAtom ( Dsp , \
+                   "_NET_WM_STATE_STAY_ON_TOP" , True ) ;
               cEvent.data.l [ 2 ] = 0;
               wcSendEvent ( wc , ( XEvent * ) & cEvent ) ;
               break;
@@ -2258,8 +2333,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               break;
           }
           if ( D->fullscreen ) {
-              cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_STATE_FULLSCREEN" , True ) ;
-                  
+              cEvent.data.l [ 1 ] = XInternAtom ( Dsp , \
+                   "_NET_WM_STATE_FULLSCREEN" , True ) ;
               cEvent.data.l [ 2 ] = 0;
               wcSendEvent ( wc , ( XEvent * ) & cEvent ) ;
           }
@@ -2267,20 +2342,20 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       wc->IMAGE = wc->IMAGEBAK = NULL;
 #if 0
       wc->IMAGE = XGetImage ( Dsp , Win , 0 , 0 , 20 , 20 , 0xffffffff , ZPixmap ) ;
-      wc->IMAGEBAK = XGetImage ( Dsp , Win , 0 , 0 , 20 , 20 , 0xffffffff , ZPixmap ) ;
-          
+      wc->IMAGEBAK = XGetImage ( Dsp , Win , 0 , \
+           0 , 20 , 20 , 0xffffffff , ZPixmap ) ;
 #else
-      wc->IMAGE = XGetImage ( Dsp , wc->Pix , 0 , 0 , 20 , 20 , 0xffffffff , ZPixmap ) ;
-          
-      wc->IMAGEBAK = XGetImage ( Dsp , wc->Pix , 0 , 0 , 20 , 20 , 0xffffffff , ZPixmap ) ;
-          
+      wc->IMAGE = XGetImage ( Dsp , wc->Pix , 0 , \
+           0 , 20 , 20 , 0xffffffff , ZPixmap ) ;
+      wc->IMAGEBAK = XGetImage ( Dsp , wc->Pix , 0 , \
+           0 , 20 , 20 , 0xffffffff , ZPixmap ) ;
 #endif
       uiMakeImageTransparent ( wc->IMAGE , transparency ) ;
       uiMakeImageTransparent ( wc->IMAGEBAK , transparency ) ;
 #if 0
       XPutImage ( Dsp , wc->Pix , Gc , wc->IMAGE , 0 , 0 , 0 , 0 , EVGAX , EVGAY ) ;
-      XPutImage ( Dsp , wc->Piximg , Gc , wc->IMAGE , 0 , 0 , 0 , 0 , EVGAX , EVGAY ) ;
-          
+      XPutImage ( Dsp , wc->Piximg , Gc , wc->IMAGE , \
+           0 , 0 , 0 , 0 , EVGAX , EVGAY ) ;
 #else
       _uiTileImage ( wc , wc->Pix , wc->IMAGE , xresmax , yresmax ) ;
       _uiTileImage ( wc , wc->Piximg , wc->IMAGE , xresmax , yresmax ) ;
@@ -2334,8 +2409,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           if ( nChild != 0 ) XFree ( Child ) ;
 #if 0
           XQueryTree ( Dsp , Par , & Root , & Par , & Child , & nChild ) ;
-          printf ( "Win:par,Root,Par: %d %d %d %d,%d\n" , Win , par , Root , Par , nChild ) ;
-              
+          printf ( "Win:par,Root,Par: %d %d %d %d,%d\n" , \
+               Win , par , Root , Par , nChild ) ;
           for ( i = 0;i < nChild;i++ ) {
               if ( Child [ i ] == Win ) printf ( "Child: %d %d\n" , Win , Child [ i ] ) ;
           }
@@ -2354,7 +2429,9 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       wc->cpCallback = NULL;
       return wc;
   }
-  void *ui_create_window ( int xpos , int ypos , int xres , int yres , char *title , int dec , float transparency , int sticky , int fixpos , int NoTaskBar , int StackPos , void *ShapeXpm ) \
+  void *ui_create_window ( int xpos , int ypos , int xres , int yres , char *title , \
+       int dec , float transparency , int sticky , int fixpos , \
+       int NoTaskBar , int StackPos , void *ShapeXpm ) \
   {
       kgWC *wc;
       static int ENTRY = 1;
@@ -2413,7 +2490,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       exit ( 0 ) ;};
       xresmax = DisplayWidth ( Dsp , DefaultScreen ( Dsp ) ) ;
       yresmax = DisplayHeight ( Dsp , DefaultScreen ( Dsp ) ) ;
-      if ( XMatchVisualInfo ( Dsp , DefaultScreen ( Dsp ) , 32 , TrueColor , & visualinfo ) == 0 ) \
+      if ( XMatchVisualInfo ( Dsp , DefaultScreen ( Dsp ) , \
+           32 , TrueColor , & visualinfo ) == 0 ) \
       {
           fprintf ( stderr , "Could not find a True Color Match\n" ) ;
           Vis = XDefaultVisual ( Dsp , DefaultScreen ( Dsp ) ) ;
@@ -2477,7 +2555,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //  xsh.flags=(PSize|PMinSize|PMaxSize|PResizeInc);
 /* Over */
 //  xswa.backing_store=NotUseful;
-      Win = XCreateWindow ( Dsp , par , xsh.x , xsh.y , xsh.width , xsh.height , 0 , Dpth , InputOutput , Vis , \
+      Win = XCreateWindow ( Dsp , par , xsh.x , xsh.y , xsh.width , \
+           xsh.height , 0 , Dpth , InputOutput , Vis , \
        ( CWColormap | CWBackingStore | CWBorderPixel | CWBitGravity \
        | CWOverrideRedirect ) , & xswa ) ;
 //       (CWBackPixel|CWColormap|CWBorderPixel|CWBitGravity),&xswa);
@@ -2514,8 +2593,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 #endif
 #if 0
 /* end of add on 8-3-01 */
-      XSetStandardProperties ( Dsp , Win , title , title , None , argv , argc , & xsh ) ;
-          
+      XSetStandardProperties ( Dsp , Win , title , \
+           title , None , argv , argc , & xsh ) ;
       XSetWMHints ( Dsp , Win , & xwmh ) ;
 /*
   xswa.colormap=DefaultColormap(Dsp,DefaultScreen(Dsp));
@@ -2523,14 +2602,15 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 */
 #else
 /* As on 18/11/12  for no decorations */ 
-      XSetStandardProperties ( Dsp , Win , title , title , None , argv , argc , & xsh ) ;
-          
+      XSetStandardProperties ( Dsp , Win , title , \
+           title , None , argv , argc , & xsh ) ;
       if ( TrClr ) {
           XChangeProperty ( Dsp , Win , property , property , 32 , PropModeReplace , \
            ( unsigned char * ) & hints , 5 ) ;
 #if 0
           if ( property = XInternAtom ( Dsp , "_WM_WINDOW_OPACITY" , False ) != None ) ;
-          if ( ( property = XInternAtom ( Dsp , "WM_DELETE_WINDOW" , False ) ) != None ) \
+          if ( ( property = XInternAtom ( Dsp , "WM_DELETE_WINDOW" , \
+               False ) ) != None ) \
           {
           }
           if ( property = XInternAtom ( Dsp , "_NET_WM_STATE" , True ) != None ) {
@@ -2600,8 +2680,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //TCBTCB 
 // for resizing this should not be there
 #ifdef D_NORESIZE
-              XShapeCombineRectangles ( Dsp , Win , ShapeClip , 0 , 0 , & Rect , 1 , ShapeSet , 1 ) ;
-                  
+              XShapeCombineRectangles ( Dsp , Win , ShapeClip , \
+                   0 , 0 , & Rect , 1 , ShapeSet , 1 ) ;
 #endif
 #endif
           }
@@ -2621,8 +2701,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //  Pix = XCreatePixmap(Dsp,Win,1,1,1);
       CurPix = XCPix1 ( 0 , 0 , 2 , 2 ) ;
       CurMask = XCPix1 ( 0 , 0 , 2 , 2 ) ;
-      wc->HideCur = XCreatePixmapCursor ( Dsp , CurPix , CurMask , & c15 , & c0 , 1 , 1 ) ;
-          
+      wc->HideCur = XCreatePixmapCursor ( Dsp , CurPix , \
+           CurMask , & c15 , & c0 , 1 , 1 ) ;
       XFreePixmap ( Dsp , CurPix ) ;
       XFreePixmap ( Dsp , CurMask ) ;
       wc->Pix = XCPix ( 0 , 0 , xsh.max_width , xsh.max_height ) ;
@@ -2662,8 +2742,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       cEvent.data.l [ 0 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_STICK" , True ) ;
       cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_ABOVE" , True ) ;
       cEvent.data.l [ 2 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_BELOW" , True ) ;
-      cEvent.data.l [ 3 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_CHANGE_DESKTOP" , True ) ;
-          
+      cEvent.data.l [ 3 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_CHANGE_DESKTOP" , \
+           True ) ;
       cEvent.data.l [ 4 ] = XInternAtom ( Dsp , "_NET_WM_ACTION_MOVE" , True ) ;
       wcSendEvent ( wc , ( XEvent * ) & cEvent ) ;
       cEvent.message_type = XInternAtom ( Dsp , "_NET_WM_STATE" , True ) ;
@@ -2672,10 +2752,10 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       cEvent.data.l [ 4 ] = 0;
 //    if(dec==0) {
       if ( NoTaskBar == 1 ) {
-          cEvent.data.l [ 1 ] = XInternAtom ( Dsp , "_NET_WM_STATE_SKIP_PAGER" , True ) ;
-              
-          cEvent.data.l [ 2 ] = XInternAtom ( Dsp , "_NET_WM_STATE_SKIP_TASKBAR" , True ) ;
-              
+          cEvent.data.l [ 1 ] = XInternAtom ( Dsp , \
+               "_NET_WM_STATE_SKIP_PAGER" , True ) ;
+          cEvent.data.l [ 2 ] = XInternAtom ( Dsp , "_NET_WM_STATE_SKIP_TASKBAR" , \
+               True ) ;
           wcSendEvent ( wc , ( XEvent * ) & cEvent ) ;
       }
       if ( fixpos == 1 ) {
@@ -2705,14 +2785,14 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 #endif
       wc->IMAGE = wc->IMAGEBAK = NULL;
       wc->IMAGE = XGetImage ( Dsp , Win , 0 , 0 , 20 , 20 , 0xffffffff , ZPixmap ) ;
-      wc->IMAGEBAK = XGetImage ( Dsp , Win , 0 , 0 , 20 , 20 , 0xffffffff , ZPixmap ) ;
-          
+      wc->IMAGEBAK = XGetImage ( Dsp , Win , 0 , \
+           0 , 20 , 20 , 0xffffffff , ZPixmap ) ;
       uiMakeImageTransparent ( wc->IMAGE , transparency ) ;
       uiMakeImageTransparent ( wc->IMAGEBAK , transparency ) ;
 #if 0
       XPutImage ( Dsp , wc->Pix , Gc , wc->IMAGE , 0 , 0 , 0 , 0 , EVGAX , EVGAY ) ;
-      XPutImage ( Dsp , wc->Piximg , Gc , wc->IMAGE , 0 , 0 , 0 , 0 , EVGAX , EVGAY ) ;
-          
+      XPutImage ( Dsp , wc->Piximg , Gc , wc->IMAGE , \
+           0 , 0 , 0 , 0 , EVGAX , EVGAY ) ;
 #else
       _uiTileImage ( wc , wc->Pix , wc->IMAGE , xresmax , yresmax ) ;
       _uiTileImage ( wc , wc->Piximg , wc->IMAGE , xresmax , yresmax ) ;
@@ -2767,18 +2847,18 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       cEvent.type = ClientMessage;
       cEvent.window = wc->Win;
       cEvent.format = 32;
-      cEvent.message_type = XInternAtom ( wc->Dsp , "_NET_WM_ALLOWED_ACTIONS" , True ) ;
-          
-      cEvent.data.l [ 0 ] = XInternAtom ( wc->Dsp , "_NET_WM_ACTION_STICK" , True ) ;
-          
-      cEvent.data.l [ 1 ] = XInternAtom ( wc->Dsp , "_NET_WM_ACTION_ABOVE" , True ) ;
-          
-      cEvent.data.l [ 2 ] = XInternAtom ( wc->Dsp , "_NET_WM_ACTION_BELOW" , True ) ;
-          
-      cEvent.data.l [ 3 ] = XInternAtom ( wc->Dsp , "_NET_WM_ACTION_MOVE" , False ) ;
-          
-      cEvent.data.l [ 4 ] = XInternAtom ( wc->Dsp , "_NET_WM_ACTION_RESIZE" , False ) ;
-          
+      cEvent.message_type = XInternAtom ( wc->Dsp , \
+           "_NET_WM_ALLOWED_ACTIONS" , True ) ;
+      cEvent.data.l [ 0 ] = XInternAtom ( wc->Dsp , \
+           "_NET_WM_ACTION_STICK" , True ) ;
+      cEvent.data.l [ 1 ] = XInternAtom ( wc->Dsp , \
+           "_NET_WM_ACTION_ABOVE" , True ) ;
+      cEvent.data.l [ 2 ] = XInternAtom ( wc->Dsp , \
+           "_NET_WM_ACTION_BELOW" , True ) ;
+      cEvent.data.l [ 3 ] = XInternAtom ( wc->Dsp , \
+           "_NET_WM_ACTION_MOVE" , False ) ;
+      cEvent.data.l [ 4 ] = XInternAtom ( wc->Dsp , \
+           "_NET_WM_ACTION_RESIZE" , False ) ;
       wcSendEvent ( wc , ( XEvent * ) & cEvent ) ;
       return;
   }
@@ -2790,17 +2870,17 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       cEvent.type = ClientMessage;
       cEvent.window = wc->Win;
       cEvent.format = 32;
-      cEvent.message_type = XInternAtom ( wc->Dsp , "_NET_WM_ALLOWED_ACTIONS" , True ) ;
-          
-      cEvent.data.l [ 0 ] = XInternAtom ( wc->Dsp , "_NET_WM_ACTION_STICK" , True ) ;
-          
-      cEvent.data.l [ 1 ] = XInternAtom ( wc->Dsp , "_NET_WM_ACTION_ABOVE" , True ) ;
-          
-      cEvent.data.l [ 2 ] = XInternAtom ( wc->Dsp , "_NET_WM_ACTION_BELOW" , True ) ;
-          
+      cEvent.message_type = XInternAtom ( wc->Dsp , \
+           "_NET_WM_ALLOWED_ACTIONS" , True ) ;
+      cEvent.data.l [ 0 ] = XInternAtom ( wc->Dsp , \
+           "_NET_WM_ACTION_STICK" , True ) ;
+      cEvent.data.l [ 1 ] = XInternAtom ( wc->Dsp , \
+           "_NET_WM_ACTION_ABOVE" , True ) ;
+      cEvent.data.l [ 2 ] = XInternAtom ( wc->Dsp , \
+           "_NET_WM_ACTION_BELOW" , True ) ;
       cEvent.data.l [ 3 ] = XInternAtom ( wc->Dsp , "_NET_WM_ACTION_MOVE" , True ) ;
-      cEvent.data.l [ 4 ] = XInternAtom ( wc->Dsp , "_NET_WM_ACTION_RESIZE" , True ) ;
-          
+      cEvent.data.l [ 4 ] = XInternAtom ( wc->Dsp , \
+           "_NET_WM_ACTION_RESIZE" , True ) ;
       wcSendEvent ( wc , ( XEvent * ) & cEvent ) ;
       return;
   }
@@ -2834,14 +2914,15 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
   using the currently set color
 */
   void _uiBox_Fill ( kgWC *wc , int xmin , int ymin , int xmax , int ymax ) {
-      XFillRectangle ( wc->Dsp , wc->ActWin , wc->Gc , xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
-          
+      XFillRectangle ( wc->Dsp , wc->ActWin , wc->Gc , \
+           xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
   }
   void _dvBox_Fill ( kgWC *wc , int xmin , int ymin , int xmax , int ymax ) {
-      XFillRectangle ( wc->Dsp , wc->ActWin , wc->Gc , xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
-          
+      XFillRectangle ( wc->Dsp , wc->ActWin , wc->Gc , \
+           xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
   }
-  int kgDragRegion ( void *Tmp , int xmin , int ymin , int xmax , int ymax , int *x , int *y ) \
+  int kgDragRegion ( void *Tmp , int xmin , int ymin , \
+       int xmax , int ymax , int *x , int *y ) \
   {
 /* returns the last mid point */
       DIALOG *D;
@@ -2860,8 +2941,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       if ( ymin < 0 ) {ymin = 0;ymax = yl;}
       if ( xmax > EVGAX ) {xmin = EVGAX-xl; xmax = EVGAX;}
       if ( ymax > EVGAY ) {ymin = EVGAY-yl; ymax = EVGAY;}
-      Img = XGetImage ( wc->Dsp , wc->ActWin , xmin , ymin , xl , yl , 0xffffffff , ZPixmap ) ;
-          
+      Img = XGetImage ( wc->Dsp , wc->ActWin , xmin , \
+           ymin , xl , yl , 0xffffffff , ZPixmap ) ;
       do {
           count = 0;
           kbe.event = 0;
@@ -2880,22 +2961,22 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               if ( ( yp+yl ) > EVGAY ) yp = EVGAY-yl;
               if ( ( xp == xpold ) && ( yp == ypold ) ) continue;
               if ( bkup != NULL ) {
-                  XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , 0 , 0 , xpold , ypold , xl , yl ) ;
-                      
+                  XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , \
+                       0 , 0 , xpold , ypold , xl , yl ) ;
                   XDestroyImage ( bkup ) ;
                   bkup = NULL;
               }
-              bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , yp , xl , yl , 0xffffffff , ZPixmap ) ;
-                  
-              XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , Img , 0 , 0 , xp , yp , xl , yl ) ;
-                  
+              bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , \
+                   yp , xl , yl , 0xffffffff , ZPixmap ) ;
+              XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+                   Img , 0 , 0 , xp , yp , xl , yl ) ;
               kgUpdateOn ( D ) ;
               xpold = xp; ypold = yp;
           }
       } while ( ( kbe ) .event != 2 ) ;
       if ( bkup != NULL ) {
-          XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , 0 , 0 , xp , yp , xl , yl ) ;
-              
+          XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+               bkup , 0 , 0 , xp , yp , xl , yl ) ;
           XDestroyImage ( bkup ) ;
           kgUpdateOn ( D ) ;
       }
@@ -2904,7 +2985,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       *y = kb.y;
       return 1;
   }
-  int kgDragImage_o ( void *Tmp , void *Itmp , int xl , int yl , int ymin , int ymax , int *x , int *y ) \
+  int kgDragImage_o ( void *Tmp , void *Itmp , int xl , \
+       int yl , int ymin , int ymax , int *x , int *y ) \
   {
       DIALOG *D;
       KBEVENT kb , kbe;
@@ -2950,21 +3032,21 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               if ( yp <= ymin ) {
                   ret = -1;
                   if ( bkup != NULL ) {
-                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , 0 , 0 , xpold , ypold , xl , yl ) ;
-                          
+                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , \
+                           0 , 0 , xpold , ypold , xl , yl ) ;
                       XDestroyImage ( bkup ) ;
                       bkup = NULL;
                       kgUpdateOn ( D ) ;
                   }
                   else {
 #if 0
-                      bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , yp , xl , yl , 0xffffffff , ZPixmap ) ;
-                          
-                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , Img , 0 , 0 , xp , yp , xl , yl ) ;
-                          
+                      bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , \
+                           yp , xl , yl , 0xffffffff , ZPixmap ) ;
+                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+                           Img , 0 , 0 , xp , yp , xl , yl ) ;
                       kgUpdateOn ( D ) ;
-                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , 0 , 0 , xp , yp , xl , yl ) ;
-                          
+                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+                           bkup , 0 , 0 , xp , yp , xl , yl ) ;
                       XDestroyImage ( bkup ) ;
                       kgUpdateOn ( D ) ;
 #endif
@@ -2976,21 +3058,21 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               if ( ( yp+yl ) >= ymax ) {
                   ret = 1;
                   if ( bkup != NULL ) {
-                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , 0 , 0 , xpold , ypold , xl , yl ) ;
-                          
+                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , \
+                           0 , 0 , xpold , ypold , xl , yl ) ;
                       XDestroyImage ( bkup ) ;
                       bkup = NULL;
                       kgUpdateOn ( D ) ;
                   }
                   else {
 #if 0
-                      bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , yp , xl , yl , 0xffffffff , ZPixmap ) ;
-                          
-                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , Img , 0 , 0 , xp , yp , xl , yl ) ;
-                          
+                      bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , \
+                           yp , xl , yl , 0xffffffff , ZPixmap ) ;
+                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+                           Img , 0 , 0 , xp , yp , xl , yl ) ;
                       kgUpdateOn ( D ) ;
-                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , 0 , 0 , xp , yp , xl , yl ) ;
-                          
+                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+                           bkup , 0 , 0 , xp , yp , xl , yl ) ;
                       XDestroyImage ( bkup ) ;
                       kgUpdateOn ( D ) ;
 #endif
@@ -3001,10 +3083,10 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               }
               if ( ( xp == xpold ) && ( yp == ypold ) ) {
                   if ( ( bkup == NULL ) ) {
-                      bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , yp , xl , yl , 0xffffffff , ZPixmap ) ;
-                          
-                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , Img , 0 , 0 , xp , yp , xl , yl ) ;
-                          
+                      bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , \
+                           yp , xl , yl , 0xffffffff , ZPixmap ) ;
+                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+                           Img , 0 , 0 , xp , yp , xl , yl ) ;
                       kgUpdateOn ( D ) ;
                       xpold = xp;
                       ypold = yp;
@@ -3012,15 +3094,15 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
                   continue;
               }
               if ( bkup != NULL ) {
-                  XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , 0 , 0 , xpold , ypold , xl , yl ) ;
-                      
+                  XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , \
+                       0 , 0 , xpold , ypold , xl , yl ) ;
                   XDestroyImage ( bkup ) ;
                   bkup = NULL;
               }
-              bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , yp , xl , yl , 0xffffffff , ZPixmap ) ;
-                  
-              XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , Img , 0 , 0 , xp , yp , xl , yl ) ;
-                  
+              bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , \
+                   yp , xl , yl , 0xffffffff , ZPixmap ) ;
+              XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+                   Img , 0 , 0 , xp , yp , xl , yl ) ;
               kgUpdateOn ( D ) ;
               xpold = xp; ypold = yp;
           }
@@ -3028,17 +3110,17 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 #if 0
               if ( ( evnt == 0 ) ) {
                   if ( ( bkup == NULL ) ) {
-                      bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , yp , xl , yl , 0xffffffff , ZPixmap ) ;
-                          
-                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , Img , 0 , 0 , xp , yp , xl , yl ) ;
-                          
+                      bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , \
+                           yp , xl , yl , 0xffffffff , ZPixmap ) ;
+                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+                           Img , 0 , 0 , xp , yp , xl , yl ) ;
                       kgUpdateOn ( D ) ;
                       xpold = xp;
                       ypold = yp;
                   }
                   else {
-                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , Img , 0 , 0 , xpold , ypold , xl , yl ) ;
-                          
+                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , Img , \
+                           0 , 0 , xpold , ypold , xl , yl ) ;
                       kgUpdateOn ( D ) ;
                   }
               }
@@ -3046,8 +3128,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           }
       } while ( ( kbe ) .event != 2 ) ;
       if ( bkup != NULL ) {
-          XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , 0 , 0 , xp , yp , xl , yl ) ;
-              
+          XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+               bkup , 0 , 0 , xp , yp , xl , yl ) ;
           XDestroyImage ( bkup ) ;
           kgUpdateOn ( D ) ;
       }
@@ -3055,12 +3137,13 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       *y = kb.y;
       return ret;
   }
-  int kgDragImage ( void *Tmp , void *Itmp , int xl , int yl , int xmin , int ymin , int xmax , int ymax , int *x , int *y ) \
+  int kgDragImage ( void *Tmp , void *Itmp , int xl , int yl , int xmin , \
+       int ymin , int xmax , int ymax , int *x , int *y ) \
   {
       DIALOG *D;
       KBEVENT kb , kbe;
-      int xp , yp , xpold = -100 , ypold = -100 , count , evnt , ret = 0 , no = 0 , ymid;
-          
+      int xp , yp , xpold = -100 , ypold = -100 , \
+           count , evnt , ret = 0 , no = 0 , ymid;
       int EVGAX , EVGAY;
       XImage *Img = NULL , *bkup = NULL;
       D = ( DIALOG * ) Tmp;
@@ -3107,8 +3190,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
                   if ( yp <= ymin ) {
                       ret = -1;
                       if ( bkup != NULL ) {
-                          XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , 0 , 0 , xpold , ypold , xl , yl ) ;
-                              
+                          XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , \
+                               0 , 0 , xpold , ypold , xl , yl ) ;
                           XDestroyImage ( bkup ) ;
                           bkup = NULL;
                           kgUpdateOn ( D ) ;
@@ -3120,8 +3203,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
                   if ( ( yp+yl ) >= ymax ) {
                       ret = 1;
                       if ( bkup != NULL ) {
-                          XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , 0 , 0 , xpold , ypold , xl , yl ) ;
-                              
+                          XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , \
+                               0 , 0 , xpold , ypold , xl , yl ) ;
                           XDestroyImage ( bkup ) ;
                           bkup = NULL;
                           kgUpdateOn ( D ) ;
@@ -3133,10 +3216,10 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               }
               if ( ( xp == xpold ) && ( yp == ypold ) ) {
                   if ( ( bkup == NULL ) ) {
-                      bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , yp , xl , yl , 0xffffffff , ZPixmap ) ;
-                          
-                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , Img , 0 , 0 , xp , yp , xl , yl ) ;
-                          
+                      bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , \
+                           yp , xl , yl , 0xffffffff , ZPixmap ) ;
+                      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+                           Img , 0 , 0 , xp , yp , xl , yl ) ;
                       kgUpdateOn ( D ) ;
                       xpold = xp;
                       ypold = yp;
@@ -3144,22 +3227,22 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
                   continue;
               }
               if ( bkup != NULL ) {
-                  XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , 0 , 0 , xpold , ypold , xl , yl ) ;
-                      
+                  XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , \
+                       0 , 0 , xpold , ypold , xl , yl ) ;
                   XDestroyImage ( bkup ) ;
                   bkup = NULL;
               }
-              bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , yp , xl , yl , 0xffffffff , ZPixmap ) ;
-                  
-              XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , Img , 0 , 0 , xp , yp , xl , yl ) ;
-                  
+              bkup = XGetImage ( wc->Dsp , wc->ActWin , xp , \
+                   yp , xl , yl , 0xffffffff , ZPixmap ) ;
+              XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+                   Img , 0 , 0 , xp , yp , xl , yl ) ;
               kgUpdateOn ( D ) ;
               xpold = xp; ypold = yp;
           }
       } while ( ( kbe ) .event != 2 ) ;
       if ( bkup != NULL ) {
-          XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , bkup , 0 , 0 , xp , yp , xl , yl ) ;
-              
+          XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+               bkup , 0 , 0 , xp , yp , xl , yl ) ;
           XDestroyImage ( bkup ) ;
           kgUpdateOn ( D ) ;
       }
@@ -3170,7 +3253,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
   void kgFreeXImage ( void *Img ) {
       if ( Img != NULL ) XDestroyImage ( ( XImage * ) Img ) ;
   }
-  void * kgRegionImage ( void *Tmp , int xmin , int ymin , int xmax , int ymax ) \
+  void * kgRegionImage ( void *Tmp , int xmin , \
+       int ymin , int xmax , int ymax ) \
   {
       DIALOG *D;
       KBEVENT kb , kbe;
@@ -3188,26 +3272,28 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       if ( ymin < 0 ) {ymin = 0;ymax = yl;}
       if ( xmax > EVGAX ) {xmin = EVGAX-xl; xmax = EVGAX;}
       if ( ymax > EVGAY ) {ymin = EVGAY-yl; ymax = EVGAY;}
-      Img = XGetImage ( wc->Dsp , wc->ActWin , xmin , ymin , xl , yl , 0xffffffff , ZPixmap ) ;
-          
+      Img = XGetImage ( wc->Dsp , wc->ActWin , xmin , \
+           ymin , xl , yl , 0xffffffff , ZPixmap ) ;
       return ( void * ) Img;
   }
-  void _uiBox_Fill_Transparent ( kgWC *wc , int xmin , int ymin , int xmax , int ymax , float transparency ) \
+  void _uiBox_Fill_Transparent ( kgWC *wc , int xmin , int ymin , \
+       int xmax , int ymax , float transparency ) \
   {
       unsigned long ALPHA;
       XImage *Img;
       ALPHA = 255* ( 1.-transparency ) ;
       ALPHA = ( ALPHA << 24 ) ;
-      XFillRectangle ( wc->Dsp , wc->ActWin , wc->Gc , xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
-          
-      Img = XGetImage ( wc->Dsp , wc->ActWin , xmin , ymin , xmax-xmin+1 , ymax-ymin+1 , 0x00ffffff , ZPixmap ) ;
-          
+      XFillRectangle ( wc->Dsp , wc->ActWin , wc->Gc , \
+           xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
+      Img = XGetImage ( wc->Dsp , wc->ActWin , xmin , ymin , xmax-xmin+1 , \
+           ymax-ymin+1 , 0x00ffffff , ZPixmap ) ;
       XAddPixel ( Img , ALPHA ) ;
-      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , Img , 0 , 0 , xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
-          
+      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , Img , 0 , \
+           0 , xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
       XDestroyImage ( Img ) ;
   }
-  void _dvBox_Fill_Transparent ( kgWC *wc , int xmin , int ymin , int xmax , int ymax , float transparency ) \
+  void _dvBox_Fill_Transparent ( kgWC *wc , int xmin , int ymin , \
+       int xmax , int ymax , float transparency ) \
   {
       unsigned long ALPHA = 0xff000000 , pixl , val , color;
       int i , j , w , h , clr;
@@ -3215,8 +3301,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       XImage *uiImage;
       unsigned char *dest , *Imgdata , Alpha;
       unsigned long blue , green , red , ximage_rowbytes;
-      unsigned long RedMaskPos , GreenMaskPos , BlueMaskPos , Rshift , Gshift , Bshift;
-          
+      unsigned long RedMaskPos , GreenMaskPos , BlueMaskPos , \
+           Rshift , Gshift , Bshift;
       if ( transparency != 0.0 ) {
 #if 1
           fac = 1-transparency;
@@ -3226,8 +3312,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           red = kgIcode [ clr ] [ 0 ] *fac;
           green = kgIcode [ clr ] [ 1 ] *fac;
           blue = kgIcode [ clr ] [ 2 ] *fac;
-          uiImage = XGetImage ( wc->Dsp , wc->ActWin , xmin , ymin , xmax-xmin+1 , ymax-ymin+1 , 0xffffffff , ZPixmap ) ;
-              
+          uiImage = XGetImage ( wc->Dsp , wc->ActWin , xmin , ymin , \
+               xmax-xmin+1 , ymax-ymin+1 , 0xffffffff , ZPixmap ) ;
 #if 1
 #if 0
           Rshift = GetShift ( uiImage->red_mask ) ;
@@ -3258,18 +3344,18 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 #endif
 #else
 //     printf("CallinguiChangeImageTransparency\n");
-          XFillRectangle ( wc->Dsp , wc->ActWin , wc->Gc , xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
-              
-          uiImage = XGetImage ( wc->Dsp , wc->ActWin , xmin , ymin , xmax-xmin+1 , ymax-ymin+1 , 0x00ffffff , ZPixmap ) ;
-              
+          XFillRectangle ( wc->Dsp , wc->ActWin , wc->Gc , \
+               xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
+          uiImage = XGetImage ( wc->Dsp , wc->ActWin , xmin , ymin , \
+               xmax-xmin+1 , ymax-ymin+1 , 0x00ffffff , ZPixmap ) ;
           uiChangeImageTransparency ( uiImage , transparency ) ;
 #endif
-          XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , uiImage , 0 , 0 , xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
-              
+          XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , uiImage , 0 , \
+               0 , xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
           XDestroyImage ( uiImage ) ;
       }
-      else XFillRectangle ( wc->Dsp , wc->ActWin , wc->Gc , xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
-          
+      else XFillRectangle ( wc->Dsp , wc->ActWin , wc->Gc , \
+           xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
   }
 /*
   routines to maintain screen backups
@@ -3297,8 +3383,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       if ( ln <= 0 ) return;
 #endif
 //   img = gphStringToImage(str,ln*10,20,3,wc->c_color);
-      img = kgStringToImage ( str , NULL , ln , 20 , D->gc.Font , wc->c_color , justfic , D->gc.FontSize , -1 ) ;
-          
+      img = kgStringToImage ( str , NULL , ln , 20 , D->gc.Font , \
+           wc->c_color , justfic , D->gc.FontSize , -1 ) ;
       if ( img != NULL ) {
           kgImage ( D , img , x , y-16 , ln , 20 , 0.0 , 1.0 ) ;
           uiFreeImage ( img ) ;
@@ -3343,8 +3429,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       while ( str [ ln-1 ] <= ' ' ) ln--;
       if ( ln <= 0 ) return;
 //   img = gphStringToImage(str,ln*10,20,3,wc->c_color);
-      img = gphStringToImage ( str , ln*wc->GuiFontSize , 20 , wc->GuiFont , wc->c_color , -1 , ln ) ;
-          
+      img = gphStringToImage ( str , ln*wc->GuiFontSize , \
+           20 , wc->GuiFont , wc->c_color , -1 , ln ) ;
       if ( img != NULL ) {
           kgImage ( D , img , x , y-16 , ln*10 , 20 , 0.0 , 1.0 ) ;
           uiFreeImage ( img ) ;
@@ -3405,7 +3491,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 /*
   Internal routine used in backup_line
 */
-  void copy_area ( kgWC *wc , int x1 , int y1 , int x2 , int y2 , int i , int nx ) \
+  void copy_area ( kgWC *wc , int x1 , int y1 , \
+       int x2 , int y2 , int i , int nx ) \
   {
       int xmin , ymin , xmax , ymax;
       if ( x1 < x2 ) {xmin = x1 , xmax = x2;}
@@ -3451,14 +3538,16 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 /*
   Internal routine used in restore_line
 */
-  void rest_area ( kgWC *wc , int x1 , int y1 , int x2 , int y2 , int i , int nx ) \
+  void rest_area ( kgWC *wc , int x1 , int y1 , \
+       int x2 , int y2 , int i , int nx ) \
   {
       int xmin , ymin , xmax , ymax;
       if ( x1 < x2 ) {xmin = x1 , xmax = x2;}
       else {xmin = x2;xmax = x1;}
       if ( y1 < y2 ) {ymin = y1 , ymax = y2;}
       else {ymin = y2;ymax = y1;}
-      XCopyArea ( wc->Dsp , wc->linebuf , wc->DspWin , wc->Gc , i*nx , 0 , ( short ) \
+      XCopyArea ( wc->Dsp , wc->linebuf , wc->DspWin , \
+           wc->Gc , i*nx , 0 , ( short ) \
        ( xmax-xmin+1 ) , ( short ) ( ymax-ymin+1 ) , \
        ( short ) xmin , ( short ) ( ymin ) ) ;
   }
@@ -3585,18 +3674,18 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 #if 1
       if ( wc->Update ) {
           if ( wc->FullScreen ) {
-              XCopyArea ( wc->Dsp , wc->Pix , wc->Win , wc->Gc , 0 , 0 , EVGAX , EVGAY , 0 , 0 ) ;
-                  
+              XCopyArea ( wc->Dsp , wc->Pix , wc->Win , wc->Gc , \
+                   0 , 0 , EVGAX , EVGAY , 0 , 0 ) ;
 //       XCopyArea(wc->Dsp,wc->ActWin,wc->Win,wc->Gc,0,0,EVGAX,EVGAY,0,0);
               XSync ( wc->Dsp , False ) ;
           }
           else {
               pthread_mutex_lock ( & ( wc->Dsplock ) ) ;
               XLockDisplay ( wc->Dsp ) ;
-              XCopyArea ( wc->Dsp , wc->Pix , wc->Piximg , wc->Gc , 0 , 0 , EVGAX , EVGAY , 0 , 0 ) ;
-                  
-              XCopyArea ( wc->Dsp , wc->Piximg , wc->Win , wc->Gc , 0 , 0 , EVGAX , EVGAY , 0 , 0 ) ;
-                  
+              XCopyArea ( wc->Dsp , wc->Pix , wc->Piximg , wc->Gc , \
+                   0 , 0 , EVGAX , EVGAY , 0 , 0 ) ;
+              XCopyArea ( wc->Dsp , wc->Piximg , wc->Win , wc->Gc , \
+                   0 , 0 , EVGAX , EVGAY , 0 , 0 ) ;
               XSync ( wc->Dsp , False ) ;
               XUnlockDisplay ( wc->Dsp ) ;
               pthread_mutex_unlock ( & ( wc->Dsplock ) ) ;
@@ -3690,8 +3779,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       fprintf ( stderr , "Max mod: %d\n" , xm->max_keypermod ) ;
       for ( i = 0;i < xm->max_keypermod;i++ ) {
           mpt = ( xm->modifiermap+k ) ;
-          fprintf ( stderr , " %d %d %d %d %d %d %d %d\n" , mpt [ 0 ] , mpt [ 1 ] , mpt [ 2 ] , mpt [ 3 ] , mpt [ 4 ] , mpt [ 5 ] , mpt [ 6 ] , mpt [ 7 ] ) ;
-              
+          fprintf ( stderr , " %d %d %d %d %d %d %d %d\n" , mpt [ 0 ] , mpt [ 1 ] , \
+               mpt [ 2 ] , mpt [ 3 ] , mpt [ 4 ] , mpt [ 5 ] , mpt [ 6 ] , mpt [ 7 ] ) ;
           k += 8;
       }
 #endif
@@ -3700,8 +3789,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       k = ( K_min-1 ) *code;
       k = 0;
       for ( i = K_min;i < K_max;i++ ) {
-          printf ( "Kesym:%d  %d %x:%c %x:%c %x:%c\n" , i , k , keysym [ k ] , keysym [ k ] , keysym [ k+1 ] , keysym [ k+1 ] , keysym [ k+2 ] , keysym [ k+2 ] ) ;
-              
+          printf ( "Kesym:%d  %d %x:%c %x:%c %x:%c\n" , i , k , keysym [ k ] , keysym [ k ] , \
+               keysym [ k+1 ] , keysym [ k+1 ] , keysym [ k+2 ] , keysym [ k+2 ] ) ;
           k+= code;
       }
 #endif
@@ -3728,8 +3817,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       k = ( K_min-1 ) *code;
       k = 0;
       for ( i = K_min;i < K_max;i++ ) {
-          printf ( "Kesym:%d  %d %x:%c %x:%c %x:%c\n" , i , k , keysym [ k ] , keysym [ k ] , keysym [ k+1 ] , keysym [ k+1 ] , keysym [ k+2 ] , keysym [ k+2 ] ) ;
-              
+          printf ( "Kesym:%d  %d %x:%c %x:%c %x:%c\n" , i , k , keysym [ k ] , keysym [ k ] , \
+               keysym [ k+1 ] , keysym [ k+1 ] , keysym [ k+2 ] , keysym [ k+2 ] ) ;
           k+= code;
       }
 #endif
@@ -4074,7 +4163,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       }
       while ( ! input_attention ( ) ) {usleep ( 300 ) ;}
       Curwin = GetParent ( Win ) ;
-      if ( XQueryPointer ( Dsp , Curwin , & Root , & Child , & x1 , & y1 , x , y , & pb ) == False ) return \
+      if ( XQueryPointer ( Dsp , Curwin , & Root , & Child , \
+           & x1 , & y1 , x , y , & pb ) == False ) return \
        ( -100 ) ;
       if ( Child != Win ) { return ( -1 ) ; };
       key = 0;
@@ -4082,8 +4172,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       pbb = pb;if ( ( pbb &= 0x0200 ) != 0 ) key = 2;
       pbb = pb;if ( ( pbb &= 0x0400 ) != 0 ) key = 3;
       pbb = pb;if ( ( pbb &= 0x0500 ) == 0x0500 ) key = 2;
-      XGetGeometry ( Dsp , Win , & Root , & x0 , & y0 , & wd0 , & ht0 , & bwd0 , & depth0 ) ;
-          
+      XGetGeometry ( Dsp , Win , & Root , & x0 , & y0 , \
+           & wd0 , & ht0 , & bwd0 , & depth0 ) ;
       *x -= ( x0 ) ;*y-= ( y0 ) ;
       if ( ( *x >= 0 ) && ( *y >= 0 ) && ( *y < ht0 ) && \
        ( *x < wd0 ) ) {return ( key ) ;}
@@ -4183,8 +4273,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       kgWC *wc;
       Window win;
       wc = WC ( D ) ;
-      XGetGeometry ( wc->Dsp , wc->Win , & win , & x0 , & y0 , length , height , & bw , & dpth ) ;
-          
+      XGetGeometry ( wc->Dsp , wc->Win , & win , & x0 , \
+           & y0 , length , height , & bw , & dpth ) ;
       return;
   }
   KBEVENT kgGetEvent ( DIALOG *D ) {
@@ -4224,8 +4314,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               kbevent.event = 101;
               kbevent.x = R.width;
               kbevent.y = R.height;
-              XGetGeometry ( wc->Dsp , wc->Win , & win , & x , & y , & w , & h , & bw , & dpth ) ;
-                  
+              XGetGeometry ( wc->Dsp , wc->Win , & win , & x , \
+                   & y , & w , & h , & bw , & dpth ) ;
               return kbevent;
               case ConfigureRequest:
               continue;
@@ -4379,14 +4469,14 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //     printf("pty is Clipboard\n");
           prop = XInternAtom ( wc->Dsp , "XCLIP_IN" , True ) ;
       }
-      XGetWindowProperty ( wc->Dsp , wc->Win , prop , 0 , 0 , False , AnyPropertyType , & prop_type , & prop_format , & prop_items , & prop_size , & txt ) ;
-          
+      XGetWindowProperty ( wc->Dsp , wc->Win , prop , 0 , 0 , False , AnyPropertyType , \
+           & prop_type , & prop_format , & prop_items , & prop_size , & txt ) ;
       XFree ( txt ) ;
       txt = NULL;
       len = prop_size;
 //   printf("len = %d\n",len);
-      XGetWindowProperty ( wc->Dsp , wc->Win , prop , 0 , len , False , AnyPropertyType , & prop_type , & prop_format , & prop_items , & prop_size , & txt ) ;
-          
+      XGetWindowProperty ( wc->Dsp , wc->Win , prop , 0 , len , False , AnyPropertyType , \
+           & prop_type , & prop_format , & prop_items , & prop_size , & txt ) ;
       XChangeProperty ( wc->Dsp , win , pty , target , 8 , PropModeReplace , \
        ( unsigned char * ) txt , ( int ) len ) ;
       XFree ( txt ) ;
@@ -4423,14 +4513,16 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //    XNextEvent(wc->Dsp,&e);
 //    if(!XCheckIfEvent(wc->Dsp,&e,_uiselection,NULL)) return -1;
           count = 0;
-          while ( ! ( XCheckTypedWindowEvent ( wc->Dsp , wc->Win , SelectionNotify , & e ) ) ) \
+          while ( ! ( XCheckTypedWindowEvent ( wc->Dsp , \
+               wc->Win , SelectionNotify , & e ) ) ) \
           {
               usleep ( 500 ) ;
               count++;
               if ( count > 3 ) return -1;
           }
           eo = e;
-          while ( XCheckTypedWindowEvent ( wc->Dsp , wc->Win , SelectionNotify , & e ) ) \
+          while ( XCheckTypedWindowEvent ( wc->Dsp , \
+               wc->Win , SelectionNotify , & e ) ) \
           {
               eo = e;
           }
@@ -4464,7 +4556,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 /* Need Checking */
 //    XNextEvent(wc->Dsp,&e);
 //    if(!XCheckIfEvent(wc->Dsp,&e,_uiselection,NULL)) return -1;
-          if ( ! XCheckTypedWindowEvent ( wc->Dsp , wc->Win , SelectionRequest , & e ) ) \
+          if ( ! XCheckTypedWindowEvent ( wc->Dsp , \
+               wc->Win , SelectionRequest , & e ) ) \
           {
               usleep ( 400 ) ;
               continue;
@@ -4505,8 +4598,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               kbevent.x = R.width;
               kbevent.y = R.height;
               _uiAdjustResize ( D , R.width , R.height ) ;
-              XGetGeometry ( wc->Dsp , wc->Win , & win , & x , & y , & w , & h , & bw , & dpth ) ;
-                  
+              XGetGeometry ( wc->Dsp , wc->Win , & win , & x , \
+                   & y , & w , & h , & bw , & dpth ) ;
               continue;
               case ConfigureRequest:
               continue;
@@ -4585,8 +4678,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               kbevent.x = R.width;
               kbevent.y = R.height;
               _uiAdjustResize ( D , R.width , R.height ) ;
-              XGetGeometry ( wc->Dsp , wc->Win , & win , & x , & y , & w , & h , & bw , & dpth ) ;
-                  
+              XGetGeometry ( wc->Dsp , wc->Win , & win , & x , \
+                   & y , & w , & h , & bw , & dpth ) ;
               continue;
               case ConfigureRequest:
               continue;
@@ -4665,7 +4758,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       win = RootWindow ( wc->Dsp , DefaultScreen ( wc->Dsp ) ) ;
       BUTNMASK = ( Button1Mask | Button2Mask | Button3Mask \
        | Button4Mask | Button5Mask ) ;
-      if ( XQueryPointer ( wc->Dsp , wc->Parent , & Root , & Child , & rx , & ry , & x , & y , & pb ) == False ) \
+      if ( XQueryPointer ( wc->Dsp , wc->Parent , & Root , & Child , \
+           & rx , & ry , & x , & y , & pb ) == False ) \
       {
           return -1;
       }
@@ -4691,8 +4785,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           else ret = 2;
       }
       if ( ( wc->Win == Child ) ) {
-          XQueryPointer ( wc->Dsp , wc->Win , & Root , & Child , & rx , & ry , & x , & y , & pb ) ;
-              
+          XQueryPointer ( wc->Dsp , wc->Win , & Root , & Child , \
+               & rx , & ry , & x , & y , & pb ) ;
           kbe->rootx = rx;
           kbe->rooty = ry;
           kbe->x = x;
@@ -4738,8 +4832,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               kbevent.x = R.width;
               kbevent.y = R.height;
               if ( ! _uiAdjustResize ( D , R.width , R.height ) ) continue;;
-              XGetGeometry ( wc->Dsp , wc->Win , & win , & x , & y , & w , & h , & bw , & dpth ) ;
-                  
+              XGetGeometry ( wc->Dsp , wc->Win , & win , & x , \
+                   & y , & w , & h , & bw , & dpth ) ;
               *kbe = kbevent;
 #else
               R = * ( ( XResizeRequestEvent * ) & e ) ;
@@ -4877,8 +4971,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       }
   }
   void uiPositionPointer ( kgWC *wc , int x , int y ) {
-      XWarpPointer ( wc->Dsp , wc->Win , wc->Win , 0 , 0 , wc->EVGAX+1 , wc->EVGAY+1 , x , y ) ;
-          
+      XWarpPointer ( wc->Dsp , wc->Win , wc->Win , 0 , \
+           0 , wc->EVGAX+1 , wc->EVGAY+1 , x , y ) ;
   }
   int getintval ( char x ) {
       switch ( x ) {
@@ -5029,8 +5123,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       wc = ( ( DIALOG * ) Tmp )->wc;
       Curwin = wc->Root;
       Win = wc->Win;
-      XQueryPointer ( wc->Dsp , Curwin , & Root , & Child , & x1 , & y1 , & x2 , & y2 , & pb ) ;
-          
+      XQueryPointer ( wc->Dsp , Curwin , & Root , & Child , \
+           & x1 , & y1 , & x2 , & y2 , & pb ) ;
       x0 = x1; y0 = y1;
       if ( Child != Win ) {
           XWarpPointer ( wc->Dsp , Child , Win , 0 , 0 , 0 , 0 , x , y ) ;
@@ -5038,10 +5132,10 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       else {
           XWarpPointer ( wc->Dsp , Win , Win , 0 , 0 , 0 , 0 , x , y ) ;
       }
-      XQueryPointer ( wc->Dsp , Curwin , & Root , & Child , & x1 , & y1 , & x2 , & y2 , & pb ) ;
-          
-      XQueryPointer ( wc->Dsp , Child , & Root , & Child , & x1 , & y1 , & x2 , & y2 , & pb ) ;
-          
+      XQueryPointer ( wc->Dsp , Curwin , & Root , & Child , \
+           & x1 , & y1 , & x2 , & y2 , & pb ) ;
+      XQueryPointer ( wc->Dsp , Child , & Root , & Child , \
+           & x1 , & y1 , & x2 , & y2 , & pb ) ;
       if ( ( x2 != x ) || ( y2 != y ) ) {
           ret = 0;
       }
@@ -5054,10 +5148,12 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 **************************************************/
 #if 0
 #define GREEN_VAL (((((val>>8)&0x0000ff) * ((Image->green_mask)>> \
-   ( BlueMaskPos ) ) + ( 1 << ( ( Image->green_mask >> ( BlueMaskPos ) ) -1 ) ) ) /256 ) << \
+   ( BlueMaskPos ) ) + ( 1 << ( ( Image->green_mask >>  \
+       ( BlueMaskPos ) ) -1 ) ) ) /256 ) << \
    ( BlueMaskPos ) )
 #define RED_VAL (((((val>>16)&0x0000ff) * ((Image->red_mask)>> \
-   ( GreenMaskPos ) ) + ( 1 << ( ( Image->red_mask >> ( GreenMaskPos ) ) -1 ) ) ) /256 ) << \
+   ( GreenMaskPos ) ) + ( 1 << ( ( Image->red_mask >>  \
+       ( GreenMaskPos ) ) -1 ) ) ) /256 ) << \
    ( GreenMaskPos ) )
 #endif
 /*****************************************************************
@@ -5077,7 +5173,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       return 1;
   }
 #endif
-  void kgCleanBackground ( void *Tmp , int xo , int yo , int width , int height , float transparency ) \
+  void kgCleanBackground ( void *Tmp , int xo , int yo , \
+       int width , int height , float transparency ) \
   {
       kgWC *wc;
       XImage *IMAGE;
@@ -5089,8 +5186,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //TCB 11/21
       IMAGE = kg_GetImage ( D , xo , yo , width , height ) ;
       uiMakeImageTransparent ( IMAGE , transparency ) ;
-      XPutImage ( wc->Dsp , wc->Pix , wc->Gc , IMAGE , 0 , 0 , xo , yo , width , height ) ;
-          
+      XPutImage ( wc->Dsp , wc->Pix , wc->Gc , IMAGE , \
+           0 , 0 , xo , yo , width , height ) ;
 //  _uiTileImage(wc,wc->WIN,wc->IMAGE,EVGAX,EVGAY);
       XDestroyImage ( IMAGE ) ;
   }
@@ -5148,7 +5245,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       }
       return;
   }
-  void _uiTileImage ( kgWC *wc , Pixmap pix , XImage *ximage , int wd , int ht ) \
+  void _uiTileImage ( kgWC *wc , Pixmap pix , \
+       XImage *ximage , int wd , int ht ) \
   {
       int i , j , h , w , ix , iy , ixr , iyr , xo , yo;
       h = ximage->height;
@@ -5164,8 +5262,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               XPutImage ( wc->Dsp , pix , wc->Gc , ximage , 0 , 0 , xo , yo , w , h ) ;
               xo += w;
           } // for i = 0
-          if ( ixr != 0 ) XPutImage ( wc->Dsp , pix , wc->Gc , ximage , 0 , 0 , xo , yo , ixr , h ) ;
-              
+          if ( ixr != 0 ) XPutImage ( wc->Dsp , pix , wc->Gc , \
+               ximage , 0 , 0 , xo , yo , ixr , h ) ;
           yo+= h;
       } // for j = 0
       if ( iyr != 0 ) {
@@ -5174,8 +5272,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               XPutImage ( wc->Dsp , pix , wc->Gc , ximage , 0 , 0 , xo , yo , w , iyr ) ;
               xo += w;
           } // for i = 0
-          if ( ixr != 0 ) XPutImage ( wc->Dsp , pix , wc->Gc , ximage , 0 , 0 , xo , yo , ixr , iyr ) ;
-              
+          if ( ixr != 0 ) XPutImage ( wc->Dsp , pix , wc->Gc , \
+               ximage , 0 , 0 , xo , yo , ixr , iyr ) ;
       }
       return;
   }
@@ -5439,7 +5537,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 #define SHORT 3
 #define LONG 4
 #define RATIONAL 5
-  static FUNC void WrShortField ( FILE *fp , short tag , short type , int length , short value ) \
+  static FUNC void WrShortField ( FILE *fp , short tag , \
+       short type , int length , short value ) \
   {
       fwrite ( & tag , ( size_t ) 2 , ( size_t ) 1 , fp ) ;
       fwrite ( & type , ( size_t ) 2 , ( size_t ) 1 , fp ) ;
@@ -5447,7 +5546,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       fwrite ( & value , ( size_t ) 2 , ( size_t ) 1 , fp ) ;
       fwrite ( & value , ( size_t ) 2 , ( size_t ) 1 , fp ) ; /* dummy write... */
   }
-  static FUNC void WrLongField ( FILE *fp , short tag , short type , int length , int value ) \
+  static FUNC void WrLongField ( FILE *fp , short tag , \
+       short type , int length , int value ) \
   {
       fwrite ( & tag , ( size_t ) 2 , ( size_t ) 1 , fp ) ;
       fwrite ( & type , ( size_t ) 2 , ( size_t ) 1 , fp ) ;
@@ -5468,7 +5568,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       }
       return palette;
   }
-  static FUNC void writetiff ( char *flname , Dlink *Tlist , short *buffer , int SIZEX , int SIZEY ) \
+  static FUNC void writetiff ( char *flname , Dlink *Tlist , \
+       short *buffer , int SIZEX , int SIZEY ) \
   {
       short *palette;
       short NumFields = ( COMPRESSION == 5 ) ? 16: 12;
@@ -5566,8 +5667,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           if ( wc->ExposeWin ) {
               pthread_mutex_lock ( & ( wc->Dsplock ) ) ;
               XLockDisplay ( wc->Dsp ) ;
-              XCopyArea ( wc->Dsp , wc->Piximg , wc->Win , wc->Gc , 0 , 0 , wc->EVGAX , wc->EVGAY , 0 , 0 ) ;
-                  
+              XCopyArea ( wc->Dsp , wc->Piximg , wc->Win , wc->Gc , \
+                   0 , 0 , wc->EVGAX , wc->EVGAY , 0 , 0 ) ;
               XUnlockDisplay ( wc->Dsp ) ;
               wc->ExposeWin = 0;
               pthread_mutex_unlock ( & ( wc->Dsplock ) ) ;
@@ -5644,8 +5745,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       for ( j = 0;j < rem;j++ ) fprintf ( fp , "0x%8.8x," , pt [ k++ ] ) ;
       fprintf ( fp , "   0x0 };\n" ) ;
       fprintf ( fp , "  static JPGIMG  %-s_str = {\n" , name ) ;
-      fprintf ( fp , "    \"JPG\", 1,\"%-s.jpg\",%d,%d,0,NULL,%-s_data \n  };\n" , name , h , w , name ) ;
-          
+      fprintf ( fp , "    \"JPG\", 1,\"%-s.jpg\",%d,%d,0,NULL,%-s_data \n  };\n" , \
+           name , h , w , name ) ;
       fprintf ( fp , "#endif\n" ) ;
       fclose ( fp ) ;
       FreeJpegImg ( img ) ;
@@ -5685,8 +5786,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       pt = img->image_data;
       fprintf ( fp , "#ifndef D_%-s\n" , name ) ;
       fprintf ( fp , "#define D_%-s\n" , name ) ;
-      fprintf ( fp , "  static unsigned char %-s_data[%d] = {\n  " , name , w*h+1 ) ;
-          
+      fprintf ( fp , "  static unsigned char %-s_data[%d] = {\n  " , \
+           name , w*h+1 ) ;
       size = ( w*h ) /12;
       rem = ( w*h ) - size*12;
       k = 0;
@@ -5699,8 +5800,9 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       for ( j = 0;j < rem;j++ ) fprintf ( fp , "0x%2.2x," , pt [ k++ ] ) ;
       fprintf ( fp , "   0x0 };\n" ) ;
       fprintf ( fp , "  static PNGIMG  %-s_str = {\n" , name ) ;
-      fprintf ( fp , "    \"PNG\",1,\"%-s.png\", %ld,%ld,%ld,%d,%-s_data \n  };\n" , name , img->image_width , img->image_height , img->image_rowbytes , img->image_channels , name ) ;
-          
+      fprintf ( fp , "    \"PNG\",1,\"%-s.png\", %ld,%ld,%ld,%d,%-s_data \n  };\n" , \
+           name , img->image_width , img->image_height , img->image_rowbytes , \
+           img->image_channels , name ) ;
       fprintf ( fp , "#endif\n" ) ;
       fclose ( fp ) ;
 //  FreeJpegImg(img);
@@ -5785,8 +5887,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       fprintf ( fp , "        " ) ;
       for ( i = 0;i < ret;i++ ) fprintf ( fp , "0x%2.2x," , buff [ i ] ) ;
       fprintf ( fp , "0xff\n  };\n" ) ;
-      fprintf ( fp , "  FMGIMG %-s_str = { \"FMG\",1,\"%-s\",%d,%-s_data,NULL};\n" , basename , basename , sum , basename ) ;
-          
+      fprintf ( fp , "  FMGIMG %-s_str = { \"FMG\",1,\"%-s\",%d,%-s_data,NULL};\n" , \
+           basename , basename , sum , basename ) ;
       fprintf ( fp , "#endif\n" ) ;
       fclose ( fp ) ;
       close ( inp ) ;
@@ -5844,7 +5946,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
   void kgFreeImage ( void *tmp ) {
       if ( tmp != NULL ) uiFreeImage ( tmp ) ;
   }
-  int uiDataToArea ( DIALOG *D , unsigned long *data , int xl , int yl , int w , int h ) \
+  int uiDataToArea ( DIALOG *D , unsigned long *data , \
+       int xl , int yl , int w , int h ) \
   {
       int i , j , k;
       unsigned char *dest , *Imgdata;
@@ -5853,8 +5956,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       int ximage_rowbytes;
       kgWC *wc;
       wc = WC ( D ) ;
-      ximage = XGetImage ( wc->Dsp , wc->ActWin , xl , yl , w , h , 0xffffffff , ZPixmap ) ;
-          
+      ximage = XGetImage ( wc->Dsp , wc->ActWin , xl , \
+           yl , w , h , 0xffffffff , ZPixmap ) ;
       ximage_rowbytes = ximage->bytes_per_line;
       Imgdata = ( unsigned char * ) ximage->data;
       k = 0;
@@ -5886,12 +5989,13 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               k++;
           }
       }
-      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , ximage , 0 , 0 , xl , yl , w , h ) ;
-          
+      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+           ximage , 0 , 0 , xl , yl , w , h ) ;
       XDestroyImage ( ximage ) ;
       return 1;
   }
-  int uiAddDataToArea ( DIALOG *D , unsigned long *data , int xl , int yl , int w , int h ) \
+  int uiAddDataToArea ( DIALOG *D , unsigned long *data , \
+       int xl , int yl , int w , int h ) \
   {
       int i , j , k;
       unsigned char *dest , *Imgdata;
@@ -5901,8 +6005,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       int ximage_rowbytes;
       kgWC *wc;
       wc = WC ( D ) ;
-      ximage = XGetImage ( wc->Dsp , wc->Pix , xl , yl , w , h , 0xffffffff , ZPixmap ) ;
-          
+      ximage = XGetImage ( wc->Dsp , wc->Pix , xl , \
+           yl , w , h , 0xffffffff , ZPixmap ) ;
       ximage_rowbytes = ximage->bytes_per_line;
       Imgdata = ( unsigned char * ) ximage->data;
       k = 0;
@@ -5945,8 +6049,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               k++;
           }
       }
-      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , ximage , 0 , 0 , xl , yl , w , h ) ;
-          
+      XPutImage ( wc->Dsp , wc->ActWin , wc->Gc , \
+           ximage , 0 , 0 , xl , yl , w , h ) ;
       XDestroyImage ( ximage ) ;
       return 1;
   }
@@ -6048,12 +6152,14 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       scpt = kg_get_scrn_buffer ( wc ) ;
       x1 = scpt->x1; x2 = scpt->x2;
       y1 = scpt->y1; y2 = scpt->y2;
-      XCopyArea ( wc->Dsp , ( scpt->buf ) , wc->DspWin , wc->Gc , 0 , 0 , ( short ) \
+      XCopyArea ( wc->Dsp , ( scpt->buf ) , wc->DspWin , \
+           wc->Gc , 0 , 0 , ( short ) \
        ( x2-x1+1 ) , ( short ) ( y2-y1+1 ) , ( short ) x1 , ( short ) y1 ) ;
       kg_release_scrn_buffer ( wc ) ;
       uiUpdateScreen ( wc ) ;
   }
-  int kgPutImage ( DIALOG *D , XImage *uiImage , int sx , int sy , int dx , int dy , int width , int height ) \
+  int kgPutImage ( DIALOG *D , XImage *uiImage , int sx , int sy , \
+       int dx , int dy , int width , int height ) \
   {
       XPutImage ( ( Display * ) ( WC ( D )->Dsp ) , WC ( D )->ActWin , ( GC ) \
        ( WC ( D )->Gc ) , uiImage , sx , sy , dx , dy , width , height ) ;
@@ -6065,18 +6171,18 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       SC_BUF *scpt;
       if ( D->NoWinMngr ) {
           scpt = kg_scr_back ( WC ( D ) , x , y , x+width , y+height ) ;
-          uiImage = XGetImage ( ( Display * ) WC ( D )->Dsp , scpt->buf , 0 , 0 , width , height , 0xffffffff , ZPixmap ) ;
-              
+          uiImage = XGetImage ( ( Display * ) WC ( D )->Dsp , scpt->buf , \
+               0 , 0 , width , height , 0xffffffff , ZPixmap ) ;
           kg_release_scrn_buffer ( WC ( D ) ) ;
       }
       else {
           if ( WC ( D )->FullScreen ) {
-              uiImage = XGetImage ( ( Display * ) WC ( D )->Dsp , WC ( D )->ActWin , x , y , width , height , 0xffffffff , ZPixmap ) ;
-                  
+              uiImage = XGetImage ( ( Display * ) WC ( D )->Dsp , WC ( D )->ActWin , \
+                   x , y , width , height , 0xffffffff , ZPixmap ) ;
           }
           else {
-              uiImage = XGetImage ( ( Display * ) WC ( D )->Dsp , WC ( D )->Pix , x , y , width , height , 0xffffffff , ZPixmap ) ;
-                  
+              uiImage = XGetImage ( ( Display * ) WC ( D )->Dsp , WC ( D )->Pix , \
+                   x , y , width , height , 0xffffffff , ZPixmap ) ;
           }
       }
       if ( uiImage == NULL ) {
@@ -6095,13 +6201,14 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 #endif
       return uiImage;
   }
-  int kg_png_image ( DIALOG *D , void *tmp , int x0 , int y0 , int width , int height , float transparency , float highfac ) \
+  int kg_png_image ( DIALOG *D , void *tmp , int x0 , int y0 , int width , \
+       int height , float transparency , float highfac ) \
   {
       int i , j , k , m , row;
       unsigned long color;
       int sx , sy , dx , dy;
-      int xoffset = 0 , yoffset = 0 , xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
-          
+      int xoffset = 0 , yoffset = 0 , xm , ym , xl , yl , \
+           xu , yu , xc , yc , xdl , xdu , ydl , ydu;
       float rzfac;
       unsigned long *dest , *Imgdata , val;
       unsigned long r , g , b , a;
@@ -6238,10 +6345,11 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       XDestroyImage ( uiImage ) ;
       return 1;
   }
-  int kg_gm_image ( DIALOG *D , void *tmp , int x0 , int y0 , int width , int height , float transparency , float highfac ) \
+  int kg_gm_image ( DIALOG *D , void *tmp , int x0 , int y0 , int width , \
+       int height , float transparency , float highfac ) \
   {
-      int i , j , k , m , row , color , sx , sy , dx , dy , xoffset , yoffset , xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
-          
+      int i , j , k , m , row , color , sx , sy , dx , dy , xoffset , yoffset , \
+           xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
       float rzfac;
 //    unsigned long *dest,*Imgdata,val;
       unsigned long val;
@@ -6492,7 +6600,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           else return kgResizeImage ( img , 1.0 ) ;
       }
   }
-  void kgImage_o ( void *Dtmp , void *tmp , int x0 , int y0 , int width , int height , float transparency , float highfac ) \
+  void kgImage_o ( void *Dtmp , void *tmp , int x0 , int y0 , int width , \
+       int height , float transparency , float highfac ) \
   {
 /*
     width is X-direction
@@ -6545,14 +6654,14 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //            printf("Failed to get %s\n",(char *)(cpt+2));
                   return;
               }
-              kg_gm_image ( D , ( void * ) img , x0 , y0 , width , height , transparency , highfac ) ;
-                  
+              kg_gm_image ( D , ( void * ) img , x0 , y0 , width , \
+                   height , transparency , highfac ) ;
               uiFreeImage ( img ) ;
 #else
               GMIMG *gmimg;
               gmimg = ( GMIMG * ) uiGetgmImage ( fullname ) ;
-              kg_gm_image ( D , gmimg , x0 , y0 , width , height , transparency , highfac ) ;
-                  
+              kg_gm_image ( D , gmimg , x0 , y0 , width , \
+                   height , transparency , highfac ) ;
               uiFreeImage ( gmimg ) ;
               free ( fullname ) ;
 #endif
@@ -6561,11 +6670,11 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       }
       else fmg = ( FMGIMG * ) tmp;
       if ( fmg == NULL ) return;
-      if ( strcmp ( fmg->Sign , "IMG" ) == 0 ) {kg_gm_image ( D , tmp , x0 , y0 , width , height , transparency , highfac ) ;
-          
+      if ( strcmp ( fmg->Sign , "IMG" ) == 0 ) {kg_gm_image ( D , tmp , \
+           x0 , y0 , width , height , transparency , highfac ) ;
       return;}
-      if ( strcmp ( fmg->Sign , "PNG" ) == 0 ) {kg_png_image ( D , tmp , x0 , y0 , width , height , transparency , highfac ) ;
-          
+      if ( strcmp ( fmg->Sign , "PNG" ) == 0 ) {kg_png_image ( D , tmp , \
+           x0 , y0 , width , height , transparency , highfac ) ;
       return;}
       if ( strcmp ( fmg->Sign , "FMG" ) == 0 ) {
           char tmpfile [ 100 ] , *tmpdir;
@@ -6581,8 +6690,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               PNGIMG *gmimg;
               gmimg = ( PNGIMG * ) ReadPngImage ( tmpfile ) ;
               if ( gmimg != NULL ) {
-                  kg_png_image ( D , gmimg , x0 , y0 , width , height , transparency , highfac ) ;
-                      
+                  kg_png_image ( D , gmimg , x0 , y0 , width , \
+                       height , transparency , highfac ) ;
                   uiFreeImage ( gmimg ) ;
               }
               else printf ( "ReadPngImage: Image NULL\n" ) ;
@@ -6593,8 +6702,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 #endif
               GMIMG *gmimg;
               gmimg = ( GMIMG * ) uiGetgmImage ( tmpfile ) ;
-              kg_gm_image ( D , gmimg , x0 , y0 , width , height , transparency , highfac ) ;
-                  
+              kg_gm_image ( D , gmimg , x0 , y0 , width , \
+                   height , transparency , highfac ) ;
               uiFreeImage ( gmimg ) ;
           }
           remove ( tmpfile ) ;
@@ -6658,7 +6767,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 #endif
       return ;
   }
-  void kgImage ( void *Dtmp , void *tmp , int x0 , int y0 , int width , int height , float transparency , float highfac ) \
+  void kgImage ( void *Dtmp , void *tmp , int x0 , int y0 , int width , \
+       int height , float transparency , float highfac ) \
   {
 /*
     width is X-direction
@@ -6711,14 +6821,14 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //            printf("Failed to get %s\n",(char *)(cpt+2));
                   return;
               }
-              kg_gm_image ( D , ( void * ) img , x0 , y0 , width , height , transparency , highfac ) ;
-                  
+              kg_gm_image ( D , ( void * ) img , x0 , y0 , width , \
+                   height , transparency , highfac ) ;
               uiFreeImage ( img ) ;
 #else
               GMIMG *gmimg;
               gmimg = ( GMIMG * ) uiGetgmImage ( fullname ) ;
-              kg_gm_image ( D , gmimg , x0 , y0 , width , height , transparency , highfac ) ;
-                  
+              kg_gm_image ( D , gmimg , x0 , y0 , width , \
+                   height , transparency , highfac ) ;
               uiFreeImage ( gmimg ) ;
               free ( fullname ) ;
 #endif
@@ -6727,19 +6837,19 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       }
       else fmg = ( FMGIMG * ) tmp;
       if ( fmg == NULL ) return;
-      if ( strcmp ( fmg->Sign , "IMG" ) == 0 ) {kg_gm_image ( D , tmp , x0 , y0 , width , height , transparency , highfac ) ;
-          
+      if ( strcmp ( fmg->Sign , "IMG" ) == 0 ) {kg_gm_image ( D , tmp , \
+           x0 , y0 , width , height , transparency , highfac ) ;
       return;}
-      if ( strcmp ( fmg->Sign , "PNG" ) == 0 ) {kg_png_image ( D , tmp , x0 , y0 , width , height , transparency , highfac ) ;
-          
+      if ( strcmp ( fmg->Sign , "PNG" ) == 0 ) {kg_png_image ( D , tmp , \
+           x0 , y0 , width , height , transparency , highfac ) ;
       return;}
       if ( strcmp ( fmg->Sign , "FMG" ) == 0 ) {
           GMIMG *gmimg;
           FMGIMG *img;
           img = ( FMGIMG * ) tmp;
           gmimg = ( GMIMG * ) kgGetInlineImage ( img->image_data , img->size ) ;
-          kg_gm_image ( D , gmimg , x0 , y0 , width , height , transparency , highfac ) ;
-              
+          kg_gm_image ( D , gmimg , x0 , y0 , width , \
+               height , transparency , highfac ) ;
           uiFreeImage ( gmimg ) ;
           return ;
       }
@@ -6823,8 +6933,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       return gmimg;
   }
   int kgRootImage ( void *tmp ) {
-      int i , j , k , m , row , color , sx , sy , dx , xoffset , yoffset , xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
-          
+      int i , j , k , m , row , color , sx , sy , dx , xoffset , yoffset , \
+           xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
       float rzfac;
       float highfac = 1.0 , transparency = 0.0;
       unsigned long val;
@@ -6923,8 +7033,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //    uiImage = kg_GetImage(D,xdl,ydl,xdu-xdl+1,ydu-ydl+1);
       Pix = XCreatePixmap ( Dsp , Root , ( short ) ( xdu-xdl+1 ) , \
        ( short ) ( ydu-ydl+1 ) , Dpth ) ;
-      uiImage = XGetImage ( Dsp , Pix , xdl , ydl , xdu-xdl+1 , ydu-ydl+1 , 0xffffffff , ZPixmap ) ;
-          
+      uiImage = XGetImage ( Dsp , Pix , xdl , ydl , xdu-xdl+1 , \
+           ydu-ydl+1 , 0xffffffff , ZPixmap ) ;
       ximage_rowbytes = uiImage->bytes_per_line;
       Imgdata = ( unsigned char * ) uiImage->data;
       row = -1;
@@ -7003,11 +7113,12 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       }
 //   kgPutImage(D,uiImage,0,0,xdl,ydl,xdu-xdl+1,ydu-ydl+1);
       GC Gc = XCreateGC ( Dsp , Root , 0 , NULL ) ;
-      XPutImage ( Dsp , Pix , Gc , uiImage , 0 , 0 , xdl , ydl , xdu-xdl+1 , ydu-ydl+1 ) ;
-          
+      XPutImage ( Dsp , Pix , Gc , uiImage , 0 , 0 , \
+           xdl , ydl , xdu-xdl+1 , ydu-ydl+1 ) ;
       BackgroundPixmapId = XInternAtom ( Dsp , "_XROOTPMAP_ID" , False ) ;
       XSetWindowBackgroundPixmap ( Dsp , Root , Pix ) ;
-      XChangeProperty ( Dsp , Root , BackgroundPixmapId , XA_PIXMAP , 32 , PropModeReplace , \
+      XChangeProperty ( Dsp , Root , BackgroundPixmapId , \
+           XA_PIXMAP , 32 , PropModeReplace , \
        ( unsigned char * ) & Pix , 1 ) ;
       XClearWindow ( Dsp , Root ) ;
       XFlush ( Dsp ) ;
@@ -7019,8 +7130,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       return 1;
   }
   int kgWindowImage ( Window Root , void *tmp ) {
-      int i , j , k , m , row , color , sx , sy , dx , xoffset , yoffset , xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
-          
+      int i , j , k , m , row , color , sx , sy , dx , xoffset , yoffset , \
+           xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
       float rzfac;
       float highfac = 1.0 , transparency = 0.0;
       unsigned long val;
@@ -7119,8 +7230,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //    uiImage = kg_GetImage(D,xdl,ydl,xdu-xdl+1,ydu-ydl+1);
       Pix = XCreatePixmap ( Dsp , Root , ( short ) ( xdu-xdl+1 ) , \
        ( short ) ( ydu-ydl+1 ) , Dpth ) ;
-      uiImage = XGetImage ( Dsp , Pix , xdl , ydl , xdu-xdl+1 , ydu-ydl+1 , 0xffffffff , ZPixmap ) ;
-          
+      uiImage = XGetImage ( Dsp , Pix , xdl , ydl , xdu-xdl+1 , \
+           ydu-ydl+1 , 0xffffffff , ZPixmap ) ;
       ximage_rowbytes = uiImage->bytes_per_line;
       Imgdata = ( unsigned char * ) uiImage->data;
       row = -1;
@@ -7200,11 +7311,12 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //   kgPutImage(D,uiImage,0,0,xdl,ydl,xdu-xdl+1,ydu-ydl+1);
       GC Gc = XCreateGC ( Dsp , Root , 0 , NULL ) ;
 #if 1
-      XPutImage ( Dsp , Pix , Gc , uiImage , 0 , 0 , xdl , ydl , xdu-xdl+1 , ydu-ydl+1 ) ;
-          
+      XPutImage ( Dsp , Pix , Gc , uiImage , 0 , 0 , \
+           xdl , ydl , xdu-xdl+1 , ydu-ydl+1 ) ;
       BackgroundPixmapId = XInternAtom ( Dsp , "_XROOTPMAP_ID" , False ) ;
       XSetWindowBackgroundPixmap ( Dsp , Root , Pix ) ;
-      XChangeProperty ( Dsp , Root , BackgroundPixmapId , XA_PIXMAP , 32 , PropModeReplace , \
+      XChangeProperty ( Dsp , Root , BackgroundPixmapId , \
+           XA_PIXMAP , 32 , PropModeReplace , \
        ( unsigned char * ) & Pix , 1 ) ;
 #endif
       XClearWindow ( Dsp , Root ) ;
@@ -7364,8 +7476,23 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 /* aaaack but it's fast and const should make it shared text page. */
   static const unsigned char pr2six [ 256 ] = {
     /* ASCII table */
-  64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 62 , 64 , 64 , 64 , 63 , 52 , 53 , 54 , 55 , 56 , 57 , 58 , 59 , 60 , 61 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 21 , 22 , 23 , 24 , 25 , 64 , 64 , 64 , 64 , 64 , 64 , 26 , 27 , 28 , 29 , 30 , 31 , 32 , 33 , 34 , 35 , 36 , 37 , 38 , 39 , 40 , 41 , 42 , 43 , 44 , 45 , 46 , 47 , 48 , 49 , 50 , 51 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 6 4 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
-      
+  64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , \
+       64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , \
+       64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 62 , 64 , \
+       64 , 64 , 63 , 52 , 53 , 54 , 55 , 56 , 57 , 58 , 59 , 60 , 61 , 64 , 64 , \
+       64 , 64 , 64 , 64 , 64 , 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , \
+       12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 21 , 22 , 23 , 24 , 25 , 64 , \
+       64 , 64 , 64 , 64 , 64 , 26 , 27 , 28 , 29 , 30 , 31 , 32 , 33 , 34 , 35 , \
+       36 , 37 , 38 , 39 , 40 , 41 , 42 , 43 , 44 , 45 , 46 , 47 , 48 , 49 , 50 , \
+       51 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , \
+       64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , \
+       64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , \
+       64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , \
+       64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , \
+       64 , 64 , 64 , 64 , 6 4 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , \
+       64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , \
+       64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , \
+       64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
   int Base64decode_len ( const char *bufcoded ) {
       int nbytesdecoded;
       register const unsigned char *bufin;
@@ -7453,8 +7580,12 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-  static char encoding_table [ ] = {'A' , 'B' , 'C' , 'D' , 'E' , 'F' , 'G' , 'H' , 'I' , 'J' , 'K' , 'L' , 'M' , 'N' , 'O' , 'P' , 'Q' , 'R' , 'S' , 'T' , 'U' , 'V' , 'W' , 'X' , 'Y' , 'Z' , 'a' , 'b' , 'c' , 'd' , 'e' , 'f' , 'g' , 'h' , 'i' , 'j' , 'k' , 'l' , 'm' , 'n' , 'o' , 'p' , 'q' , 'r' , 's' , 't' , 'u' , 'v' , 'w' , 'x' , 'y' , 'z' , '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' , '9' , '+' , '/'};
-      
+  static char encoding_table [ ] = {'A' , 'B' , 'C' , 'D' , 'E' , 'F' , 'G' , \
+       'H' , 'I' , 'J' , 'K' , 'L' , 'M' , 'N' , 'O' , 'P' , 'Q' , 'R' , 'S' , \
+       'T' , 'U' , 'V' , 'W' , 'X' , 'Y' , 'Z' , 'a' , 'b' , 'c' , 'd' , 'e' , \
+       'f' , 'g' , 'h' , 'i' , 'j' , 'k' , 'l' , 'm' , 'n' , 'o' , 'p' , 'q' , \
+       'r' , 's' , 't' , 'u' , 'v' , 'w' , 'x' , 'y' , 'z' , '0' , '1' , \
+       '2' , '3' , '4' , '5' , '6' , '7' , '8' , '9' , '+' , '/'};
   static char *decoding_table = NULL;
   static int mod_table [ ] = {0 , 2 , 1};
   void build_decoding_table ( ) {
@@ -7466,7 +7597,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
   int Base64encode_len ( int len ) {
       return ( 4 * ( ( len + 2 ) / 3 ) ) ;
   }
-  int Base64encode ( char *encoded_data , const unsigned char *data , int input_length ) \
+  int Base64encode ( char *encoded_data , const unsigned char *data , \
+       int input_length ) \
   {
       size_t output_length;
       int i , j;
@@ -7489,8 +7621,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 #endif
   void * kgGetRootRawImage ( int xo , int yo , int wd , int ht ) {
       void *Img;
-      int i , j , k , m , row , color , sx , sy , dx , xoffset , yoffset , xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
-          
+      int i , j , k , m , row , color , sx , sy , dx , xoffset , yoffset , \
+           xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
       float rzfac;
       float highfac = 1.0 , transparency = 0.0;
       unsigned long val;
@@ -7533,8 +7665,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       h = height; w = width;
       Pix = XCreatePixmap ( Dsp , Root , ( short ) \
        ( EVGAX ) , ( short ) ( EVGAY ) , Dpth ) ;
-      uiImage = XGetImage ( Dsp , Root , 0 , 0 , EVGAX , EVGAY , 0xffffffff , ZPixmap ) ;
-          
+      uiImage = XGetImage ( Dsp , Root , 0 , 0 , EVGAX , \
+           EVGAY , 0xffffffff , ZPixmap ) ;
       ximage_rowbytes = uiImage->bytes_per_line;
       Imgdata = ( unsigned char * ) uiImage->data;
       Img = ( unsigned char * ) Malloc ( ht*wd*3 ) ;
@@ -7563,8 +7695,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
   }
   void * kgMakeImageFromRaw ( unsigned char *Imgdata , int wd , int ht ) {
       void *Img;
-      int i , j , k , m , row , color , sx , sy , dx , xoffset , yoffset , xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
-          
+      int i , j , k , m , row , color , sx , sy , dx , xoffset , yoffset , \
+           xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
       float rzfac;
       float highfac = 1.0 , transparency = 0.0;
       unsigned long val;
@@ -7629,8 +7761,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
   }
   void * kgGetRootImage ( void ) {
       void *Img;
-      int i , j , k , m , row , color , sx , sy , dx , xoffset , yoffset , xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
-          
+      int i , j , k , m , row , color , sx , sy , dx , xoffset , yoffset , \
+           xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
       float rzfac;
       float highfac = 1.0 , transparency = 0.0;
       unsigned long val;
@@ -7674,8 +7806,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       h = height; w = width;
       Pix = XCreatePixmap ( Dsp , Root , ( short ) \
        ( EVGAX ) , ( short ) ( EVGAY ) , Dpth ) ;
-      uiImage = XGetImage ( Dsp , Root , 0 , 0 , EVGAX , EVGAY , 0xffffffff , ZPixmap ) ;
-          
+      uiImage = XGetImage ( Dsp , Root , 0 , 0 , EVGAX , \
+           EVGAY , 0xffffffff , ZPixmap ) ;
       ximage_rowbytes = uiImage->bytes_per_line;
       Imgdata = ( unsigned char * ) uiImage->data;
       Img = uiCreateCleangmImage ( EVGAX , EVGAY , 0 , 0 , 0 , 255 ) ;
@@ -7696,10 +7828,11 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       XCloseDisplay ( Dsp ) ;
       return Img;
   }
-  int kgRestoreImage ( DIALOG *D , void *tmp , int x0 , int y0 , int width , int height ) \
+  int kgRestoreImage ( DIALOG *D , void *tmp , int x0 , \
+       int y0 , int width , int height ) \
   {
-      int i , j , k , m , row , color , sx , sy , dx , dy , xoffset , yoffset , xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
-          
+      int i , j , k , m , row , color , sx , sy , dx , dy , xoffset , yoffset , \
+           xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
       float rzfac;
 //    unsigned long *dest,*Imgdata,val;
       unsigned long val;
@@ -7842,10 +7975,11 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       else if ( imgFile ) uiFreeImage ( png ) ;
       return 1;
   }
-  int kgRestoreImagePart ( DIALOG *D , void *tmp , int x0 , int y0 , int xoffset , int yoffset , int width , int height ) \
+  int kgRestoreImagePart ( DIALOG *D , void *tmp , int x0 , int y0 , \
+       int xoffset , int yoffset , int width , int height ) \
   {
-      int i , j , k , m , row , color , sx , sy , dx , dy , xm , ym , xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
-          
+      int i , j , k , m , row , color , sx , sy , dx , dy , xm , ym , \
+           xl , yl , xu , yu , xc , yc , xdl , xdu , ydl , ydu;
       float rzfac;
 //    unsigned long *dest,*Imgdata,val;
       unsigned long val;
@@ -8016,7 +8150,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //   kgGetEvent(D);
       Owner = XGetSelectionOwner ( wc->Dsp , sel ) ;
 //   printf("Owner : %d %d %d\n",Owner,wc->Win,wc->Root);
-      if ( XConvertSelection ( wc->Dsp , sel , target , prop , wc->Win , CurrentTime ) == 0 ) \
+      if ( XConvertSelection ( wc->Dsp , sel , target , \
+           prop , wc->Win , CurrentTime ) == 0 ) \
       {
 //     XDeleteProperty(wc->Dsp, wc->Win, prop);
           return NULL;
@@ -8032,8 +8167,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       if ( ( Owner != None ) ) {
           Val = prop;
       }
-      XGetWindowProperty ( wc->Dsp , wc->Win , Val , 0 , 0 , False , AnyPropertyType , & prop_type , & prop_format , & prop_items , & prop_size , & buff ) ;
-          
+      XGetWindowProperty ( wc->Dsp , wc->Win , Val , 0 , 0 , False , AnyPropertyType , \
+           & prop_type , & prop_format , & prop_items , & prop_size , & buff ) ;
       XFree ( buff ) ;
       buff = NULL;
       len = prop_size;
@@ -8042,8 +8177,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       count = 0;
       while ( len == 0 ) {
           count++;
-          XGetWindowProperty ( wc->Dsp , wc->Win , Val , 0 , 0 , False , AnyPropertyType , & prop_type , & prop_format , & prop_items , & prop_size , & buff ) ;
-              
+          XGetWindowProperty ( wc->Dsp , wc->Win , Val , 0 , 0 , False , AnyPropertyType , \
+               & prop_type , & prop_format , & prop_items , & prop_size , & buff ) ;
           XFree ( buff ) ;
           buff = NULL;
           len = prop_size;
@@ -8054,8 +8189,9 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       }
       len = prop_size;
       if ( prop_format == 8 ) { /* hell wit other formats */
-          XGetWindowProperty ( wc->Dsp , wc->Win , Val , 0 , ( long ) prop_size , False , AnyPropertyType , & prop_type , & prop_format , & prop_items , & prop_size , & buff ) ;
-              
+          XGetWindowProperty ( wc->Dsp , wc->Win , Val , 0 , ( long ) prop_size , \
+               False , AnyPropertyType , & prop_type , & prop_format , \
+               & prop_items , & prop_size , & buff ) ;
       }
 //   XDeleteProperty(wc->Dsp, wc->Win, prop);
       XFlush ( wc->Dsp ) ;
@@ -8099,7 +8235,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       if ( ! prop ) prop = XInternAtom ( wc->Dsp , "XCLIP_OUT" , False ) ;
       Owner = XGetSelectionOwner ( wc->Dsp , sel ) ;
 //   printf("Owner : %d %d %d\n",Owner,wc->Win,wc->Root);
-      if ( XConvertSelection ( wc->Dsp , sel , target , prop , wc->Win , CurrentTime ) == 0 ) \
+      if ( XConvertSelection ( wc->Dsp , sel , target , \
+           prop , wc->Win , CurrentTime ) == 0 ) \
       {
 //     XDeleteProperty(wc->Dsp, wc->Win, prop);
           return NULL;
@@ -8115,16 +8252,16 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           Val = prop;
       }
       XFlush ( wc->Dsp ) ;
-      XGetWindowProperty ( wc->Dsp , wc->Win , Val , 0 , 0 , False , AnyPropertyType , & prop_type , & prop_format , & prop_items , & prop_size , & buff ) ;
-          
+      XGetWindowProperty ( wc->Dsp , wc->Win , Val , 0 , 0 , False , AnyPropertyType , \
+           & prop_type , & prop_format , & prop_items , & prop_size , & buff ) ;
       XFree ( buff ) ;
       buff = NULL;
       len = prop_size;
 //   printf("LEN= %d\n",prop_size);
       while ( len == 0 ) {
           count++;
-          XGetWindowProperty ( wc->Dsp , wc->Win , Val , 0 , 0 , False , AnyPropertyType , & prop_type , & prop_format , & prop_items , & prop_size , & buff ) ;
-              
+          XGetWindowProperty ( wc->Dsp , wc->Win , Val , 0 , 0 , False , AnyPropertyType , \
+               & prop_type , & prop_format , & prop_items , & prop_size , & buff ) ;
           XFree ( buff ) ;
           buff = NULL;
           len = prop_size;
@@ -8135,8 +8272,9 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       }
       len = prop_size;
       if ( prop_format == 8 ) { /* hell wit other formats */
-          XGetWindowProperty ( wc->Dsp , wc->Win , Val , 0 , ( long ) prop_size , False , AnyPropertyType , & prop_type , & prop_format , & prop_items , & prop_size , & buff ) ;
-              
+          XGetWindowProperty ( wc->Dsp , wc->Win , Val , 0 , ( long ) prop_size , \
+               False , AnyPropertyType , & prop_type , & prop_format , \
+               & prop_items , & prop_size , & buff ) ;
       }
 //   XDeleteProperty(wc->Dsp, wc->Win, prop);
       XFlush ( wc->Dsp ) ;
@@ -8172,21 +8310,23 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       if ( ! prop ) prop = XInternAtom ( wc->Dsp , "XPRI_IN" , False ) ;
 #if 1
 //      XSetSelectionOwner ( wc->Dsp , sel , wc->Win , CurrentTime ) ;
-      XSetSelectionOwner(wc->Dsp,sel,None,CurrentTime);
+      XSetSelectionOwner ( wc->Dsp , sel , None , CurrentTime ) ;
 //   w = XGetSelectionOwner(wc->Dsp,sel);
       w = wc->Win;
       pthread_mutex_lock ( & ( WC ( D )->Rlock ) ) ;
-      XChangeProperty ( wc->Dsp , w , sel , target , 8 , PropModeReplace , data , strlen \
+      XChangeProperty ( wc->Dsp , w , sel , target , \
+           8 , PropModeReplace , data , strlen \
        ( data ) +1 ) ;
-      XChangeProperty ( wc->Dsp , w , prop , target , 8 , PropModeReplace , data , strlen \
+      XChangeProperty ( wc->Dsp , w , prop , target , \
+           8 , PropModeReplace , data , strlen \
        ( data ) +1 ) ;
       pthread_mutex_unlock ( & ( WC ( D )->Rlock ) ) ;
 #endif
 #if 0
-   printf("Return:%s : %s\n",data,kgGetPrimary(Tmp));
-   res = kgGetPrimary(Tmp);
-   printf("Return:%s : %s\n",data,res);
-   if(!res) free(res);
+      printf ( "Return:%s : %s\n" , data , kgGetPrimary ( Tmp ) ) ;
+      res = kgGetPrimary ( Tmp ) ;
+      printf ( "Return:%s : %s\n" , data , res ) ;
+      if ( ! res ) free ( res ) ;
 #endif
       return ret;
   }
@@ -8207,12 +8347,14 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       if ( ! prop ) prop = XInternAtom ( wc->Dsp , "XCLIP_IN" , False ) ;
 #if 1
 //      XSetSelectionOwner ( wc->Dsp , sel , wc->Win , CurrentTime ) ;
-      XSetSelectionOwner(wc->Dsp,sel,None,CurrentTime);
+      XSetSelectionOwner ( wc->Dsp , sel , None , CurrentTime ) ;
       w = wc->Win;
       pthread_mutex_lock ( & ( WC ( D )->Rlock ) ) ;
-      XChangeProperty ( wc->Dsp , w , sel , target , 8 , PropModeReplace , data , strlen \
+      XChangeProperty ( wc->Dsp , w , sel , target , \
+           8 , PropModeReplace , data , strlen \
        ( data ) +1 ) ;
-      XChangeProperty ( wc->Dsp , w , prop , target , 8 , PropModeReplace , data , strlen \
+      XChangeProperty ( wc->Dsp , w , prop , target , \
+           8 , PropModeReplace , data , strlen \
        ( data ) +1 ) ;
       pthread_mutex_unlock ( & ( WC ( D )->Rlock ) ) ;
 #endif

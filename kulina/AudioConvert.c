@@ -50,12 +50,12 @@ int AudioConvertGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"!w21Browse");
+  strcpy(butn1[0].title,(char *)"Browse");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-1;
-  butn1[0].butncode='';
+  butn1[0].butncode=127;
   DIN b1 = { 
     'n',
     380,11,  
@@ -178,12 +178,12 @@ int AudioConvertGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn7=NULL; 
   butn7= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn7[0].sw=1;
-  strcpy(butn7[0].title,(char *)"!w32!f30Convert Audio");
+  strcpy(butn7[0].title,(char *)"!f30Convert Audio");
   butn7[0].xpmn=NULL;
   butn7[0].xpmp=NULL;
   butn7[0].xpmh=NULL;
   butn7[0].bkgr=-206246206;
-  butn7[0].butncode='';
+  butn7[0].butncode=127;
   DIL h7 = { 
     'h',
     211,272,  
@@ -206,7 +206,7 @@ int AudioConvertGroup( DIALOG *D,void **v,void *pt) {
     492,338,  
     0,0  
   };
-  strncpy(m8.msg,(char *)"!c01!w32Select File Extension for output; .wav/.flac  preferable for lossless",499);
+  strncpy(m8.msg,(char *)"!c01Select File Extension for output; .wav/.flac  preferable for lossless",499);
   strcpy(m8.Wid,(char *)"AudioConvertWidget10");
   m8.item = -1;
   DIHB d9 = { 

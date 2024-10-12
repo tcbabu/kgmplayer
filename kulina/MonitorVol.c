@@ -23,12 +23,12 @@ int MonitorVolGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn2=NULL; 
   butn2= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn2[0].sw=1;
-  strcpy(butn2[0].title,(char *)"!w32!c01Cancel");
+  strcpy(butn2[0].title,(char *)"!c01Cancel");
   butn2[0].xpmn=NULL;
   butn2[0].xpmp=NULL;
   butn2[0].xpmh=NULL;
   butn2[0].bkgr=-1;
-  butn2[0].butncode='';
+  butn2[0].butncode=127;
   DIL h2 = { 
     'h',
     200,191,  

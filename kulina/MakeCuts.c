@@ -7,7 +7,7 @@ int MakeCutsGroup( DIALOG *D,void **v,void *pt) {
   T_ELMT *e0  ; 
   e0 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e0[0].fmt = (char *)malloc(6);
-  strcpy(e0[0].fmt,(char *)" %30s");
+  strcpy(e0[0].fmt,(char *)"%30s");
   e0[0].v=(void *)v[0];
   e0[0].sw=1;
   e0[0].noecho=0;
@@ -43,7 +43,7 @@ int MakeCutsGroup( DIALOG *D,void **v,void *pt) {
   butn2[0].xpmp=NULL;
   butn2[0].xpmh=NULL;
   butn2[0].bkgr=-1;
-  butn2[0].butncode='';
+  butn2[0].butncode=127;
   DIN b2 = { 
     'n',
     400,28,  
@@ -100,14 +100,14 @@ int MakeCutsGroup( DIALOG *D,void **v,void *pt) {
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
   butn5[0].bkgr=-1;
-  butn5[0].butncode='';
+  butn5[0].butncode=127;
   butn5[1].sw=1;
   strcpy(butn5[1].title,(char *)"Delete");
   butn5[1].xpmn=NULL;
   butn5[1].xpmp=NULL;
   butn5[1].xpmh=NULL;
   butn5[1].bkgr=-1;
-  butn5[1].butncode='';
+  butn5[1].butncode=127;
   DIN b5 = { 
     'n',
     306,68,  
@@ -130,13 +130,13 @@ int MakeCutsGroup( DIALOG *D,void **v,void *pt) {
     410,326,  
     0,0  
   };
-  strncpy(m6.msg,(char *)"!c01!f29!w32Note:Extension decides output format",499);
+  strncpy(m6.msg,(char *)"!c01!f29Note:Extension decides output format",499);
   strcpy(m6.Wid,(char *)"MakeAuCutsWidget9");
   m6.item = -1;
   T_ELMT *e7  ; 
   e7 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e7[0].fmt = (char *)malloc(6);
-  strcpy(e7[0].fmt,(char *)" %30s");
+  strcpy(e7[0].fmt,(char *)"%30s");
   e7[0].v=(void *)v[2];
   e7[0].sw=1;
   e7[0].noecho=0;
@@ -167,12 +167,12 @@ int MakeCutsGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn9=NULL; 
   butn9= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn9[0].sw=1;
-  strcpy(butn9[0].title,(char *)"!f29!w21!c38Make Cuts");
+  strcpy(butn9[0].title,(char *)"!f29!c38Make Cuts");
   butn9[0].xpmn=NULL;
   butn9[0].xpmp=NULL;
   butn9[0].xpmh=NULL;
   butn9[0].bkgr=-235255250;
-  butn9[0].butncode='';
+  butn9[0].butncode=127;
   DIL h9 = { 
     'h',
     190,263,  

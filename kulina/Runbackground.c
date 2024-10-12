@@ -367,7 +367,7 @@ void *RunVolumeNormalise(void *stmp) {
 	AddMonMessage(L,buff);
 	sprintf(buff,"Duration: %2.2d:%2.2d:%2.2d ",hr,min,sec);
 	AddMonMessage(L,buff);
-	strcpy(buff,"!w32!c08 Press !c03Cancel!c08 to kill");
+	strcpy(buff,"!c08 Press !c03Cancel!c08 to kill");
 	AddMonMessage(L,buff);
         sprintf(buff,"ffmpegfun -i \"%s\" -af \"volume=%lfdB\" -y \"%s\"", 
                       Infile,corval,Outfile);
@@ -404,7 +404,7 @@ void *RunVolumeDetect(void *stmp) {
 #if 1
 	sprintf(buff,"Processing file: %s",Infile);
 	AddMonMessage(L,buff);
-	strcpy(buff,"!w32!c08 Press !c03Cancel!c08 to kill");
+	strcpy(buff,"!c08 Press !c03Cancel!c08 to kill");
 	AddMonMessage(L,buff);
         sprintf(buff,"ffmpegfun -i \"%s\" -af \"volumedetect\" -vn -sn "
             " -dn -f null /dev/null", Infile);

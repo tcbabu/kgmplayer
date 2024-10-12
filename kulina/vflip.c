@@ -62,7 +62,7 @@ int vflipGroup( DIALOG *D,void **v,void *pt) {
   butn2[0].xpmp=NULL;
   butn2[0].xpmh=NULL;
   butn2[0].bkgr=-1;
-  butn2[0].butncode='';
+  butn2[0].butncode=127;
   DIN b2 = { 
     'n',
     361,16,  
@@ -82,12 +82,12 @@ int vflipGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn3=NULL; 
   butn3= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn3[0].sw=1;
-  strcpy(butn3[0].title,(char *)"!w32!f21Do it");
+  strcpy(butn3[0].title,(char *)"!f21Do it");
   butn3[0].xpmn=NULL;
   butn3[0].xpmp=NULL;
   butn3[0].xpmh=NULL;
   butn3[0].bkgr=-235255250;
-  butn3[0].butncode='';
+  butn3[0].butncode=127;
   DIL h3 = { 
     'h',
     189,209,  

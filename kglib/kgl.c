@@ -156,12 +156,6 @@ void kgDefaultGuiTheme(Gclr *Gc) {
   Gc->menu_char=49;
   Gc->c_bound = 46;
   Gc->GuiFontSize =9;
-  Gc->MenuFont = 22;
-  Gc->PromptFont = 22;
-  Gc->ButtonFont = 22;
-  Gc->MsgFont = 22;
-  Gc->Font=22;
-  Gc->SplashFont=23;
   Gc->SplashFillColor=40;
   Gc->SplashBodrColor=46;
   Gc->SplashCharColor=26;
@@ -174,6 +168,12 @@ void kgDefaultGuiTheme(Gclr *Gc) {
   Gc->scroll_dim= Gc->dim;
   Gc->scroll_bright= Gc->bright;
   Gc->scroll_vbright= Gc->vbright;
+  Gc->MenuFont = 40;
+  Gc->PromptFont = 40;
+  Gc->ButtonFont = 40;
+  Gc->MsgFont = 40;
+  Gc->Font=40;
+  Gc->SplashFont=23;
   return ;
 }
 void kgColorTheme2(DIALOG *D,unsigned char red,unsigned char green, unsigned char blue) {
@@ -274,11 +274,11 @@ void kgColorTheme2(DIALOG *D,unsigned char red,unsigned char green, unsigned cha
   Gc->scroll_bright= Gc->bright;
   Gc->scroll_vbright= Gc->vbright;
   Gc->GuiFontSize =9;
-  Gc->MenuFont = 22;
-  Gc->PromptFont = 22;
-  Gc->ButtonFont = 22;
-  Gc->MsgFont = 22;
-  Gc->Font=22;
+  Gc->MenuFont = 40;
+  Gc->PromptFont = 40;
+  Gc->ButtonFont = 40;
+  Gc->MsgFont = 40;
+  Gc->Font=40;
   Gc->SplashFont=23;
   return ;
 }
@@ -395,11 +395,11 @@ void kgColorTheme(DIALOG *D,unsigned char red,unsigned char green, unsigned char
   Gc->scroll_bright= Gc->bright;
   Gc->scroll_vbright= Gc->vbright;
   Gc->GuiFontSize =9;
-  Gc->MenuFont = 22;
-  Gc->PromptFont = 22;
-  Gc->ButtonFont = 22;
-  Gc->MsgFont = 22;
-  Gc->Font=22;
+  Gc->MenuFont = 40;
+  Gc->PromptFont = 40;
+  Gc->ButtonFont = 40;
+  Gc->MsgFont = 40;
+  Gc->Font=40;
   Gc->SplashFont=23;
   return ;
 }
@@ -514,11 +514,11 @@ void kgColorTheme1(DIALOG *D,unsigned char red,unsigned char green, unsigned cha
   Gc->scroll_bright= Gc->bright;
   Gc->scroll_vbright= Gc->vbright;
   Gc->GuiFontSize =9;
-  Gc->MenuFont = 22;
-  Gc->PromptFont = 22;
-  Gc->ButtonFont = 22;
-  Gc->MsgFont = 22;
-  Gc->Font=22;
+  Gc->MenuFont = 40;
+  Gc->PromptFont = 40;
+  Gc->ButtonFont = 40;
+  Gc->MsgFont = 40;
+  Gc->Font=40;
   Gc->SplashFont=23;
   return ;
 }
@@ -572,11 +572,11 @@ void kgGrayGuiTheme(Gclr *Gc) {
   Gc->scroll_bright= Gc->bright;
   Gc->scroll_vbright= Gc->vbright;
   Gc->GuiFontSize =9;
-  Gc->MenuFont = 22;
-  Gc->PromptFont = 22;
-  Gc->ButtonFont = 22;
-  Gc->MsgFont = 22;
-  Gc->Font=22;
+  Gc->MenuFont = 40;
+  Gc->PromptFont = 40;
+  Gc->ButtonFont = 40;
+  Gc->MsgFont = 40;
+  Gc->Font=40;
   Gc->SplashFont=23;
   return ;
 }

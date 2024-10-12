@@ -44,7 +44,7 @@ int MakesliceGroup(DIALOG *D,void *arg);
 int MakeNormaliseGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
-  { 0, MakeAudioConvertGroup,"!w32!f23Convert/Extract Audio",346,40,RunHelper,0,
+  { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
        "\nYou can extract audio from a media file\n"
        "One can also use it to convert audio to a \n"
        "different format."
@@ -63,7 +63,7 @@ TOOLGRP ToolList[ ] = {
        "format like wav or flac\n"
   },
 
-  { 0, MakeConvertVideoGroup,"!w32!f23Convert Video to mp4",340,0,RunHelper,0,
+  { 0, MakeConvertVideoGroup,"!f23Convert Video to mp4",340,0,RunHelper,0,
       "\n\n\nConverting video to mp4 can reduce "
 	      "the file size substantially\n"
       "without much loss of quality. One can opt \n"
@@ -83,26 +83,26 @@ TOOLGRP ToolList[ ] = {
       "new Yres and a value < 1.0 means an increase in new Yres\n"
       "So new Yres if adjusted to maintain the new aspect ratio\n"
   },
-  { 0, MakeVideoJoinGroup,"!w32!f23Join Video Files",346,0 ,RunHelper,0,
+  { 0, MakeVideoJoinGroup,"!f23Join Video Files",346,0 ,RunHelper,0,
       "\nMuliple video files can be joined together to a single one\n"
       "Files can be of diffrent aspect ratio or format and the output\n"
       "is a file with aspect ratio\n"
   },
-  { 0, MakeAudioJoinGroup,"!w32!f23Join Audio from Media Files",346,0,RunHelper,0,
+  { 0, MakeAudioJoinGroup,"!f23Join Audio from Media Files",346,0,RunHelper,0,
       "\n\n\nJoin audios from multiple input files (can be audio or video)\n"
       "If there is a plan to edit further, select output format as lossless\n"
       "audio, either wav or flac\n"
   },
-  { 0, MakeAddAudioGroup,"!w32!f23Add/Change Media audio ",346,0,RunHelper,0,
+  { 0, MakeAddAudioGroup,"!f23Add/Change Media audio ",346,0,RunHelper,0,
       "\n\n\nAdd (or replace) audio to a video file\n"
       "If there is already an audio in the media it will be discarded\n"
       "and new audio will be inserted\n"
   },
-  { 0, MakeMixAudioGroup,"!w32!f23Mix Audio to Media",346,0,RunHelper,0,
+  { 0, MakeMixAudioGroup,"!f23Mix Audio to Media",346,0,RunHelper,0,
       "\n\n\nThis tool can be used to mix an audio to an existing\n"
       "audio in a media(video or audio) file.\n"
   },
-  { 0, MakeAmixAudioGroup,"!w32!f23Mix Audios from two media",346,0,RunHelper,0,
+  { 0, MakeAmixAudioGroup,"!f23Mix Audios from two media",346,0,RunHelper,0,
       "\n\n\nThis tool can be used to mix two audio inputs from two media\n"
       "files (audio or video) and creates a new audio file\n"
       "If further editing to audio is planned, select a lossless format\n"
@@ -110,20 +110,20 @@ TOOLGRP ToolList[ ] = {
       "wav or flac by changing the output extension\n"
   },
 
-  { 0, MakeMakeKaraokeGroup,"!w32!f23Karaoke from stereo audio",346,0,RunHelper,0,
+  { 0, MakeMakeKaraokeGroup,"!f23Karaoke from stereo audio",346,0,RunHelper,0,
       "\n\n\nKaraoke may not be successful always\n"
       "It works only in certain type of stero recording\n"
       "One can just make a try\n",
   },
-  { 0, MakeAddSilenceGroup,"!w32!f23Insert Silences to audio",346,0,RunHelper,0,
+  { 0, MakeAddSilenceGroup,"!f23Insert Silences to audio",346,0,RunHelper,0,
        "\n\n\nInserting silence in audio is useful in mixing audio\n"
   },
-  { 0, MakeMakeCutsGroup,"!w32!f23Make Cuts in  audio",340,40,RunHelper,0,
+  { 0, MakeMakeCutsGroup,"!f23Make Cuts in  audio",340,40,RunHelper,0,
        "\n\n\nMaking cuts in audio is useful in mixing audio\n"
        "or adding audio to media\n"
   },
 
-  { 0, Makeimgs2vGroup,"!w32!f23Images to Video",346,40,RunHelper,0,
+  { 0, Makeimgs2vGroup,"!f23Images to Video",346,40,RunHelper,0,
        "Useful in creating a video from a set of photographs or images\n"
        "May not be the one for creating video from frames, though one\n"
        "can attempt by reducing time for each image, probably for low\n"
@@ -131,7 +131,7 @@ TOOLGRP ToolList[ ] = {
        "Another tool is there for making video from frames.\n"
   },
   /*
-  { 0, MakenormalizeGroup,"!w32!f23Normalize Audio File Volume",346,40,RunHelper,0,
+  { 0, MakenormalizeGroup,"!f23Normalize Audio File Volume",346,40,RunHelper,0,
        "\nCan be used to normalize volume to a common level for audio\n"
        "the maximum volume level is 0, hence levels are always negetive\n"
        "only one file can be selected at a time\n"
@@ -141,23 +141,23 @@ TOOLGRP ToolList[ ] = {
        "Remember lossless formats are best for further editing.\n"
   },
   */
-  { 0, MakeNormaliseGroup,"!w32!f23Normalize Audio Files Volume",346,40,RunHelper,0,
+  { 0, MakeNormaliseGroup,"!f23Normalize Audio Files Volume",346,40,RunHelper,0,
        "\nCan be used to normalize volume to a common level for audio\n"
        "the maximum volume level is 0, hence levels are always negetive\n"
        "Output is an audio file, in case one need to change in the media\n"
        "use the tool for extracting  media audio, and add output audio.\n"
        "Remember lossless formats are best for further editing.\n"
   },
-  { 0, MakevtobwGroup,"!w32!f23Convert Video to Black&White", 346,40 ,RunHelper,0,
+  { 0, MakevtobwGroup,"!f23Convert Video to Black&White", 346,40 ,RunHelper,0,
        "\n\n\nConverts a video to gray scale or Balck&White\n"
   },
-  { 0, MakevflipGroup,"!w32!f23Vertically flip Video", 346,40,RunHelper,0,
+  { 0, MakevflipGroup,"!f23Vertically flip Video", 346,40,RunHelper,0,
        "\n\n\nFlips each frame vertically\n"
   },
-  { 0, MakehflipGroup,"!w32!f23Horizontaly flip Video", 346,40,RunHelper,0,
+  { 0, MakehflipGroup,"!f23Horizontaly flip Video", 346,40,RunHelper,0,
        "\n\n\nFlips each frame Horizontally\n"
   },
-  { 0, MakesliceGroup,"!w32!f23Make slices of Video", 346,40,RunHelper,0,
+  { 0, MakesliceGroup,"!f23Make slices of Video", 346,40,RunHelper,0,
        "\nCreates slices of a video in to many slices\n"
        "of video of fixed time of slice, may be useful in\n"
        "editing further or converting to frames of images,\n"
@@ -180,7 +180,7 @@ char **GetMenuList(TOOLGRP *T) {
   while(T[k++].MakeGroup != NULL);
   k += 2;
   Ostrs = (char **)malloc(sizeof(char *)*(k));
-//  Ostrs[0] = kgCopyString("!w32!f23Select Action ");
+//  Ostrs[0] = kgCopyString("!f23Select Action ");
   j=0;
   while(T[j].MakeGroup != NULL) {Ostrs[j] = kgCopyString(T[j].disc);j++;}
   Ostrs[j]=NULL;
@@ -263,12 +263,12 @@ int ToolBoxGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"!w32!f23Done");
+  strcpy(butn1[0].title,(char *)"!f23Done");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-235255250;
-  butn1[0].butncode='';
+  butn1[0].butncode=127;
   DIL h1 = { 
     'h',
     3,447,  

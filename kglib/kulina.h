@@ -1428,6 +1428,7 @@ int  kgQstMenu(void *parent,int x,int y,char *qry,int df);
 int kgFolderBrowser( void *parent,int x0,int y0,char *flname,char *fltr);
 int kgFileBrowser(void *parent,int x0,int y0,  char *v0, char *v1 );
 int kgGetFont(void *parent,int xo,int yo);
+void * kgGetFreeTypeFont(void *parent,void *Font);
 int kgGetColor(void *parent,int xo,int yo,int *r,int *g,int *b);
 /* 
   utilities 
@@ -1438,8 +1439,9 @@ void kgCheckAndRemoveParent(char *dir);
 char *kgWhich(char *pgr);
  char *kgWhichFont ( char *pgr );
 int kgAddFixedFont(char *);
+int kgCheckFont(char *);
 int kgAddFont(char *);
-char **kgGetFixedFontList();
+char **kgGetMonoList();
 char **kgGetFontList();
 char *kgGetMonoFont(int);
 char *kgGetOthFont(int);
@@ -1450,6 +1452,7 @@ char *kgMakeTmpDir(void);
 char **kgFontNames(void);
 char **kgFileMenu( char *dir,char *filter);
 char ** kgFolderMenu(char *d_name);
+char ** kgFolderTree(char *folder);
 void kgFreeFontNames(char **pt);
 int RGBtoHSV(float r,float g,float b,float *h,float *s,float *v);
 int HSVtoRGB(float *r,float *g,float *b,float h,float s,float v);

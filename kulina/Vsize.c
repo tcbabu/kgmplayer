@@ -18,7 +18,7 @@ int VsizeGroup( DIALOG *D,void **v,void *pt) {
   T_ELMT *e0  ; 
   e0 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e0[0].fmt = (char *)malloc(9);
-  strcpy(e0[0].fmt,(char *)"!w32!f23Xsize%4d");
+  strcpy(e0[0].fmt,(char *)"!f23Xsize%4d");
   e0[0].v=(void *)v[0];
   e0[0].sw=1;
   e0[0].noecho=0;

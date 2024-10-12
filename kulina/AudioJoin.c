@@ -50,19 +50,19 @@ int AudioJoinGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"!w32!f23Add");
+  strcpy(butn1[0].title,(char *)"!f23Add");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-1;
-  butn1[0].butncode='';
+  butn1[0].butncode=127;
   butn1[1].sw=1;
-  strcpy(butn1[1].title,(char *)"!w32!f23Delete");
+  strcpy(butn1[1].title,(char *)"!f23Delete");
   butn1[1].xpmn=NULL;
   butn1[1].xpmp=NULL;
   butn1[1].xpmh=NULL;
   butn1[1].bkgr=-1;
-  butn1[1].butncode='';
+  butn1[1].butncode=127;
   DIN b1 = { 
     'n',
     301,31,  
@@ -85,13 +85,13 @@ int AudioJoinGroup( DIALOG *D,void **v,void *pt) {
     215,63,  
     -1,0  
   };
-  strncpy(m2.msg,(char *)"!w32!f21Input Files",499);
+  strncpy(m2.msg,(char *)"!f21Input Files",499);
   strcpy(m2.Wid,(char *)"AudioJoinWidget3");
   m2.item = -1;
   T_ELMT *e3  ; 
   e3 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e3[0].fmt = (char *)malloc(19);
-  strcpy(e3[0].fmt,(char *)"!w32!f21Output%30s");
+  strcpy(e3[0].fmt,(char *)"!f21Output%30s");
   e3[0].v=(void *)v[1];
   e3[0].sw=1;
   e3[0].noecho=0;
@@ -113,12 +113,12 @@ int AudioJoinGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn4=NULL; 
   butn4= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn4[0].sw=1;
-  strcpy(butn4[0].title,(char *)"!w32!f23 Join Audios");
+  strcpy(butn4[0].title,(char *)"!f23 Join Audios");
   butn4[0].xpmn=NULL;
   butn4[0].xpmp=NULL;
   butn4[0].xpmh=NULL;
   butn4[0].bkgr=-235255250;
-  butn4[0].butncode='';
+  butn4[0].butncode=127;
   DIL h4 = { 
     'h',
     193,359,  

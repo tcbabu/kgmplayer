@@ -76,7 +76,7 @@ int VrangeGroup( DIALOG *D,void **v,void *pt) {
     167,70,  
     1,0  
   };
-  strncpy(m2.msg,(char *)"!w32!f21Start",499);
+  strncpy(m2.msg,(char *)"!f21Start",499);
   strcpy(m2.Wid,(char *)"VRangeWidget3");
   m2.item = -1;
   DIM m3 = { 
@@ -85,7 +85,7 @@ int VrangeGroup( DIALOG *D,void **v,void *pt) {
     498,69,  
     -1,0  
   };
-  strncpy(m3.msg,(char *)"!w32!f21End",499);
+  strncpy(m3.msg,(char *)"!f21End",499);
   strcpy(m3.Wid,(char *)"VRangeWidget4");
   m3.item = -1;
   dtmp = D->d;

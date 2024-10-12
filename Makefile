@@ -188,6 +188,7 @@ install	: bin/kgmplayer
 	  install -m 644 TARBALL/empty.sub /usr/share/kgmplayer
 	  install -m 644 TARBALL/kgmplayer.desktop /usr/share/applications
 	  install -m 644 TARBALL/kgMplayer.desktop /usr/share/applications
+	 tar xzvf fonts.tar -C /usr/share/fonts
 
 tarball		: bin/kgmplayer
 		  mv TARBALL kgmplayer-4.4

@@ -1394,7 +1394,7 @@ int chkshm(void);
 void uiDialogWindow(DIALOG *D);
 void kgGetRGB(DIG *G,int no,int *r,int *g,int *b);
 int _ui_scroll_item_hilight(BRW_STR *br,KBEVENT kbe);
-void arrange(char **m,int n);
+// void arrange(char **m,int n);
 int _filter_string(char *s, char *fltr);
 int uipolygon_fill(DIG *G,float *x,float *y,int fil_color);
 int uiProcess_arc_fill (DIG *G,float *xo,float *yo,int fil_col);
