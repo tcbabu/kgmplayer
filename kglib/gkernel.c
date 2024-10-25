@@ -71,6 +71,7 @@
   static int PIX_CLR = 255; /* colour allocation for pixmaps */
   static int FontSize = 15;
   int syncfs ( int fd ) ;
+  static char *PriBuf=NULL;
 #define IMAGE_BLUE_VAL  (((blue)*(wc->IMAGE->blue_mask)+(1<<(wc->BLUEMASKPOS-1)))/255)
 #define IMAGE_GREEN_VAL ((((green) * (wc->IMAGE->green_mask) \
    + ( 1 << ( wc->GREENMASKPOS -1 ) ) ) /255 ) & ( wc->IMAGE->green_mask ) )
@@ -1415,7 +1416,7 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               }
           }
       }
-      if ( imgFile ) uiFreeImage ( png ) ;
+      if ( imgFile ) kgFreeImage ( png ) ;
       return 1;
   }
   Window kgGetUiWindow ( void *D ) {
@@ -1876,7 +1877,7 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       wcset_clr ( wc , 0 ) ;
       RefreshWindowThread ( wc ) ;
       wc->Rth = 0;
-  //kgEnableSelection(D);
+ //     kgEnableSelection(D);
       wc->Hlt = 0;
       wc->Pstr = NULL;
       wc->Cstr = NULL;
@@ -2421,7 +2422,7 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       XSync ( Dsp , False ) ;
       RefreshWindowThread ( wc ) ;
       wc->Rth = 0;
-  //kgEnableSelection(D);
+//      kgEnableSelection(D);
       wc->Hlt = 0;
       wc->Pstr = NULL;
       wc->Cstr = NULL;
@@ -3387,7 +3388,7 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
            wc->c_color , justfic , D->gc.FontSize , -1 ) ;
       if ( img != NULL ) {
           kgImage ( D , img , x , y-16 , ln , 20 , 0.0 , 1.0 ) ;
-          uiFreeImage ( img ) ;
+          kgFreeImage ( img ) ;
       }
 #else
       XTextItem *item;
@@ -3433,7 +3434,7 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
            20 , wc->GuiFont , wc->c_color , -1 , ln ) ;
       if ( img != NULL ) {
           kgImage ( D , img , x , y-16 , ln*10 , 20 , 0.0 , 1.0 ) ;
-          uiFreeImage ( img ) ;
+          kgFreeImage ( img ) ;
       }
 #else
       XTextItem *item;
@@ -3464,7 +3465,9 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //   UpdateScreen();
   }
   void kgCloseUi ( DIALOG *D ) {
-      pthread_mutex_unlock ( & ( WC ( D )->Dsplock ) ) ;
+      int s;
+      pthread_mutex_trylock ( & ( WC ( D )->Dsplock ) ) ;
+      s = pthread_mutex_unlock ( & ( WC ( D )->Dsplock ) ) ;
       pthread_mutex_destroy ( & ( WC ( D )->Dsplock ) ) ;
       if ( WC ( D )->IMAGE != NULL ) {
           XDestroyImage ( ( XImage * ) ( WC ( D )->IMAGE ) ) ;
@@ -3480,12 +3483,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       XDestroyWindow ( ( Display * ) ( WC ( D )->Dsp ) , \
        ( Window ) ( WC ( D )->Win ) ) ;
 #if 1
-//  printf("Calling XCloseDisplay\n");
-//  fflush(stdout);
       XCloseDisplay ( ( Display * ) ( WC ( D )->Dsp ) ) ;
       WC ( D )->Dsp = NULL;
-//  printf("Okay\n");
-//  fflush(stdout);
 #endif
   }
 /*
@@ -3682,10 +3681,15 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
           else {
               pthread_mutex_lock ( & ( wc->Dsplock ) ) ;
               XLockDisplay ( wc->Dsp ) ;
+#if 1
               XCopyArea ( wc->Dsp , wc->Pix , wc->Piximg , wc->Gc , \
                    0 , 0 , EVGAX , EVGAY , 0 , 0 ) ;
               XCopyArea ( wc->Dsp , wc->Piximg , wc->Win , wc->Gc , \
                    0 , 0 , EVGAX , EVGAY , 0 , 0 ) ;
+#else
+              XCopyArea ( wc->Dsp , wc->Pix , wc->Win , wc->Gc , \
+                   0 , 0 , EVGAX , EVGAY , 0 , 0 ) ;
+#endif
               XSync ( wc->Dsp , False ) ;
               XUnlockDisplay ( wc->Dsp ) ;
               pthread_mutex_unlock ( & ( wc->Dsplock ) ) ;
@@ -4545,33 +4549,32 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       }
   }
   void * kgProcessSelectionRequest ( void *Tmp ) {
-      int code , ch , *scan , ret = 0;
+      int code , ch , *scan ;
+      int s;
       int x , y , w , h , bw , dpth;
       DIALOG *D;
       XEvent e , eo;
       kgWC *wc;
+      int ret=1;
       D = ( DIALOG * ) Tmp;
       wc = WC ( D ) ;
+      s = pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
       while ( 1 ) {
-/* Need Checking */
-//    XNextEvent(wc->Dsp,&e);
-//    if(!XCheckIfEvent(wc->Dsp,&e,_uiselection,NULL)) return -1;
-          if ( ! XCheckTypedWindowEvent ( wc->Dsp , \
+          s = pthread_mutex_lock ( & ( WC ( D )->Rlock ) ) ;
+          if (XCheckTypedWindowEvent ( wc->Dsp , \
                wc->Win , SelectionRequest , & e ) ) \
           {
-              usleep ( 400 ) ;
-              continue;
+             switch ( e.type ) {
+                case SelectionRequest:
+//              printf("Got Selection Request\n");
+                kgRespondSelection ( Tmp , e ) ;
+                break;
+                default:
+                break;
+             }
           }
-          switch ( e.type ) {
-              case SelectionRequest:
-//            printf("Got Selection Request\n");
-              pthread_mutex_lock ( & ( WC ( D )->Rlock ) ) ;
-              kgRespondSelection ( Tmp , e ) ;
-              pthread_mutex_unlock ( & ( WC ( D )->Rlock ) ) ;
-              break;
-              default:
-              break;
-          }
+          pthread_mutex_unlock ( & ( WC ( D )->Rlock ) ) ;
+          usleep ( 200000 ) ;
       }
   }
   int kgCheckMousePressEvent ( DIALOG *D , KBEVENT *kbe ) {
@@ -5924,6 +5927,7 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               if ( strcmp ( img->Sign , "IMG" ) == 0 ) {
                   GMIMG *png;
                   png = ( GMIMG * ) tmp;
+//                  printf("png->incode == %d\n",png->incode );
                   if ( png->incode == 1 ) return;
                   uiFreeGmImage ( tmp ) ;
                   free ( tmp ) ;
@@ -6408,7 +6412,7 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       rzfac = png->rzfac;
       if ( rzfac != 1.0 ) {
           pngrz = uiResizegmImage ( png , rzfac ) ;
-          if ( imgFile ) uiFreeImage ( png ) ;
+          if ( imgFile ) kgFreeImage ( png ) ;
           if ( pngrz == NULL ) {
               return 0;
           }
@@ -6429,8 +6433,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       xl = xm -width/2; xu = xm+width-width/2;
       yl = ym -height/2; yu = ym+height -height/2;
       if ( ( xu < 0 ) || ( xl > w ) || ( yu < 0 ) || ( yl > h ) ) {
-          if ( pngrz != NULL ) uiFreeImage ( pngrz ) ;
-          else if ( imgFile ) uiFreeImage ( png ) ;
+          if ( pngrz != NULL ) kgFreeImage ( pngrz ) ;
+          else if ( imgFile ) kgFreeImage ( png ) ;
           return 0;
       }
 // There is something to display
@@ -6527,8 +6531,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //   kgPutImage(D,uiImage,0,0,xdl,ydl,xdu,ydu);
       kgPutImage ( D , uiImage , 0 , 0 , xdl , ydl , xdu-xdl+1 , ydu-ydl+1 ) ;
       XDestroyImage ( uiImage ) ;
-      if ( pngrz != NULL ) uiFreeImage ( pngrz ) ;
-      else if ( imgFile ) uiFreeImage ( png ) ;
+      if ( pngrz != NULL ) kgFreeImage ( pngrz ) ;
+      else if ( imgFile ) kgFreeImage ( png ) ;
       return 1;
   }
   void *kgGetImageCopy_o ( void *D , void *img ) {
@@ -6829,7 +6833,7 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
               gmimg = ( GMIMG * ) uiGetgmImage ( fullname ) ;
               kg_gm_image ( D , gmimg , x0 , y0 , width , \
                    height , transparency , highfac ) ;
-              uiFreeImage ( gmimg ) ;
+              kgFreeImage ( gmimg ) ;
               free ( fullname ) ;
 #endif
               return;
@@ -8149,14 +8153,24 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
 //   ret = ( unsigned char *) XFetchBuffer(wc->Dsp, (int *) &len, 0);
 //   kgGetEvent(D);
       Owner = XGetSelectionOwner ( wc->Dsp , sel ) ;
-//   printf("Owner : %d %d %d\n",Owner,wc->Win,wc->Root);
+//       ret = ( unsigned char *) XFetchBuffer(wc->Dsp, (int *) &len, sel);
+// Added now
+#if 1
+      if(Owner == wc->Win) {
+        if(PriBuf==NULL) return NULL;
+        ret = (unsigned char *)malloc(strlen(PriBuf)+1);        
+        strcpy((char *)ret,PriBuf);
+        return ret;
+      }
+#endif
+//
       if ( XConvertSelection ( wc->Dsp , sel , target , \
            prop , wc->Win , CurrentTime ) == 0 ) \
       {
 //     XDeleteProperty(wc->Dsp, wc->Win, prop);
           return NULL;
       }
-//   if(Owner== wc->Win)  kgWaitSelectionNotify(Tmp);
+//      if(Owner== wc->Win)  kgWaitSelectionNotify(Tmp);
       wret = kgWaitSelection ( Tmp ) ;
       if ( wret == -1 ) return 0;
       while ( wret == 2 ) {
@@ -8206,8 +8220,8 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
   }
   unsigned char *kgGetPrimary ( void * Tmp ) {
       unsigned char *ptr = NULL;
-      ptr = _uiGetPrimary ( Tmp ) ;
-      if ( ptr != NULL ) free ( ptr ) ;
+  //    ptr = _uiGetPrimary ( Tmp ) ;
+  //      if ( ptr != NULL ) free ( ptr ) ;
       return _uiGetPrimary ( Tmp ) ;
   }
   unsigned char *_uiGetClipBoard ( void * Tmp ) {
@@ -8234,6 +8248,13 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       Atom target = XA_STRING;
       if ( ! prop ) prop = XInternAtom ( wc->Dsp , "XCLIP_OUT" , False ) ;
       Owner = XGetSelectionOwner ( wc->Dsp , sel ) ;
+      if(Owner == wc->Win) {
+//        ret = ( unsigned char *) XFetchBuffer(wc->Dsp, (int *) &len, sel);
+        if(PriBuf==NULL) return NULL;
+        ret = (unsigned char *)malloc(strlen(PriBuf)+1);        
+        strcpy((char *)ret,PriBuf);
+        return ret;
+      }
 //   printf("Owner : %d %d %d\n",Owner,wc->Win,wc->Root);
       if ( XConvertSelection ( wc->Dsp , sel , target , \
            prop , wc->Win , CurrentTime ) == 0 ) \
@@ -8309,11 +8330,15 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       Atom target = XA_STRING;
       if ( ! prop ) prop = XInternAtom ( wc->Dsp , "XPRI_IN" , False ) ;
 #if 1
-//      XSetSelectionOwner ( wc->Dsp , sel , wc->Win , CurrentTime ) ;
-      XSetSelectionOwner ( wc->Dsp , sel , None , CurrentTime ) ;
+      XSetSelectionOwner ( wc->Dsp , sel , wc->Win , CurrentTime ) ;
+//      XSetSelectionOwner ( wc->Dsp , sel , None , CurrentTime ) ;
+//      XSetSelectionOwner ( wc->Dsp , sel ,DefaultRootWindow ( wc->Dsp )  , CurrentTime ) ;
 //   w = XGetSelectionOwner(wc->Dsp,sel);
       w = wc->Win;
       pthread_mutex_lock ( & ( WC ( D )->Rlock ) ) ;
+      if(PriBuf != NULL) free(PriBuf);
+      PriBuf= (char *)malloc(strlen((char *)data)+1);
+      strcpy(PriBuf,(char *)data);
       XChangeProperty ( wc->Dsp , w , sel , target , \
            8 , PropModeReplace , data , strlen \
        ( data ) +1 ) ;
@@ -8346,10 +8371,13 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       Atom target = XA_STRING;
       if ( ! prop ) prop = XInternAtom ( wc->Dsp , "XCLIP_IN" , False ) ;
 #if 1
-//      XSetSelectionOwner ( wc->Dsp , sel , wc->Win , CurrentTime ) ;
-      XSetSelectionOwner ( wc->Dsp , sel , None , CurrentTime ) ;
+      XSetSelectionOwner ( wc->Dsp , sel , wc->Win , CurrentTime ) ;
+//      XSetSelectionOwner ( wc->Dsp , sel , None , CurrentTime ) ;
       w = wc->Win;
       pthread_mutex_lock ( & ( WC ( D )->Rlock ) ) ;
+      if(PriBuf != NULL) free(PriBuf);
+      PriBuf= (char *)malloc(strlen((char *)data)+1);
+      strcpy(PriBuf,(char *)data);
       XChangeProperty ( wc->Dsp , w , sel , target , \
            8 , PropModeReplace , data , strlen \
        ( data ) +1 ) ;
@@ -8372,18 +8400,35 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       if ( wc == NULL ) return 0;
       if ( wc->Rth != 0 ) return 0;
       pthread_create ( & ( wc->Rth ) , NULL , kgProcessSelectionRequest , Tmp ) ;
+      
       return 1;
   }
   int kgDisableSelection ( void *junk ) {
 //    pthread_t Pth;
       DIALOG *D = ( DIALOG * ) junk;
+      int s;
       kgWC *wc;
       wc = WC ( D ) ;
       if ( wc == NULL ) return 0;
       if ( wc->Rth != 0 ) {
-          pthread_cancel ( WC ( D )->Rth ) ;
+       pthread_mutex_lock ( & ( WC ( D )->Rlock ) ) ;
+       Atom sel = XInternAtom ( wc->Dsp , "CLIPBOARD" , 0 ) ;
+       if ( XGetSelectionOwner ( wc->Dsp , sel  ) == wc->Win ) {
+          XSetSelectionOwner ( wc->Dsp , sel , None , CurrentTime ) ;
+       }
+       sel = XA_PRIMARY;
+       if ( XGetSelectionOwner ( wc->Dsp , sel  ) == wc->Win ) {
+          XSetSelectionOwner ( wc->Dsp , sel , None , CurrentTime ) ;
+       }
+       pthread_mutex_unlock ( & ( WC ( D )->Rlock ) ) ;
+          s = pthread_cancel ( WC ( D )->Rth ) ;
+          if(s!=0) {
+            pthread_kill ( WC ( D )->Rth ,SIGKILL) ;
+          }
           pthread_join ( WC ( D )->Rth , NULL ) ;
+       pthread_mutex_destroy( & ( WC ( D )->Rlock ) ) ;
       }
+      else printf("Disable: wc->Rth==0 \n");
       wc->Rth = 0;
       return 1;
   }

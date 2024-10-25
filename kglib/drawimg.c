@@ -3709,19 +3709,21 @@ void *kgGetResizedImage(void *Gtmp) {
             png1 =png;
             png  = uiHalfSizegmImage(png1);
             G->rzimg = uiHalfSizegmImage(png);
-            kgFreeImage(png);
+            kgFreeGmImage(png);
           }
           else  {
             png  = uiHalfSizegmImage(png);
             G->rzimg = uiChangeSizegmImage(png,V_x,V_y,9);
-            kgFreeImage(png);
+            kgFreeGmImage(png);
           }
 #else
      G->rzimg = uiChangeSizegmImage(png,V_x,V_y,9);
 #endif
      png = G->rzimg;
   }
-  else png = G->img;
+  else {
+   png = G->img;
+  }
 
 //  kgImage(D,png,D_x,D_y,png->image_width,png->image_height,0.0,1.0);
 //  uiWriteImage(G->img,"junk1.png");
@@ -3750,6 +3752,7 @@ void *kgGetSharpImage(void *Gtmp) {
   v_y2= dc->vu_y2*(float)EVGAY-1;
   V_x=v_x2-v_x1+1;
   V_y=v_y2-v_y1+1;
+  G->rzimg=NULL;
   if( G->MAG > 1) {
      G->rzimg = uiChangeSizegmImage(png,V_x,V_y,4);
      png = G->rzimg;
@@ -3782,6 +3785,7 @@ void *kgGetSmoothImage(void *Gtmp) {
   v_y2= dc->vu_y2*(float)EVGAY-1;
   V_x=v_x2-v_x1+1;
   V_y=v_y2-v_y1+1;
+  G->rzimg=NULL;
   if( G->MAG > 1) {
      G->rzimg = uiChangeSizegmImage(png,V_x,V_y,7);
      png = G->rzimg;
@@ -3930,17 +3934,19 @@ void kgCloseImage(void *Gtmp) {
   DIG *G;
   kgDC *dc;
   kgWC *wc;
+  int MAG ;
   G= (DIG *)Gtmp;
   if(G == NULL) return;
   if(G->D != NULL) return;
   dc = G->dc;
   wc = G->wc;
+  MAG = G->MAG+0.00001;
 #if 1
-//   printf("G->MAG = %d\n",G->MAG);
-  if((G->MAG > 1)&&(G->img != NULL)) {
-       uiFreeImage(G->img);
+//  printf("G->MAG = %d\n",G->MAG);
+  if((MAG > 1)&&(G->img != NULL)) {
+       kgFreeGmImage(G->img);
   }
-//  if(G->rzimg != NULL) uiFreeImage(G->rzimg); //user should take care of this after use
+  else if(G->rzimg != NULL) kgFreeGmImage(G->rzimg);  
   Dempty((Dlink *)(wc->Clip));
   Dempty((Dlink *)(wc->SBlist));
 // the change is for thread safety

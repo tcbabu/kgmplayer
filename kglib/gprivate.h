@@ -405,6 +405,7 @@ int _uiCheckBox(KBEVENT kbe,int x1,int y1,int x2,int y2);
 void * make_browser_str(DIALOG *D,int xx1,int yy1,int pos,int df,char **menu,int size);
 int _ui_updatetextbox (void *tmp);
 int _ui_readtextbox(void *tmp);
+int _ui_readtextboxcell(void *tmp,int cell);
 void _ui_vuport(DIG *G,int x1,int y1,int x2,int y2);
 void * _ui_make_browser_str(int xx1,int yy1,int pos,int df,char **menu,int size);
 void * make_menu_str(DIALOG *parent,int xx1,int yy1,int pos,int df,char **menu,int size);

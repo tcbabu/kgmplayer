@@ -29,9 +29,11 @@ make install
 cd ..
 tar xf pulseaudio-12.2.tar.xz
 cd pulseaudio-12.2
-./configure --prefix=$KULINA --enable-static --disable-openssl --disable-x11 --disable-glib2 --disable-dbus --disable-rpath--disable-tests --disable-default-build-tests --without-caps
+./configure --prefix=$KULINA --enable-static --disable-openssl --disable-x11 --disable-glib2 --disable-dbus \
+  --disable-oss --disable-rpath --disable-tests --disable-default-build-tests --without-caps\
+  --disable-asyncns 
 make -j4
 make install
-cp $KULINA/lib/pulseaudio/*.a $KULINA/lib/
+cp src/.libs/libpulse*.a $KULINA/lib/
 cd ..
-rm -rf pulseaudio-12.2
+#rm -rf pulseaudio-12.2

@@ -13,6 +13,10 @@ make
 make install
 cd ..
 rm -rf zlib-1.2.8
+tar xf bzip2-1.0.6.tar.gz
+cd bzip2-1.0.6
+make
+make install prefix=$KULINA/lib
 tar xf libpng-1.6.9.tar.xz
 cd libpng-1.6.9
 ./configure --prefix=$KULINA --enable-static --disable-shared --with-zlib-prefix=$KULINA CFLAGS=-I$KULINA/include LDFLAGS=-L$KULINA/lib >../out
@@ -67,6 +71,7 @@ echo "Graphic Magic"
 rm libgm.a
 mkdir tmp
 cd tmp
+ar x $KULINA/lib/libbz2.a
 ar x $KULINA/lib/libjasper.a
 ar x $KULINA/lib/libjpeg.a
 ar x $KULINA/lib/libtiff.a
@@ -149,8 +154,8 @@ make -j4
 make  install
 cd ..
 rm -rf expat-2.2.0
-tar xf fontconfig-2.12.1.tar.bz2 >../out
-cd fontconfig-2.12.1
+tar xf fontconfig-2.13.1.tar.gz >../out
+cd fontconfig-2.13.1
 ./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
 make -j4
 make  install
@@ -294,13 +299,13 @@ make install
 cd ..
 rm -rf fdk-aac-0.1.5
 tar xf ncurses-6.5.tar.gz
+export LD_CONFIG_PATH=$LD_CONFIG_PATH:$KULINA/lib
+export ZLIBLIB=$KULINA/lib
+export ZLIBINC=$KULINA/include
 cd ncurses-6.5
 ./configure --prefix=$KULINA --enable-static 
 make -j4
 make install
 cd ..
 rm -rf ncurses-6.5
-#rm -rf ../lib/*.so*
-#rm -rf pulseaudio-16.1
-#rm -rf ../lib/*.so*
-#rm -rf pulseaudio-16.1
+./mkpulse

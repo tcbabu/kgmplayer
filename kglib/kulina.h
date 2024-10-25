@@ -26,6 +26,11 @@ extern "C"
 #define FALSE 0
 #define SCROLL_DOWN -101
 #define SCROLL_UP -201
+#define BUTTON2_PRESS -202
+#define BUTTON3_PRESS -203
+#define LINE_CHANGE -204
+#define MULTILINE_CLIP -205
+#define TAB_PRESS -206
 #define LN_WIDTH 20
 
 typedef struct _thumbnails {
@@ -1218,6 +1223,7 @@ void *kgChangeSizeImage(void *img,long width,long height);
 void *kgFilterImage(void *img,long width,long height,int Fltr);
 void *kgHalfSizeImage(void * img);
 void kgFreeImage(void *img);
+int   kgFreeGmImage(void *img);
 void *kgCropImage(void *img,int xl,int yl,int xu,int yu);
 void *kgRotateImage(void *img,float angle) ;
 void *kgRotateAboutImage(void *img,float angle,int xo,int yo); // Creates new rotated image
@@ -1729,12 +1735,13 @@ void *OpenThreads(int thds);
 void DoInAnyThread(void *,void *(*threadFunc)(void *),void *arg);
 void WaitThreads(void *);
 void CloseThreads(void *);
+void KillThreads(void *);
 // Clipboard routines
 unsigned char *kgGetPrimary(void * Tmp);
 unsigned char *kgGetClipBoard(void * Tmp);
 int kgSetPrimary(void * Tmp,unsigned char *data);
 int kgSetClipBoard(void * Tmp,unsigned char *data);
-void * kgProcessClips(void *Tmp,void *kbtmp);
+void *  kgProcessClips(void *Tmp,int butn);
 int kgEnableSelection(void *Tmp);
 int kgDisableSelection(void *Tmp);
 int kgClearHighlight(void *Tmp);

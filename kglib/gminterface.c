@@ -6,6 +6,12 @@
 #include <string.h>
 #include <magick/api.h>
 #include <math.h>
+void DestroyImagePixels( Image *image );
+static int entry = 0;
+static ImageInfo *image_info = NULL;
+static ExceptionInfo exception;
+
+
   static void gmDummyImage ( void ) {
       int xl = 6 , yl = 6 , fac = 0;
       int r = 10 , g = 20 , b = 30;
@@ -22,9 +28,6 @@
       return ;
   }
   void uiInitGm ( void ) {
-      static int entry = 0;
-      static ImageInfo *image_info = NULL;
-      static ExceptionInfo exception;
       if ( entry == 0 ) {
 //    fprintf(stderr,"Init GM\n");
           entry = 1;
@@ -33,6 +36,15 @@
           image_info = CloneImageInfo ( ( ImageInfo * ) NULL ) ;
       }
       return;
+  }
+  void uiCloseGm(void) {
+      if ( entry == 0 ) { return;}
+          DestroyImageInfo ( image_info ) ;
+//          free(image_info);
+          DestroyExceptionInfo ( &exception ) ;
+          DestroyMagick();
+          entry =0;
+          return;
   }
   void kgInitGm ( void ) {
       uiInitGm;
@@ -336,6 +348,9 @@
       SyncImagePixels ( image ) ;
       png = ( GMIMG * ) Malloc ( sizeof ( GMIMG ) ) ;
       png->image = image;
+#if 1
+          DestroyImageInfo ( Image_info ) ;
+#endif
       Image_info = CloneImageInfo ( ( ImageInfo * ) NULL ) ;
       GetImageInfo ( Image_info ) ;
       strcpy ( png->Sign , "IMG" ) ;
@@ -351,7 +366,7 @@
       if ( image->matte == 0 ) png->image_channels = 3;
       else png->image_channels = 4;
       png->image_rowbytes = png->image_width*png->image_channels;
-      pixels = GetImagePixels ( image , 0 , 0 , xsize , ysize ) ;
+//      pixels = GetImagePixels ( image , 0 , 0 , xsize , ysize ) ;
       return png;
   }
   void *kgCreateImage ( int xsize , int ysize ) {
@@ -682,8 +697,10 @@
       png->image_rowbytes = png->image_width*png->image_channels;
       return png;
   }
-  void *kgResizeImage ( void * img , float fac ) {return uiResizegmImage  \
-      ( ( GMIMG * ) img , fac ) ;}
+  void *kgResizeImage ( void * img , float fac ) {
+      /* returns a resize Image, original not modified */
+      return uiResizegmImage ( ( GMIMG * ) img , fac ) ;
+  }
   void *uiThumbnailgmImage ( GMIMG *png , unsigned long w , unsigned long h ) {
       int xoffset , yoffset , bkgrclr;
       float rzfac , fac = 1 , wfac , hfac;
@@ -881,9 +898,11 @@
       return png;
   }
   void *kgChangeSizeImage ( void *img , long w , long h ) {
+      /* returns a resize Image, original not modified */
       return uiChangeSizegmImage ( ( GMIMG * ) img , w , h , 1 ) ;
   }
   void *kgFilterImage ( void *img , long w , long h , int Fltr ) {
+      /* returns a resize Image, original not modified */
       return uiChangeSizegmImage ( ( GMIMG * ) img , w , h , Fltr ) ;
   }
   void *uiHalfSizegmImage ( GMIMG *png ) {
@@ -1708,11 +1727,12 @@
   void uiFreeGmImage ( void *png ) {
       GMIMG *img;
       img = ( GMIMG * ) png;
+//      uiCloseGm();
       uiInitGm ( ) ;
 //TCB 07/21
-//  if( image_info== NULL) return;
-//  DestroyImagePixels((Image *)(img->image));
+      DestroyImagePixels((Image *)(img->image));
       DestroyImage ( ( Image * ) ( img->image ) ) ;
+#if 1
       if ( img->info != NULL ) DestroyImageInfo ( ( ImageInfo * ) img->info ) ;
       if ( img->exce != NULL ) {
           DestroyExceptionInfo ( ( ExceptionInfo * ) img->exce ) ;
@@ -1720,7 +1740,14 @@
       }
       img->info = NULL;
       img->exce = NULL;
+#endif
       return ;
+  }
+  int  kgFreeGmImage ( void *png ) {
+       if(png == NULL) return 0;
+       uiFreeGmImage (png);
+       free(png);
+       return 1;
   }
   void uiFreeFmgImage ( void *png ) {
       FMGIMG *img;

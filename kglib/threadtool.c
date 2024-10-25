@@ -1,4 +1,6 @@
+#define _OPEN_THREADS
 #include <stdio.h>
+#include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -34,6 +36,7 @@
   void DoInAnyThread ( void *, void * ( *threadFunc ) ( void * ) , void *arg ) ;
   void WaitThreads ( void * ) ;
   void CloseThreads ( void * ) ;
+  void KillThreads ( void * ) ;
   void *threadFunc ( void *arg ) ;
   int getCores ( ) {
       FILE *fp;
@@ -214,14 +217,14 @@
       fflush ( stderr ) ;
       fflush ( stderr ) ;
 #endif
-      Rval = ( void * ) malloc ( sizeof ( char * ) ) ;
+//      Rval = ( void * ) malloc ( sizeof ( char * ) ) ;
 //   fprintf(stderr,"In Close Threads: %d\n",ThInfo->nCores);
 //   fflush(stderr);
 #if 1
       for ( i = 0;i < ThInfo->nCores;i++ ) {
 //     pthread_join((ThInfo->threads[i].id),NULL);
 //     pthread_cancel((ThInfo->threads[i].id));
-          pthread_join ( ( ThInfo->threads [ i ] .id ) , & Rval ) ;
+          pthread_join ( ( ThInfo->threads [ i ] .id ) , NULL ) ;
       }
 #endif
 #if 1
@@ -238,6 +241,36 @@
       free ( ThInfo->RPIPES ) ;
       free ( ThInfo->threads ) ;
       free ( ThInfo ) ;
-      free ( Rval ) ;
+      return;
+  }
+  void KillThreads ( void *Tmp ) {
+      ThreadInfo *ThInfo;
+      int i,s;
+      void *Rval;
+      ThInfo = ( ThreadInfo * ) Tmp;
+      if ( Tmp == NULL ) return;
+//   fprintf(stderr,"Waiting Threads\n");
+//      Rval = ( void * ) malloc ( sizeof ( char * ) ) ;
+      for ( i = 0;i < ThInfo->nCores;i++ ) {
+       s = pthread_cancel((ThInfo->threads[i].id));
+       if(s != 0)pthread_kill((ThInfo->threads[i].id),SIGKILL); 
+          pthread_join ( ( ThInfo->threads [ i ] .id ) , NULL ) ;
+      }
+#if 1
+      for ( i = 0;i < ThInfo->nCores;i++ ) {
+#if 1
+          close ( ThInfo->PIPES [ i ] [ 0 ] ) ;
+          close ( ThInfo->PIPES [ i ] [ 1 ] ) ;
+          close ( ThInfo->RPIPES [ i ] [ 0 ] ) ;
+          close ( ThInfo->RPIPES [ i ] [ 1 ] ) ;
+#endif
+          free ( ThInfo->PIPES [ i ] ) ;
+          free ( ThInfo->RPIPES [ i ] ) ;
+      }
+#endif
+      free ( ThInfo->PIPES ) ;
+      free ( ThInfo->RPIPES ) ;
+      free ( ThInfo->threads ) ;
+      free ( ThInfo ) ;
       return;
   }

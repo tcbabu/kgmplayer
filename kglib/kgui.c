@@ -1445,6 +1445,19 @@
       }
       return ret;
   }
+  int kgFreeElementImages(void *wid) {
+    DIT *T = (DIT *)wid;
+    T_ELMT *e=T->elmt;
+    int k,nx,ny,i,j;
+    nx = T->nx;
+    ny = T->ny;
+    for(j=0;j<ny;j++) {
+      for(i=0;i<nx;i++) {
+         if( e[j*nx+i].img != NULL) kgFreeGmImage(e[j*nx+i].img);
+         e[j*nx+i].img = NULL;
+      }
+    }
+  }
   int kgRedrawDialog ( DIALOG *D ) {
       int n , i , controls = 0 , item , ch , oldi = -1;
       DIA *d;
@@ -1543,10 +1556,12 @@
               if ( d [ i ] .t->item == -1 ) _uiDrawTableBox ( D , i ) ;
               else {
 		      DIT *Ta= (DIT *)(d[i].t);
-               FreeImg ( ( ( DIT * ) ( d [ i ] .t ) )->Bimg ) ;
+                      T_ELMT *elmt;
+                      FreeImg ( Ta->Bimg ) ;
+                      kgFreeElementImages(Ta);
 		      if(Ta->tstr != NULL) {
-//No			      free(((TX_STR *)(Ta->tstr))->elmt);
-                uiFreeImgStrs(((TX_STR *)(Ta->tstr))->F.Imgs);
+                              elmt =((TX_STR *)(Ta->tstr))->elmt; 
+                              uiFreeImgStrs(((TX_STR *)(Ta->tstr))->F.Imgs);
 			      free(Ta->tstr);
 			      Ta->tstr=NULL;
 		      }
@@ -1742,21 +1757,22 @@
               controls++;
               if ( d [ i ] .t->hide == 1 ) break;
               item = d [ i ] .t->item;
-              if ( d [ i ] .t->item == -1 ) _uiDrawTableBox ( D , i ) ;
+              if ( d [ i ] .t->item == -1 ) {
+                     printf("item = -1 for _uiDrawTableBox\n");
+                     _uiDrawTableBox ( D , i ) ;
+              }
               else {
 		      DIT *Ta= (DIT *)(d[i].t);
-               FreeImg ( ( ( DIT * ) ( d [ i ] .t ) )->Bimg ) ;
+                      kgFreeElementImages(Ta);
+                      FreeImg ( ( ( DIT * ) ( d [ i ] .t ) )->Bimg ) ;
 		      if(Ta->tstr != NULL) {
-//No			      free(((TX_STR *)(Ta->tstr))->elmt);
-                uiFreeImgStrs(((TX_STR *)(Ta->tstr))->F.Imgs);
+                              uiFreeImgStrs(((TX_STR *)(Ta->tstr))->F.Imgs);
 			      free(Ta->tstr);
 			      Ta->tstr=NULL;
 		      }
 //		      _uiMake_Ta ( kgGetWidget ( D , i ) ) ;
 		      _uiDrawTableBox ( D , i ) ;
 	      }
-//              else _uiMake_Ta ( kgGetWidget ( D , i ) ) ;
-//              else _uiDrawTableBox ( D , i ) ;
               D->df = i;
               break;
               case 'h':
@@ -1922,17 +1938,19 @@
               {
                   DIT *T;
 		  TX_STR *Tx;
+                  T_ELMT *elmt;
                   T = d [ i ] .t;
                   Tx = (TX_STR *)T->tstr;
+                  kgFreeElementImages(T);
 #if 1
                   if(Tx != NULL){
                        Tx->F.Imgs=uiFreeImgStrs(Tx->F.Imgs);
                        Free ( T->tstr ) ;
+	               T->tstr=NULL;
                   }
 #endif
-                  T->tstr = NULL;
+                  FreeImg ( T->Bimg ) ;
               }
-//              FreeImg ( ( ( DIT * ) ( d [ i ] .t ) )->Bimg ) ;
          // need addition once Table is implemented
               break;
               case 'h':
@@ -3454,7 +3472,7 @@
 //            printf("hi: %s\n",str);
               if ( WC ( D )->Pstr != NULL ) free ( WC ( D )->Pstr ) ;
               kgSetPrimary ( D , str ) ;
-            kgSetClipBoard(D,str);
+              kgSetClipBoard(D,str);
               WC ( D )->Pstr = str;
           }
 //          _ui_cuthighlightstring(tx);
@@ -3542,7 +3560,7 @@
 //            printf("hi: %s\n",str);
               if ( WC ( D )->Pstr != NULL ) free ( WC ( D )->Pstr ) ;
               kgSetPrimary ( D , str ) ;
-            kgSetClipBoard(D,str);
+              kgSetClipBoard(D,str);
               WC ( D )->Pstr = str;
           }
 //	  else printf("Highlight string is NULL\n");
@@ -3744,9 +3762,9 @@
       }
       return 0;
   }
-  void * kgProcessClips ( void *Tmp , void *kbtmp ) {
+  int  kgProcessClip_old ( void *Tmp , void *kbtmp ) {
 /* return value is made (void *) for further development */
-      void * ret = NULL;
+      int  ret = 2;
       DIALOG *D;
       KBEVENT *kb;
       char *str = NULL;
@@ -3755,12 +3773,13 @@
       if ( kb->event == 1 ) {
           switch ( kb->button ) {
               default:
+              return 1;
               break;
-              case 2: // primary
+              case 3: // primary
               str = kgGetPrimary ( Tmp ) ;
 //	      printf("Case 2: %s\n",str);
               break;
-              case 3: // clipboard
+              case 2: // clipboard
               str = kgGetClipBoard ( Tmp ) ;
 //	      printf("Case 3: %s\n",str);
               break;
@@ -3769,6 +3788,11 @@
       if ( str != NULL ) {
           int ch;
           int i = 0;
+          while ( ( ch = str [ i ] ) != '\0' ) {
+            if(ch =='\n') { free(str);return 3;}
+            i++;
+          }          
+          i=0;
           while ( ( ch = str [ i ] ) != '\0' ) {
               i++;
               if ( ch == '\n' ) {
@@ -3787,10 +3811,56 @@
       }
       return ret;
   }
+  void *  kgProcessClips ( void *Tmp , int butn ) {
+/* return value is made (void *) for further development */
+      char *  ret = NULL;
+      DIALOG *D;
+      char *str = NULL;
+      D = ( DIALOG * ) Tmp;
+          switch ( butn ) {
+              default:
+              return NULL;
+              break;
+              case 3: // primary
+              str = kgGetPrimary ( Tmp ) ;
+//	      printf("Case 3: %s\n",str);
+              break;
+              case 2: // clipboard
+              str = kgGetClipBoard ( Tmp ) ;
+//  	      printf("Case 2: %s\n",str);
+              break;
+          }
+      if ( str != NULL ) {
+          int ch;
+          int i = 0;
+          while ( ( ch = str [ i ] ) != '\0' ) {
+//            if(ch =='\n') { free(str);return MULTILINE_CLIP;}
+            if(ch =='\n') { return str;}
+            i++;
+          }          
+          i=0;
+          while ( ( ch = str [ i ] ) != '\0' ) {
+              i++;
+              if ( ch == '\n' ) {
+                  kgSendClearKeyEvent ( Tmp ) ;
+                  kgSendLinefeedKeyEvent ( Tmp ) ;
+                  break;
+              }
+              else if ( ch == '\r' ) {
+                  kgSendClearKeyEvent ( Tmp ) ;
+                  kgSendEnterKeyEvent ( Tmp ) ;
+                  break;
+              }
+              else kgSendKeyEvent ( Tmp , ch ) ;
+          }
+          free ( str ) ;
+      }
+      return NULL;
+  }
   int ProcessMousePress ( DIALOG *D , KBEVENT kbevent , int i , int hcontrols , int controls ) \
   {
       DIA *d;
-      int ch , df , OK = 0 , uperr , ret;
+      int ch , df , OK = 0 , uperr , ret,butn=1;
       d = D->d;
       if ( controls > 0 ) {
           ch = D->d [ i ] .t->code;
@@ -3918,11 +3988,21 @@
               break;
               case 't':
               df = MousePressInTextBox ( ( TX_STR * ) ( D->d [ i ] .t->tstr ) , kbevent ) ;
-              kgProcessClips ( ( void * ) D , ( void * ) & kbevent ) ;
+              kgProcessClips ( ( void * ) D ,  kbevent.button ) ;
               break;
               case 'T':
               df = MousePressInTableBox ( ( TX_STR * ) ( D->d [ i ] .t->tstr ) , kbevent ) ;
-              kgProcessClips ( ( void * ) D , ( void * ) & kbevent ) ;
+#if 0
+              butn =kgProcessClips ( ( void * ) D , kbevent.button ) ;
+              if(butn==3) {// multi line clipboard
+                   if ( d [ i ] .t->Update != NULL ) ret = d [ i ] .t->Update ( MULTILINE_CLIP , i , D ) ;
+              }
+#else
+
+              butn = kbevent.button ;
+              if(butn ==2) ret = d [ i ] .t->Update ( BUTTON2_PRESS, i , D ) ;
+              else if(butn ==3) ret = d [ i ] .t->Update ( BUTTON3_PRESS, i , D ) ;
+#endif
               break;
               case 'e':
               ret = EventInE ( ( D->d [ i ] .e ) , kbevent ) ;
@@ -5336,9 +5416,10 @@
       uiFreeMemAlloc ( D ) ;
 //      uiFreeFontLists();
       if ( D->Newwin ) {
-//          kgDisableSelection ( D ) ;
           if ( ! WC ( D )->FullScreen ) {
-              pthread_cancel ( WC ( D )->Pth ) ;
+              int s;
+              s = pthread_cancel ( WC ( D )->Pth ) ;
+              if(s!= 0) pthread_kill( WC ( D )->Pth ,SIGKILL);
               pthread_join ( WC ( D )->Pth , NULL ) ;
           }
           Dempty ( WC ( D )->Clip ) ;
@@ -5355,10 +5436,12 @@
       ui_cleandir ( D->tmpdir ) ;
       kgCheckAndRemoveParent ( D->tmpdir ) ;
       Free ( D->tmpdir ) ;
-//   fprintf(stderr,"Closing threads\n");
+#if 1
       CloseThreads ( D->ThInfo ) ;
+#else
+      KillThreads ( D->ThInfo ) ;
+#endif
       D->ThInfo = NULL;
-//   fprintf(stderr,"Closed Ui\n");
       return ( ret ) ;
   }
 /* checking for string
@@ -6191,7 +6274,8 @@
       DIA *D;DIT *T;T_ELMT *e;
       T = ( DIT * ) Tmp;
       Tstr = ( TX_STR * ) ( T->tstr ) ;
-      _ui_readtextbox ( Tstr ) ;
+ //     _ui_readtextbox ( Tstr ) ;
+      _ui_readtextboxcell ( Tstr,item ) ;
       e = T->elmt;
       f = ( ( char * ) ( e [ item ] .v ) ) ;
       return f;

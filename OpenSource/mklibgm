@@ -1,6 +1,7 @@
 rm libgm.a
 mkdir tmp
 cd tmp
+ar x $KULINA/lib/libbz2.a
 ar x $KULINA/lib/libjasper.a
 ar x $KULINA/lib/libjpeg.a
 ar x $KULINA/lib/libtiff.a
