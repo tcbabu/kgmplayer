@@ -27,6 +27,7 @@ cd libsndfile-1.0.25
 make -j1
 make install
 cd ..
+rm -rf libsndfile-1.0.25
 tar xf pulseaudio-12.2.tar.xz
 cd pulseaudio-12.2
 ./configure --prefix=$KULINA --enable-static --disable-openssl --disable-x11 --disable-glib2 --disable-dbus \
@@ -36,4 +37,4 @@ make -j4
 make install
 cp src/.libs/libpulse*.a $KULINA/lib/
 cd ..
-#rm -rf pulseaudio-12.2
+rm -rf pulseaudio-12.2

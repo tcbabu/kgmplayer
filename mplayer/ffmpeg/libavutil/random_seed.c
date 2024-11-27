@@ -19,7 +19,7 @@
  */
 
 #include "config.h"
-
+unsigned int arc4random(void);
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif

@@ -221,7 +221,7 @@
 @set have-termios-h yes
 @c @set have-udplite-h no
 @set have-unistd-h yes
-@set have-valgrind-valgrind-h yes
+@c @set have-valgrind-valgrind-h no
 @c @set have-windows-h no
 @c @set have-winsock2-h no
 @c @set have-intrinsics-neon no
@@ -256,7 +256,7 @@
 @set have-truncf yes
 @set have-access yes
 @c @set have-aligned-malloc no
-@c @set have-arc4random no
+@set have-arc4random yes
 @set have-clock-gettime yes
 @c @set have-closesocket no
 @c @set have-commandlinetoargvw no
@@ -326,7 +326,7 @@
 @set have-inline-asm-labels yes
 @set have-inline-asm-nonlocal-labels yes
 @set have-pragma-deprecated yes
-@c @set have-rsync-contimeout no
+@set have-rsync-contimeout yes
 @c @set have-symver-asm-label no
 @set have-symver-gnu-asm yes
 @c @set have-vfp-args no
@@ -353,8 +353,8 @@
 @c @set have-libc-msvcrt no
 @c @set have-libdc1394-1 no
 @c @set have-libdc1394-2 no
-@set have-makeinfo yes
-@set have-makeinfo-html yes
+@c @set have-makeinfo no
+@c @set have-makeinfo-html no
 @set have-perl yes
 @set have-pod2man yes
 @c @set have-sdl no
@@ -377,10 +377,10 @@
 @set config-muxers yes
 @set config-protocols yes
 @c @set config-doc no
-@set config-htmlpages yes
+@c @set config-htmlpages no
 @set config-manpages yes
 @set config-podpages yes
-@set config-txtpages yes
+@c @set config-txtpages no
 @set config-avio-reading-example yes
 @set config-avio-dir-cmd-example yes
 @set config-decoding-encoding-example yes
@@ -498,7 +498,7 @@
 @c @set config-vda no
 @set config-vdpau yes
 @c @set config-videotoolbox no
-@set config-xvmc yes
+@c @set config-xvmc no
 @set config-gpl yes
 @set config-nonfree yes
 @set config-version3 yes
@@ -727,7 +727,7 @@
 @set config-mjpegb-decoder yes
 @set config-mmvideo-decoder yes
 @set config-motionpixels-decoder yes
-@set config-mpeg-xvmc-decoder yes
+@c @set config-mpeg-xvmc-decoder no
 @set config-mpeg1video-decoder yes
 @set config-mpeg2video-decoder yes
 @set config-mpeg4-decoder yes
@@ -1773,10 +1773,10 @@
 @c @set config-hevc-qsv-hwaccel no
 @c @set config-hevc-vaapi-hwaccel no
 @c @set config-hevc-vdpau-hwaccel no
-@set config-mpeg1-xvmc-hwaccel yes
+@c @set config-mpeg1-xvmc-hwaccel no
 @set config-mpeg1-vdpau-hwaccel yes
 @c @set config-mpeg1-videotoolbox-hwaccel no
-@set config-mpeg2-xvmc-hwaccel yes
+@c @set config-mpeg2-xvmc-hwaccel no
 @c @set config-mpeg2-d3d11va-hwaccel no
 @c @set config-mpeg2-dxva2-hwaccel no
 @c @set config-mpeg2-mmal-hwaccel no
@@ -1978,7 +1978,7 @@
 @c @set config-sdl-outdev no
 @c @set config-sndio-outdev no
 @set config-v4l2-outdev yes
-@set config-xv-outdev yes
+@c @set config-xv-outdev no
 @set config-aac-parser yes
 @set config-aac-latm-parser yes
 @set config-ac3-parser yes

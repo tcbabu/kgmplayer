@@ -5,8 +5,8 @@ ar x $KULINA/lib/libbz2.a
 ar x $KULINA/lib/libjasper.a
 ar x $KULINA/lib/libjpeg.a
 ar x $KULINA/lib/libtiff.a
-ar x $KULINA/lib/libpng.a
-ar x $KULINA/lib/libpng16.a
+#ar x $KULINA/lib/libpng.a
+#ar x $KULINA/lib/libpng16.a
 ar x $KULINA/lib/libGraphicsMagickWand.a
 ar x $KULINA/lib/libGraphicsMagick.a
 ar -rU ../libgm.a *.o

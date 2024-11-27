@@ -17,9 +17,10 @@ tar xf bzip2-1.0.6.tar.gz
 cd bzip2-1.0.6
 make
 make install prefix=$KULINA/lib
+cd ..
 tar xf libpng-1.6.9.tar.xz
 cd libpng-1.6.9
-./configure --prefix=$KULINA --enable-static --disable-shared --with-zlib-prefix=$KULINA CFLAGS=-I$KULINA/include LDFLAGS=-L$KULINA/lib >../out
+./configure --prefix=$KULINA --enable-static 
 make   >../out
 make  install >../out
 cd ..
@@ -75,8 +76,8 @@ ar x $KULINA/lib/libbz2.a
 ar x $KULINA/lib/libjasper.a
 ar x $KULINA/lib/libjpeg.a
 ar x $KULINA/lib/libtiff.a
-ar x $KULINA/lib/libpng.a
-ar x $KULINA/lib/libpng16.a
+#ar x $KULINA/lib/libpng.a
+#ar x $KULINA/lib/libpng16.a
 ar x $KULINA/lib/libGraphicsMagickWand.a
 ar x $KULINA/lib/libGraphicsMagick.a
 ar -rU ../libgm.a *.o
