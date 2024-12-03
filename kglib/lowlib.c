@@ -147,7 +147,8 @@ static char *OthFonts []= {
   NULL
 };
 #define D_CLEANCC      
-  static IMG_STR **Imgs = NULL , **Bimgs , **Mimgs=NULL , **Nimgs , **Pimgs,**Taimgs=NULL;
+  static IMG_STR **Imgs = NULL , **Bimgs , **Mimgs = NULL , \
+       **Nimgs , **Pimgs , **Taimgs = NULL;
 /*#include "fontps.h"*/
 #define far 
 #define SSF 0.6
@@ -180,8 +181,8 @@ static char *OthFonts []= {
        y1 = D->yo+ ( w )->y1; \
        x2 = D->xo+ ( w )->x2; \
        y2 = D->yo+ ( w )->y2; \
-       if ( ( w )->Bimg == NULL ) ( w )->Bimg = kgGetBackground  \
-           ( D , x1 , y1 , x2 , y2 ) ; \
+       if ( ( w )->Bimg == NULL ) ( w )->Bimg = kgGetBackground \
+       ( D , x1 , y1 , x2 , y2 ) ; \
    }
 #define RESTOREWIDGETAREA(w) {\
    DIALOG *D; \
@@ -192,7 +193,7 @@ static char *OthFonts []= {
        xl = ( w )->x2- ( w )->x1+1; \
        yl = ( w )->y2- ( w )->y1+1; \
        if ( ( w )->Bimg != NULL ) kgRestoreImage ( D , \
-            ( w )->Bimg , x1 , y1 , xl , yl ) ; \
+       ( w )->Bimg , x1 , y1 , xl , yl ) ; \
    }
 #define RESTOREWIDGETAREAPART(w,xp1,yp1,xp2,yp2) {\
    DIALOG *D; \
@@ -205,7 +206,7 @@ static char *OthFonts []= {
        xl = ( xp2 ) - ( xp1 ) +1; \
        yl = ( yp2 ) - ( yp1 ) +1; \
        if ( ( w )->Bimg != NULL ) kgRestoreImagePart ( D , ( w )->Bimg , \
-            xp1 , yp1 , xoff , yoff , xl , yl ) ; \
+       xp1 , yp1 , xoff , yoff , xl , yl ) ; \
    }
 #define set_greek {\
    if ( greek > 0 ) {\
@@ -246,8 +247,8 @@ static char *OthFonts []= {
 #define uiTY(x,y) (dc->cy -(x)*dc->sint+(y)*dc->cost)
 #define _uiLINE(wc,x1,y1,x2,y2) uiCliped_Line(wc,x1,y1,x2,y2)
   static unsigned int ln_ptn [ 10 ] = {0xffffffff , 0x88888888 , 0xcccccccc , \
-       0xf0f0f0f0 , 0xff18ff18 , 0xffff0f0f , 0xe7e7e7e7 , \
-       0xfafafafa , 0xffff0000 , 0xffffff00};
+      0xf0f0f0f0 , 0xff18ff18 , 0xffff0f0f , 0xe7e7e7e7 , \
+  0xfafafafa , 0xffff0000 , 0xffffff00};
   static short st_ptr [ 10 ] = {0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0};
   typedef struct c_limit{ int cx1; int cy1; int cx2; int cy2; int * pt; } CLIP;
 #define uiset_clip_limits(wc,x1,y1,x2,y2) wc->c_v_x1=x1,wc->c_v_y1=y1,wc->c_v_x2=x2,wc->c_v_y2=y2
@@ -256,13 +257,13 @@ static char *OthFonts []= {
 #define uirest_clip_limits wc->c_v_x1=wc->c_v_x1_o,wc->c_v_y1=wc->c_v_y1_o,wc->c_v_x2=wc->c_v_x2_o,wc->c_v_y2=wc->c_v_y2_o
 #define uiset_full_scrn  wc->c_v_x1=0,wc->c_v_y1=0,wc->c_v_x2=(wc->EVGAX),wc->c_v_y2=(wc->EVGAY)
   static unsigned char esc = 0x1b , G = 'g' , N = 'n' , \
-       C = 'c' , P = 'p' , Z = 'z' , L = 'l' , V = 'v';
+  C = 'c' , P = 'p' , Z = 'z' , L = 'l' , V = 'v';
   static unsigned char S = 's' , T = 't' , R = 'r' , \
-       M = 'm' , D = 'd' , Y = 'y' , U = 'u';
+  M = 'm' , D = 'd' , Y = 'y' , U = 'u';
   static unsigned char O = 'o' , B = 'b' , X = 'x' , F = 'f' , \
-       I = 'i' , A = 'a' , E = 'e' , W = 'w';
+  I = 'i' , A = 'a' , E = 'e' , W = 'w';
   static unsigned char H = 'h' , K = 'k' , M3 = 'M' , \
-       D3 = 'D' , P3 = 'P' , G3 = 'G' , B3 = 'B';
+  D3 = 'D' , P3 = 'P' , G3 = 'G' , B3 = 'B';
   static unsigned char BELL = 0x07;
   static unsigned char Ch1 = 0;
 #define uipclr(p)  (float)(((p-dc->pmin)*dc->dfac+1.))
@@ -275,11 +276,11 @@ static char *OthFonts []= {
 #define uiusr_x(x) (float)((x-dc->D_x-dc->v_x1)/dc->u_x+dc->w_x1)
 #define uiusr_y(y) (float)((y-dc->D_y-dc->v_y1)/dc->u_y+dc->w_y1)
   static unsigned char MASK [ 8 ] = { 0x80 , 0x40 , \
-       0x20 , 0x10 , 0x08 , 0x04 , 0x02 , 0x01 };
+  0x20 , 0x10 , 0x08 , 0x04 , 0x02 , 0x01 };
   static unsigned char MASKB [ 8 ] = {0xFF , 0x7F , \
-       0x3F , 0x1F , 0x0F , 0x07 , 0x03 , 0x01 };
+  0x3F , 0x1F , 0x0F , 0x07 , 0x03 , 0x01 };
   static unsigned char MASKE [ 8 ] = {0x80 , 0xC0 , \
-       0xE0 , 0xF0 , 0xF8 , 0xFC , 0xFE , 0xFF };
+  0xE0 , 0xF0 , 0xF8 , 0xFC , 0xFE , 0xFF };
   static unsigned char RMASK [ 4 ] = { 0x00 , 0x01 , 0x10 , 0x11 };
   static unsigned char MMASK [ 4 ] = { 0x01 , 0x02 , 0x04 , 0x08 };
   static unsigned char RED [ 4 ] = {0x00 , 0x04 , 0x20 , 0x24 };
@@ -289,18 +290,18 @@ static char *OthFonts []= {
   {" 14.5g"} , Yfmt [ 7 ] = {"-14.5g"};
   static union kbinp { short kbint; char kbc [ 2 ] ; } kb;
   void *kgBorderedRectangle ( int width , int height , \
-       int fillclr , float rfac ) ;
+  int fillclr , float rfac ) ;
   void *kgPressedRectangle ( int width , int height , \
-       int fillclr , float rfac ) ;
+  int fillclr , float rfac ) ;
   void uiMessageString ( DIALOG *D , char *str , int x , int y , int width , \
-       int height , int font , int color , int FontSize , \
-       int justfic , int bkcolor ) ;
+  int height , int font , int color , int FontSize , \
+  int justfic , int bkcolor ) ;
   void *uiMakeTextBoxImage ( void *Tmp ) ;
 //void _uiMakeButnImages(DIN *B,int butno);
   void *_uiMakeButnImages ( void *butstr ) ;
   void _uiInitButs ( DIN *B ) ;
 #define EIGHT 8
-  char *uiWhichFont (char *FontBase, char *pgr ) {
+  char *uiWhichFont ( char *FontBase , char *pgr ) {
       int i = 0 , j , End = 0 , k;
       char *pt , **m , *res = NULL , *cpt;
       char path [ 5000 ] ;
@@ -309,11 +310,11 @@ static char *OthFonts []= {
       Dlink *L;
       pt = FontBase ;
       strcpy ( path , FontBase ) ;
-      folders = ( char ** ) kgFolderTree ( FontBase) ;
+      folders = ( char ** ) kgFolderTree ( FontBase ) ;
       if ( folders == NULL ) return NULL;
       k = 0;
       while ( ( pt = ( char * ) folders [ k++ ] ) != NULL ) {
-	  strcpy (buf,pt);
+          strcpy ( buf , pt ) ;
 //          printf ( "%s: %s\n" , pt , buf ) ;
           m = kgFileMenu ( buf , ( char * ) "*.ttf" ) ;
           if ( m != NULL ) {
@@ -390,8 +391,8 @@ static char *OthFonts []= {
           }
           res = ( char * ) Malloc ( strlen ( path ) +1+strlen \
            ( pt ) +1+strlen ( m [ i ] ) +1 ) ;
-	  strcpy( res,buf);
-	  strcat(res,"/");
+          strcpy ( res , buf ) ;
+          strcat ( res , "/" ) ;
           strcat ( res , m [ i ] ) ;
           j = 0;
           while ( m [ j ] != NULL ) {free ( m [ j ] ) ;j++;}
@@ -408,9 +409,9 @@ static char *OthFonts []= {
       char *pt , **m , *res = NULL , *cpt;
       char path [ 5000 ] ;
       char buf [ 200 ] ;
-      char FontBase [500 ] ;
+      char FontBase [ 500 ] ;
       char **folders;
-      strcpy(FontBase,(char *)"/usr/share/fonts");
+      strcpy ( FontBase , ( char * ) "/usr/share/fonts" ) ;
       Dlink *L;
       if ( pgr [ 0 ] == '/' ) { // full path is given
           int l;
@@ -434,23 +435,23 @@ static char *OthFonts []= {
           strcpy ( res , pgr ) ;
           return res;
       }
-      if(res == NULL) {
-         folders = ( char ** ) kgFolderMenu (FontBase  ) ;
-         if(folders==NULL) return NULL;
-         while ( ( pt = ( char * ) folders [ k++ ] ) != NULL ) {
-             strcpy ( path , FontBase ) ;
-             strcat (path, (char *)"/");
-             strcat (path,pt);
-             res = uiWhichFont(path,pgr);
-             if(res != NULL) break;
-         }
+      if ( res == NULL ) {
+          folders = ( char ** ) kgFolderMenu ( FontBase ) ;
+          if ( folders == NULL ) return NULL;
+          while ( ( pt = ( char * ) folders [ k++ ] ) != NULL ) {
+              strcpy ( path , FontBase ) ;
+              strcat ( path , ( char * ) "/" ) ;
+              strcat ( path , pt ) ;
+              res = uiWhichFont ( path , pgr ) ;
+              if ( res != NULL ) break;
+          }
       }
 #if 0
       folders = ( char ** ) kgFolderTree ( FontBase ) ;
       if ( folders == NULL ) return NULL;
       k = 0;
       while ( ( pt = ( char * ) folders [ k++ ] ) != NULL ) {
-	  strcpy (buf,pt);
+          strcpy ( buf , pt ) ;
 //          printf ( "%s: %s\n" , pt , buf ) ;
           m = kgFileMenu ( buf , ( char * ) "*.ttf" ) ;
           if ( m != NULL ) {
@@ -527,8 +528,8 @@ static char *OthFonts []= {
           }
           res = ( char * ) Malloc ( strlen ( path ) +1+strlen \
            ( pt ) +1+strlen ( m [ i ] ) +1 ) ;
-	  strcpy( res,buf);
-	  strcat(res,"/");
+          strcpy ( res , buf ) ;
+          strcat ( res , "/" ) ;
           strcat ( res , m [ i ] ) ;
           j = 0;
           while ( m [ j ] != NULL ) {free ( m [ j ] ) ;j++;}
@@ -562,8 +563,8 @@ static char *OthFonts []= {
           ret = Dcount ( FontList ) -1;
       }
       else {
-          if ( ( Fn = ( char * ) kgWhichFont ( ( char * ) "DejaVuSerif.ttf" ) ) != NULL )  \
-              {
+          if ( ( Fn = ( char * ) kgWhichFont ( ( char * ) "DejaVuSerif.ttf" ) ) != NULL ) \
+          {
               Dappend ( FontList , Fn ) ;
               ret = Dcount ( FontList ) -1;
           }
@@ -599,8 +600,8 @@ static char *OthFonts []= {
           ret = Dcount ( MonoList ) -1;
       }
       else {
-          if ( ( Fn = ( char * ) kgWhichFont ( ( char * ) "DejaVuSansMono.ttf" ) ) != NULL )  \
-              {
+          if ( ( Fn = ( char * ) kgWhichFont ( ( char * ) "DejaVuSansMono.ttf" ) ) != NULL ) \
+          {
               Dappend ( MonoList , Fn ) ;
               ret = Dcount ( MonoList ) -1;
           }
@@ -662,9 +663,9 @@ static char *OthFonts []= {
       char **Fonts , *pt , *spt;
       int count , i;
       char Buff [ 500 ] ;
-      if ( FontList == NULL ){
+      if ( FontList == NULL ) {
 //        return NULL;
-          uiAddFonts();
+          uiAddFonts ( ) ;
       }
       count = Dcount ( FontList ) ;
       Fonts = ( char ** ) malloc ( sizeof ( char * ) * ( count+1 ) ) ;
@@ -705,7 +706,7 @@ static char *OthFonts []= {
       char *pt;
       int Font , FontSize;
       int count = 0;
-      if(Mimgs!= NULL) return 1;
+      if ( Mimgs != NULL ) return 1;
       if ( MonoList == NULL ) uiAddFixedFonts ( ) ;
       if ( FontList == NULL ) uiAddFonts ( ) ;
       count = Dcount ( MonoList ) ;
@@ -779,7 +780,7 @@ static char *OthFonts []= {
   }
 #endif
   void uig_scroll_up ( DIALOG *D , short x1 , short y1 , \
-       short x2 , short y2 , short jmp ) \
+  short x2 , short y2 , short jmp ) \
   {
       int yy1 , yy2;
       int EVGAY;
@@ -968,13 +969,13 @@ static char *OthFonts []= {
       wc->SBlist = Dopen ( ) ;
 #endif
       uiset_sup_clip_limits ( wc , ( dc->v_x1+dc->D_x ) , \
-           D->evgay- ( dc->v_y2+dc->D_y ) , \
+      D->evgay- ( dc->v_y2+dc->D_y ) , \
        ( dc->v_x2+dc->D_x ) , D->evgay- ( dc->v_y1+dc->D_y ) ) ;
       uiset_clip_limits ( wc , ( dc->v_x1+dc->D_x ) , \
-           D->evgay- ( dc->v_y2+dc->D_y ) , \
+      D->evgay- ( dc->v_y2+dc->D_y ) , \
        ( dc->v_x2+dc->D_x ) , D->evgay- ( dc->v_y1+dc->D_y ) ) ;
       uiset_clip_limits ( wc , ( dc->v_x1+dc->D_x ) , \
-           D->evgay- ( dc->v_y2+dc->D_y ) , \
+      D->evgay- ( dc->v_y2+dc->D_y ) , \
        ( dc->v_x2+dc->D_x ) , D->evgay- ( dc->v_y1+dc->D_y ) ) ;
       uiset_sup_clip_limits ( wc , ( dc->v_x1+dc->D_x ) , ( dc->v_y1+dc->D_y ) , \
        ( dc->v_x2+dc->D_x ) , ( dc->v_y2+dc->D_y ) ) ;
@@ -1478,7 +1479,7 @@ static char *OthFonts []= {
       return;
   }
   int berzier_o ( int *xp , int *yp , float x1 , float y1 , float x4 , \
-       float y4 , float x2 , float y2 , float x3 , float y3 ) \
+  float y4 , float x2 , float y2 , float x3 , float y3 ) \
   {
       float t , tm , x , y , xm , ym , dist , dt;
       int n , notok , i;
@@ -1545,7 +1546,7 @@ static char *OthFonts []= {
       return n;
   }
   int berzier ( int *xp , int *yp , float x1 , float y1 , float x4 , \
-       float y4 , float x2 , float y2 , float x3 , float y3 ) \
+  float y4 , float x2 , float y2 , float x3 , float y3 ) \
   {
       float t , tm , x , y , xm , ym , dist , dt , r1 , r2;
       double ax , bx , cx , ay , by , cy , dum1 , dum2;
@@ -1602,7 +1603,7 @@ static char *OthFonts []= {
       return ( n ) ;
   }
   int ui_fillchr ( kgWC *wc , float *x , float *y , int n , \
-       int *x1 , int *y1 , int *x2 , int*y2 ) \
+  int *x1 , int *y1 , int *x2 , int*y2 ) \
   {
       int xp , yp , temp;
       float xx , yy , xx0 , yy0 , xx1 , xx2 , yy1 , yy2 , xx3 , xx4 , yy3 , yy4;
@@ -1629,7 +1630,7 @@ static char *OthFonts []= {
                   xx4 = xx , yy4 = yy;
                   xx3 = ( x [ i ] ) ; yy3 = ( y [ i ] ) ; i++;
                   j += berzier ( & x1 [ j ] , & y1 [ j ] , xx1 , \
-                       yy1 , xx4 , yy4 , xx2 , yy2 , xx3 , yy3 ) ;
+                  yy1 , xx4 , yy4 , xx2 , yy2 , xx3 , yy3 ) ;
                   if ( j > 4800 ) { printf ( "Not enough buffer\n" ) ; }
               }
               else i++;
@@ -1637,8 +1638,8 @@ static char *OthFonts []= {
           xx0 = xx; yy0 = yy;
       }
       i = 1;
-      while ( i < j ) { if ( ( x1 [ i ] == x1 [ i-1 ] ) &&  \
-          ( y1 [ i ] == y1 [ i-1 ] ) ) \
+      while ( i < j ) { if ( ( x1 [ i ] == x1 [ i-1 ] ) && \
+           ( y1 [ i ] == y1 [ i-1 ] ) ) \
           { j--; for ( k = i; k < j; k++ ) {x1 [ k ] = x1 [ k+1 ] ;
           y1 [ k ] = y1 [ k+1 ] ; }}
           else i++;
@@ -1648,7 +1649,7 @@ static char *OthFonts []= {
       return ( j ) ;
   }
   void _uimpoly_fill ( kgWC *wc , int n , int *px , int *py , \
-       int *px1 , int *py1 , unsigned int b_color ) \
+  int *px1 , int *py1 , unsigned int b_color ) \
   {
 #if 1
       short j , imd;
@@ -1657,7 +1658,7 @@ static char *OthFonts []= {
       int xlow , xup;
       int txx;
       int ymax [ 5000 ] , ymin [ 5000 ] , xmax [ 5000 ] , \
-           xmin [ 5000 ] , tyx , tyn , txn , scan , ygrt;
+      xmin [ 5000 ] , tyx , tyn , txn , scan , ygrt;
       unsigned int tempc;
       xup = -1000000;
       xlow = 1000000;
@@ -1710,8 +1711,8 @@ static char *OthFonts []= {
           for ( i = ind; i < n; ++i ) {
               if ( ymin [ i ] <= scan ) {
                   if ( ymax [ i ] != ymin [ i ] ) {
-                      xcord [ cnt ] = ( ( ( float ) ( xmax [ i ] -xmin [ i ] ) /  \
-                          ( ymax [ i ] -ymin [ i ] ) * \
+                      xcord [ cnt ] = ( ( ( float ) ( xmax [ i ] -xmin [ i ] ) / \
+                       ( ymax [ i ] -ymin [ i ] ) * \
                        ( scan-ymin [ i ] ) +xmin [ i ] +0.5 ) ) ;
                       ++cnt;
                   }
@@ -1769,13 +1770,13 @@ static char *OthFonts []= {
                   x [ i ] = xdum*dc->txt_w42+xo; y [ i ] = yo+ydum*dc->txt_h42;
               }
               pnts += ui_fillchr ( wc , x , y , n , & x1 [ pnts ] , \
-                   & y1 [ pnts ] , & x2 [ pnts ] , & y2 [ pnts ] ) ;
+               & y1 [ pnts ] , & x2 [ pnts ] , & y2 [ pnts ] ) ;
               code = dc->icxv [ ptr ] ; n = dc->icyv [ ptr ] ;
               if ( code < 0 ) {
                   _uimpoly_fill ( wc , pnts , x1 , y1 , x2 , y2 , color ) ;
                   temp = wc->c_color; wcset_clr ( wc , dc->t_color ) ;
                   for ( i = 0; i < pnts; i++ ) uidraw_line ( G , x1 [ i ] /Mag , \
-                       y1 [ i ] /Mag , x2 [ i ] /Mag , y2 [ i ] /Mag ) ;
+                  y1 [ i ] /Mag , x2 [ i ] /Mag , y2 [ i ] /Mag ) ;
                   wcset_clr ( wc , temp ) ;
                   pnts = 0;
               }
@@ -1829,13 +1830,13 @@ static char *OthFonts []= {
                   y [ i ] = ( dc->cy+ ( ydum ) *dc->cost- ( xdum ) *dc->sint ) ;
               }
               pnts += ui_fillchr ( wc , x , y , n , & x1 [ pnts ] , \
-                   & y1 [ pnts ] , & x2 [ pnts ] , & y2 [ pnts ] ) ;
+               & y1 [ pnts ] , & x2 [ pnts ] , & y2 [ pnts ] ) ;
               code = dc->icxv [ ptr ] ; n = dc->icyv [ ptr ] ;
               if ( code < 0 ) {
                   _uimpoly_fill ( wc , pnts , x1 , y1 , x2 , y2 , color ) ;
                   temp = wc->c_color; wcset_clr ( wc , dc->t_color ) ;
                   for ( i = 0; i < pnts; i++ ) uidraw_line ( G , x1 [ i ] /Mag , \
-                       y1 [ i ] /Mag , x2 [ i ] /Mag , y2 [ i ] /Mag ) ;
+                  y1 [ i ] /Mag , x2 [ i ] /Mag , y2 [ i ] /Mag ) ;
                   wcset_clr ( wc , temp ) ;
                   pnts = 0;
               }
@@ -2093,7 +2094,7 @@ static char *OthFonts []= {
       return;
   }
   void _uipoly_fill ( DIG *G , int n , int *px , \
-       int *py , int flag , unsigned int color ) \
+  int *py , int flag , unsigned int color ) \
   {
       short j , imd;
       short i , cnt , ind;
@@ -2101,7 +2102,7 @@ static char *OthFonts []= {
       int xlow , xup;
       int txx;
       int ymax [ 300 ] , ymin [ 300 ] , xmax [ 300 ] , \
-           xmin [ 300 ] , tyx , tyn , txn , scan , ygrt;
+      xmin [ 300 ] , tyx , tyn , txn , scan , ygrt;
       unsigned int tempc;
       kgWC *wc;
       kgDC *dc;
@@ -2158,8 +2159,8 @@ static char *OthFonts []= {
           for ( i = ind; i < n; ++i ) {
               if ( ymin [ i ] <= scan ) {
                   if ( ymax [ i ] != ymin [ i ] ) {
-                      xcord [ cnt ] = ( ( ( float ) ( xmax [ i ] -xmin [ i ] ) /  \
-                          ( ymax [ i ] -ymin [ i ] ) * \
+                      xcord [ cnt ] = ( ( ( float ) ( xmax [ i ] -xmin [ i ] ) / \
+                       ( ymax [ i ] -ymin [ i ] ) * \
                        ( scan-ymin [ i ] ) +xmin [ i ] ) +0.5 ) ;
                       ++cnt;
                   }
@@ -2174,12 +2175,12 @@ static char *OthFonts []= {
           }
  /*displaying scan lines*/
           for ( i = 0; i < cnt; i+= 2 ) _uihori_line ( wc , \
-               xcord [ i ] , xcord [ i+1 ] , scan ) ;
+          xcord [ i ] , xcord [ i+1 ] , scan ) ;
           scan++;
       }
       wcset_clr ( wc , dc->ln_color ) ;
-      if ( flag == 1 ) for ( i = 0; i < n; i++ ) _uidraw_line  \
-          ( wc , px [ i ] , py [ i ] , px [ \
+      if ( flag == 1 ) for ( i = 0; i < n; i++ ) _uidraw_line \
+       ( wc , px [ i ] , py [ i ] , px [ \
        ( i+1 ) %n ] , py [ ( i+1 ) %n ] ) ;
       wcset_clr ( wc , tempc ) ;
   }
@@ -2429,7 +2430,7 @@ static char *OthFonts []= {
       if ( y0 < y1 ) ymin = y0 , ymax = y1;
       else ymin = y1 , ymax = y0;
       if ( ( xmin != xmax ) && ( ymin != ymax ) ) lcur_x = xmin , \
-           lcur_y = ymax , rcur_x = xmax , rcur_y = ymin;
+      lcur_y = ymax , rcur_x = xmax , rcur_y = ymin;
       while ( ( GetPointer ( & x1 , & y1 ) ) > 0 ) ;
       rmv_pointer ( ) ;
       return;
@@ -2665,7 +2666,7 @@ static char *OthFonts []= {
   }
 #endif
   void _uigodard_fill ( DIG *G , int n , int *px , \
-       int *py , int flag , float *pv ) \
+  int *py , int flag , float *pv ) \
   {
       short j , imd;
       short i , cnt , ind;
@@ -2673,7 +2674,7 @@ static char *OthFonts []= {
       int xlow , xup;
       int txx;
       int ymax [ 15 ] , ymin [ 15 ] , xmax [ 15 ] , xmin [ 15 ] , \
-           tyx , tyn , txn , scan , ygrt;
+      tyx , tyn , txn , scan , ygrt;
       float pmax [ 15 ] , pmin [ 15 ] , pcord [ 15 ] , tpx , tpn , tpp;
       unsigned int tempc;
       kgDC *dc;
@@ -2739,11 +2740,11 @@ static char *OthFonts []= {
           for ( i = ind; i < n; ++i ) {
               if ( ymin [ i ] <= scan ) {
                   if ( ymax [ i ] != ymin [ i ] ) {
-                      xcord [ cnt ] = ( ( ( float ) ( xmax [ i ] -xmin [ i ] ) /  \
-                          ( ymax [ i ] -ymin [ i ] ) * \
+                      xcord [ cnt ] = ( ( ( float ) ( xmax [ i ] -xmin [ i ] ) / \
+                       ( ymax [ i ] -ymin [ i ] ) * \
                        ( scan-ymin [ i ] ) +xmin [ i ] ) +0.5 ) ;
-                      pcord [ cnt ] = ( ( ( float ) ( pmax [ i ] -pmin [ i ] ) /  \
-                          ( ymax [ i ] -ymin [ i ] ) * \
+                      pcord [ cnt ] = ( ( ( float ) ( pmax [ i ] -pmin [ i ] ) / \
+                       ( ymax [ i ] -ymin [ i ] ) * \
                        ( scan-ymin [ i ] ) +pmin [ i ] ) ) ;
                       ++cnt;
                   }
@@ -2763,11 +2764,11 @@ static char *OthFonts []= {
           }
  /*displaying scan lines*/
           for ( i = 0; i < cnt; i+= 2 ) uigodr_line ( G , xcord [ i ] , \
-               xcord [ i+1 ] , scan , pcord [ i ] , pcord [ i+1 ] ) ;
+          xcord [ i+1 ] , scan , pcord [ i ] , pcord [ i+1 ] ) ;
           scan++;
       }
-      if ( flag == 1 ) for ( i = 0; i < n; i++ ) _uidraw_line  \
-          ( wc , px [ i ] , py [ i ] , px [ \
+      if ( flag == 1 ) for ( i = 0; i < n; i++ ) _uidraw_line \
+       ( wc , px [ i ] , py [ i ] , px [ \
        ( i+1 ) %n ] , py [ ( i+1 ) %n ] ) ;
   }
   void uigodr_line ( DIG *G , int xa , int xb , int y , float pa , float pb ) {
@@ -2944,9 +2945,9 @@ static char *OthFonts []= {
       dc->txt_spx = dc->txt_sp;
       dc->txt_spy = dc->txt_sp;
       if ( ( G->D != NULL ) ) ui_vu_port ( G , dc->vu_x1 , \
-           dc->vu_y1 , dc->vu_x2 , dc->vu_y2 ) ;
+      dc->vu_y1 , dc->vu_x2 , dc->vu_y2 ) ;
       if ( G->D_ON == 0 ) img_viewport ( G , dc->vu_x1 , \
-           dc->vu_y1 , dc->vu_x2 , dc->vu_y2 ) ;
+      dc->vu_y1 , dc->vu_x2 , dc->vu_y2 ) ;
   }
   void ui_lnwidth ( DIG *G , int width ) {
       kgDC *dc;
@@ -2971,7 +2972,7 @@ static char *OthFonts []= {
       _uidraw ( G , x1 , y1 ) ;
   }
   void ui_drawimage_org ( DIG *G , void *imgfile , \
-       float x1 , float y1 , float x2 , float y2 ) \
+  float x1 , float y1 , float x2 , float y2 ) \
   {
       float fac;
       GMIMG *img , *rzimg;
@@ -3031,7 +3032,7 @@ static char *OthFonts []= {
       if ( ! IMG ) uiFreeImage ( img ) ;
   }
   void ui_drawimage ( DIG *G , void *imgfile , float x1 , \
-       float y1 , float x2 , float y2 ) \
+  float y1 , float x2 , float y2 ) \
   {
       float fac;
       GMIMG *img , *rzimg;
@@ -3105,7 +3106,7 @@ static char *OthFonts []= {
       w = X2-X1+1;
       h = Y2 -Y1+1;
       kgImage ( D , img , X1 , Y1 , img->image_width , \
-           img->image_height , 0.0 , 1.0 ) ;
+      img->image_height , 0.0 , 1.0 ) ;
       if ( ! IMG ) uiFreeImage ( img ) ;
   }
   void ui_ln_style ( DIG *G , int istl ) {
@@ -3126,7 +3127,7 @@ static char *OthFonts []= {
       dc->t_color = color;
   }
   void ui_txt_size ( DIG *G , float ht , float wt , float sp , \
-       float htx , float wty , float spy ) \
+  float htx , float wty , float spy ) \
   {
       kgDC *dc;
       kgWC *wc;
@@ -3415,14 +3416,14 @@ static char *OthFonts []= {
           uiCleangmImage ( G->img ) ;
           ui_vu_port ( G , dc->vu_x1 , dc->vu_y1 , dc->vu_x2 , dc->vu_y2 ) ;
           _uibox_fill ( G->wc , dc->D_x+dc->v_x1 , dc->D_y+dc->v_y1 , \
-               dc->v_x2+dc->D_x , dc->v_y2+dc->D_y , 0 ) ;
+          dc->v_x2+dc->D_x , dc->v_y2+dc->D_y , 0 ) ;
           img_viewport ( G , dc->vu_x1 , dc->vu_y1 , dc->vu_x2 , dc->vu_y2 ) ;
       }
       else _uibox_fill ( G->wc , dc->D_x+dc->v_x1 , dc->D_y+dc->v_y1 , \
-           dc->v_x2+dc->D_x , dc->v_y2+dc->D_y , 0 ) ;
+      dc->v_x2+dc->D_x , dc->v_y2+dc->D_y , 0 ) ;
   }
   void ui_panel ( DIG *G , float *x , float *y , \
-       int color , int flag , int n ) \
+  int color , int flag , int n ) \
   {
       int *x1 , *y1;
       int xo , yo , xv , yv;
@@ -3455,7 +3456,7 @@ static char *OthFonts []= {
       free ( x1 ) , free ( y1 ) ;
   }
   void ui_box_fill ( DIG *G , float x1 , float y1 , \
-       float x2 , float y2 , int color , int ib ) \
+  float x2 , float y2 , int color , int ib ) \
   {
       int xa , ya , xb , yb;
       kgDC *dc;
@@ -3469,7 +3470,7 @@ static char *OthFonts []= {
       _uibox_fill ( wc , xa , ya , xb , yb , color ) ;
   }
   void ui_set_godr ( DIG *G , float p2 , float p1 , \
-       int sclr , int n , int ib ) \
+  int sclr , int n , int ib ) \
   {
       kgDC *dc;
       dc = G->dc;
@@ -4143,16 +4144,16 @@ void transch(int c) {
           exit ( 0 ) ;
       }
       if ( ix2 < wc->c_v_x1 ) {wc->c_v_x1 = 1 , wc->c_v_x2 = 0 , \
-           wc->c_v_y1 = 1 , wc->c_v_y2 = 0;
+          wc->c_v_y1 = 1 , wc->c_v_y2 = 0;
       return; };
       if ( ix1 > wc->c_v_x2 ) {wc->c_v_x1 = 1 , wc->c_v_x2 = 0 , \
-           wc->c_v_y1 = 1 , wc->c_v_y2 = 0;
+          wc->c_v_y1 = 1 , wc->c_v_y2 = 0;
       return; };
       if ( iy2 < wc->c_v_y1 ) {wc->c_v_x1 = 1 , wc->c_v_x2 = 0 , \
-           wc->c_v_y1 = 1 , wc->c_v_y2 = 0;
+          wc->c_v_y1 = 1 , wc->c_v_y2 = 0;
       return; };
       if ( iy1 > wc->c_v_y2 ) {wc->c_v_x1 = 1 , wc->c_v_x2 = 0 , \
-           wc->c_v_y1 = 1 , wc->c_v_y2 = 0;
+          wc->c_v_y1 = 1 , wc->c_v_y2 = 0;
       return; };
       if ( ix1 >= wc->c_v_x1 ) wc->c_v_x1 = ix1;
       if ( ix2 <= wc->c_v_x2 ) wc->c_v_x2 = ix2;
@@ -4172,7 +4173,7 @@ void transch(int c) {
   }
 #if 0
   int rect_pointer ( kgWC *wc , int x0 , int y0 , \
-       int *xx , int *yy , int *entry ) \
+  int *xx , int *yy , int *entry ) \
   {
       static int key , x1 , y1;
       static int x2 , y2;
@@ -4277,7 +4278,7 @@ void transch(int c) {
   }
 #if 0
   int box_pointer ( DIALOG *D , int x0 , int y0 , \
-       int *xx , int *yy , int *entry ) \
+  int *xx , int *yy , int *entry ) \
   {
       static int key , x1 , y1;
       static int x2 , y2;
@@ -4425,7 +4426,7 @@ void transch(int c) {
       return;
   }
   void _uibox_fill ( kgWC *wc , int x1 , int y1 , \
-       int x2 , int y2 , unsigned int color ) \
+  int x2 , int y2 , unsigned int color ) \
   {
       int x_min , y_min , x_max , x_max1 , x_min1 , y_max , i , j;
       short po1;
@@ -4451,7 +4452,7 @@ void transch(int c) {
       return;
   }
   void ui_PointerZoom ( DIG *G , float *xmin , float *ymin , \
-       float *xmax , float *ymax ) \
+  float *xmax , float *ymax ) \
   {
       short it = 7 , item = 1;
       int EVGAY , DBLBUF = 0 , MAG = 0;
@@ -4532,7 +4533,7 @@ void transch(int c) {
       *ymin = dc->gw_y1 , *ymax = dc->gw_y2;
   }
   void ui_PointerAntialiasedZoom ( DIG *G , float *xmin , \
-       float *ymin , float *xmax , float *ymax ) \
+  float *ymin , float *xmax , float *ymax ) \
   {
       int EVGAY , DBLBUF = 0; ;
       short it = 7 , item = 1;
@@ -4594,7 +4595,7 @@ void transch(int c) {
  This routine is added for interactive zooming
 *************************************************/
   void ui_PointerZoomPan ( DIG *G , float *xmin , \
-       float *ymin , float *xmax , float *ymax ) \
+  float *ymin , float *xmax , float *ymax ) \
   {
       int xpo , ypo , key , xpo1 , ypo1;
       float xm , ym , dx , dy , sx , sy;
@@ -4614,8 +4615,8 @@ void transch(int c) {
       while ( 1 ) {
           key = GetPointer ( & xpo , & ypo ) ;
           if ( key <= 0 ) continue;
-          if ( ( xpo < dc->v_x1 ) || ( xpo > dc->v_x2 )  \
-              || ( ( EVGAY -ypo ) < dc->v_y1 ) \
+          if ( ( xpo < dc->v_x1 ) || ( xpo > dc->v_x2 ) \
+           || ( ( EVGAY -ypo ) < dc->v_y1 ) \
            || ( ( EVGAY -ypo ) > dc->v_y2 ) ) break;
           switch ( key ) {
               case 1:
@@ -4635,8 +4636,8 @@ void transch(int c) {
               key = GetPointer ( & xpo1 , & ypo1 ) ;
               while ( key == 2 ) {
                   if ( ( xpo1 != xpo ) && ( ypo1 != ypo ) ) {
-                      if ( ( xpo < dc->v_x1 ) || ( xpo > dc->v_x2 )  \
-                          || ( ( EVGAY -ypo ) < dc->v_y1 ) \
+                      if ( ( xpo < dc->v_x1 ) || ( xpo > dc->v_x2 ) \
+                       || ( ( EVGAY -ypo ) < dc->v_y1 ) \
                        || ( ( EVGAY -ypo ) > dc->v_y2 ) ) break;
                       sx = uiusr_x ( xpo1 ) - uiusr_x ( xpo ) ;
                       sy = uiusr_y ( EVGAY -ypo1 ) - uiusr_y ( EVGAY -ypo ) ;
@@ -4682,8 +4683,8 @@ void transch(int c) {
 #if 0
       short it = 6 , item = 1;
       char *cmenu [ ] = {
-      "Diagonal" , "move_Around" , "Stretch" , "Quit" , \
-           "menuOff" , "Usepointer" , NULL};
+          "Diagonal" , "move_Around" , "Stretch" , "Quit" , \
+      "menuOff" , "Usepointer" , NULL};
       DIALOG *D;
       kgWC *wc;
       wc = G->wc;
@@ -5026,7 +5027,7 @@ void transch(int c) {
   void _uidraw_line ( kgWC *wc , int x1 , int y1 , int x2 , int y2 ) {
       char far *addr;
       short i , dx , dy , f , g , inc1 , inc2 , ab , \
-           dx1 , dy1 , miny , maxy , minx , maxx;
+      dx1 , dy1 , miny , maxy , minx , maxx;
       short clip , ch , rh , r , c;
       unsigned int temp;
       int xa , ya , xb , yb;
@@ -5105,7 +5106,7 @@ void transch(int c) {
       _dvLine ( wc , xa , ( y ) , xb , ( y ) ) ;
   }
   char kgBoxCursor ( DIG *G , float *xx , float *yy , \
-       float *xbgn , float *ybgn ) \
+  float *xbgn , float *ybgn ) \
   {
       KBEVENT kbevent;
       DIALOG *D;
@@ -5210,7 +5211,7 @@ void transch(int c) {
       return ( key ) ;
   }
   char kgRectCursor ( DIG *G , float *xx , float *yy , \
-       float *xbgn , float *ybgn ) \
+  float *xbgn , float *ybgn ) \
   {
       KBEVENT kbevent;
       int kb , button , event , OK = 0;
@@ -5460,12 +5461,12 @@ void transch(int c) {
       draw_cursor ( G ) ;
       for ( ; ; ) {
           while ( ( pointer = cross_pointer ( D , & xpo , \
-               & ypo , & entry ) ) < 0 ) CALL_ATTN;
+           & ypo , & entry ) ) < 0 ) CALL_ATTN;
           while ( ( pointer == 0 ) ) {
               if ( ( xpo != gcur_x ) || ( ypo != gcur_y ) ) {gcur_x = xpo , gcur_y = ypo;
                   draw_po_cursor ( G ) ;
                   while ( ( pointer = cross_pointer ( D , & xpo , \
-                       & ypo , & entry ) ) < 0 ) CALL_ATTN;
+                   & ypo , & entry ) ) < 0 ) CALL_ATTN;
               }
               else pointer = -1;
           }
@@ -5511,7 +5512,7 @@ void transch(int c) {
   }
 #endif
   char kgDblCursor ( DIG *G , float *xx , float *yy , \
-       float *xbgn , float *ybgn ) \
+  float *xbgn , float *ybgn ) \
   {
       int ch , key , c_color;
       int xpo , ypo , but , pointer , xorg , yorg;
@@ -5654,7 +5655,7 @@ void transch(int c) {
       return ( key ) ;
   }
   char kgRbrCursor ( DIG *G , float *xx , float *yy , \
-       float *xbgn , float *ybgn ) \
+  float *xbgn , float *ybgn ) \
   {
       KBEVENT kbevent;
       int kb , button , event , OK = 0 , c_color;
@@ -5763,7 +5764,7 @@ void transch(int c) {
 #if 0
 #endif
   char kgArcCursor ( DIG *G , float *xx , float *yy , \
-       float *xbgn , float *ybgn ) \
+  float *xbgn , float *ybgn ) \
   {
       KBEVENT kbevent;
       int kb , button , event , OK = 0;
@@ -5938,7 +5939,7 @@ void transch(int c) {
       wcset_clr ( wc , tempc ) ;
   }
   void _uirect_fill ( kgWC *wc , int x1 , int y1 , \
-       int x2 , int y2 , unsigned int color ) \
+  int x2 , int y2 , unsigned int color ) \
   {
       short x_min , y_min , x_max , x_max1 , x_min1 , y_max , i , j , po1;
       unsigned int temp;
@@ -5964,7 +5965,7 @@ void transch(int c) {
       return;
   }
   void _dvrect_fill ( kgWC *wc , int x1 , int y1 , \
-       int x2 , int y2 , unsigned int color ) \
+  int x2 , int y2 , unsigned int color ) \
   {
       short x_min , y_min , x_max , x_max1 , x_min1 , y_max , i , j , po1;
       unsigned int temp;
@@ -5989,7 +5990,7 @@ void transch(int c) {
       return;
   }
   void _uirect_fill_transparent ( kgWC *wc , int x1 , int y1 , int x2 , \
-       int y2 , unsigned int color , float transparency ) \
+  int y2 , unsigned int color , float transparency ) \
   {
       short x_min , y_min , x_max , x_max1 , x_min1 , y_max , i , j , po1;
       unsigned int temp;
@@ -6018,7 +6019,7 @@ void transch(int c) {
       return;
   }
   void _dvrect_fill_transparent ( kgWC *wc , int x1 , int y1 , int x2 , \
-       int y2 , unsigned int color , float transparency ) \
+  int y2 , unsigned int color , float transparency ) \
   {
       short x_min , y_min , x_max , x_max1 , x_min1 , y_max , i , j , po1;
       unsigned int temp;
@@ -6044,14 +6045,14 @@ void transch(int c) {
               if ( y_max > ( D->evgay ) ) y_max = ( D->evgay ) ;
               if ( y_min < 0 ) y_min = 0;
               _dvBox_Fill_Transparent ( wc , x_min , y_min , \
-                   x_max1 , y_max , transparency ) ;
+              x_max1 , y_max , transparency ) ;
           }
       }
       uiset_clr ( D , temp ) ;
       return;
   }
   void uiMenuString ( DIALOG *D , char *Str , int x , int y , int width , \
-       int height , int font , int color , int FontSize , int status ) \
+  int height , int font , int color , int FontSize , int status ) \
   {
       void * fid;
       int ln , i , maxchar , temp , justification = -1;
@@ -6124,7 +6125,7 @@ void transch(int c) {
       return ;
   }
   void *uiMenuStringImage ( DIALOG *D , char *Str , int width , int height , \
-       int font , int color , int FontSize , int justification ) \
+  int font , int color , int FontSize , int justification ) \
   {
       void * fid;
       int ln , i , maxchar , temp;
@@ -6183,7 +6184,7 @@ void transch(int c) {
       return img;
   }
   char *uiCleanOldString ( char *Str , char *Buf , int *cval , \
-       int *fval , float *wfac , float *zfac ) {
+  int *fval , float *wfac , float *zfac ) {
       int i , k;
       char *pt = Str;
 //      printf("Str: %s\n",Str);
@@ -6254,8 +6255,9 @@ void transch(int c) {
 //      fflush(stdout);
       return Buf;
   }
-  void **uiMenuStringImages ( DIALOG *D , char **Strs , int width , int height , \
-       int font , int color , int FontSize , int justification , int Mag ) \
+  void **uiMenuStringImages ( DIALOG *D , char **Strs , \
+       int width , int height , \
+  int font , int color , int FontSize , int justification , int Mag ) \
   {
       void * fid;
       void **imgs;
@@ -6336,8 +6338,9 @@ void transch(int c) {
 #endif
       return imgs;
   }
-  void **orguiMenuStringImages ( DIALOG *D , char **Strs , int width , int height , \
-       int font , int color , int FontSize , int justification , int Mag ) \
+  void **orguiMenuStringImages ( DIALOG *D , char **Strs , \
+       int width , int height , \
+  int font , int color , int FontSize , int justification , int Mag ) \
   {
       void * fid;
       void **imgs;
@@ -6408,8 +6411,8 @@ void transch(int c) {
       return imgs;
   }
   void **uiMenuNailImagesOrg ( DIALOG *D , ThumbNail **Strs , int width , \
-       int height , int font , int color , int FontSize , \
-       int justification , int Mag ) \
+  int height , int font , int color , int FontSize , \
+  int justification , int Mag ) \
   {
       void * fid;
       void **imgs;
@@ -6481,8 +6484,9 @@ void transch(int c) {
       }
       return imgs;
   }
-  void **uiMenuNailImages ( DIALOG *D , ThumbNail **Strs , int width , int height , \
-       int font , int color , int FontSize , int justification , int Mag ) \
+  void **uiMenuNailImages ( DIALOG *D , ThumbNail **Strs , \
+       int width , int height , \
+  int font , int color , int FontSize , int justification , int Mag ) \
   {
       void * fid;
       void **imgs;
@@ -6706,7 +6710,7 @@ void transch(int c) {
               kgGetDefaultRGB ( color , & r , & g , & b ) ;
               rf = r , gf = g , bf = b;
               kgRoundedRectangleRing ( fid , 1.0*BxSize , yp+0.25*BxSize , \
-                   ( float ) BxSize*0.7 , \
+               ( float ) BxSize*0.7 , \
                ( float ) BxSize*0.7 , rf , gf , bf , 0.5 , 0.7 ) ;
 #endif
               kgMove2f ( fid , ( float ) BxSize-0.4*FontSize , yp+0.1*BxSize ) ;
@@ -6718,7 +6722,7 @@ void transch(int c) {
       return img;
   }
   void uiCheckString ( DIALOG *D , char *Str , int x , int y , int width , \
-       int height , int font , int color , int FontSize , int status ) \
+  int height , int font , int color , int FontSize , int status ) \
   {
       void * fid;
       int ln , i , maxchar , temp , justification = -1;
@@ -6789,7 +6793,7 @@ void transch(int c) {
       return ;
   }
   void uiRadioString ( DIALOG *D , char *Str , int x , int y , int width , \
-       int height , int font , int color , int FontSize , int status ) \
+  int height , int font , int color , int FontSize , int status ) \
   {
       void * fid;
       int ln , i , maxchar , temp , justification = -1;
@@ -6866,8 +6870,9 @@ void transch(int c) {
       }
       return ;
   }
-  void uiString ( DIALOG *D , char *str , int x , int y , int width , int height , \
-       int font , int color , int FontSize , int justfic , int bkcolor ) \
+  void uiString ( DIALOG *D , char *str , int x , \
+       int y , int width , int height , \
+  int font , int color , int FontSize , int justfic , int bkcolor ) \
   {
 /*
    Write a string in Dialog Area;
@@ -6931,7 +6936,7 @@ void transch(int c) {
       if ( FontSize <= 0 ) F.Size = ( height-4 ) /2;
       else F.Size = FontSize;
       IMG = ( IMG_STR * ) uiComplexString ( str , F.Imgs , \
-           font , cval , F.Size , height ) ;
+      font , cval , F.Size , height ) ;
 //     if(F.Imgs == Mimgs ) IMG->img  = NULL;
 #endif
       if ( bkcolor >= 0 ) {
@@ -6977,8 +6982,8 @@ void transch(int c) {
       else printf ( "img == NULL\n" ) ;
   }
   void uiMessageString ( DIALOG *D , char *str , int x , int y , int width , \
-       int height , int font , int color , int FontSize , \
-       int justfic , int bkcolor ) \
+  int height , int font , int color , int FontSize , \
+  int justfic , int bkcolor ) \
   {
 /*
    Write a string in Dialog Area;
@@ -7042,7 +7047,7 @@ void transch(int c) {
       if ( FontSize <= 0 ) F.Size = ( height-4 ) /2;
       else F.Size = FontSize;
       IMG = ( IMG_STR * ) uiComplexString ( str , F.Imgs , \
-           font , cval , F.Size , height ) ;
+      font , cval , F.Size , height ) ;
 //     if(F.Imgs == Mimgs ) IMG->img  = NULL;
 #endif
       if ( bkcolor >= 0 ) {
@@ -7088,8 +7093,8 @@ void transch(int c) {
       else printf ( "img == NULL\n" ) ;
   }
   void uiString_bkup ( DIALOG *D , char *str , int x , int y , int width , \
-       int height , int font , int color , int FontSize , \
-       int justfic , int bkcolor ) \
+  int height , int font , int color , int FontSize , \
+  int justfic , int bkcolor ) \
   {
 /*
    Write a string in Dialog Area;
@@ -7151,7 +7156,7 @@ void transch(int c) {
       if ( FontSize <= 0 ) F.Size = ( height-4 ) /2;
       else F.Size = FontSize;
       IMG = ( IMG_STR * ) uiComplexString ( str , F.Imgs , \
-           font , cval , F.Size , height ) ;
+      font , cval , F.Size , height ) ;
 #endif
       if ( bkcolor >= 0 ) {
           fid = kgInitImage ( ln , height , 1 ) ;
@@ -7190,8 +7195,8 @@ void transch(int c) {
       else printf ( "img == NULL\n" ) ;
   }
   void *uiStringToImage ( DIALOG *D , char *str , int x , int y , int width , \
-       int height , int font , int color , int FontSize , \
-       int justfic , int bkcolor ) \
+  int height , int font , int color , int FontSize , \
+  int justfic , int bkcolor ) \
   {
 /*
    Write a string in Dialog Area;
@@ -7255,7 +7260,7 @@ void transch(int c) {
       else F.Size = FontSize;
       if ( F.Size > ( ( height-6 ) /2 ) ) F.Size = ( height-6 ) /2 ;
       IMG = ( IMG_STR * ) uiComplexString ( str , F.Imgs , \
-           font , cval , F.Size , height ) ;
+      font , cval , F.Size , height ) ;
 #endif
       if ( bkcolor >= 0 ) {
           fid = kgInitImage ( ln , height , 1 ) ;
@@ -7290,7 +7295,7 @@ void transch(int c) {
       return img;
   }
   void uiMsgString ( DIALOG *D , char *str , int x1 , int y1 , \
-       int char_clr , int Font , int FontSize ) \
+  int char_clr , int Font , int FontSize ) \
   {
  /* writes a string in fixed font mod */
       void *fid , *img;
@@ -7326,8 +7331,8 @@ void transch(int c) {
       return;
   }
   void uiBoxedString ( DIALOG *D , char *str , int x , int y , int width , \
-       int height , int font , int border , int highli , int charclr , \
-       int FontSize , int justfic , float rfac , int state ) \
+  int height , int font , int border , int highli , int charclr , \
+  int FontSize , int justfic , float rfac , int state ) \
   {
 /*
    Write a string in Dialog Area;
@@ -7348,15 +7353,16 @@ void transch(int c) {
 //   if(str==NULL) return;
 //   if(str[0]=='\0') return;
       img = kgBoxedStringToImage ( str , NULL , ln , height , font , border , \
-           highli , charclr , justfic , FontSize , rfac , state ) ;
+      highli , charclr , justfic , FontSize , rfac , state ) ;
       if ( img != NULL ) {
           kgImage ( D , img , x , y , ln , height , 0.0 , 1.0 ) ;
           uiFreeImage ( img ) ;
       }
   }
   void uiFilledString ( DIALOG *D , char *str , int x , int y , int width , \
-       int height , int font , int fillcolor , int highli , int color , int FontSize , \
-       int justfic , float rfac , int state , float depthfac ) \
+  int height , int font , int fillcolor , int highli , \
+       int color , int FontSize , \
+  int justfic , float rfac , int state , float depthfac ) \
   {
 /*
    Write a string in Dialog Area;
@@ -7377,16 +7383,17 @@ void transch(int c) {
 //   if(str==NULL) return;
 //   if(str[0]=='\0') return;
       img = kgFilledStringToImage3 ( str , NULL , ln , height , font , fillcolor , \
-           highli , color , D->gc.fill_clr , justfic , \
-           FontSize , rfac , state , depthfac ) ;
+      highli , color , D->gc.fill_clr , justfic , \
+      FontSize , rfac , state , depthfac ) ;
       if ( img != NULL ) {
           kgImage ( D , img , x , y , ln , height , 0.0 , 1.0 ) ;
           uiFreeImage ( img ) ;
       }
   }
   void uiFilledString1 ( DIALOG *D , char *str , int x , int y , int width , \
-       int height , int font , int fillcolor , int highli , int color , int FontSize , \
-       int justfic , float rfac , int state , float depthfac ) \
+  int height , int font , int fillcolor , int highli , \
+       int color , int FontSize , \
+  int justfic , float rfac , int state , float depthfac ) \
   {
 /*
    Write a string in Dialog Area;
@@ -7407,16 +7414,16 @@ void transch(int c) {
 //   if(str==NULL) return;
 //   if(str[0]=='\0') return;
       img = kgFilledStringToImage1 ( str , NULL , ln , height , font , fillcolor , \
-           highli , color , D->gc.fill_clr , justfic , \
-           FontSize , rfac , state , depthfac ) ;
+      highli , color , D->gc.fill_clr , justfic , \
+      FontSize , rfac , state , depthfac ) ;
       if ( img != NULL ) {
           kgImage ( D , img , x , y , ln , height , 0.0 , 1.0 ) ;
           uiFreeImage ( img ) ;
       }
   }
   void uiSplashString ( DIALOG *D , char *str , int x , int y , int width , \
-       int height , int font , int fillcolor , int color , \
-       int FontSize , int justfic , float rfac ) \
+  int height , int font , int fillcolor , int color , \
+  int FontSize , int justfic , float rfac ) \
   {
 /*
    Write a string in Dialog Area;
@@ -7437,15 +7444,16 @@ void transch(int c) {
 //   if(str==NULL) return;
 //   if(str[0]=='\0') return;
       img = kgSplashStringToImage ( str , ln , height , font , fillcolor , \
-           color , D->gc.fill_clr , justfic , FontSize , rfac ) ;
+      color , D->gc.fill_clr , justfic , FontSize , rfac ) ;
       if ( img != NULL ) {
           kgImage ( D , img , x , y , ln , height , 0.0 , 1.0 ) ;
           uiFreeImage ( img ) ;
       }
   }
   void uiShadedString ( DIALOG *D , char *str , int x , int y , int width , \
-       int height , int font , int fillcolor , int highli , int color , int FontSize , \
-       int justfic , float rfac , int state , int type ) \
+  int height , int font , int fillcolor , int highli , \
+       int color , int FontSize , \
+  int justfic , float rfac , int state , int type ) \
   {
 /*
    Write a string in Dialog Area;
@@ -7466,25 +7474,25 @@ void transch(int c) {
       switch ( type ) {
           case 0:
           uiString ( D , str , x , y+height+5 , ln , 20 , font , \
-               color , FontSize , justfic , fillcolor ) ;
+          color , FontSize , justfic , fillcolor ) ;
           return;
           case 1:
           uiBoxedString ( D , str , x , y , width , height , font , fillcolor , \
-               highli , color , FontSize , justfic , rfac , state ) ;
+          highli , color , FontSize , justfic , rfac , state ) ;
           return;
           case 2:
           uiFilledString ( D , str , x , y , width , height , font , fillcolor , \
-               highli , color , FontSize , justfic , rfac , state , 3.0 ) ;
+          highli , color , FontSize , justfic , rfac , state , 3.0 ) ;
           return;
           case 3:
           uiFilledString1 ( D , str , x , y , width , height , font , fillcolor , \
-               highli , color , FontSize , justfic , rfac , state , 5.0 ) ;
+          highli , color , FontSize , justfic , rfac , state , 5.0 ) ;
           return;
           case 4:
           case 5:
           case 6:
           img = kgShadedStringToImage ( str , NULL , ln , height , font , fillcolor , \
-               highli , color , justfic , FontSize , rfac , state , type-4 ) ;
+          highli , color , justfic , FontSize , rfac , state , type-4 ) ;
           if ( img != NULL ) {
               kgImage ( D , img , x , y , ln , height , 0.0 , 1.0 ) ;
               uiFreeImage ( img ) ;
@@ -7492,15 +7500,15 @@ void transch(int c) {
           return;
           default:
           uiFilledString ( D , str , x , y , width , height , font , fillcolor , \
-               highli , color , FontSize , justfic , rfac , state , \
+          highli , color , FontSize , justfic , rfac , state , \
            ( float ) ( type-6 ) ) ;
           return;
       }
   }
   void uiShadedStringImage ( DIALOG *D , char *str , void *image , int x , \
-       int y , int width , int height , int font , int fillcolor , int highli , \
-       int color , int FontSize , int justfic , \
-       float rfac , int state , int type ) \
+  int y , int width , int height , int font , int fillcolor , int highli , \
+  int color , int FontSize , int justfic , \
+  float rfac , int state , int type ) \
   {
 /*
    Write a string in Dialog Area;
@@ -7519,7 +7527,7 @@ void transch(int c) {
 #if 0
       if ( ( image == NULL ) && ( type != 0 ) ) {
           uiShadedString ( D , str , x , y , width , height , font , fillcolor , \
-               highli , color , FontSize , justfic , rfac , state , type ) ;
+          highli , color , FontSize , justfic , rfac , state , type ) ;
           return;
       }
 #endif
@@ -7529,67 +7537,69 @@ void transch(int c) {
       switch ( type ) {
           case 0:
           uiString ( D , str , x , y+height+5 , width , 20 , font , \
-               color , FontSize , justfic , fillcolor ) ;
+          color , FontSize , justfic , fillcolor ) ;
           if ( image != NULL ) { kgImage ( D , image , x+1 , \
-               y+1 , width-2 , height-2 , 0.0 , 1.0 ) ;
+              y+1 , width-2 , height-2 , 0.0 , 1.0 ) ;
           }
           return;
           case 1:
           uiBoxedString ( D , NULL , x , y , width , height , font , fillcolor , \
-               highli , color , FontSize , justfic , rfac , state ) ;
+          highli , color , FontSize , justfic , rfac , state ) ;
           if ( image != NULL ) { kgImage ( D , image , x+1 , \
-               y+1 , width-2 , height-2 , 0.0 , 1.0 ) ;
+              y+1 , width-2 , height-2 , 0.0 , 1.0 ) ;
           }
           if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) uiString ( D , str , x+off , \
-               y , ln , height , font , color , FontSize , justfic , -1 ) ;
+          y , ln , height , font , color , FontSize , justfic , -1 ) ;
           return;
           case 2:
           uiFilledString ( D , NULL , x , y , width , height , font , fillcolor , \
-               highli , color , FontSize , justfic , rfac , state , 3.0 ) ;
+          highli , color , FontSize , justfic , rfac , state , 3.0 ) ;
           if ( image != NULL ) { kgImage ( D , image , x+1 , \
-               y+1 , width-2 , height-2 , 0.0 , 1.0 ) ;
+              y+1 , width-2 , height-2 , 0.0 , 1.0 ) ;
           }
           if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) uiString ( D , str , x+off , \
-               y , ln , height , font , color , FontSize , justfic , -1 ) ;
+          y , ln , height , font , color , FontSize , justfic , -1 ) ;
           return;
           case 3:
           uiFilledString1 ( D , NULL , x , y , width , height , font , fillcolor , \
-               highli , color , FontSize , justfic , rfac , state , 3.0 ) ;
+          highli , color , FontSize , justfic , rfac , state , 3.0 ) ;
           if ( image != NULL ) { kgImage ( D , image , x+1 , \
-               y+1 , width-2 , height-2 , 0.0 , 1.0 ) ;
+              y+1 , width-2 , height-2 , 0.0 , 1.0 ) ;
           }
           if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) uiString ( D , str , x+off , \
-               y , ln , height , font , color , FontSize , justfic , -1 ) ;
+          y , ln , height , font , color , FontSize , justfic , -1 ) ;
           return;
           case 4:
           case 5:
           case 6:
-          img = kgShadedStringToImage ( NULL , NULL , width , height , font , fillcolor , \
-               highli , color , justfic , FontSize , rfac , state , type-4 ) ;
+          img = kgShadedStringToImage ( NULL , NULL , \
+               width , height , font , fillcolor , \
+          highli , color , justfic , FontSize , rfac , state , type-4 ) ;
           if ( img != NULL ) {
               kgImage ( D , img , x , y , width , height , 0.0 , 1.0 ) ;
               uiFreeImage ( img ) ;
           }
           if ( image != NULL ) { kgImage ( D , image , x+1 , \
-               y+1 , width-2 , height-2 , 0.0 , 1.0 ) ;
+              y+1 , width-2 , height-2 , 0.0 , 1.0 ) ;
           }
           if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) uiString ( D , str , x+off , \
-               y , ln , height , font , color , FontSize , justfic , -1 ) ;
+          y , ln , height , font , color , FontSize , justfic , -1 ) ;
           return;
           default:
           uiFilledString1 ( D , NULL , x , y , width , height , font , fillcolor , \
-               highli , color , FontSize , justfic , rfac , state , \
+          highli , color , FontSize , justfic , rfac , state , \
            ( float ) ( type-3. ) ) ;
           if ( image != NULL ) { kgImage ( D , image , x+1 , \
-               y+1 , width-2 , height-2 , 0.0 , 1.0 ) ;
+              y+1 , width-2 , height-2 , 0.0 , 1.0 ) ;
           }
           if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) uiString ( D , str , x+off , \
-               y , ln , height , font , color , FontSize , justfic , -1 ) ;
+          y , ln , height , font , color , FontSize , justfic , -1 ) ;
           return;
       }
   }
-  void *uiMakeButtonImage ( DIALOG *D , int width , int height , int fillcolor , \
-       int state , int highli , float rfac , int type ) \
+  void *uiMakeButtonImage ( DIALOG *D , int width , \
+       int height , int fillcolor , \
+  int state , int highli , float rfac , int type ) \
   {
 /*
    Write a string in Dialog Area;
@@ -7618,8 +7628,9 @@ void transch(int c) {
           case 9:
           return NULL;
           case 1:
-          img = kgBoxedStringToImage ( NULL , NULL , width , height , font , fillcolor , \
-               highli , color , justfic , FontSize , rfac , state ) ;
+          img = kgBoxedStringToImage ( NULL , NULL , \
+               width , height , font , fillcolor , \
+          highli , color , justfic , FontSize , rfac , state ) ;
           return img;
           case 2:
           switch ( state ) {
@@ -7635,11 +7646,12 @@ void transch(int c) {
           }
           return img;
           case 3:
-          img = kgFilledStringToImage3 ( NULL , NULL , width , height , font , fillcolor , \
-               highli , color , D->gc.fill_clr , justfic , FontSize , rfac , state , 2.0 ) ;
+          img = kgFilledStringToImage3 ( NULL , NULL , \
+               width , height , font , fillcolor , \
+          highli , color , D->gc.fill_clr , justfic , FontSize , rfac , state , 2.0 ) ;
           img1 = kgFilledStringToImage3 ( NULL , NULL , width-2 , height-2 , font , \
-               fillcolor , highli , color , D->gc.fill_clr , \
-               justfic , FontSize , rfac , state , 3.0 ) ;
+          fillcolor , highli , color , D->gc.fill_clr , \
+          justfic , FontSize , rfac , state , 3.0 ) ;
           img = kgMergeImages ( img , img1 , 0 , 0 ) ;
           kgFreeGmImage ( img1 ) ;
           return img;
@@ -7649,17 +7661,19 @@ void transch(int c) {
           case 7:
           case 8:
 //              printf("TCB:rfac = %f\n",rfac);
-          img = kgShadedStringToImage ( NULL , NULL , width , height , font , fillcolor , \
-               highli , color , justfic , FontSize , rfac , state , type-4 ) ;
+          img = kgShadedStringToImage ( NULL , NULL , \
+               width , height , font , fillcolor , \
+          highli , color , justfic , FontSize , rfac , state , type-4 ) ;
           return img;
           default:
-          img = kgFilledStringToImage1 ( NULL , NULL , width , height , font , fillcolor , \
-               highli , color , D->gc.fill_clr , justfic , FontSize , rfac , state , 3.0 ) ;
+          img = kgFilledStringToImage1 ( NULL , NULL , \
+               width , height , font , fillcolor , \
+          highli , color , D->gc.fill_clr , justfic , FontSize , rfac , state , 3.0 ) ;
           return img;
       }
   }
   void *uiAddButtonString ( DIALOG *D , char *str , void *image , void *xpm , \
-       int width , int height , int font , int color , int FontSize , int type ) \
+  int width , int height , int font , int color , int FontSize , int type ) \
   {
 /*
    Write a string in Dialog Area;
@@ -7704,7 +7718,7 @@ void transch(int c) {
           default:
           if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) {
               simg = uiStringToImage ( D , str , 0 , 0 , ln , height , \
-                   font , color , FontSize , justfic , -1 ) ;
+              font , color , FontSize , justfic , -1 ) ;
               cimg = kgMergeImages ( cimg , simg , 0 , 0 ) ;
               kgFreeGmImage ( simg ) ;
           }
@@ -7712,9 +7726,9 @@ void transch(int c) {
       }
   }
   void *uiMakeStringImage ( DIALOG *D , char *str , void *image , int x , \
-       int y , int width , int height , int font , int fillcolor , int highli , \
-       int color , int FontSize , int justfic , \
-       float rfac , int state , int type ) \
+  int y , int width , int height , int font , int fillcolor , int highli , \
+  int color , int FontSize , int justfic , \
+  float rfac , int state , int type ) \
   {
 /*
    Write a string in Dialog Area;
@@ -7753,7 +7767,7 @@ void transch(int c) {
               if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) {
  //                 cimg = kgStringToImage ( str , NULL , ln , height , font , color , justfic , FontSize , -1 ) ;
                   cimg = uiStringToImage ( D , str , 0 , 0 , ln , height , \
-                       font , color , FontSize , justfic , -1 ) ;
+                  font , color , FontSize , justfic , -1 ) ;
               }
               return cimg;
           }
@@ -7763,7 +7777,7 @@ void transch(int c) {
               kgFreeGmImage ( cimg ) ;
               if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) {
                   cimg = kgStringToImage ( str , NULL , ln , height , \
-                       font , color , justfic , FontSize , -1 ) ;
+                  font , color , justfic , FontSize , -1 ) ;
                   if ( cimg != NULL ) {
                       img = kgMergeImages ( img , cimg , off , 0 ) ;
                       kgFreeGmImage ( cimg ) ;
@@ -7774,7 +7788,7 @@ void transch(int c) {
           else {
               if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) {
                   img = kgStringToImage ( str , NULL , ln , height , \
-                       font , color , justfic , FontSize , -1 ) ;
+                  font , color , justfic , FontSize , -1 ) ;
                   if ( img != NULL ) {
                       cimg = kgMergeImages ( cimg , img , off , 0 ) ;
                       kgFreeGmImage ( img ) ;
@@ -7785,14 +7799,15 @@ void transch(int c) {
           break;
           case 1:
           if ( cimg != NULL ) {
-              img = kgBoxedStringToImage ( NULL , NULL , width , height , font , fillcolor , \
-                   highli , color , justfic , FontSize , rfac , state ) ;
+              img = kgBoxedStringToImage ( NULL , NULL , \
+                   width , height , font , fillcolor , \
+              highli , color , justfic , FontSize , rfac , state ) ;
               img = kgMergeImages ( img , cimg , 0 , 0 ) ;
               kgFreeGmImage ( cimg ) ;
               if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) {
  //                 cimg = kgStringToImage ( str , NULL , ln , height , font , color , justfic , FontSize , -1 ) ;
                   cimg = uiStringToImage ( D , str , 0 , 0 , ln , height , \
-                       font , color , FontSize , justfic , -1 ) ;
+                  font , color , FontSize , justfic , -1 ) ;
                   if ( cimg != NULL ) {
                       img = kgMergeImages ( img , cimg , off , 0 ) ;
                       kgFreeGmImage ( cimg ) ;
@@ -7801,10 +7816,11 @@ void transch(int c) {
           }
           else {
 //             img = kgBoxedStringToImage ( str , NULL , width , height , font , fillcolor , highli , color , justfic , FontSize , rfac , state ) ;
-              img = kgBoxedStringToImage ( NULL , NULL , width , height , font , fillcolor , \
-                   highli , color , justfic , FontSize , rfac , state ) ;
+              img = kgBoxedStringToImage ( NULL , NULL , \
+                   width , height , font , fillcolor , \
+              highli , color , justfic , FontSize , rfac , state ) ;
               cimg = uiStringToImage ( D , str , 0 , 0 , width , height , \
-                   font , color , FontSize , justfic , -1 ) ;
+              font , color , FontSize , justfic , -1 ) ;
               img = kgMergeImages ( img , cimg , 0 , 0 ) ;
               kgFreeGmImage ( cimg ) ;
           }
@@ -7828,7 +7844,7 @@ void transch(int c) {
           if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) {
 //              cimg = kgStringToImage ( str , NULL , ln , height , font , color , justfic , FontSize , -1 ) ;
               cimg = uiStringToImage ( D , str , 0 , 0 , width , height , \
-                   font , color , FontSize , justfic , -1 ) ;
+              font , color , FontSize , justfic , -1 ) ;
               if ( cimg != NULL ) {
 //              img = kgMergeImages(img,cimg,off,0);
                   img = kgMergeImages ( img , cimg , 0 , 0 ) ;
@@ -7838,18 +7854,19 @@ void transch(int c) {
           return img;
           case 3:
           if ( cimg != NULL ) {
-              img = kgFilledStringToImage3 ( NULL , NULL , width , height , font , fillcolor , \
-                   highli , color , D->gc.fill_clr , justfic , FontSize , rfac , state , 2.0 ) ;
+              img = kgFilledStringToImage3 ( NULL , NULL , \
+                   width , height , font , fillcolor , \
+              highli , color , D->gc.fill_clr , justfic , FontSize , rfac , state , 2.0 ) ;
               img1 = kgFilledStringToImage3 ( NULL , NULL , width-2 , height-2 , font , \
-                   fillcolor , highli , color , D->gc.fill_clr , \
-                   justfic , FontSize , rfac , state , 3.0 ) ;
+              fillcolor , highli , color , D->gc.fill_clr , \
+              justfic , FontSize , rfac , state , 3.0 ) ;
               img = kgMergeImages ( img , img1 , 0 , 0 ) ;
               img = kgMergeImages ( img , cimg , poff , poff ) ;
               kgFreeGmImage ( cimg ) ;
               if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) {
 //                  cimg = kgStringToImage ( str , NULL , ln , height , font , color , justfic , FontSize , -1 ) ;
                   cimg = uiStringToImage ( D , str , 0 , 0 , ln , height , \
-                       font , color , FontSize , justfic , -1 ) ;
+                  font , color , FontSize , justfic , -1 ) ;
                   if ( cimg != NULL ) {
                       img = kgMergeImages ( img , cimg , off , 0 ) ;
                       kgFreeGmImage ( cimg ) ;
@@ -7857,11 +7874,12 @@ void transch(int c) {
               }
           }
           else {
-              img = kgFilledStringToImage3 ( NULL , NULL , width , height , font , fillcolor , \
-                   highli , color , D->gc.fill_clr , justfic , FontSize , rfac , state , 2.0 ) ;
+              img = kgFilledStringToImage3 ( NULL , NULL , \
+                   width , height , font , fillcolor , \
+              highli , color , D->gc.fill_clr , justfic , FontSize , rfac , state , 2.0 ) ;
               img1 = kgFilledStringToImage3 ( str , NULL , width-2 , height-2 , font , \
-                   fillcolor , highli , color , D->gc.fill_clr , \
-                   justfic , FontSize , rfac , state , 3.0 ) ;
+              fillcolor , highli , color , D->gc.fill_clr , \
+              justfic , FontSize , rfac , state , 3.0 ) ;
               img = kgMergeImages ( img , img1 , 0 , 0 ) ;
           }
           return img;
@@ -7871,14 +7889,15 @@ void transch(int c) {
           case 7:
           case 8:
           if ( cimg != NULL ) {
-              img = kgShadedStringToImage ( NULL , NULL , width , height , font , fillcolor , \
-                   highli , color , justfic , FontSize , rfac , state , type-4 ) ;
+              img = kgShadedStringToImage ( NULL , NULL , \
+                   width , height , font , fillcolor , \
+              highli , color , justfic , FontSize , rfac , state , type-4 ) ;
               img = kgMergeImages ( img , cimg , 0 , 0 ) ;
               kgFreeGmImage ( cimg ) ;
               if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) {
 //                  cimg = kgStringToImage ( str , NULL , ln , height , font , color , justfic , FontSize , -1 ) ;
                   cimg = uiStringToImage ( D , str , 0 , 0 , ln , height , \
-                       font , color , FontSize , justfic , -1 ) ;
+                  font , color , FontSize , justfic , -1 ) ;
                   if ( cimg != NULL ) {
 //                      img = kgMergeImages ( img , cimg , off , 0 ) ;
                       img = kgMergeImages ( img , cimg , 0 , 0 ) ;
@@ -7888,24 +7907,26 @@ void transch(int c) {
           }
           else {
 //              img = kgShadedStringToImage ( str , NULL , width , height , font , fillcolor , highli , color , justfic , FontSize , rfac , state , type-4 ) ;
-              img = kgShadedStringToImage ( NULL , NULL , width , height , font , fillcolor , \
-                   highli , color , justfic , FontSize , rfac , state , type-4 ) ;
+              img = kgShadedStringToImage ( NULL , NULL , \
+                   width , height , font , fillcolor , \
+              highli , color , justfic , FontSize , rfac , state , type-4 ) ;
               cimg = uiStringToImage ( D , str , 0 , 0 , width , height , \
-                   font , color , FontSize , justfic , -1 ) ;
+              font , color , FontSize , justfic , -1 ) ;
               img = kgMergeImages ( img , cimg , 0 , 0 ) ;
               kgFreeGmImage ( cimg ) ;
           }
           return img;
           default:
           if ( cimg != NULL ) {
-              img = kgFilledStringToImage1 ( NULL , NULL , width , height , font , fillcolor , \
-                   highli , color , D->gc.fill_clr , justfic , FontSize , rfac , state , 3.0 ) ;
+              img = kgFilledStringToImage1 ( NULL , NULL , \
+                   width , height , font , fillcolor , \
+              highli , color , D->gc.fill_clr , justfic , FontSize , rfac , state , 3.0 ) ;
               img = kgMergeImages ( img , cimg , 0 , 0 ) ;
               kgFreeGmImage ( cimg ) ;
               if ( ( str != NULL ) && ( str [ 0 ] != '\0' ) ) {
  //                 cimg = kgStringToImage ( str , NULL , ln , height , font , color , justfic , FontSize , -1 ) ;
                   cimg = uiStringToImage ( D , str , 0 , 0 , ln , height , \
-                       font , color , FontSize , justfic , -1 ) ;
+                  font , color , FontSize , justfic , -1 ) ;
                   if ( cimg != NULL ) {
                       img = kgMergeImages ( img , cimg , off , 0 ) ;
                       kgFreeGmImage ( cimg ) ;
@@ -7913,8 +7934,9 @@ void transch(int c) {
               }
           }
           else {
-              img = kgFilledStringToImage1 ( str , NULL , width , height , font , fillcolor , \
-                   highli , color , D->gc.fill_clr , justfic , FontSize , rfac , state , 3.0 ) ;
+              img = kgFilledStringToImage1 ( str , NULL , \
+                   width , height , font , fillcolor , \
+              highli , color , D->gc.fill_clr , justfic , FontSize , rfac , state , 3.0 ) ;
           }
           return img;
       }
@@ -7935,7 +7957,7 @@ void transch(int c) {
       return;
   }
   void uiPutString ( DIALOG *D , char *str , int x1 , int y1 , \
-       int char_clr , int Font , int FontSize ) \
+  int char_clr , int Font , int FontSize ) \
   {
  /* writes a string in fixed font mod */
       void *fid , *img;
@@ -7977,7 +7999,7 @@ void transch(int c) {
       return;
   }
   void uiwrite_string ( DIALOG *D , char* c , \
-       int ix1 , int iy1 , int char_clr ) \
+  int ix1 , int iy1 , int char_clr ) \
   {
       short jj , k , i , iy;
       unsigned int temp;
@@ -7990,23 +8012,24 @@ void transch(int c) {
       return;
   }
   void *ui_set_graphics ( int xpos , int ypos , int xres , int yres , \
-       char *title , int dec , float transparency ) \
+  char *title , int dec , float transparency ) \
   {
       kgWC *wc;
       wc = ui_create_window ( xpos , ypos , xres , yres , title , \
-           dec , transparency , 0 , 0 , 0 , 0 , NULL ) ;
+      dec , transparency , 0 , 0 , 0 , 0 , NULL ) ;
       uiset_sup_clip_limits ( wc , 0 , 0 , wc->EVGAX , wc->EVGAY ) ;
       uiset_clip_limits ( wc , 0 , 0 , wc->EVGAX , wc->EVGAY ) ;
 //  ui_initialise(wc);
       return wc;
   }
   void *ui_set_graphics_sticky ( int xpos , int ypos , int xres , int yres , \
-       char *title , int dec , float transparency , int sticky , int fixpos , \
-       int NoTaskBar , int StackPos , void *Shapexpm ) \
+  char *title , int dec , float transparency , int sticky , int fixpos , \
+  int NoTaskBar , int StackPos , void *Shapexpm ) \
   {
       kgWC *wc;
-      wc = ui_create_window ( xpos , ypos , xres , yres , title , dec , transparency , \
-           sticky , fixpos , NoTaskBar , StackPos , Shapexpm ) ;
+      wc = ui_create_window ( xpos , ypos , xres , \
+           yres , title , dec , transparency , \
+      sticky , fixpos , NoTaskBar , StackPos , Shapexpm ) ;
       uiset_sup_clip_limits ( wc , 0 , 0 , wc->EVGAX , wc->EVGAY ) ;
       uiset_clip_limits ( wc , 0 , 0 , wc->EVGAX , wc->EVGAY ) ;
 //  ui_initialise(wc);
@@ -8076,7 +8099,7 @@ void transch(int c) {
       return 1;
   }
   int XpmImageScaled ( char *flname , float x0 , \
-       float y0 , float x1 , float y1 ) \
+  float y0 , float x1 , float y1 ) \
   {
       int xo , yo , w , h , ix0 , iy0 , ix1 , iy1;
       int i;
@@ -8102,7 +8125,7 @@ void transch(int c) {
       return 1;
   }
   int XpmImageRotated ( char *flname , float x0 , float y0 , \
-       float x1 , float y1 , float ang ) \
+  float x1 , float y1 , float ang ) \
   {
       int xo , yo , w , h , ix0 , iy0 , ix1 , iy1;
       int i;
@@ -8131,7 +8154,7 @@ void transch(int c) {
 #endif
 #if 0
   int ImgImageScaled ( char *flname , float x0 , \
-       float y0 , float x1 , float y1 ) \
+  float y0 , float x1 , float y1 ) \
   {
       int xo , yo , w , h , ix0 , iy0 , ix1 , iy1;
       int i;
@@ -8150,7 +8173,7 @@ void transch(int c) {
       return 1;
   }
   int ImgImageRotated ( char *flname , float x0 , float y0 , \
-       float x1 , float y1 , float ang ) \
+  float x1 , float y1 , float ang ) \
   {
       int xo , yo , w , h , ix0 , iy0 , ix1 , iy1;
       int i;
@@ -8243,7 +8266,7 @@ void transch(int c) {
       uiwrite_string ( D , m , x , D->evgay-y , D->gc.txt_pchar ) ;
   }
   void _uiborder3d ( void *parent , int xmin , \
-       int ymin , int xmax , int ymax ) \
+  int ymin , int xmax , int ymax ) \
   {
       int temp;
       DIALOG *D;
@@ -8262,7 +8285,7 @@ void transch(int c) {
       uiset_clr ( D , temp ) ;
   }
   void _uibordertype0 ( DIALOG *D , int xmin , int ymin , \
-       int xmax , int ymax , int bright ) \
+  int xmax , int ymax , int bright ) \
   {
       int temp;
       temp = WC ( D )->c_color;
@@ -8275,7 +8298,7 @@ void transch(int c) {
       uiset_clr ( D , temp ) ;
   }
   void _uibordertype1 ( DIALOG *D , int xmin , \
-       int ymin , int xmax , int ymax ) \
+  int ymin , int xmax , int ymax ) \
   {
       int temp;
       temp = WC ( D )->c_color;
@@ -8287,7 +8310,7 @@ void transch(int c) {
       uiset_clr ( D , temp ) ;
   }
   void _uibordertype2 ( DIALOG *D , int xmin , int ymin , int xmax , \
-       int ymax , int tw , int lw , int rw , int bw ) \
+  int ymax , int tw , int lw , int rw , int bw ) \
   {
       int temp;
       temp = WC ( D )->c_color;
@@ -8304,7 +8327,7 @@ void transch(int c) {
       uiset_clr ( D , temp ) ;
   }
   void _uibordertype3 ( DIALOG *D , int xmin , int ymin , int xmax , \
-       int ymax , int tw , int lw , int rw , int bw ) \
+  int ymax , int tw , int lw , int rw , int bw ) \
   {
       int temp;
       temp = WC ( D )->c_color;
@@ -8340,7 +8363,7 @@ void transch(int c) {
       uiset_clr ( D , temp ) ;
   }
   void _uibordertype4 ( DIALOG *D , int xmin , \
-       int ymin , int xmax , int ymax ) \
+  int ymin , int xmax , int ymax ) \
   {
       int temp;
       temp = WC ( D )->c_color;
@@ -8362,7 +8385,7 @@ void transch(int c) {
       uiset_clr ( D , temp ) ;
   }
   void _dvbordertype0 ( DIALOG *D , int xmin , int ymin , \
-       int xmax , int ymax , int bright ) \
+  int xmax , int ymax , int bright ) \
   {
       int temp;
       temp = WC ( D )->c_color;
@@ -8384,7 +8407,7 @@ void transch(int c) {
       uiset_clr ( D , temp ) ;
   }
   void _dvbordertype1 ( DIALOG *D , int xmin , \
-       int ymin , int xmax , int ymax ) \
+  int ymin , int xmax , int ymax ) \
   {
       int temp;
       temp = WC ( D )->c_color;
@@ -8396,7 +8419,7 @@ void transch(int c) {
       uiset_clr ( D , temp ) ;
   }
   void _dvbordertype2 ( DIALOG *D , int xmin , int ymin , int xmax , \
-       int ymax , int tw , int lw , int rw , int bw ) \
+  int ymax , int tw , int lw , int rw , int bw ) \
   {
       int temp;
       temp = WC ( D )->c_color;
@@ -8413,7 +8436,7 @@ void transch(int c) {
       uiset_clr ( D , temp ) ;
   }
   void _dvbordertype3 ( DIALOG *D , int xmin , \
-       int ymin , int xmax , int ymax ) \
+  int ymin , int xmax , int ymax ) \
   {
       int temp;
       temp = WC ( D )->c_color;
@@ -8450,7 +8473,7 @@ void transch(int c) {
       uiset_clr ( D , temp ) ;
   }
   void _dvbordertype4 ( DIALOG *D , int xmin , \
-       int ymin , int xmax , int ymax ) \
+  int ymin , int xmax , int ymax ) \
   {
       int temp;
       temp = WC ( D )->c_color;
@@ -8511,7 +8534,7 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       _dvrect_fill_transparent ( wc , x1 , y1 , x2 , \
-           y2 , D->gc.fill_clr , D->transparency ) ;
+      y2 , D->gc.fill_clr , D->transparency ) ;
       switch ( D->bor_type ) {
           case 2:
           _dvbordertype2 ( D , x1 , y1 , x2 , y2 , D->tw , D->lw , D->rw , D->bw ) ;
@@ -8570,8 +8593,8 @@ void transch(int c) {
       return ;
   }
   void * make_but_str ( DIALOG *D , int x1 , int y1 , int xgap , int ygap , \
-       int nxb , int nyb , int b_w , int b_h , int df , char **title , \
-       void **xpm , int *bkgr , int *sw ) \
+  int nxb , int nyb , int b_w , int b_h , int df , char **title , \
+  void **xpm , int *bkgr , int *sw ) \
   {
       int i = 0 , k , x2 , y2;
       int EVGAY;
@@ -8605,7 +8628,7 @@ void transch(int c) {
       return ( void * ) ptr;
   }
   void _ui_jpg_draw ( BUTS *bt , int k , int x1 , \
-       int y1 , int x2 , int y2 , int color ) \
+  int y1 , int x2 , int y2 , int color ) \
   {
       char **buf;
       int x0 , y0 , Hsize;
@@ -8636,7 +8659,7 @@ void transch(int c) {
       uiRest_clip_limits ( wc ) ;
   }
   void _ui_jpg_newdraw ( BUTS *bt , int k , int x1 , int y1 , int x2 , \
-       int y2 , int color , float transparency , float highfac ) \
+  int y2 , int color , float transparency , float highfac ) \
   {
       char **buf;
       int x0 , y0 , Hsize;
@@ -8661,7 +8684,7 @@ void transch(int c) {
 // Should not be done
 //   if(color >= 0) _uibox_fill(wc,x1+2,EVGAY-y1+2,x2-2,EVGAY-y2-2,(unsigned int) color);
       if ( buf != NULL ) kgImage ( D , bt->xpm [ k ] , x0+1 , \
-           y0+1 , l-2 , w-2 , transparency , highfac ) ;
+      y0+1 , l-2 , w-2 , transparency , highfac ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _ui_rmv_inset_protru ( DIALOG *D , int x1 , int y1 , int x2 , int y2 ) {
@@ -8853,7 +8876,7 @@ void transch(int c) {
   }
   void _uiHighButton ( BUTS *bt , int df ) {
       int xgap = 0 , ygap = 0 , i , j , k , xx , \
-           yy , width , height , xd , yd , Hsize;
+      yy , width , height , xd , yd , Hsize;
       int *sw;
       DIALOG *D;
       kgWC *wc;
@@ -8864,11 +8887,11 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
 //   Get_resolution(&EVGAX,&EVGAY);
-      if ( ( bt->nyb ) > 1 ) ygap = ( ( float )  \
-          ( ( bt->y2-bt->y1 ) -height*bt->nyb ) / \
+      if ( ( bt->nyb ) > 1 ) ygap = ( ( float ) \
+       ( ( bt->y2-bt->y1 ) -height*bt->nyb ) / \
        ( bt->nyb-1.0 ) +0.5 ) ;
-      if ( ( bt->nxb ) > 1 ) xgap = ( float )  \
-          ( ( bt->x2-bt->x1 ) -width*bt->nxb ) / \
+      if ( ( bt->nxb ) > 1 ) xgap = ( float ) \
+       ( ( bt->x2-bt->x1 ) -width*bt->nxb ) / \
        ( bt->nxb-1.0 ) +0.5;
       sw = bt->sw;
       k = 0;
@@ -8879,13 +8902,13 @@ void transch(int c) {
                       yy = bt->y2- j* ( bt->b_h+ygap ) -bt->b_h;
                       xx = bt->x1+ i* ( bt->b_w+xgap ) ;
                       if ( sw [ k ] == 1 ) uirmv_inset_protru ( D , xx-Hsize , \
-                           yy+height+Hsize , xx+width+Hsize , yy-Hsize ) ;
+                      yy+height+Hsize , xx+width+Hsize , yy-Hsize ) ;
                   }
                   if ( k+1 == df ) {
                       yy = bt->y2- j* ( bt->b_h+ygap ) -bt->b_h;
                       xx = bt->x1+ i* ( bt->b_w+xgap ) ;
                       if ( sw [ k ] == 1 ) uidraw_depre ( D , xx-Hsize , \
-                           yy+height+Hsize , xx+width+Hsize , yy-Hsize ) ;
+                      yy+height+Hsize , xx+width+Hsize , yy-Hsize ) ;
                   }
                   k++;
               }
@@ -8905,11 +8928,11 @@ void transch(int c) {
       wc = WC ( D ) ;
       EVGAY = D->evgay;
       width = bt->b_w; height = bt->b_h;
-      if ( ( bt->nyb ) > 1 ) ygap = ( ( float )  \
-          ( ( bt->y2-bt->y1 ) -height*bt->nyb ) / \
+      if ( ( bt->nyb ) > 1 ) ygap = ( ( float ) \
+       ( ( bt->y2-bt->y1 ) -height*bt->nyb ) / \
        ( bt->nyb-1.0 ) +0.5 ) ;
-      if ( ( bt->nxb ) > 1 ) xgap = ( float )  \
-          ( ( bt->x2-bt->x1 ) -width*bt->nxb ) / \
+      if ( ( bt->nxb ) > 1 ) xgap = ( float ) \
+       ( ( bt->x2-bt->x1 ) -width*bt->nxb ) / \
        ( bt->nxb-1.0 ) +0.5;
       k = 0;
       for ( j = 0; j < ( bt->nyb ) ; j++ ) {
@@ -8917,17 +8940,17 @@ void transch(int c) {
           for ( i = 0; i < ( bt->nxb ) ; i++ ) {
               xx = bt->x1+ i* ( bt->b_w+xgap ) ;
               _ui_draw_newbutton ( xx , yy+height , xx+width , \
-                   yy , bt , k , D->transparency ) ;
+              yy , bt , k , D->transparency ) ;
 #if 0
               if ( ( bt->sw [ k ] == 1 ) || ( bt->sw [ k ] == 3 ) ) {
                   if ( bt->D->butattn ) {
                       if ( k+1 == df ) {
                           uidraw_depre ( D , xx-bt->Hsize , yy+height+bt->Hsize , \
-                               xx+width+bt->Hsize , yy-bt->Hsize ) ;
+                          xx+width+bt->Hsize , yy-bt->Hsize ) ;
                       }
                       else {
                           uirmv_inset_protru ( D , xx-bt->Hsize , yy+height+bt->Hsize , \
-                               xx+width+bt->Hsize , yy-bt->Hsize ) ;
+                          xx+width+bt->Hsize , yy-bt->Hsize ) ;
                       }
                   }
               }
@@ -8938,7 +8961,7 @@ void transch(int c) {
       bt->df = df;
   }
   int uiCheckClickPosition ( int x1 , int y1 , int x2 , \
-       int y2 , int PON_X , int PON_Y ) \
+  int y2 , int PON_X , int PON_Y ) \
   {
       int xp , yp;
       xp = PON_X;
@@ -8948,12 +8971,12 @@ void transch(int c) {
       else return ( 1 ) ;
   }
   void uiMenustr ( DIALOG *D , int ixp , int iyp , \
-       char *cmenu , int char_clr ) \
+  char *cmenu , int char_clr ) \
   {
       uiwrite_string ( D , cmenu , ( int ) ixp , ( int ) iyp , char_clr ) ;
   }
   void _ui_draw_pressed_button ( int x1 , int y1 , \
-       int x2 , int y2 , BUTS *bt , int k ) \
+  int x2 , int y2 , BUTS *bt , int k ) \
   {
       unsigned int temp , pointer , tempch;
       int bkgr , n;
@@ -8973,7 +8996,7 @@ void transch(int c) {
           else bkgr = bt->bkgr [ k ] ;
           if ( ( bt->xpm != NULL ) ) {
               if ( bt->xpm [ k ] != NULL ) _ui_jpg_draw ( bt , k , x1 , \
-                   D->evgay-y2+1 , x2 , D->evgay-y1+1 , bkgr ) ;
+              D->evgay-y2+1 , x2 , D->evgay-y1+1 , bkgr ) ;
               else _uirect_fill ( wc , x1+4 , y1-4 , x2-4 , y2+4 , bkgr ) ;
           }
           else if ( bkgr >= 0 ) _uirect_fill ( wc , x1+4 , y1-4 , x2-4 , y2+4 , bkgr ) ;
@@ -8981,7 +9004,7 @@ void transch(int c) {
       if ( bt->sw [ k ] == 1 ) {
 //     uiMenustr(D,x1+15,y2+8,bt->title[k],D->gc.but_char);
           uiString ( D , bt->title [ k ] , x1+4 , D->evgay- ( y2+24 ) , ( x2-x1-8 ) , \
-               22 , D->gc.ButtonFont , D->gc.but_char , D->gc.FontSize , 0 , -1 ) ;
+          22 , D->gc.ButtonFont , D->gc.but_char , D->gc.FontSize , 0 , -1 ) ;
           uiset_clr ( D , D->gc.v_dim ) ;
           _uidraw_line ( wc , x1+1 , y1-1 , x2-1 , y1-1 ) ;
           _uidraw_line ( wc , x1+1 , y1-1 , x1+1 , y2+1 ) ;
@@ -8993,7 +9016,7 @@ void transch(int c) {
       uiRest_clip_limits ( wc ) ;
   }
   void _ui_draw_pressed_newbutton ( int x1 , int y1 , int x2 , \
-       int y2 , BUTS *bt , int k , float transparency ) \
+  int y2 , BUTS *bt , int k , float transparency ) \
   {
       unsigned int temp , pointer , tempch;
       int bkgr , lnwidth = 1 , highli = 0 , xgap , ygap;
@@ -9022,20 +9045,20 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       _uirect_fill_transparent ( wc , x1-xgap , y1+ygap , x2+xgap , \
-           y2-ygap , D->gc.fill_clr , transparency ) ;
+      y2-ygap , D->gc.fill_clr , transparency ) ;
       if ( bt->bkgr == NULL ) bkgr = D->gc.fill_clr;
       else bkgr = bt->bkgr [ k ] ;
       if ( bkgr < 0 ) {
           if ( bkgr == -1 ) bkgr = D->gc.fill_clr;
       }
       uiShadedStringImage ( D , bt->title [ k ] , xpm , x0 , ( y0 ) , l , w , \
-           D->gc.ButtonFont , bkgr , highli , D->gc.but_char , \
-           D->gc.FontSize , 0 , bt->fac , -1 , bt->type ) ;
+      D->gc.ButtonFont , bkgr , highli , D->gc.but_char , \
+      D->gc.FontSize , 0 , bt->fac , -1 , bt->type ) ;
       uiset_clr ( D , temp ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _ui_draw_bound ( DIALOG *D , int x1 , int y1 , \
-       int x2 , int y2 , int c_bound ) \
+  int x2 , int y2 , int c_bound ) \
   {
       unsigned int temp;
       kgWC *wc;
@@ -9053,7 +9076,7 @@ void transch(int c) {
       return;
   }
   void _dv_draw_bound ( DIALOG *D , int x1 , int y1 , \
-       int x2 , int y2 , int c_bound ) \
+  int x2 , int y2 , int c_bound ) \
   {
       unsigned int temp;
       kgWC *wc;
@@ -9071,7 +9094,7 @@ void transch(int c) {
       return;
   }
   void _ui_draw_button ( int x1 , int y1 , int x2 , \
-       int y2 , BUTS *bt , int k ) \
+  int y2 , BUTS *bt , int k ) \
   {
       unsigned int temp , pointer , tempch;
       int bkgr;
@@ -9097,7 +9120,7 @@ void transch(int c) {
       if ( bt->sw [ k ] == 1 ) {
 //     uiMenustr(D,x1+15,y2+8,bt->title[k],D->gc.but_char);
           uiString ( D , bt->title [ k ] , x1+4 , D->evgay- ( y2+24 ) , ( x2-x1-8 ) , \
-               22 , D->gc.ButtonFont , D->gc.but_char , D->gc.FontSize , 0 , -1 ) ;
+          22 , D->gc.ButtonFont , D->gc.but_char , D->gc.FontSize , 0 , -1 ) ;
           uiset_clr ( Parent , D->gc.vbright ) ;
           _uidraw_line ( wc , x1+1 , y1-1 , x2-1 , y1-1 ) ;
           _uidraw_line ( wc , x1+1 , y1-1 , x1+1 , y2+1 ) ;
@@ -9109,7 +9132,7 @@ void transch(int c) {
       uiRest_clip_limits ( wc ) ;
   }
   void _ui_redraw_button ( int x1 , int y1 , \
-       int x2 , int y2 , BUTS *bt , int k ) \
+  int x2 , int y2 , BUTS *bt , int k ) \
   {
       unsigned int temp , pointer , tempch;
       DIALOG *D , *Parent;
@@ -9166,7 +9189,7 @@ void transch(int c) {
           x1 = butn [ k ] .x1; y1 = butn [ k ] .y1;
           x2 = butn [ k ] .x2; y2 = butn [ k ] .y2;
           if ( D->DrawBkgr != 0 ) _dvrect_fill_transparent ( wc , x1 , \
-               y1 , x2 , y2 , D->gc.fill_clr , transparency ) ;
+          y1 , x2 , y2 , D->gc.fill_clr , transparency ) ;
 //       switch(butn[k].state) {
           switch ( state ) {
               case 0:
@@ -9209,15 +9232,15 @@ void transch(int c) {
           uiBkup_clip_limits ( wc ) ;
           uiSet_full_scrn ( wc ) ;
           if ( D->DrawBkgr != 0 ) _dvrect_fill_transparent ( wc , x1 , y1 , \
-               x1+ln+xgap , y1+wd+ygap , D->gc.fill_clr , transparency ) ;
+          x1+ln+xgap , y1+wd+ygap , D->gc.fill_clr , transparency ) ;
           if ( B->bkgr == NULL ) bkgr = D->gc.fill_clr;
           else bkgr = B->bkgr [ k ] ;
           if ( bkgr < 0 ) {
               if ( bkgr == -1 ) bkgr = D->gc.fill_clr;
           }
           uiShadedStringImage ( D , B->titles [ k ] , img , x1+xgap/2 , y1+ygap/2 , \
-               ln , wd , D->gc.ButtonFont , bkgr , highli , D->gc.but_char , \
-               D->gc.FontSize , 0 , B->fac , state , B->type ) ;
+          ln , wd , D->gc.ButtonFont , bkgr , highli , D->gc.but_char , \
+          D->gc.FontSize , 0 , B->fac , state , B->type ) ;
           uiset_clr ( D , temp ) ;
           uiRest_clip_limits ( wc ) ;
           break;
@@ -9261,7 +9284,7 @@ void transch(int c) {
       bkgrdraw = 0; //forcing ; no more required
       if ( bkgrdraw ) {
           _dvrect_fill_transparent ( wc , x1 , y1 , x2 , \
-               y2 , D->gc.fill_clr , transparency ) ;
+          y2 , D->gc.fill_clr , transparency ) ;
       }
       else {
           if ( butn [ k ] .Bimg == NULL ) butn [ k ] .Bimg = kgGetBackground \
@@ -9285,7 +9308,7 @@ void transch(int c) {
       }
   }
   void _ui_draw_newbutton ( int x1 , int y1 , int x2 , int y2 , \
-       BUTS *bt , int k , float transparency ) \
+  BUTS *bt , int k , float transparency ) \
   {
       unsigned char temp , pointer , tempch;
       int bkgr , lnwidth = 1 , highli = 0 , xgap , ygap , n;
@@ -9314,20 +9337,21 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       _uirect_fill_transparent ( wc , x1-xgap , y1+ygap , x2+xgap , \
-           y2-ygap , D->gc.fill_clr , transparency ) ;
+      y2-ygap , D->gc.fill_clr , transparency ) ;
       if ( bt->bkgr == NULL ) bkgr = D->gc.fill_clr;
       else bkgr = bt->bkgr [ k ] ;
       if ( bkgr < 0 ) {
           if ( bkgr == -1 ) bkgr = D->gc.fill_clr;
       }
-      uiShadedStringImage ( D , bt->title [ k ] , xpm , x0 , y0 , l , w , D->gc.ButtonFont , \
-           bkgr , highli , D->gc.but_char , D->gc.FontSize , \
-           0 , bt->fac , 0 , bt->type ) ;
+      uiShadedStringImage ( D , bt->title [ k ] , xpm , \
+           x0 , y0 , l , w , D->gc.ButtonFont , \
+      bkgr , highli , D->gc.but_char , D->gc.FontSize , \
+      0 , bt->fac , 0 , bt->type ) ;
       uiset_clr ( D , temp ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _ui_rmvattn_newbutton ( int x1 , int y1 , int x2 , \
-       int y2 , BUTS *bt , int k , float transparency ) \
+  int y2 , BUTS *bt , int k , float transparency ) \
   {
       unsigned char temp , pointer , tempch;
       int bkgr , lnwidth = 1 , highli = 0 , xgap , ygap; ;
@@ -9346,23 +9370,23 @@ void transch(int c) {
       uiSet_full_scrn ( wc ) ;
 //   _uirect_fill_transparent(wc,x1+1,y1-1,x2-1,y2+1,D->gc.fill_clr,transparency);
       _uirect_fill_transparent ( wc , x1-xgap , y1+ygap , x2+xgap , \
-           y2-ygap , D->gc.fill_clr , transparency ) ;
+      y2-ygap , D->gc.fill_clr , transparency ) ;
       if ( bt->bkgr == NULL ) bkgr = D->gc.fill_clr;
       else bkgr = bt->bkgr [ k ] ;
       if ( bkgr < 0 ) bkgr = D->gc.fill_clr;
       highli = 0;
       uiShadedString ( D , bt->title [ k ] , x1 , D->evgay- ( y1 ) , ( x2-x1 ) , \
        ( y1-y2 ) , D->gc.ButtonFont , bkgr , highli , D->gc.but_char , \
-            D->gc.FontSize , 0 , bt->fac , 0 , bt->type ) ;
+      D->gc.FontSize , 0 , bt->fac , 0 , bt->type ) ;
       if ( ( bt->xpm != NULL ) && ( bt->xpm [ k ] != NULL ) ) {
           _ui_jpg_newdraw ( bt , k , x1 , EVGAY-y2 , \
-               x2 , EVGAY-y1 , bkgr , 0.0 , 1.0 ) ;
+          x2 , EVGAY-y1 , bkgr , 0.0 , 1.0 ) ;
       }
       uiset_clr ( D , temp ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _ui_redraw_newbutton ( int x1 , int y1 , \
-       int x2 , int y2 , BUTS *bt , int k ) \
+  int x2 , int y2 , BUTS *bt , int k ) \
   {
       unsigned char temp , pointer , tempch;
       DIALOG *D;
@@ -9387,11 +9411,11 @@ void transch(int c) {
       int xgap = 0 , ygap = 0 , i , j , k , xx , yy , width , height;
       int pointer;
       width = bt->b_w; height = bt->b_h;
-      if ( ( bt->nyb ) > 1 ) ygap = ( ( float )  \
-          ( ( bt->y2-bt->y1 ) -height*bt->nyb ) / \
+      if ( ( bt->nyb ) > 1 ) ygap = ( ( float ) \
+       ( ( bt->y2-bt->y1 ) -height*bt->nyb ) / \
        ( bt->nyb-1.0 ) +0.5 ) ;
-      if ( ( bt->nxb ) > 1 ) xgap = ( float )  \
-          ( ( bt->x2-bt->x1 ) -width*bt->nxb ) / \
+      if ( ( bt->nxb ) > 1 ) xgap = ( float ) \
+       ( ( bt->x2-bt->x1 ) -width*bt->nxb ) / \
        ( bt->nxb-1.0 ) +0.5;
       k = 0;
       for ( j = 0; j < ( bt->nyb ) ; j++ ) {
@@ -9403,11 +9427,11 @@ void transch(int c) {
                   if ( bt->D->butattn ) {
                       if ( k+1 == bt->df ) {
                           uidraw_depre ( ( bt->D ) , xx-bt->Hsize , yy+height+bt->Hsize , \
-                               xx+width+bt->Hsize , yy-bt->Hsize ) ;
+                          xx+width+bt->Hsize , yy-bt->Hsize ) ;
                       }
                       else {
                           _ui_rmv_inset_protru ( ( bt->D ) , xx-bt->Hsize , yy+height+bt->Hsize , \
-                               xx+width+bt->Hsize , yy-bt->Hsize ) ;
+                          xx+width+bt->Hsize , yy-bt->Hsize ) ;
                       }
                   }
               }
@@ -9419,11 +9443,11 @@ void transch(int c) {
       int xgap = 0 , ygap = 0 , i , j , xx , yy , width , height;
       int pointer , kk;
       width = bt->b_w; height = bt->b_h;
-      if ( ( bt->nyb ) > 1 ) ygap = ( ( float )  \
-          ( ( bt->y2-bt->y1 ) -height*bt->nyb ) / \
+      if ( ( bt->nyb ) > 1 ) ygap = ( ( float ) \
+       ( ( bt->y2-bt->y1 ) -height*bt->nyb ) / \
        ( bt->nyb-1.0 ) +0.5 ) ;
-      if ( ( bt->nxb ) > 1 ) xgap = ( float )  \
-          ( ( bt->x2-bt->x1 ) -width*bt->nxb ) / \
+      if ( ( bt->nxb ) > 1 ) xgap = ( float ) \
+       ( ( bt->x2-bt->x1 ) -width*bt->nxb ) / \
        ( bt->nxb-1.0 ) +0.5;
       kk = 0;
       for ( j = 0; j < ( bt->nyb ) ; j++ ) {
@@ -9432,7 +9456,7 @@ void transch(int c) {
                   yy = bt->y2- j* ( bt->b_h+ygap ) -bt->b_h;
                   xx = bt->x1+ i* ( bt->b_w+xgap ) ;
                   _ui_draw_pressed_newbutton ( xx , yy+height , xx+width , \
-                       yy , bt , k , bt->D->transparency ) ;
+                  yy , bt , k , bt->D->transparency ) ;
               }
               kk++;
           }
@@ -9443,11 +9467,11 @@ void transch(int c) {
       int pointer;
       uiUpdateOff ( bt->D ) ;
       width = bt->b_w; height = bt->b_h;
-      if ( ( bt->nyb ) > 1 ) ygap = ( ( float )  \
-          ( ( bt->y2-bt->y1 ) -height*bt->nyb ) / \
+      if ( ( bt->nyb ) > 1 ) ygap = ( ( float ) \
+       ( ( bt->y2-bt->y1 ) -height*bt->nyb ) / \
        ( bt->nyb-1.0 ) +0.5 ) ;
-      if ( ( bt->nxb ) > 1 ) xgap = ( float )  \
-          ( ( bt->x2-bt->x1 ) -width*bt->nxb ) / \
+      if ( ( bt->nxb ) > 1 ) xgap = ( float ) \
+       ( ( bt->x2-bt->x1 ) -width*bt->nxb ) / \
        ( bt->nxb-1.0 ) +0.5;
       k = 0;
       for ( j = 0; j < ( bt->nyb ) ; j++ ) {
@@ -9459,11 +9483,11 @@ void transch(int c) {
                   if ( bt->D->butattn ) {
                       if ( k+1 == bt->df ) {
                           uidraw_depre ( bt->D , xx-bt->Hsize , yy+height+bt->Hsize , \
-                               xx+width+bt->Hsize , yy-bt->Hsize ) ;
+                          xx+width+bt->Hsize , yy-bt->Hsize ) ;
                       }
                       else {
                           _ui_rmv_inset_protru ( bt->D , xx-bt->Hsize , yy+height+bt->Hsize , \
-                               xx+width+bt->Hsize , yy-bt->Hsize ) ;
+                          xx+width+bt->Hsize , yy-bt->Hsize ) ;
                       }
                   }
               }
@@ -9488,7 +9512,7 @@ void transch(int c) {
           for ( i = 0; i < ( bt->nxb ) ; i++ ) {
               xx = bt->x1+ i* ( bt->b_w+xgap ) ;
               _ui_draw_newbutton ( xx , yy+height , xx+width , \
-                   yy , bt , k , bt->D->transparency ) ;
+              yy , bt , k , bt->D->transparency ) ;
 #if 0
 #endif
               k++;
@@ -9536,11 +9560,11 @@ void transch(int c) {
       EVGAY = D->evgay;
       uiUpdateOff ( D ) ;
       width = bt->b_w; height = bt->b_h;
-      if ( ( bt->nyb ) > 1 ) ygap = ( ( float )  \
-          ( ( bt->y2-bt->y1 ) -height*bt->nyb ) / \
+      if ( ( bt->nyb ) > 1 ) ygap = ( ( float ) \
+       ( ( bt->y2-bt->y1 ) -height*bt->nyb ) / \
        ( bt->nyb-1.0 ) +0.5 ) ;
-      if ( ( bt->nxb ) > 1 ) xgap = ( float )  \
-          ( ( bt->x2-bt->x1 ) -width*bt->nxb ) / \
+      if ( ( bt->nxb ) > 1 ) xgap = ( float ) \
+       ( ( bt->x2-bt->x1 ) -width*bt->nxb ) / \
        ( bt->nxb-1.0 ) +0.5;
       k = 0;
       for ( j = 0; j < ( bt->nyb ) ; j++ ) {
@@ -9548,7 +9572,7 @@ void transch(int c) {
           for ( i = 0; i < ( bt->nxb ) ; i++ ) {
               xx = bt->x1+ i* ( bt->b_w+xgap ) ;
               _ui_draw_newbutton ( xx , yy+height , xx+width , \
-                   yy , bt , k , D->transparency ) ;
+              yy , bt , k , D->transparency ) ;
               k++;
           }
       }
@@ -9571,10 +9595,10 @@ void transch(int c) {
       if ( b->ny <= 1 ) b->ygap = 0;
 //   uidia_message(D,b->x1+x1,b->y1+12+y1+b->width/2,b->prompt+i);
       uiString ( D , b->prompt+i , b->x1+x1 , b->y1+y1+b->width/2-10 , n*9-5 , \
-           20 , D->gc.PromptFont , D->gc.txt_pchar , \
-           D->gc.FontSize , 1 , D->gc.fill_clr ) ;
+      20 , D->gc.PromptFont , D->gc.txt_pchar , \
+      D->gc.FontSize , 1 , D->gc.fill_clr ) ;
       b->buts = make_but_str ( D , b->x1+x1+lngth , b->y1+y1+Hsize+2 , \
-           b->xgap , b->ygap , b->nx , b->ny , b->lngth , b->width , * \
+      b->xgap , b->ygap , b->nx , b->ny , b->lngth , b->width , * \
        ( b->df ) , b->titles , b->xpm , b->bkgr , NULL ) ;
       buts = ( BUTS * ) ( b->buts ) ;
       buts->D = D;
@@ -9605,10 +9629,11 @@ void transch(int c) {
       if ( b->nx <= 1 ) b->xgap = 0;
       if ( b->ny <= 1 ) b->ygap = 0;
 //   uiString(D,b->prompt+i,b->x1+x1,b->y1+y1+b->width/2-10,n*9-5,20,D->gc.PromptFont,D->gc.txt_pchar,D->gc.FontSize,1,D->gc.fill_clr);
-      uiString ( D , b->prompt+i , b->x1+x1 , b->y1+y1 , n*9-5 , b->width , D->gc.PromptFont , \
-           D->gc.txt_pchar , D->gc.FontSize , 1 , D->gc.fill_clr ) ;
+      uiString ( D , b->prompt+i , b->x1+x1 , b->y1+y1 , \
+           n*9-5 , b->width , D->gc.PromptFont , \
+      D->gc.txt_pchar , D->gc.FontSize , 1 , D->gc.fill_clr ) ;
       b->buts = make_but_str ( D , b->x1+x1+lngth , b->y1+y1+Hsize+2 , \
-           b->xgap , b->ygap , b->nx , b->ny , b->lngth , b->width , * \
+      b->xgap , b->ygap , b->nx , b->ny , b->lngth , b->width , * \
        ( b->df ) , b->titles , b->xpm , b->bkgr , NULL ) ;
       buts = ( BUTS * ) ( b->buts ) ;
       buts->D = D;
@@ -9676,7 +9701,7 @@ void transch(int c) {
       DIALOG *D;
       kgWC *wc;
       void *cimgn = NULL , *cimgp = NULL , *cimgh = NULL , \
-           *simg = NULL , *xpm , *cimg;
+      *simg = NULL , *xpm , *cimg;
       void *xpmp , *timg , *xpmh;
       GMIMG *gimg;
       IMG_STR *IMG = NULL;
@@ -9729,9 +9754,9 @@ void transch(int c) {
       cimgp = NULL;
       if ( buts [ 0 ] .imgn == NULL ) {
           cimgn = uiMakeButtonImage ( D , ln+mfp , wd+mfp , \
-               bkgr , 0 , 0 , b->fac , type ) ;
+          bkgr , 0 , 0 , b->fac , type ) ;
           cimgp = uiMakeButtonImage ( D , ln+mfp , wd+mfp , \
-               bkgr , -1 , 0 , b->fac , type ) ;
+          bkgr , -1 , 0 , b->fac , type ) ;
       }
 //      printf("TCB: ln: %d %d %f\n",ln,height,b->fac);
 #if 1
@@ -9743,7 +9768,7 @@ void transch(int c) {
               simg = NULL;
               if ( ( type > 0 ) && ( str != NULL ) && ( str [ 0 ] >= ' ' ) ) {
                   IMG = ( IMG_STR * ) uiComplexString ( str , \
-                       Bimgs , font , color , FontSize , wd ) ;
+                  Bimgs , font , color , FontSize , wd ) ;
                   simg = IMG->img;
                   free ( IMG ) ;
               }
@@ -9754,19 +9779,19 @@ void transch(int c) {
               cimg = NULL;
               if ( bkgr != backgr ) {
                   cimg = uiMakeButtonImage ( D , ln+mfp , wd+mfp , \
-                       backgr , 0 , 0 , b->fac , b->type ) ;
+                  backgr , 0 , 0 , b->fac , b->type ) ;
               }
               else if ( cimgn != NULL ) cimg = kgGetImageCopy ( NULL , cimgn ) ;
               xpm = NULL;
-              if ( buts [ k ] .xpmn != NULL ) xpm = kgGetImageCopy  \
-                  ( NULL , buts [ k ] .xpmn ) ;
+              if ( buts [ k ] .xpmn != NULL ) xpm = kgGetImageCopy \
+               ( NULL , buts [ k ] .xpmn ) ;
               if ( xpm != NULL ) {
                   gimg = ( GMIMG * ) xpm;
                   if ( ( gimg->image_width > length ) || ( gimg->image_height > height ) ) {
                       xpm = kgChangeSizeImage ( xpm , length , height ) ;
                   }
-                  if ( cimg != NULL ){
-                       cimg = kgMergeImages ( cimg , xpm , 0 , 0 ) ;
+                  if ( cimg != NULL ) {
+                      cimg = kgMergeImages ( cimg , xpm , 0 , 0 ) ;
                   }
                   else cimg = kgGetImageCopy ( NULL , xpm ) ;
               }
@@ -9787,7 +9812,7 @@ void transch(int c) {
               cimg = NULL;
               if ( bkgr != backgr ) {
                   cimg = uiMakeButtonImage ( D , ln+mfp , wd+mfp , \
-                       backgr , -1 , 0 , b->fac , b->type ) ;
+                  backgr , -1 , 0 , b->fac , b->type ) ;
               }
               else if ( cimgp != NULL ) cimg = kgGetImageCopy ( NULL , cimgp ) ;
               xpmp = NULL;
@@ -9850,9 +9875,9 @@ void transch(int c) {
               buts [ k ] .imgh = cimg;
 #else
               buts [ k ] .imgp = kgGetImageCopy ( NULL , buts [ k ] .imgn ) ;
-              buts [ k ] .imgp = kgChangeBrightness (buts [ k ] .imgp ,0.5); 
+              buts [ k ] .imgp = kgChangeBrightness ( buts [ k ] .imgp , 0.5 ) ;
               buts [ k ] .imgh = kgGetImageCopy ( NULL , buts [ k ] .imgn ) ;
-              buts [ k ] .imgh = kgChangeBrightness (buts [ k ] .imgh ,1.2); 
+              buts [ k ] .imgh = kgChangeBrightness ( buts [ k ] .imgh , 1.2 ) ;
 #endif
               if ( xpm != NULL ) kgFreeImage ( xpm ) ;
               if ( simg != NULL ) kgFreeImage ( simg ) ;
@@ -9861,10 +9886,10 @@ void transch(int c) {
 //             printf("TCB:k=%d\n",k);
 //             fflush(stdout);
       }
-      kgFreeGmImage(cimgn);
-      kgFreeGmImage(cimgp);
-      cimgn=NULL;
-      cimgp=NULL;
+      kgFreeGmImage ( cimgn ) ;
+      kgFreeGmImage ( cimgp ) ;
+      cimgn = NULL;
+      cimgp = NULL;
 #else
       n = b->nx*b->ny;
       for ( k = 0; k < n; k++ ) {
@@ -9931,7 +9956,7 @@ void transch(int c) {
       lngth = D->Hsize+2;
 //   uiDefaultGuiFontSize(D);
       b->buts = make_but_str ( D , b->x1+x1+lngth , b->y1+y1+lngth , b->xgap , \
-           b->ygap , b->nx , b->ny , b->lngth , b->width , * \
+      b->ygap , b->nx , b->ny , b->lngth , b->width , * \
        ( b->df ) , b->titles , b->xpm , b->bkgr , b->sw ) ;
       buts = ( BUTS * ) ( b->buts ) ;
       buts->D = D;
@@ -9972,7 +9997,7 @@ void transch(int c) {
       return ( ret ) ;
   }
   int uidraw_g_box ( DIALOG *D , int x1 , int y1 , \
-       int x2 , int y2 , int clr , void *xpm ) \
+  int x2 , int y2 , int clr , void *xpm ) \
   {
       int EVGAY;
 //    int offset=4;
@@ -9985,7 +10010,7 @@ void transch(int c) {
       uiSet_full_scrn ( wc ) ;
       if ( xpm != NULL ) kgImage ( D , xpm , x1 , y1 , x2 , y2 , 0.0 , 1.0 ) ;
       else if ( clr >= 0 ) _uibox_fill ( wc , x1 , \
-           EVGAY-y1 , x2 , EVGAY-y2 , clr ) ;
+      EVGAY-y1 , x2 , EVGAY-y2 , clr ) ;
       if ( D->DrawBkgr != 0 ) {
           _dvbordertype0 ( D , x1- ( offset ) , y1- ( offset ) , x2+ \
            ( offset ) , y2+ ( offset ) , D->gc.vbright ) ;
@@ -10109,7 +10134,7 @@ void transch(int c) {
       x = pt->x;
       y = pt->y;
       _dvrect_fill_transparent ( wc , x , y-w , x+l , \
-           y-1 , D->gc.fill_clr , D->transparency ) ;
+      y-1 , D->gc.fill_clr , D->transparency ) ;
       y = EVGAY-y;
 //   _uirect_fill(wc,x,y+w,x+l,y+1,pt->fill_clr);
       if ( pt->code == 'f' ) {
@@ -10186,8 +10211,9 @@ void transch(int c) {
       EVGAY = D->evgay;
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
-      uiShadedString ( D , "!f35t" , x-3 , EVGAY-y-1 , w , w+1 , 35 , D->gc.scroll_fill , \
-           0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
+      uiShadedString ( D , "!f35t" , x-3 , EVGAY-y-1 , \
+           w , w+1 , 35 , D->gc.scroll_fill , \
+      0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _ui_right_dir ( DIALOG *D , int x , int y , int w , int bright ) {
@@ -10203,12 +10229,13 @@ void transch(int c) {
       uiSet_full_scrn ( wc ) ;
       uiset_clr ( D , tmp ) ;
 //   uiShadedString(D,"!f35!w32!xs", x+3, EVGAY-y-1, w,w+1,35,D->gc.fill_clr,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
-      uiShadedString ( D , "!f35s" , x+3 , EVGAY-y-1 , w , w+1 , 35 , D->gc.scroll_fill , \
-           0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
+      uiShadedString ( D , "!f35s" , x+3 , EVGAY-y-1 , \
+           w , w+1 , 35 , D->gc.scroll_fill , \
+      0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _dvleft_dir ( DIALOG *D , int x , int y , \
-       int w , float rfac , int type ) \
+  int w , float rfac , int type ) \
   {
       char tmp;
       int xx , yy , ww , i;
@@ -10219,11 +10246,11 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       uiShadedString ( D , "!f35t" , x , y , w-1 , w , 35 , D->gc.scroll_fill , \
-           0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
+      0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _dvright_dir ( DIALOG *D , int x , int y , \
-       int w , float rfac , int type ) \
+  int w , float rfac , int type ) \
   {
       char tmp;
       int xx , yy , ww , i;
@@ -10236,7 +10263,7 @@ void transch(int c) {
       uiset_clr ( D , tmp ) ;
 //   uiShadedString(D,"!f35!w32!xs", x+3, EVGAY-y-1, w,w+1,35,D->gc.fill_clr,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
       uiShadedString ( D , "!f35s" , x , y , w-1 , w , 35 , D->gc.scroll_fill , \
-           0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
+      0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _ui_slidebar_o ( DIALOG *D , S_STR *pt ) {
@@ -10257,7 +10284,7 @@ void transch(int c) {
       y = EVGAY-y;
       _uirect_fill ( wc , x , y+w , x+l , y-w , gc.fill_clr ) ;
       _uirect_fill ( wc , x+w+1+sw/2 , y-pt->Sdpw , x+l-w-1-sw/2 , \
-           y+pt->Sdpw-w , gc.fill_clr ) ;
+      y+pt->Sdpw-w , gc.fill_clr ) ;
       uidraw_depre ( D , x+w+1 , y-Sdpw , x+l-w-1 , y+Sdpw-w ) ;
       _ui_right_dir ( D , x+2 , y-2 , w-4 , gc.vbright ) ;
       _ui_left_dir ( D , x+l-w+2 , y-2 , w-4 , gc.vbright ) ;
@@ -10322,7 +10349,7 @@ void transch(int c) {
           default:
           y = EVGAY-y;
           _uirect_fill_transparent ( wc , x+w+1+sw/2 , y-pt->Sdpw , x+l-w-1-sw/2 , \
-               y+pt->Sdpw-w , pt->fill_clr , D->transparency ) ;
+          y+pt->Sdpw-w , pt->fill_clr , D->transparency ) ;
 //      uidraw_depre(D,x+w+1,y-pt->Sdpw,x+l-w-1,y+pt->Sdpw-w);
           break;
           case 1:
@@ -10361,7 +10388,7 @@ void transch(int c) {
       y2 = B->y2-offset+D->yo;
 #ifndef D_RESTORE
       _dvrect_fill_transparent ( wc , x1 , y1 , x2 , \
-           y2 , gc->fill_clr , D->transparency ) ;
+      y2 , gc->fill_clr , D->transparency ) ;
 #else
       kgRestoreImage ( D , Bimg , x1 , y1 , ( x2-x1+1 ) , ( y2-y1+1 ) ) ;
 #endif
@@ -10431,7 +10458,7 @@ void transch(int c) {
 //TCBTCB
 #ifndef D_RESTORE
       _uirect_fill_transparent ( wc , x1-2 , y1+5 , x2+2 , \
-           y2-5 , gc->fill_clr , D->transparency ) ;
+      y2-5 , gc->fill_clr , D->transparency ) ;
       _uirect_fill ( wc , x1+1 , y1-1 , x2-2 , y2+2 , gc->fill_clr ) ;
 #else
       kgRestoreImagePart ( D , Bimg , x1-2 , EVGAY-y1-5 , ( x1-2-xo ) , \
@@ -10440,7 +10467,7 @@ void transch(int c) {
        ( EVGAY-y1+2-yo ) , ( x2-2-x1 ) , abs ( y2+4-y1 ) ) ;
 #endif
       _uirect_fill ( wc , x+w+1+sw/2 , y-pt->Sdpw , \
-           x+l-w-1-sw/2 , y+pt->Sdpw-w , gc->dim ) ;
+      x+l-w-1-sw/2 , y+pt->Sdpw-w , gc->dim ) ;
       uidraw_depre ( D , x+w+1+sw/2 , y-pt->Sdpw , x+l-w-1-sw/2 , y+pt->Sdpw-w ) ;
       sx = x1+1+sx;
       if ( sx < x1 ) sx = x1+1;
@@ -10465,7 +10492,7 @@ void transch(int c) {
       uiRest_clip_limits ( wc ) ;
   }
   void * _ui_setslide ( void *tmp , int min , int max , int x , int y , \
-       int l , int df , char ch , double cf , double sh ) \
+  int l , int df , char ch , double cf , double sh ) \
   {
       DIALOG *D;
       DIF *f;
@@ -10536,7 +10563,7 @@ void transch(int c) {
                   lngth = n*9+4;
 //        uiString(D,f->prompt+i,f->x1+D->xo+2,f->y1+D->yo+21,n*9-5,20,D->gc.PromptFont,D->gc.txt_pchar,D->gc.FontSize,1,D->gc.fill_clr);
                   uiString ( D , f->prompt+i , f->x1+D->xo+2 , f->y1+D->yo+21 , n*9-5 , 20 , \
-                       D->gc.PromptFont , D->gc.txt_pchar , D->gc.FontSize , 1 , -1 ) ;
+                  D->gc.PromptFont , D->gc.txt_pchar , D->gc.FontSize , 1 , -1 ) ;
               }
           }
           _ui_slidebar ( D , ptr ) ;
@@ -10590,7 +10617,7 @@ void transch(int c) {
                   lngth = n*9+4;
 //        uiString(D,f->prompt+i,f->x1+D->xo+2,f->y1+D->yo+21,n*9-5,20,D->gc.PromptFont,D->gc.txt_pchar,D->gc.FontSize,1,D->gc.fill_clr);
                   uiString ( D , f->prompt+i , f->x1+D->xo+2 , f->y1+D->yo+21 , n*9-5 , 20 , \
-                       D->gc.PromptFont , D->gc.txt_pchar , D->gc.FontSize , 1 , -1 ) ;
+                  D->gc.PromptFont , D->gc.txt_pchar , D->gc.FontSize , 1 , -1 ) ;
               }
           }
           _ui_slidebar ( D , ptr ) ;
@@ -10663,7 +10690,7 @@ void transch(int c) {
       return ret;
   }
   void * _ui_sethbar ( DIHB *B , int min , int max , int x , int y , \
-       int l , int df , char ch , double cf , double sh ) \
+  int l , int df , char ch , double cf , double sh ) \
   {
       DIALOG *D;
       S_STR *ptr;
@@ -10802,7 +10829,7 @@ void transch(int c) {
       sptr = ( S_STR * ) f->sptr;
       sptr->Widget = f;
       _ui_setslide ( f , min , max , ( int ) f->x1+lngth+x1+2 , \
-           ( int ) f->y1+y1+22 , \
+       ( int ) f->y1+y1+22 , \
        ( int ) f->lngth , df , 'f' , ch , sh ) ;
       return ( ret ) ;
   }
@@ -10823,7 +10850,7 @@ void transch(int c) {
       sptr = ( S_STR * ) d->sptr;
       sptr->Widget = d;
       _ui_setslide ( d , min , max , ( int ) d->x1+lngth+x1+2 , \
-           ( int ) d->y1+y1+22 , \
+       ( int ) d->y1+y1+22 , \
        ( int ) d->lngth , df , 'd' , ch , sh ) ;
       return ( ret ) ;
   }
@@ -10912,7 +10939,7 @@ void transch(int c) {
       fillcolor = color;
       xsize = ( l-of ) -0.5*of; ysize = ( w-of ) -0.5*of;
       if ( fillcolor >= 0 ) kgGetRGB ( ( DIG * ) fid , \
-           fillcolor , & r , & g , & b ) ;
+      fillcolor , & r , & g , & b ) ;
       else {
           fillcolor = -fillcolor;
           b = ( fillcolor%1000 ) ;
@@ -11005,7 +11032,7 @@ void transch(int c) {
        ( float ) l*0.5 , ( float ) w*0.5 ) ;
       fillcolor = D->gc.fill_clr;
       if ( fillcolor >= 0 ) kgGetRGB ( ( DIG * ) fid , \
-           fillcolor , & r , & g , & b ) ;
+      fillcolor , & r , & g , & b ) ;
       else {
           fillcolor = -fillcolor;
           b = ( fillcolor%1000 ) ;
@@ -11036,7 +11063,7 @@ void transch(int c) {
       xsize = ( l-of ) -0.5*of; ysize = ( w-of ) -0.5*of;
       fillcolor = color;
       if ( fillcolor >= 0 ) kgGetRGB ( ( DIG * ) fid , \
-           fillcolor , & r , & g , & b ) ;
+      fillcolor , & r , & g , & b ) ;
       else {
           fillcolor = -fillcolor;
           b = ( fillcolor%1000 ) ;
@@ -11131,7 +11158,7 @@ void transch(int c) {
        ( float ) l*0.5+0.1 , ( float ) w*0.5+0.1 ) ;
       fillcolor = color;
       if ( fillcolor >= 0 ) kgGetRGB ( ( DIG * ) fid , \
-           fillcolor , & r , & g , & b ) ;
+      fillcolor , & r , & g , & b ) ;
       else {
           fillcolor = -fillcolor;
           b = ( fillcolor%1000 ) ;
@@ -11158,7 +11185,7 @@ void transch(int c) {
       xsize = ( w-of ) -.75*of; ysize = ( w-of ) -.75*of;
       fillcolor = color;
       if ( fillcolor >= 0 ) kgGetRGB ( ( DIG * ) fid , \
-           fillcolor , & r , & g , & b ) ;
+      fillcolor , & r , & g , & b ) ;
       else {
           fillcolor = -fillcolor;
           b = ( fillcolor%1000 ) ;
@@ -11276,7 +11303,7 @@ void transch(int c) {
       xsize = ( l ) -.75*of; ysize = ( w-of ) -.75*of;
       fillcolor = color;
       if ( fillcolor >= 0 ) kgGetRGB ( ( DIG * ) fid , \
-           fillcolor , & r , & g , & b ) ;
+      fillcolor , & r , & g , & b ) ;
       else {
           fillcolor = -fillcolor;
           b = ( fillcolor%1000 ) ;
@@ -11350,7 +11377,7 @@ void transch(int c) {
        ( float ) l*0.5 , ( float ) w*0.5 ) ;
       fillcolor = color;
       if ( fillcolor >= 0 ) kgGetRGB ( ( DIG * ) fid , \
-           fillcolor , & r , & g , & b ) ;
+      fillcolor , & r , & g , & b ) ;
       else {
           fillcolor = -fillcolor;
           b = ( fillcolor%1000 ) ;
@@ -11373,7 +11400,7 @@ void transch(int c) {
       xsize = ( l ) -.75*of; ysize = ( w-of ) -.75*of;
       fillcolor = color;
       if ( fillcolor >= 0 ) kgGetRGB ( ( DIG * ) fid , \
-           fillcolor , & r , & g , & b ) ;
+      fillcolor , & r , & g , & b ) ;
       else {
           fillcolor = -fillcolor;
           b = ( fillcolor%1000 ) ;
@@ -11577,11 +11604,11 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       uiShadedString ( D , "!f35!w32!xs" , x-1 , EVGAY-y-1 , w+2 , w+2 , 35 , \
-           D->gc.fill_clr , 0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
+      D->gc.fill_clr , 0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _uidown_dir ( DIALOG *D , int x , int y , \
-       int w , float rfac , int type ) \
+  int w , float rfac , int type ) \
   {
       kgWC *wc;
       wc = WC ( D ) ;
@@ -11590,7 +11617,7 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       uiShadedString ( D , "!f35!w32!xt" , x-1 , EVGAY-y-1 , w+2 , w+2 , 35 , \
-           D->gc.fill_clr , 0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
+      D->gc.fill_clr , 0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _dvup_dir ( DIALOG *D , int x , int y , int w , float rfac , int type ) {
@@ -11598,19 +11625,21 @@ void transch(int c) {
       wc = WC ( D ) ;
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
-      uiShadedString ( D , "!f35!w32!xs" , x , y , w , w , 35 , D->gc.scroll_fill , \
-           0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
+      uiShadedString ( D , "!f35!w32!xs" , x , y , \
+           w , w , 35 , D->gc.scroll_fill , \
+      0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _dvdown_dir ( DIALOG *D , int x , int y , \
-       int w , float rfac , int type ) \
+  int w , float rfac , int type ) \
   {
       kgWC *wc;
       wc = WC ( D ) ;
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
-      uiShadedString ( D , "!f35!w32!xt" , x , y , w , w , 35 , D->gc.scroll_fill , \
-           0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
+      uiShadedString ( D , "!f35!w32!xt" , x , y , \
+           w , w , 35 , D->gc.scroll_fill , \
+      0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _uidown_dir_o ( DIALOG *D , int x , int y , int w ) {
@@ -11663,7 +11692,7 @@ void transch(int c) {
       menu = br->menu [ br->df-1 ] ;
 //  uiMenustr(D,x1+4,y2+5,br->menu[br->df-1],D->gc.menu_char);
       uiString ( D , menu , x1 , br->y1+yoff , ln , br->width , D->gc.MenuFont , \
-           D->gc.menu_char , D->gc.FontSize , -1 , -1 ) ;
+      D->gc.menu_char , D->gc.FontSize , -1 , -1 ) ;
       _uidown_dir ( D , x2+3 , y1 , 20 , 0.2 , 4 ) ;
       uiRest_clip_limits ( wc ) ;
   }
@@ -11684,8 +11713,9 @@ void transch(int c) {
       if ( w->Bimg != NULL ) kgRestoreImage ( D , w->Bimg , x1 , y1 , \
        ( x2-x1+1 ) , ( y2-y1+1 ) ) ;
       if ( n > 0 ) {
-          uiString ( D , w->prompt , x1 , y1 , lngth , w->y2-w->y1 , D->gc.PromptFont , \
-               D->gc.txt_pchar , D->gc.FontSize , 1 , D->gc.fill_clr ) ;
+          uiString ( D , w->prompt , x1 , y1 , lngth , \
+               w->y2-w->y1 , D->gc.PromptFont , \
+          D->gc.txt_pchar , D->gc.FontSize , 1 , D->gc.fill_clr ) ;
       }
       EVGAY = D->evgay;
       x1 = w->xb+D->xo+2;
@@ -11715,7 +11745,7 @@ void transch(int c) {
 //  uiMenustr(D,x1+4,y2+5,br->menu[br->df-1],D->gc.menu_char);
 #if 1
       uiString ( D , menu , x1+5 , y1-1 , ln , w->width-2 , D->gc.MenuFont , \
-           D->gc.menu_char , D->gc.FontSize , -1 , -1 ) ;
+      D->gc.menu_char , D->gc.FontSize , -1 , -1 ) ;
 //  kgImage(D,img,x1+5,y1,ln,w->width,0.0,1.0);
 #endif
 #if 0
@@ -11759,7 +11789,7 @@ void transch(int c) {
           w->imgs [ i ] = NULL;
           for ( i = 0; i < items; i++ ) {
               w->imgs [ i ] = ( void * ) kgStringToImage ( w->menu [ i ] , NULL , lng , \
-                   w->width , D->gc.MenuFont , D->gc.menu_char , -1 , D->gc.FontSize , -1 ) ;
+              w->width , D->gc.MenuFont , D->gc.menu_char , -1 , D->gc.FontSize , -1 ) ;
           }
       }
       return;
@@ -11819,7 +11849,7 @@ void transch(int c) {
       }
 #else
       w->imgs = ( void ** ) uiMenuStringImages ( D , w->menu , lng , w->width , \
-           D->gc.MenuFont , D->gc.menu_char , D->gc.FontSize , -1 , 8 ) ;
+      D->gc.MenuFont , D->gc.menu_char , D->gc.FontSize , -1 , 8 ) ;
 #endif
       return;
   }
@@ -11861,12 +11891,12 @@ void transch(int c) {
           w->imgs [ i ] = NULL;
           for ( i = 0; i < items; i++ ) {
               w->imgs [ i ] = ( void * ) uiMenuStringImage ( D , menu [ i ]->name , lng , \
-                   width , D->gc.MsgFont , D->gc.info_char , D->gc.FontSize , 0 ) ;
+              width , D->gc.MsgFont , D->gc.info_char , D->gc.FontSize , 0 ) ;
           }
       }
 #else
       w->imgs = ( void ** ) uiMenuNailImages ( D , menu , lng , width , \
-           D->gc.MenuFont , D->gc.twin_char , D->gc.FontSize , 0 , 8 ) ;
+      D->gc.MenuFont , D->gc.twin_char , D->gc.FontSize , 0 , 8 ) ;
 #endif
       return;
   }
@@ -11916,11 +11946,11 @@ void transch(int c) {
           w->imgs [ i ] = NULL;
           for ( i = 0; i < items; i++ ) {
               w->imgs [ i ] = ( void * ) uiMenuStringImage ( D , menu [ i ]->name , lng , \
-                   w->width , D->gc.MenuFont , D->gc.menu_char , D->gc.FontSize , -1 ) ;
+              w->width , D->gc.MenuFont , D->gc.menu_char , D->gc.FontSize , -1 ) ;
           }
 #else
           w->imgs = ( void ** ) uiMenuNailImages ( D , menu , lng , w->width , \
-               D->gc.MenuFont , D->gc.twin_char , D->gc.FontSize , -1 , Mag ) ;
+          D->gc.MenuFont , D->gc.twin_char , D->gc.FontSize , -1 , Mag ) ;
 #endif
       }
       return;
@@ -11969,12 +11999,13 @@ void transch(int c) {
           w->imgs = ( void ** ) malloc ( sizeof ( void * ) * ( i+1 ) ) ;
           w->imgs [ i ] = NULL;
           for ( i = 0; i < items; i++ ) {
-              w->imgs [ i ] = ( void * ) uiMenuStringImage ( D , menu [ i ]->name , lng-2*BxSize , \
-                   th , D->gc.Font , D->gc.menu_char , D->gc.FontSize , -1 ) ;
+              w->imgs [ i ] = ( void * ) uiMenuStringImage  \
+                  ( D , menu [ i ]->name , lng-2*BxSize , \
+              th , D->gc.Font , D->gc.menu_char , D->gc.FontSize , -1 ) ;
           }
 #else
           w->imgs = ( void ** ) uiMenuNailImages ( D , menu , lng-2*BxSize , th , \
-               D->gc.MenuFont , D->gc.menu_char , D->gc.FontSize , -1 , 8 ) ;
+          D->gc.MenuFont , D->gc.menu_char , D->gc.FontSize , -1 , 8 ) ;
 #endif
       }
       return;
@@ -12023,12 +12054,13 @@ void transch(int c) {
           w->imgs = ( void ** ) malloc ( sizeof ( void * ) * ( i+1 ) ) ;
           w->imgs [ i ] = NULL;
           for ( i = 0; i < items; i++ ) {
-              w->imgs [ i ] = ( void * ) uiMenuStringImage ( D , menu [ i ]->name , lng-2*BxSize , \
-                   th , D->gc.Font , D->gc.menu_char , D->gc.FontSize , -1 ) ;
+              w->imgs [ i ] = ( void * ) uiMenuStringImage  \
+                  ( D , menu [ i ]->name , lng-2*BxSize , \
+              th , D->gc.Font , D->gc.menu_char , D->gc.FontSize , -1 ) ;
           }
 #else
           w->imgs = ( void ** ) uiMenuNailImages ( D , menu , lng-2*BxSize , th , \
-               D->gc.MenuFont , D->gc.menu_char , D->gc.FontSize , -1 , 8 ) ;
+          D->gc.MenuFont , D->gc.menu_char , D->gc.FontSize , -1 , 8 ) ;
 #endif
       }
       return;
@@ -12065,12 +12097,12 @@ void transch(int c) {
           w->imgs [ i ] = NULL;
           for ( i = 0; i < items; i++ ) {
               w->imgs [ i ] = ( void * ) kgStringToImage ( w->menu [ i ] , NULL , lng , \
-                   w->width , D->gc.MenuFont , D->gc.menu_char , -1 , D->gc.FontSize , -1 ) ;
+              w->width , D->gc.MenuFont , D->gc.menu_char , -1 , D->gc.FontSize , -1 ) ;
           }
       }
 #else
       w->imgs = ( void ** ) uiMenuStringImages ( D , w->menu , lng , w->width , \
-           D->gc.MenuFont , D->gc.menu_char , D->gc.FontSize , -1 , 8 ) ;
+      D->gc.MenuFont , D->gc.menu_char , D->gc.FontSize , -1 , 8 ) ;
 #endif
       return;
   }
@@ -12118,8 +12150,9 @@ void transch(int c) {
           * ( w->df ) = df;
 #if 0
           if ( n > 0 ) {
-              uiString ( D , w->prompt , x1 , y1 , lngth , w->y2-w->y1 , D->gc.PromptFont , \
-                   D->gc.txt_pchar , D->gc.FontSize , 1 , D->gc.fill_clr ) ;
+              uiString ( D , w->prompt , x1 , y1 , lngth , \
+                   w->y2-w->y1 , D->gc.PromptFont , \
+              D->gc.txt_pchar , D->gc.FontSize , 1 , D->gc.fill_clr ) ;
           }
 #endif
           ui_draw_browser ( w , n , lngth ) ;
@@ -12163,7 +12196,7 @@ void transch(int c) {
       return ( ret ) ;
   }
   void * make_menu_str ( DIALOG *D , int xx1 , int yy1 , \
-       int pos , int df , char **menu , int size ) \
+  int pos , int df , char **menu , int size ) \
   {
       int i = 0 , ret , n = 0;
       int lngth = 0. , lng = 0.;
@@ -12207,7 +12240,7 @@ void transch(int c) {
   }
 //void * make_dialog_menu_str(int xx1,int yy1,int pos,int df,char **menu,int size)
   void * make_dialog_menu_str ( DIALOG *D , DIE *w , \
-       int pos , int df , char **menu , int size ) \
+  int pos , int df , char **menu , int size ) \
   {
       int i = 0 , ret , n = 0;
       int lngth = 0. , lng = 0.;
@@ -12233,7 +12266,7 @@ void transch(int c) {
       return ( void * ) br;
   }
   void * make_dialog_newmenu_str ( DIALOG *D , DIX *x , \
-       int pos , int df , char **menu , int size ) \
+  int pos , int df , char **menu , int size ) \
   {
       int i = 0 , ret , n = 0;
       int lngth = 0. , lng = 0.;
@@ -12261,7 +12294,7 @@ void transch(int c) {
       return ( void * ) br;
   }
   void * make_dialog_y_str ( DIALOG *D , DIY *y , int pos , \
-       int df , char **menu , int size ) \
+  int df , char **menu , int size ) \
   {
       int i = 0 , ret , n = 0;
       int lngth = 0. , lng = 0.;
@@ -12401,7 +12434,7 @@ void transch(int c) {
       }
 //   _uiclean_gui_area(D,X1,Y1,X2,Y2);
       _uirect_fill_transparent ( WC ( D ) , X1 , D->evgay-Y1 , X2 , \
-           D->evgay-Y2 , D->gc.fill_clr , D->transparency ) ;
+      D->evgay-Y2 , D->gc.fill_clr , D->transparency ) ;
       return -1;
   }
   void _ui_updatemenu ( void *tmp , int item , char **m ) {
@@ -12606,8 +12639,8 @@ void transch(int c) {
       if ( * ( y->df ) < 1 ) * ( y->df ) = 0;
       if ( * ( y->df ) > n ) * ( y->df ) = n;
       df = * ( y->df ) -1;
-      if ( ( ( ( y->type ) %10 ) != 0 ) && ( menu != NULL ) &&  \
-          ( menu [ 0 ] != NULL ) && \
+      if ( ( ( ( y->type ) %10 ) != 0 ) && ( menu != NULL ) && \
+       ( menu [ 0 ] != NULL ) && \
        ( df >= 0 ) ) menu [ df ]->sw = 1;
       n = 0;
 #if 0
@@ -12737,7 +12770,7 @@ void transch(int c) {
       if ( y->hide != 1 ) {
           CHECKLIMITS ( y ) ;
           if ( y->Bimg == NULL ) y->Bimg = kgGetBackground ( D , \
-               bwsr->x1 , bwsr->y1 , bwsr->x2 , bwsr->y2 ) ;
+          bwsr->x1 , bwsr->y1 , bwsr->x2 , bwsr->y2 ) ;
           bwsr->hitem = 0;
           bwsr->pos = 0;
           bwsr->df = * ( y->df ) ;
@@ -12832,7 +12865,7 @@ void transch(int c) {
       if ( y->hide != 1 ) {
           CHECKLIMITS ( y ) ;
           if ( y->Bimg == NULL ) y->Bimg = kgGetBackground ( D , \
-               bwsr->x1 , bwsr->y1 , bwsr->x2 , bwsr->y2 ) ;
+          bwsr->x1 , bwsr->y1 , bwsr->x2 , bwsr->y2 ) ;
           bwsr->hitem = 0;
           bwsr->pos = 0;
           bwsr->df = * ( y->df ) ;
@@ -12919,8 +12952,8 @@ void transch(int c) {
       if ( * ( y->df ) > n ) * ( y->df ) = n;
 //   y->nx = 1;
       df = * ( y->df ) -1;
-      if ( ( ( ( y->type ) %10 ) != 0 ) && ( menu != NULL ) &&  \
-          ( menu [ 0 ] != NULL ) && \
+      if ( ( ( ( y->type ) %10 ) != 0 ) && ( menu != NULL ) && \
+       ( menu [ 0 ] != NULL ) && \
        ( df >= 0 ) ) menu [ df ]->sw = 1;
       bwsr = ( BRW_STR * ) y->bwsr;
       bwsr->D = ( DIALOG* ) D;
@@ -12929,12 +12962,12 @@ void transch(int c) {
       bwsr->x2 = y->x2+x1;
       bwsr->y2 = y->y2+y1;
       if ( y->bkgr == 1 ) _dvrect_fill ( WC ( D ) , bwsr->x1+4 , bwsr->y1+4 , \
-           bwsr->x2-4 , bwsr->y2-4 , D->gc.twin_fill ) ;
+      bwsr->x2-4 , bwsr->y2-4 , D->gc.twin_fill ) ;
 //      else _dvrect_fill ( WC ( D ) , bwsr->x1+4 , bwsr->y1+4 , bwsr->x2-4 , bwsr->y2-4 , D->gc.fill_clr ) ;
       if ( y->hide != 1 ) {
           CHECKLIMITS ( y ) ;
           if ( y->Bimg == NULL ) y->Bimg = kgGetBackground ( D , \
-               bwsr->x1 , bwsr->y1 , bwsr->x2 , bwsr->y2 ) ;
+          bwsr->x1 , bwsr->y1 , bwsr->x2 , bwsr->y2 ) ;
           bwsr->hitem = 0;
           bwsr->pos = 0;
           bwsr->df = * ( y->df ) ;
@@ -13095,7 +13128,7 @@ void transch(int c) {
 //   bwsr->y2 =y->y1+y1+y->size*y->width+2*y->offset;
           CHECKLIMITS ( y ) ;
           if ( y->Bimg == NULL ) y->Bimg = kgGetBackground ( D , \
-               bwsr->x1 , bwsr->y1 , bwsr->x2 , bwsr->y2 ) ;
+          bwsr->x1 , bwsr->y1 , bwsr->x2 , bwsr->y2 ) ;
           bwsr->hitem = 0;
           bwsr->pos = 0;
           bwsr->df = * ( y->df ) ;
@@ -13291,11 +13324,11 @@ void transch(int c) {
           kgLineColor ( fid , color ) ;
           if ( o->direction == 0 ) {
               if ( lp > 0 ) kgRoundedRectangleFill ( fid , lp*0.5+offset , \
-                   yp , lp , w , 1 , color , 0.25 ) ;
+              yp , lp , w , 1 , color , 0.25 ) ;
           }
           else {
               if ( o->percent > 0 ) kgRoundedRectangleFill ( fid , xp , \
-                   lp*0.5+offset , l , lp , 1 , color , 0.25 ) ;
+              lp*0.5+offset , l , lp , 1 , color , 0.25 ) ;
           }
           img = kgGetResizedImage ( fid ) ;
 //      img=kgGetSmoothImage(fid);
@@ -13365,11 +13398,11 @@ void transch(int c) {
           kgLineColor ( fid , color ) ;
           if ( o->direction == 0 ) {
               if ( lp > 0 ) kgRoundedRectangleFill ( fid , lp*0.5+offset , \
-                   yp , lp , w , 1 , color , 0.0 ) ;
+              yp , lp , w , 1 , color , 0.0 ) ;
           }
           else {
               if ( o->percent > 0 ) kgRoundedRectangleFill ( fid , \
-                   xp , lp*0.5+offset , l , lp , 1 , color , 0.0 ) ;
+              xp , lp*0.5+offset , l , lp , 1 , color , 0.0 ) ;
           }
 //      img=kgGetResizedImage(fid);
 //      img=kgGetSmoothImage(fid);
@@ -13442,7 +13475,7 @@ void transch(int c) {
               kgRoundedRectangleFill ( fid , l*0.5+offset , yp , ( float ) l , \
                ( float ) w , 0 , D->gc.ProgFillColor , 0.5 ) ;
               if ( lp > 0 ) kgRoundedRectangleFill ( fid , lp*0.5+offset , \
-                   yp , lp , w , 0 , color , 0.5 ) ;
+              yp , lp , w , 0 , color , 0.5 ) ;
               kgRoundedRectangleFill ( fid , lp+offset , yp , ( float ) w*3.0 , \
                ( float ) w*3.0 , 1 , color , 0.5 ) ;
               kgRoundedRectangleFill ( fid , lp+offset , yp , ( float ) w*2.0 , \
@@ -13452,7 +13485,7 @@ void transch(int c) {
               kgRoundedRectangleFill ( fid , xp , w*0.5+offset , ( float ) l , \
                ( float ) w , color , D->gc.ProgFillColor , 0.5 ) ;
               if ( o->percent > 0 ) kgRoundedRectangleFill ( fid , xp , \
-                   lp*0.5+offset , l , lp , color , color , 0.5 ) ;
+              lp*0.5+offset , l , lp , color , color , 0.5 ) ;
               kgRoundedRectangleFill ( fid , xp , lp+offset , ( float ) l*3.0 , \
                ( float ) l*3.0 , 1 , color , 0.5 ) ;
               kgRoundedRectangleFill ( fid , xp , lp+offset , ( float ) l*2.0 , \
@@ -13504,7 +13537,7 @@ void transch(int c) {
                   break;
                   case 1:
                   if ( o->Bimg != NULL ) kgRestoreImage ( D , o->Bimg , \
-                       x1-1 , y1-1 , x2-x1+3 , y2-y1+3 ) ;
+                  x1-1 , y1-1 , x2-x1+3 , y2-y1+3 ) ;
                   l = x2-x1-2*offset;
                   w = y2 -y1-2*offset;
                   if ( w > l ) { o->direction = 1; lp = w* ( 100.-o->percent ) /100.0; }
@@ -13513,14 +13546,14 @@ void transch(int c) {
                   if ( color == -1 ) color = D->gc.ProgColor;
 //       _dvbordertype0(D, x1+offset-2,y1+offset-2,x2+offset+2,y2-offset+2,D->gc.ProgBodrColor);
                   _dvrect_fill ( wc , x1+offset , y1+offset , x2-offset , \
-                       y2-offset , D->gc.ProgFillColor ) ;
+                  y2-offset , D->gc.ProgFillColor ) ;
                   if ( o->direction == 0 ) {
                       if ( lp > 0 ) _dvrect_fill ( wc , x1+offset , y1+offset , \
-                           x1+offset+lp , y1+offset+w , color ) ;
+                      x1+offset+lp , y1+offset+w , color ) ;
                   }
                   else {
                       if ( o->percent > 0 ) _dvrect_fill ( wc , x1+offset , \
-                           y1+offset+lp , x1+offset+l , y2-offset , color ) ;
+                      y1+offset+lp , x1+offset+l , y2-offset , color ) ;
                   }
                   break;
               }
@@ -13537,7 +13570,7 @@ void transch(int c) {
           uiRest_clip_limits ( wc ) ;
 #endif
           if ( o->Bimg != NULL ) kgRestoreImage ( D , o->Bimg , \
-               x1-1 , y1-1 , x2-x1+3 , y2-y1+3 ) ;
+          x1-1 , y1-1 , x2-x1+3 , y2-y1+3 ) ;
       }
       return ( ret ) ;
   }
@@ -13582,7 +13615,7 @@ void transch(int c) {
 //   bwsr->y2 =y->y1+y1+y->size*y->width+2*y->offset;
           CHECKLIMITS ( y ) ;
           if ( y->Bimg == NULL ) y->Bimg = kgGetBackground ( D , \
-               bwsr->x1 , bwsr->y1 , bwsr->x2 , bwsr->y2 ) ;
+          bwsr->x1 , bwsr->y1 , bwsr->x2 , bwsr->y2 ) ;
           bwsr->df = 1;
           menu = ( char ** ) y->menu;
           n = 0;
@@ -13688,7 +13721,7 @@ void transch(int c) {
       for ( row = 0; row < t->ny; row++ ) {
           for ( col = 0; col < t->nx; col++ ) {
               if ( _uiCheckBox ( kbe , elmt [ box ] .x1 , elmt [ box ] .y1 , \
-                   elmt [ box ] .x2 , elmt [ box ] .y2 ) ) \
+              elmt [ box ] .x2 , elmt [ box ] .y2 ) ) \
               {
                   pos = ( x - elmt [ box ] .x1 -5 ) / ( Gap+Wd ) ;
                   ln = strlen ( elmt [ box ] .df+elmt [ box ] .startchar ) ;
@@ -13729,11 +13762,11 @@ void transch(int c) {
       DIT *T = ( DIT * ) t->T;
       char *df;
       int Id;
-      Id = kgGetWidgetId(t->D,T);
+      Id = kgGetWidgetId ( t->D , T ) ;
       button = kbe.button;
-      if (button != 1 ) {
+      if ( button != 1 ) {
 //         printf("Pressed Button %d in Table box\n",button);
-         return button;
+          return button;
       }
 //  tit = t->tit;
       elmt = t->elmt;
@@ -13755,12 +13788,12 @@ void transch(int c) {
       for ( row = 0; row < t->ny; row++ ) {
           for ( col = 0; col < t->nx; col++ ) {
               if ( _uiCheckBox ( kbe , elmt [ box ] .x1 , elmt [ box ] .y1 , \
-                   elmt [ box ] .x2 , elmt [ box ] .y2 ) ) \
+              elmt [ box ] .x2 , elmt [ box ] .y2 ) ) \
               {
                   pos = ( x - elmt [ box ] .x1 -FontSize/2 ) / ( FontSize ) ;
                   if ( pos < 0 ) pos = 0;
                   ln = strlen ( elmt [ box ] .df+elmt [ box ] .startchar ) ;
-                  if(T->Update != NULL) T->Update(LINE_CHANGE,Id,t->D);
+                  if ( T->Update != NULL ) T->Update ( LINE_CHANGE , Id , t->D ) ;
                   _ui_cleantablecursor ( t ) ;
                   curbox = row*t->nx+col;
                   while ( t->elmt [ curbox ] .sw != 1 ) {
@@ -14007,7 +14040,7 @@ void transch(int c) {
           row = t->row;
           curbox = row*t->nx+col;
           if ( _ui_deletechar ( t->elmt [ curbox ] .df , \
-               t->elmt [ curbox ] .cursor ) ) \
+          t->elmt [ curbox ] .cursor ) ) \
           {
               if ( code == 't' ) _ui_drawtextcursor ( t ) ;
               else _ui_drawtablecursor ( t ) ;
@@ -14024,7 +14057,7 @@ void transch(int c) {
                   t->elmt [ curbox ] .startchar -= 1;
                   t->elmt [ curbox ] .cursor -= 1;
                   if ( _ui_deletechar ( t->elmt [ curbox ] .df , \
-                       t->elmt [ curbox ] .cursor ) ) \
+                  t->elmt [ curbox ] .cursor ) ) \
                   {
                       if ( code == 't' ) _ui_drawtextcursor ( t ) ;
                       else _ui_drawtablecursor ( t ) ;
@@ -14036,7 +14069,7 @@ void transch(int c) {
                   if ( ( t->elmt [ curbox ] .cursor < t->elmt [ curbox ] .startchar ) ) t->elmt [ curbox ] .startchar = t->elmt [ curbox ] .cursor;
                       
                   if ( _ui_deletechar ( t->elmt [ curbox ] .df , \
-                       t->elmt [ curbox ] .cursor ) ) \
+                  t->elmt [ curbox ] .cursor ) ) \
                   {
                       if ( code == 't' ) _ui_drawtextcursor ( t ) ;
                       else _ui_drawtablecursor ( t ) ;
@@ -14052,8 +14085,9 @@ void transch(int c) {
           row = t->row;
           curbox = row*t->nx+col;
 //    if(key== ' ') printf("Got Space :%s %d %d %d\n",t->elmt[curbox].df,col,row,curbox);
-          if ( ( ret = _ui_insertchar ( t->elmt [ curbox ] .df , t->elmt [ curbox ] .cursor , \
-               MAXTITEMLN-2 , key ) ) ) \
+          if ( ( ret = _ui_insertchar ( t->elmt [ curbox ] .df , \
+               t->elmt [ curbox ] .cursor , \
+          MAXTITEMLN-2 , key ) ) ) \
           {
               t->elmt [ curbox ] .cursor += ret;
               ln = t->elmt [ curbox ] .ln;
@@ -14076,7 +14110,7 @@ void transch(int c) {
       char *df;
       int k;
       int Id;
-      Id = kgGetWidgetId(t->D,T);
+      Id = kgGetWidgetId ( t->D , T ) ;
       key = kbe.key;
 //  tit = t->tit;
       elmt = t->elmt;
@@ -14092,6 +14126,8 @@ void transch(int c) {
           if ( box > nxbox ) nxbox = box;
       }
       if ( Active == 0 ) return -1;
+      curbox = t->row*t->nx+t->col;
+//      if ( t->elmt [ curbox ] .sw != 1 ) return -1;
       if ( ui_Uparrow ( key ) ) {
           row = t->row;
           row = ( row-1 ) ;
@@ -14111,7 +14147,7 @@ void transch(int c) {
                   }
 #endif
               }
-              if(T->Update != NULL ) T->Update(LINE_CHANGE,Id,t->D);
+              if ( T->Update != NULL ) T->Update ( LINE_CHANGE , Id , t->D ) ;
               _ui_cleantablecursor ( t ) ;
               t->col = curbox%t->nx;
               t->row = curbox/t->nx;
@@ -14145,7 +14181,7 @@ void transch(int c) {
                   }
 #endif
               }
-              if(T->Update != NULL ) T->Update(LINE_CHANGE,Id,t->D);
+              if ( T->Update != NULL ) T->Update ( LINE_CHANGE , Id , t->D ) ;
               _ui_cleantablecursor ( t ) ;
               t->col = curbox%t->nx;
               t->row = curbox/t->nx;
@@ -14321,7 +14357,7 @@ void transch(int c) {
               _ui_deletechar ( t->elmt [ curbox ] .df , t->elmt [ curbox ] .cursor ) ;
           }
           if ( _ui_deletechar ( t->elmt [ curbox ] .df , \
-               t->elmt [ curbox ] .cursor ) ) \
+          t->elmt [ curbox ] .cursor ) ) \
           {
               _ui_drawtablecursor ( t ) ;
               uiUpdateOn ( t->D ) ;
@@ -14349,7 +14385,7 @@ void transch(int c) {
                   t->elmt [ curbox ] .startchar -= 1;
                   t->elmt [ curbox ] .cursor -= 1;
                   if ( _ui_deletechar ( t->elmt [ curbox ] .df , \
-                       t->elmt [ curbox ] .cursor ) ) \
+                  t->elmt [ curbox ] .cursor ) ) \
                   {
                       _ui_drawtablecursor ( t ) ;
                       uiUpdateOn ( t->D ) ;
@@ -14360,7 +14396,7 @@ void transch(int c) {
                   if ( ( t->elmt [ curbox ] .cursor < t->elmt [ curbox ] .startchar ) ) t->elmt [ curbox ] .startchar = t->elmt [ curbox ] .cursor;
                       
                   if ( _ui_deletechar ( t->elmt [ curbox ] .df , \
-                       t->elmt [ curbox ] .cursor ) ) \
+                  t->elmt [ curbox ] .cursor ) ) \
                   {
                       _ui_drawtablecursor ( t ) ;
                       uiUpdateOn ( t->D ) ;
@@ -14370,28 +14406,31 @@ void transch(int c) {
           return -1;
       }
       if ( ( ( key >= ' ' ) && ( key < 128 ) ) || ( ui_Tab ( key ) ) ) {
-          int ret,cursor;
+          int ret , cursor;
           col = t->col;
           row = t->row;
           curbox = row*t->nx+col;
           cursor = t->elmt [ curbox ] .cursor ;
           if ( ui_Tab ( key ) ) key = '\t';
-          if ( ( ret = _ui_insertchar ( t->elmt [ curbox ] .df , t->elmt [ curbox ] .cursor , \
-               MAXTITEMLN-2 , key ) ) ) \
+          if ( ( ret = _ui_insertchar ( t->elmt [ curbox ] .df , \
+               t->elmt [ curbox ] .cursor , \
+          MAXTITEMLN-2 , key ) ) ) \
           {
-              if( key =='\t') {
-                if(T->Update != NULL) T->Update(TAB_PRESS,Id,t->D);
-                t->col=col;
-                t->row = row;
-                t->elmt [ curbox ] .cursor = cursor;
-              }    
+              if ( key == '\t' ) {
+                  if ( T->Update != NULL ) T->Update ( TAB_PRESS , Id , t->D ) ;
+                  t->col = col;
+                  t->row = row;
+                  t->elmt [ curbox ] .cursor = cursor;
+              }
               t->elmt [ curbox ] .cursor += ret;
 /* for tab */
               df = t->elmt [ curbox ] .df;
               while ( df [ t->elmt [ curbox ] .cursor ] == 127 ) t->elmt [ curbox ] .cursor += 1;
+                  
 /* end */
               ln = t->elmt [ curbox ] .ln;
               if ( ( t->elmt [ curbox ] .cursor - t->elmt [ curbox ] .startchar ) >= ln ) t->elmt [ curbox ] .startchar+= 1;
+                  
               _ui_drawtablecursor ( t ) ;
               uiUpdateOn ( t->D ) ;
           }
@@ -14522,7 +14561,7 @@ void transch(int c) {
                   if ( ( ch == '\b' ) && ( j != 0 ) ) {
                       rmv_pointer ( ) ;
                       _rect_fill ( menu_x , menu_y-Bt , menu_x+ ( t->ln [ ii ] -1-j ) *nine , \
-                           menu_y+Ht , fill_clr ) ;
+                      menu_y+Ht , fill_clr ) ;
                       j--;
                       for ( p = j; p < t->ln [ ii ] -2; p++ ) {
                           ptr = t->tit [ ii ] .df+p;
@@ -14736,7 +14775,7 @@ void transch(int c) {
                   }
               }
               else if ( pt != NULL ) kgImage ( D , p->xpm , x1 , \
-                   y1 , w , l , D->transparency , 1.0 ) ;
+              y1 , w , l , D->transparency , 1.0 ) ;
               switch ( p->bordr ) {
                   case 0:
                   break;
@@ -14751,13 +14790,13 @@ void transch(int c) {
                   offset = 4;
                   offset = 0;
                   _dvbordertype0 ( D , x1-offset , y1-offset , \
-                       x2+offset , y2+offset , gc.bright ) ;
+                  x2+offset , y2+offset , gc.bright ) ;
                   break;
                   case 1:
                   offset = 2;
                   offset = 0;
                   _dvbordertype2 ( D , x1-offset , y1-offset , \
-                       x2+offset , y2+offset , 0 , 0 , 0 , 0 ) ;
+                  x2+offset , y2+offset , 0 , 0 , 0 , 0 ) ;
                   break;
                   case 6:
                   offset = 4;
@@ -14807,7 +14846,7 @@ void transch(int c) {
       if ( p->hide != 1 ) _uiMake_P ( p ) ;
   }
   void _ui_draw_info_bound ( DIALOG *D , int x1 , int y1 , \
-       int x2 , int y2 , int bright , int dim ) \
+  int x2 , int y2 , int bright , int dim ) \
   {
       unsigned int temp;
       kgWC *wc;
@@ -14835,7 +14874,7 @@ void transch(int c) {
       lines = ( y2-iy-2 ) /22;
       if ( lines < 1 ) lines = 1;
       uiPressedBoxFill ( D , ix , iy , ( x2-ix ) , ( y2-iy ) , \
-           D->gc.info_fill , D->gc.fill_clr , 3 , 0.0 ) ;
+      D->gc.info_fill , D->gc.fill_clr , 3 , 0.0 ) ;
       Twin = ( TWIN * ) Malloc ( sizeof ( TWIN ) ) ;
       Twin->xl = ix+5; Twin->yl = iy+4; Twin->xu = x2-2;
       y2 = ( 22*lines+Twin->yl ) ;
@@ -14879,7 +14918,7 @@ void transch(int c) {
           }
           I->linewidth = lw;
           uiPressedBoxFill ( D , x1 , y1 , ( x2-x1 ) , ( y2-y1 ) , \
-               D->gc.info_fill , D->gc.fill_clr , 3 , 0.0 ) ;
+          D->gc.info_fill , D->gc.fill_clr , 3 , 0.0 ) ;
           Twin = ( TWIN * ) ( I->twin ) ;
           Twin->xl = x1+5; Twin->yl = y1+4; Twin->xu = x2-2;
           y2 = ( lw*lines+Twin->yl ) ;
@@ -15108,11 +15147,11 @@ void transch(int c) {
           }
 //         _dvrect_fill_transparent(WC(D),x1-2,y1,x2+2,y2,D->gc.fill_clr,D->transparency);
 //         kgImage(D,img,x1-1,y1,x2-x1+5,y2-y1,0.0,1.0);
-          kgRestoreImage ( D , img , x1-1 , y1 , x2-x1+5, y2-y1 ) ;
+          kgRestoreImage ( D , img , x1-1 , y1 , x2-x1+5 , y2-y1 ) ;
           break;
           default:
           _uirect_fill ( WC ( D ) , x1 , D->evgay-y1 , x2-1 , \
-               D->evgay-y2+1 , tx->gc.txt_fill ) ;
+          D->evgay-y2+1 , tx->gc.txt_fill ) ;
           dvdraw_depre ( D , x1 , y1 , x2 , y2 ) ;
           break;
       }
@@ -15137,7 +15176,7 @@ void transch(int c) {
        ( Gap+Wd ) ;
       cy = D->evgay-cy;
       _uirect_fill ( WC ( D ) , cx+Gap+1 , cy-Bt , \
-           cx+Gap+1+Wd , cy+Ht , tx->gc.cur_clr ) ;
+      cx+Gap+1+Wd , cy+Ht , tx->gc.cur_clr ) ;
       cy = D->evgay-cy;
       if ( noecho != 1 ) {
           uiSetGuiFixFontSize ( D , D->gc.InputFontSize ) ;
@@ -15204,7 +15243,7 @@ void transch(int c) {
               break;
               default:
               _uirect_fill ( WC ( D ) , x1 , D->evgay-y1 , x2-1 , \
-                   D->evgay-y2+1 , tx->gc.txt_fill ) ;
+              D->evgay-y2+1 , tx->gc.txt_fill ) ;
               dvdraw_depre ( D , x1 , y1 , x2 , y2 ) ;
               break;
           }
@@ -15217,7 +15256,7 @@ void transch(int c) {
           cy = D->evgay-cy;
           if ( i == curbox ) {
               _uirect_fill ( WC ( D ) , cx+Gap+1 , cy-Bt , \
-                   cx+Gap+1+Wd , cy+Ht , tx->gc.cur_clr ) ;
+              cx+Gap+1+Wd , cy+Ht , tx->gc.cur_clr ) ;
           }
           cy = D->evgay-cy;
           if ( noecho != 1 ) {
@@ -15311,15 +15350,15 @@ void transch(int c) {
           break;
           default:
           _uirect_fill ( WC ( D ) , x1 , D->evgay-y1 , x2-1 , \
-               D->evgay-y2+1 , tx->gc.txt_fill ) ;
+          D->evgay-y2+1 , tx->gc.txt_fill ) ;
           dvdraw_depre ( D , x1 , y1 , x2 , y2 ) ;
           break;
       }
 #if 0
       _uirect_fill ( WC ( D ) , elmt [ curbox ] .x1 , EVGAY-elmt [ curbox ] .y1 , \
-           elmt [ curbox ] .x2-1 , EVGAY-elmt [ curbox ] .y2+1 , tx->gc.txt_fill ) ;
+      elmt [ curbox ] .x2-1 , EVGAY-elmt [ curbox ] .y2+1 , tx->gc.txt_fill ) ;
       uidraw_depre ( D , elmt [ curbox ] .x1 , EVGAY-elmt [ curbox ] .y1 , \
-           elmt [ curbox ] .x2 , EVGAY-elmt [ curbox ] .y2 ) ;
+      elmt [ curbox ] .x2 , EVGAY-elmt [ curbox ] .y2 ) ;
 #endif
       ch = df [ ln ] ;
       df [ ln ] = '\0';
@@ -15358,7 +15397,13 @@ void transch(int c) {
       TX_STR *tx = T->tstr;
       elmt = tx->elmt;
       int x1 , y1 , x2 , y2;
-      for ( j = 1;j >= row;j++ ) {
+      _ui_cleantablecursor ( tx ) ;
+      k =row;
+      for ( i = 0;i < T->nx;i++ ) {
+              cell = ( k ) *T->nx+i;
+              kgFreeImage(elmt[cell].img);
+      }
+      for ( j = 1;j <= row;j++ ) {
           k = row-j;
           for ( i = 0;i < T->nx;i++ ) {
               cell = ( k ) *T->nx+i;
@@ -15373,13 +15418,14 @@ void transch(int c) {
               x2 = elmt [ cell1 ] .x2;
               y2 = elmt [ cell1 ] .y2;
               strcpy ( elmt [ cell1 ] .df , elmt [ cell ] .df ) ;
-//      kgImage ( D , img , x1 , y1 , x2-x1 , y2-y1 , 0.0 , 1.0 ) ;
-              kgRestoreImage ( D , img , x1 , y2 , x2-x1 , y2-y1 ) ;
+              elmt [ cell1 ] .startchar = elmt [ cell ] . startchar;
+              elmt [ cell1 ] . img =  elmt [ cell ] .img;
+              kgRestoreImage ( D , img , x1 , y1 , x2-x1+1 , y2-y1+1 ) ;
               kgFreeImage ( img ) ;
           }
       }
 //       kgUpdateWidget(T);
-//     kgUpdateOn(D);
+      kgUpdateOn(D);
       return 1;
   }
   int kgScrollDownTable ( void *Tmp , int row ) {
@@ -15393,6 +15439,8 @@ void transch(int c) {
       TX_STR *tx = T->tstr;
       elmt = tx->elmt;
       int x1 , y1 , x2 , y2;
+       _ui_cleantablecursor ( tx ) ;
+      for ( i = 0;i < T->nx;i++ ) kgFreeImage(elmt[i].img);
       for ( k = 1;k <= row;k++ ) {
           for ( i = 0;i < T->nx;i++ ) {
               cell = ( k ) *T->nx+i;
@@ -15407,16 +15455,15 @@ void transch(int c) {
               x2 = elmt [ cell1 ] .x2;
               y2 = elmt [ cell1 ] .y2;
               strcpy ( elmt [ cell1 ] .df , elmt [ cell ] .df ) ;
+              elmt [ cell1 ] . img =  elmt [ cell ] .img;
               if ( img != NULL ) {
-//      kgImage ( D , img , x1 , y1 , x2-x1 , y2-y1 , 0.0 , 1.0 ) ;
-                  kgRestoreImage ( D , img , x1 , y2 , x2-x1 , y2-y1 ) ;
+                  kgRestoreImage ( D , img , x1 , y1 , x2-x1+1 , y2-y1+1 ) ;
                   kgFreeImage ( img ) ;
               }
               else fprintf ( stderr , "Failed to copy screen\n" ) ;
           }
       }
- //      kgUpdateWidget(T);
-//       kgUpdateOn(D);
+      kgUpdateOn(D);
       return 1;
   }
   void *uiMakeTableCellImage ( DIT *T , int cell , int drcur ) {
@@ -15468,12 +15515,12 @@ void transch(int c) {
           }
           curpos = ( elmt [ k ] .cursor-elmt [ k ] .startchar ) *FontSize+FontSize/2;
           kgBoxFill ( fid , curpos , yy-th*0.3 , curpos+FontSize , \
-               th+yy-1 , D->gc.cur_clr , 0 ) ;
+          th+yy-1 , D->gc.cur_clr , 0 ) ;
       }
       img = kgGetResizedImage ( fid ) ;
       kgCloseImage ( fid ) ;
 #else
-      img = kgCreateImage(xsize+1,ysize+1);
+      img = kgCreateImage ( xsize+1 , ysize+1 ) ;
 #endif
       return img;
   }
@@ -15486,12 +15533,12 @@ void transch(int c) {
       int type = T->type;
       char *str;
       FONT_STR F;
-      IMG_STR *IMG=NULL;
+      IMG_STR *IMG = NULL;
       IMG_STR ** Imgs;
       int ch;
       int curbox;
       int size , xsize , ysize , FontSize , sw;
-      int rd=150 , gr=100 , bl=50;
+      int rd = 150 , gr = 100 , bl = 50;
       float th , tw , tg , xx , yy;
       int tfill , tclr;
       char Buf [ 2000 ] , stmp [ 10 ] ;
@@ -15515,7 +15562,7 @@ void transch(int c) {
       tfill = tx->gc.tabl_fill;
       if ( sw == 0 ) tclr = tx->gc.tabl_hchar;
       kgGetDefaultRGB ( tclr , & rd , & gr , & bl ) ;
-#if 0
+#if 1
       if ( type == 1 ) {
           y1 -= 2;
           y2 += 2;
@@ -15528,7 +15575,7 @@ void transch(int c) {
       ylng = strlen ( Buf ) *FontSize+FontSize*2;
       xsize = ( x2-x1 ) ;
       ysize = ( y2-y1 ) ;
-      img=NULL;
+      img = NULL;
       img = uiMakeTableCellImage ( T , cell , drcur ) ;
 #if 1
       tx->F.code = 't';
@@ -15537,21 +15584,97 @@ void transch(int c) {
       }
       IMG = uiMakeFixedString ( & ( tx->F ) , Buf , ( int ) ysize+1 , 0 ) ;
       kgSetImageColor ( IMG->img , rd , gr , bl ) ;
-      if(img != NULL) {
-         if ( IMG->img != NULL )   kgAddImages ( img , IMG->img , \
-           FontSize/2 , ysize-2*FontSize+1 ) ;
-         kgImage ( D , img , x1 , y1+2 , xsize , ysize , 0.0 , 1.0 ) ;
-         if(img != NULL) kgFreeImage ( img ) ;
+      if ( img != NULL ) {
+          if ( IMG->img != NULL ) kgAddImages ( img , IMG->img , \
+          FontSize/2 , ysize-2*FontSize+1 ) ;
+          kgImage ( D , img , x1 , y1+2 , xsize , ysize , 0.0 , 1.0 ) ;
+          if ( img != NULL ) kgFreeImage ( img ) ;
       }
       else {
-         kgImage ( D , IMG->img , x1 , y1+2 , xsize , ysize , 0.0 , 1.0 ) ;
+          kgImage ( D , IMG->img , x1 , y1+2 , xsize , ysize , 0.0 , 1.0 ) ;
       }
-      if(elmt [ k ] .img != NULL)  kgFreeImage ( elmt [ k ] .img ) ;
+      if ( elmt [ k ] .img != NULL ) kgFreeImage ( elmt [ k ] .img ) ;
       elmt [ k ] .img = IMG->img;
       free ( IMG ) ;
 #else 
-      if(img != NULL)kgFreeImage ( img ) ;
+      if ( img != NULL ) kgFreeImage ( img ) ;
 #endif
+      return 1;
+  }
+  int kgPrintTableCell ( void  *Tmp , int cell ) {
+     DIT *T=(DIT *)Tmp;
+     T_ELMT *elmt;
+      TX_STR *tx = T->tstr;
+
+      elmt = tx->elmt;
+      elmt[cell].img = NULL;
+      elmt[cell].startchar = 0;
+      uimake_telmt ( elmt+cell ) ;
+     return _uiPrintTableCell((DIT *)T,cell,0);
+  }
+  int kgScrollUpTable_testing ( DIT *T ) {
+      T_ELMT *elmt;
+      DIALOG *D = T->D;
+      TX_STR *tx = T->tstr;
+      int x1 , y1 , x2 , y2;
+      int k , i,nx,ny,j;
+      int type = T->type;
+      char *str;
+      int ch;
+      int curbox,cell;
+      int size , xsize , ysize , FontSize , sw;
+      float th , tw , tg , xx , yy;
+      int tfill , tclr;
+      int rd , gr , bl;
+      char Buf [ 2000 ] , stmp [ 10 ] ;
+      void *fid , *img , *img2,**Cimgs;
+      float curpos;
+      int ylng;
+      kgWC *wc;
+      kgDC *dc;
+      wc = WC ( D ) ;
+      elmt = tx->elmt;
+      nx = T->nx;
+      ny = T->ny;
+      Cimgs = (void **)malloc(sizeof(void *)*nx);
+      curbox = tx->row*tx->nx+tx->col;
+      strcpy ( stmp , ( char * ) " " ) ;
+      for(k=0;k<nx;k++){ 
+        kgFreeGmImage(elmt[k].img);      
+        Cimgs[k]= uiMakeTableCellImage ( T , k , 0 ) ;
+      }
+      for(i=1;i<ny;i++) {
+         for(j=0;j<nx;j++){ 
+           cell = i*nx+j;
+           elmt[cell-nx].img = elmt[cell].img;
+           k = cell;
+           sw = elmt [ k ] .sw;
+           x1 = elmt [ k ] .x1;
+           y1 = elmt [ k ] .y1;
+           x2 = elmt [ k ] .x2;
+           y2 = elmt [ k ] .y2;
+           tclr = tx->gc.tabl_char;
+           tfill = tx->gc.tabl_fill;
+
+           if ( sw == 0 ) tclr = tx->gc.tabl_hchar;
+           kgGetDefaultRGB ( tclr , & rd , & gr , & bl ) ;
+           if ( type == 1 ) {
+            y1 -= 2;
+            y2 += 2;
+           }
+           xsize = ( x2-x1 ) ;
+           ysize = ( y2-y1 ) ;
+           img2 = elmt [ k ] .img;
+           if(img2== NULL) continue;
+           img = kgCopyImage(Cimgs[j]);
+           kgSetImageColor ( img2 , rd , gr , bl ) ;
+           kgAddImages ( img , img2 , FontSize/2 , ysize-2*FontSize+1 ) ;
+           kgImage ( D , img , x1 , y1+2 , xsize , ysize , 0.0 , 1.0 ) ;
+           kgFreeGmImage ( img ) ;
+         }
+      }
+      for(k=0;k<nx;k++) kgFreeGmImage(Cimgs[k]);
+      free(Cimgs);
       return 1;
   }
   int _uiUpdateTableCell ( DIT *T , int cell , int drcur ) {
@@ -15620,7 +15743,7 @@ void transch(int c) {
           }
           curpos = ( elmt [ k ] .cursor-elmt [ k ] .startchar ) *FontSize+FontSize/2;
           kgBoxFill ( fid , curpos , yy-th*0.3 , curpos+FontSize , \
-               th+yy , D->gc.cur_clr , 0 ) ;
+          th+yy , D->gc.cur_clr , 0 ) ;
       }
 //        img = kgGetResizedImage(fid);
       img = kgGetSharpImage ( fid ) ;
@@ -15632,7 +15755,7 @@ void transch(int c) {
       kgSetImageColor ( img2 , rd , gr , bl ) ;
       kgAddImages ( img , img2 , FontSize/2 , ysize-2*FontSize+1 ) ;
       kgImage ( D , img , x1 , y1+2 , xsize , ysize , 0.0 , 1.0 ) ;
-      kgFreeImage(img);
+      kgFreeImage ( img ) ;
       return 1;
   }
   void _ui_drawtablecursor ( TX_STR *tx ) {
@@ -15703,7 +15826,7 @@ void transch(int c) {
   int _ui_drawtextbox ( DIALOG *D , DIT *T ) {
       TX_STR *tx;
       int n , ygap = 0 , xgap = 0 , k = 0 , i , j , l , x1 , x2 , \
-           y1 , y2 , box_width = 20 , temp , prsize = 0 , x2max;
+      y1 , y2 , box_width = 20 , temp , prsize = 0 , x2max;
       int xx1 , yy1 , xx2 , yy2 , xlng = 0 , lng = 0 , gap , pointer , cy;
       int X2 , Y2 , X1 , Y1 , nx , ny , width;
       T_ELMT *elmt;
@@ -15786,8 +15909,9 @@ void transch(int c) {
 //TCB
 //     uiwrite_string(D,elmt[k].pr,x1,D->evgay-1-y2+6,tx->gc.txt_pchar);
 //     prsize = (Size(elmt[k].pr));
-                  uiString ( D , elmt [ k ] .pr , x1 , y1-2 , prsize-D->gc.FontSize , box_width , \
-                       D->gc.PromptFont , tx->gc.txt_pchar , D->gc.FontSize , 1 , D->gc.fill_clr ) ;
+                  uiString ( D , elmt [ k ] .pr , x1 , y1-2 , \
+                       prsize-D->gc.FontSize , box_width , \
+                  D->gc.PromptFont , tx->gc.txt_pchar , D->gc.FontSize , 1 , D->gc.fill_clr ) ;
                   x1 += prsize;
 //     x2 = x1 + Size(elmt[k].df);
                   x2 = x1 + ( ( tx->elmt [ k ] .ln ) *9 ) +13;
@@ -15815,20 +15939,20 @@ void transch(int c) {
                       break;
                       default:
                       _uirect_fill ( wc , x1 , D->evgay-y1 , x2-1 , \
-                           D->evgay-y2+1 , tx->gc.txt_fill ) ;
+                      D->evgay-y2+1 , tx->gc.txt_fill ) ;
                       dvdraw_depre ( D , x1 , y1 , x2 , y2 ) ;
                       break;
                   }
 #if 0
                   _uirect_fill ( wc , x1 , D->evgay-y1 , x2-1 , \
-                       D->evgay-y2+1 , tx->gc.txt_fill ) ;
+                  D->evgay-y2+1 , tx->gc.txt_fill ) ;
                   uidraw_depre ( D , x1 , D->evgay-y1 , x2 , D->evgay-y2 ) ;
 #endif
                   cy = ( y2+y1 ) /2+6;
                   if ( noecho != 1 ) {
                       uiSetGuiFixFontSize ( D , D->gc.InputFontSize ) ;
                       _ui_putstring ( D , x1+6 , cy , elmt [ k ] .df+elmt [ k ] .startchar , \
-                           tx->gc.txt_char ) ;
+                      tx->gc.txt_char ) ;
                   }
                   else {
                       char *stars , *str;
@@ -15868,7 +15992,7 @@ void transch(int c) {
       DIALOG *D;
       TX_STR *tx;
       int n , ygap = 0 , xgap = 0 , k = 0 , i , j , l , x1 , x2 , \
-           y1 , y2 , box_width = 20 , temp , prsize = 0 , x2max;
+      y1 , y2 , box_width = 20 , temp , prsize = 0 , x2max;
       int xx1 , yy1 , xx2 , yy2 , xlng = 0 , lng = 0 , gap , pointer;
       int X2 , Y2 , X1 , Y1 , nx , ny , width , cx , cy;
       T_ELMT *elmt;
@@ -16024,8 +16148,9 @@ void transch(int c) {
                   noecho = elmt [ k ] .noecho;
                   y2 = y1 + box_width;
 //       uiString(D,elmt[k].pr,x1,y1,prsize-D->gc.FontSize,box_width,D->gc.PromptFont,tx->gc.txt_pchar,D->gc.FontSize,1,D->gc.fill_clr);
-                  uiString ( D , elmt [ k ] .pr , x1 , y1 , prsize-D->gc.FontSize , box_width , \
-                       D->gc.PromptFont , tx->gc.txt_pchar , D->gc.FontSize , 1 , -1 ) ;
+                  uiString ( D , elmt [ k ] .pr , x1 , y1 , \
+                       prsize-D->gc.FontSize , box_width , \
+                  D->gc.PromptFont , tx->gc.txt_pchar , D->gc.FontSize , 1 , -1 ) ;
                   x1 += prsize;
                   x2 = x1 + ( ( tx->elmt [ k ] .ln ) *9 ) +13;
                   if ( x2 > x2max ) x2max = x2;
@@ -16050,7 +16175,7 @@ void transch(int c) {
                       break;
                       default:
                       _uirect_fill ( wc , x1 , D->evgay-y1 , x2-1 , \
-                           D->evgay-y2+1 , tx->gc.txt_fill ) ;
+                      D->evgay-y2+1 , tx->gc.txt_fill ) ;
                       dvdraw_depre ( D , x1 , y1 , x2 , y2 ) ;
                       break;
                   }
@@ -16071,12 +16196,13 @@ void transch(int c) {
                       cy = ( elmt [ k ] .y2+elmt [ k ] .y1 ) /2+6;
                       cy = D->evgay-cy;
                       _uirect_fill ( wc , cx+Gap+1 , cy-Bt , cx+Gap+1+Wd , \
-                           cy+Ht , tx->gc.cur_clr ) ;
+                      cy+Ht , tx->gc.cur_clr ) ;
                   }
                   if ( noecho != 1 ) {
                       uiSetGuiFixFontSize ( D , D->gc.InputFontSize ) ;
-                      _ui_putstring ( D , x1+6 , ( y1+y2 ) /2+6 , elmt [ k ] .df+elmt [ k ] .startchar , \
-                           tx->gc.txt_char ) ;
+                      _ui_putstring ( D , x1+6 , ( y1+y2 ) /2+6 , \
+                           elmt [ k ] .df+elmt [ k ] .startchar , \
+                      tx->gc.txt_char ) ;
                   }
                   else {
                       char *stars , *str;
@@ -16119,9 +16245,9 @@ void transch(int c) {
   int _ui_drawtablebox ( DIALOG *D , DIT *T ) {
       TX_STR *tx;
       int n , ygap = 0 , xgap = 0 , k = 0 , i , j , l , x1 , x2 , \
-           y1 , y2 , box_width = 20 , temp , prsize = 0 , x2max;
+      y1 , y2 , box_width = 20 , temp , prsize = 0 , x2max;
       int xx1 , yy1 , xx2 , yy2 , xlng = 0 , lng = 0 , \
-           gap , pointer , tx1 , ty1 , tx2 , ty2;
+      gap , pointer , tx1 , ty1 , tx2 , ty2;
       int X2 , Y2 , X1 , Y1 , nx , ny , width;
       T_ELMT *elmt;
       int size;
@@ -16201,14 +16327,16 @@ void transch(int c) {
                ( tx->elmt [ k ] .x2 ) = tx2;
                ( tx->elmt [ k ] .y2 ) = ty2;
               _uirect_fill ( wc , tx1 , D->evgay-ty1 , tx2-1 , \
-                   D->evgay-ty2 , tx->gc.tabl_fill ) ;
+              D->evgay-ty2 , tx->gc.tabl_fill ) ;
               uiSetGuiFixFontSize ( D , D->gc.InputFontSize ) ;
-              if ( elmt [ k ] .sw == 0 ) _ui_putstring ( D , tx1+5 , ty2-4 , elmt [ k ] .df+elmt [ k ] .startchar , \
-                   tx->gc.tabl_hchar ) ;
+              if ( elmt [ k ] .sw == 0 ) _ui_putstring ( D , tx1+5 , \
+                   ty2-4 , elmt [ k ] .df+elmt [ k ] .startchar , \
+              tx->gc.tabl_hchar ) ;
               else _ui_putstring ( D , tx1+5 , ty2-4 , elmt [ k ] .df+elmt [ k ] .startchar , \
-                   tx->gc.tabl_char ) ;
+                   \
+              tx->gc.tabl_char ) ;
               _ui_draw_bound ( ( D ) , x1 , D->evgay-y1 , \
-                   x2 , D->evgay-y2 , tx->gc.tabl_line ) ;
+              x2 , D->evgay-y2 , tx->gc.tabl_line ) ;
               uiDefaultGuiFontSize ( D ) ;
               y1 = y2;
               k++;
@@ -16223,9 +16351,9 @@ void transch(int c) {
       DIALOG *D;
       TX_STR *tx;
       int n , ygap = 0 , xgap = 0 , k = 0 , i , j , l , x1 , x2 , \
-           y1 , y2 , box_width = 20 , temp , prsize = 0 , x2max;
+      y1 , y2 , box_width = 20 , temp , prsize = 0 , x2max;
       int xx1 , yy1 , xx2 , yy2 , xlng = 0 , lng = 0 , \
-           gap , pointer , tx1 , ty1 , tx2 , ty2;
+      gap , pointer , tx1 , ty1 , tx2 , ty2;
       int X2 , Y2 , X1 , Y1 , nx , ny , width , totwidth;
       T_ELMT *elmt;
       int size , Fz;
@@ -16268,8 +16396,8 @@ void transch(int c) {
  //         strcpy ( FontFile , ( char * ) Drecord ( MonoList , T->Font ) ) ;
           strcpy ( FontFile , ( char * ) Drecord ( FontList , T->Font ) ) ;
           if ( tx->F.Imgs == NULL ) {
-             tx->F.Imgs = ( void * ) kgFixedFontChars \
-                ( FontFile , T->FontSize ) ;
+              tx->F.Imgs = ( void * ) kgFixedFontChars \
+               ( FontFile , T->FontSize ) ;
           }
           else if ( ( T->Font != tx->F.fontno ) || ( T->FontSize != tx->F.Size ) ) {
               uiFreeImgStrs ( tx->F.Imgs ) ;
@@ -16351,7 +16479,7 @@ void transch(int c) {
           gap = 0;
           xsize = X2-X1+1;
           ysize = Y2-Y1+1;
-         fid = kgInitImage ( xsize , ysize , 1 ) ;
+          fid = kgInitImage ( xsize , ysize , 1 ) ;
           kgUserFrame ( fid , 0. , 0. , ( float ) xsize-1 , ( float ) ysize-1 ) ;
           kgBoxFill ( fid , 0.0 , 0.0 , ( float ) xsize -1 , \
            ( float ) ysize-1 , D->gc.tabl_line , 0 ) ;
@@ -16379,7 +16507,7 @@ void transch(int c) {
 //                       _uibox_fill ( wc ,  tx1-X1 ,  D->evgay-ty1+Y1 , tx2-X1-1 , \
 //                             D->evgay-ty2+Y1+1 , D->gc.tabl_fill ) ;
                       kgBoxFill ( fid , ( float ) tx1-X1 , ( float ) ty1-Y1 , ( float ) tx2-X1-1 , \
-                           ( float ) ty2-Y1-1 , D->gc.tabl_fill , 0 ) ;
+                       ( float ) ty2-Y1-1 , D->gc.tabl_fill , 0 ) ;
                   }
                   y1 = y2;
                   k++;
@@ -16393,11 +16521,11 @@ void transch(int c) {
           for ( i = 0; i < tx->ny; i++ ) {
               for ( j = 0; j < nx; j++ ) {
                   k = j+i*nx;
-                 _uiPrintTableCell ( T , k , 0 ) ;
+                  _uiPrintTableCell ( T , k , 0 ) ;
               }
           }
           if ( type == 0 ) uidraw_proj ( D , X1-2 , D->evgay-Y1+2 , \
-               X2+2 , D->evgay-Y2-2 ) ;
+          X2+2 , D->evgay-Y2-2 ) ;
       }
       else {
           RESTOREWIDGETAREA ( T ) ;
@@ -16608,7 +16736,7 @@ void transch(int c) {
       DIT *T;
       TX_STR *tx;
       int n , ygap = 0 , xgap = 0 , k = 0 , i , j , l , \
-           x1 , x2 , y1 , y2 , box_width = 20 , temp;
+      x1 , x2 , y1 , y2 , box_width = 20 , temp;
       int xx1 , yy1 , xx2 , yy2 , xlng = 0 , lng = 0 , gap , pointer , cy;
       int X2 , Y2 , X1 , Y1 , nx , ny , width , size;
       T_ELMT *elmt;
@@ -16677,13 +16805,13 @@ void transch(int c) {
                   break;
                   default:
                   _uirect_fill ( wc , x1 , D->evgay-y1 , x2-1 , \
-                       D->evgay-y2+1 , tx->gc.txt_fill ) ;
+                  D->evgay-y2+1 , tx->gc.txt_fill ) ;
                   dvdraw_depre ( D , x1 , y1 , x2 , y2 ) ;
                   break;
               }
 #if 0
               _uirect_fill ( wc , x1 , D->evgay-y1 , x2-1 , \
-                   D->evgay-y2+1 , tx->gc.txt_fill ) ;
+              D->evgay-y2+1 , tx->gc.txt_fill ) ;
               uidraw_depre ( D , x1 , D->evgay-y1 , x2 , D->evgay-y2 ) ;
               uiSetGuiFixFontSize ( D , D->gc.FontSize ) ;
 #endif
@@ -16691,7 +16819,7 @@ void transch(int c) {
               if ( noecho != 1 ) {
                   uiSetGuiFixFontSize ( D , D->gc.InputFontSize ) ;
                   _ui_putstring ( D , x1+6 , cy , elmt [ k ] .df+elmt [ k ] .startchar , \
-                       tx->gc.txt_char ) ;
+                  tx->gc.txt_char ) ;
               }
               else {
                   char *stars , *str;
@@ -16896,15 +17024,15 @@ void transch(int c) {
       }
       return ( ret ) ;
   }
-  int _ui_readtextboxcell ( void *tmp ,int i) {
+  int _ui_readtextboxcell ( void *tmp , int i ) {
       TX_STR *tx;
       T_ELMT *e;
-      int  n , err = 0 , ret = 0;
+      int n , err = 0 , ret = 0;
       tx = ( TX_STR * ) tmp;
       n = tx->nx*tx->ny;
       e = tx->elmt;
       if ( ( err = read_telmt ( e+i ) ) < 0 ) {
-              ret = -1;
+          ret = -1;
       }
       if ( ( err > 0 ) && ( ret == 0 ) ) ret = 1;
       return ( ret ) ;
@@ -16915,7 +17043,7 @@ void transch(int c) {
       T_ELMT *elmt;
       DIALOG *Dtmp;
       int n , ygap = 0 , xgap = 0 , k = 0 , i , j , \
-           x1 , x2 , y1 , y2 , box_width = 20 , temp;
+      x1 , x2 , y1 , y2 , box_width = 20 , temp;
       int xx1 , yy1 , xx2 , yy2 , xlng = 0 , lng = 0 , gap , ret , pointer;
       int X2 , Y2;
       int size , l;
@@ -16970,7 +17098,7 @@ void transch(int c) {
       T_ELMT *elmt;
       DIALOG *Dtmp;
       int n , ygap = 0 , xgap = 0 , k = 0 , i , j , \
-           x1 , x2 , y1 , y2 , box_width = 20 , temp;
+      x1 , x2 , y1 , y2 , box_width = 20 , temp;
       int xx1 , yy1 , xx2 , yy2 , xlng = 0 , lng = 0 , gap , ret , pointer;
       int X2 , Y2;
       int size , l;
@@ -17033,7 +17161,7 @@ void transch(int c) {
       b->Bimg = NULL;
       if ( b->df == NULL ) { b->df = ( int * ) ( & ( b->bval ) ) ; }
       b->buts = make_but_str ( D , b->x1+x1+lngth , b->y1+y1+lngth , b->xgap , \
-           b->ygap , b->nx , b->ny , b->lngth , b->width , * \
+      b->ygap , b->nx , b->ny , b->lngth , b->width , * \
        ( b->df ) , b->titles , b->xpm , b->bkgr , b->sw ) ;
       buts = ( BUTS * ) ( b->buts ) ;
       buts->D = D;
@@ -17051,7 +17179,7 @@ void transch(int c) {
       float transparency;
       int n , i , j , k , ix , iy , nx , ny , type , mf = 1 , mfp = 0;
       int x1 , y1 , x2 , y2 , xgap , ygap , ln , wd , \
-           bkgr , highli = 1 , xo , yo , dx , dy;
+      bkgr , highli = 1 , xo , yo , dx , dy;
       int rd , gr , bl;
       void *xpm , *timg = NULL;
       void *cimgn , *cimgp , *cimgh;
@@ -17116,16 +17244,16 @@ void transch(int c) {
               }
               xpm = butns [ i ] .xpmn;
               butns [ i ] .imgn = uiMakeStringImage ( D , butns [ i ] .title , xpm , x1 , \
-                   y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , 0 , D->gc.but_char , \
-                   D->gc.GuiFontSize , 0 , B->fac , 0 , B->type ) ;
+              y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , 0 , D->gc.but_char , \
+              D->gc.GuiFontSize , 0 , B->fac , 0 , B->type ) ;
               if ( butns [ i ] .xpmp != NULL ) xpm = butns [ i ] .xpmp ;
               else {
                   timg = kgGetImageCopy ( NULL , butns [ i ] .xpmn ) ;
                   xpm = kgChangeBrightness ( timg , 0.5 ) ;
               }
               butns [ i ] .imgp = uiMakeStringImage ( D , butns [ i ] .title , xpm , x1 , \
-                   y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , 0 , D->gc.but_char , \
-                   D->gc.GuiFontSize , 0 , B->fac , -1 , B->type ) ;
+              y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , 0 , D->gc.but_char , \
+              D->gc.GuiFontSize , 0 , B->fac , -1 , B->type ) ;
               kgFreeImage ( timg ) ; timg = NULL;
               xpm = butns [ i ] .xpmn;
               if ( butns [ i ] .xpmh != NULL ) xpm = butns [ i ] .xpmh ;
@@ -17134,8 +17262,8 @@ void transch(int c) {
                   xpm = kgChangeBrightness ( timg , 1.2 ) ;
               }
               butns [ i ] .imgh = uiMakeStringImage ( D , butns [ i ] .title , xpm , x1 , \
-                   y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , highli , D->gc.but_char , \
-                   D->gc.GuiFontSize , 0 , B->fac , 0 , B->type ) ;
+              y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , highli , D->gc.but_char , \
+              D->gc.GuiFontSize , 0 , B->fac , 0 , B->type ) ;
               kgFreeImage ( timg ) ; timg = NULL;
               i++;
           }
@@ -17147,7 +17275,7 @@ void transch(int c) {
       float transparency;
       int n , i , j , k , ix , iy , nx , ny , type , mf = 1 , mfp = 0;
       int x1 , y1 , x2 , y2 , xgap , ygap , ln , wd , \
-           bkgr , highli = 1 , xo , yo , dx , dy;
+      bkgr , highli = 1 , xo , yo , dx , dy;
       void *xpm , *timg = NULL;
       DIALOG *D;
       kgWC *wc;
@@ -17216,7 +17344,7 @@ void transch(int c) {
       float transparency;
       int n , i , j , k , ix , iy , nx , ny , type , mf = 1 , mfp = 0;
       int x1 , y1 , x2 , y2 , xgap , ygap , ln , wd , \
-           bkgr , highli = 1 , xo , yo , dx , dy;
+      bkgr , highli = 1 , xo , yo , dx , dy;
       void *xpm , *timg = NULL;
       DIALOG *D;
       kgWC *wc;
@@ -17287,7 +17415,7 @@ void transch(int c) {
       float transparency;
       int n , i , j , k , ix , iy , nx , ny , type , mf = 1 , mfp = 0;
       int x1 , y1 , x2 , y2 , xgap , ygap , ln , wd , \
-           bkgr , highli = 1 , xo , yo , dx , dy;
+      bkgr , highli = 1 , xo , yo , dx , dy;
       void *xpm , *timg = NULL;
       DIALOG *D;
       kgWC *wc;
@@ -17330,8 +17458,8 @@ void transch(int c) {
           if ( bkgr == -1 ) bkgr = D->gc.fill_clr;
       }
       butns [ i ] .imgn = uiMakeStringImage ( D , butns [ i ] .title , Bcopy , \
-           x1 , y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , 0 , D->gc.but_char , \
-           D->gc.GuiFontSize , 0 , B->fac , 0 , B->type ) ;
+      x1 , y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , 0 , D->gc.but_char , \
+      D->gc.GuiFontSize , 0 , B->fac , 0 , B->type ) ;
       kgFreeImage ( Bcopy ) ; Bcopy = NULL;
       if ( butns [ i ] .xpmp != NULL ) timg = kgGetImageCopy \
        ( D , butns [ i ] .xpmp ) ;
@@ -17342,8 +17470,8 @@ void transch(int c) {
       Bcopy = kgGetImageCopy ( NULL , Bkimg ) ;
       Bcopy = kgMergeImages ( Bcopy , timg , 0 , 0 ) ;
       butns [ i ] .imgp = uiMakeStringImage ( D , butns [ i ] .title , Bcopy , \
-           x1 , y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , 0 , D->gc.but_char , \
-           D->gc.GuiFontSize , 0 , B->fac , -1 , B->type ) ;
+      x1 , y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , 0 , D->gc.but_char , \
+      D->gc.GuiFontSize , 0 , B->fac , -1 , B->type ) ;
       kgFreeImage ( Bcopy ) ; Bcopy = NULL;
       kgFreeImage ( timg ) ; timg = NULL;
       if ( butns [ i ] .xpmh != NULL ) timg = kgGetImageCopy \
@@ -17355,8 +17483,9 @@ void transch(int c) {
       Bcopy = kgGetImageCopy ( NULL , Bkimg ) ;
       Bcopy = kgMergeImages ( Bcopy , timg , 0 , 0 ) ;
       butns [ i ] .imgh = uiMakeStringImage ( D , butns [ i ] .title , Bcopy , \
-           x1 , y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , highli , D->gc.but_char , \
-           D->gc.GuiFontSize , 0 , B->fac , 0 , B->type ) ;
+      x1 , y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , \
+           bkgr , highli , D->gc.but_char , \
+      D->gc.GuiFontSize , 0 , B->fac , 0 , B->type ) ;
       kgFreeImage ( Bcopy ) ; Bcopy = NULL;
       kgFreeImage ( timg ) ; timg = NULL;
       kgFreeImage ( xpm ) ; xpm = NULL;
@@ -17371,7 +17500,7 @@ void transch(int c) {
       float transparency;
       int n , i , j , k , ix , iy , nx , ny , type , mf = 1 , mfp = 0;
       int x1 , y1 , x2 , y2 , xgap , ygap , ln , wd , \
-           bkgr , highli = 1 , xo , yo , dx , dy;
+      bkgr , highli = 1 , xo , yo , dx , dy;
       void *xpm , *timg = NULL;
       DIALOG *D;
       kgWC *wc;
@@ -17419,16 +17548,16 @@ void transch(int c) {
           if ( bkgr == -1 ) bkgr = D->gc.fill_clr;
       }
       butns [ i ] .imgn = uiMakeStringImage ( D , butns [ i ] .title , xpm , x1 , \
-           y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , 0 , D->gc.but_char , \
-           D->gc.GuiFontSize , 0 , B->fac , 0 , B->type ) ;
+      y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , 0 , D->gc.but_char , \
+      D->gc.GuiFontSize , 0 , B->fac , 0 , B->type ) ;
       if ( butns [ i ] .xpmp != NULL ) xpm = butns [ i ] .xpmp ;
       else {
           timg = kgGetImageCopy ( NULL , butns [ i ] .xpmn ) ;
           xpm = kgChangeBrightness ( timg , 0.5 ) ;
       }
       butns [ i ] .imgp = uiMakeStringImage ( D , butns [ i ] .title , xpm , x1 , \
-           y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , 0 , D->gc.but_char , \
-           D->gc.GuiFontSize , 0 , B->fac , -1 , B->type ) ;
+      y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , 0 , D->gc.but_char , \
+      D->gc.GuiFontSize , 0 , B->fac , -1 , B->type ) ;
       kgFreeImage ( timg ) ; timg = NULL;
       if ( butns [ i ] .xpmh != NULL ) xpm = butns [ i ] .xpmh ;
       else {
@@ -17436,8 +17565,8 @@ void transch(int c) {
           xpm = kgChangeBrightness ( timg , 1.2 ) ;
       }
       butns [ i ] .imgh = uiMakeStringImage ( D , butns [ i ] .title , xpm , x1 , \
-           y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , highli , D->gc.but_char , \
-           D->gc.GuiFontSize , 0 , B->fac , 0 , B->type ) ;
+      y1 , ln+mfp , wd+mfp , D->gc.ButtonFont , bkgr , highli , D->gc.but_char , \
+      D->gc.GuiFontSize , 0 , B->fac , 0 , B->type ) ;
       kgFreeImage ( timg ) ; timg = NULL;
       return NULL;
   }
@@ -17489,8 +17618,9 @@ void transch(int c) {
               }
               else kgRestoreImage ( D , butns [ i ] .Bimg0 , x1 , y1 , \
                ( x2-x1+1 ) , ( y2-y1+1 ) ) ;
-              uiString ( D , butns [ i ] .title , x1 , y1 , width , ygap-1 , D->gc.ButtonFont , \
-                   D->gc.but_char , D->gc.GuiFontSize , 0 , -1 ) ;
+              uiString ( D , butns [ i ] .title , x1 , y1 , \
+                   width , ygap-1 , D->gc.ButtonFont , \
+              D->gc.but_char , D->gc.GuiFontSize , 0 , -1 ) ;
               i++;
           }
       }
@@ -17520,7 +17650,7 @@ void transch(int c) {
           if ( n != 0 ) n++;
           lngth = n*9+Hsize+2;
           b->buts = make_but_str ( D , b->x1+x1+lngth , b->y1+y1+Hsize+2 , \
-               b->xgap , b->ygap , b->nx , b->ny , b->lngth , b->width , * \
+          b->xgap , b->ygap , b->nx , b->ny , b->lngth , b->width , * \
            ( b->df ) , b->titles , b->xpm , b->bkgr , sw ) ;
           buts = ( BUTS * ) ( b->buts ) ;
           buts->D = D;
@@ -17642,7 +17772,7 @@ void transch(int c) {
           default:
           case 0:
           if ( _uiGetSItem ( kbe , xx1 , yy1 , xx1+l1 , \
-               yy1+w ) ) mvnt = kbe.x-xx- pt->df;
+          yy1+w ) ) mvnt = kbe.x-xx- pt->df;
           df = pt->df;
           pt->df += mvnt;
           break;
@@ -17829,7 +17959,7 @@ void transch(int c) {
       sx = ( pt->df- ( pt->min ) ) *fac;
       mvnt = 0;
       if ( _uiGetSItem ( kbe , xx+w+3 , yy+3 , xx+l-w-3 , \
-           yy+w-3 ) ) mvnt = kbe.x-xx -w -3+2- pt->df;
+      yy+w-3 ) ) mvnt = kbe.x-xx -w -3+2- pt->df;
       ans = kbe.key;
       if ( ui_Leftarrow ( ans ) ) {
           mvnt = -1;
@@ -17871,7 +18001,7 @@ void transch(int c) {
       sx = ( pt->df- ( pt->min ) ) *fac;
       mvnt = 0;
       if ( _uiGetSItem ( kbe , xx+w+3 , yy+3 , xx+l-w-3 , \
-           yy+w-3 ) ) mvnt = kbe.x-xx -w -3+2- pt->df;
+      yy+w-3 ) ) mvnt = kbe.x-xx -w -3+2- pt->df;
       ans = kbe.key;
       if ( ui_Leftarrow ( ans ) ) {
           mvnt = -1;
@@ -18186,7 +18316,7 @@ void transch(int c) {
       if ( w->hide != 1 ) _uiMake_G ( w ) ;
   }
   void _ui_diamessage ( DIALOG *D , int x1 , \
-       int y1 , int x2 , int y2 , char *m ) \
+  int y1 , int x2 , int y2 , char *m ) \
   {
 //   int x2,y2,l;
       int l;
@@ -18200,9 +18330,9 @@ void transch(int c) {
       l = strlen ( m ) ;
       _uirect_fill ( wc , x1 , EVGAY- ( y1 ) , x2 , EVGAY-y2 , D->gc.msg_fill ) ;
       uiString ( D , m , x1 , y1 , ( x2-x1 ) , ( y2-y1 ) , D->gc.MsgFont , \
-           D->gc.msg_char , D->gc.FontSize , 0 , D->gc.msg_fill ) ;
+      D->gc.msg_char , D->gc.FontSize , 0 , D->gc.msg_fill ) ;
       _ui_draw_bound ( ( D ) , x1 , EVGAY- ( y1 ) , \
-           x2 , EVGAY-y2 , D->gc.msg_bodr ) ;
+      x2 , EVGAY-y2 , D->gc.msg_bodr ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _ui_dia_T_message ( DIALOG *D , int x1 , int y1 , char *m ) {
@@ -18215,7 +18345,7 @@ void transch(int c) {
       x2 = x1+ l*9+10;
       y2 = y1+16;
       uiString ( D , m , x1 , y1 , ( x2-x1 ) , abs ( y2-y1 ) , D->gc.MsgFont , \
-           D->gc.msg_char , D->gc.FontSize , 0 , D->gc.msg_fill ) ;
+      D->gc.msg_char , D->gc.FontSize , 0 , D->gc.msg_fill ) ;
       uiRest_clip_limits ( wc ) ;
   }
   void _uiDrawMessage ( DIALOG* D , int item ) {
@@ -18254,15 +18384,16 @@ void transch(int c) {
               fillclr = D->gc.fill_clr;
               if ( D->transparency != 0.0 ) fillclr = -1;
               uiMessageString ( D , m->msg , ( int ) ( x1 ) , \
-                   ( int ) ( ( y1 ) ) , ( x2-x1 ) , \
+               ( int ) ( ( y1 ) ) , ( x2-x1 ) , \
                ( y2-y1 ) , D->gc.MsgFont , D->gc.msg_char , \
-                    D->gc.GuiFontSize , just , fillclr ) ;
+              D->gc.GuiFontSize , just , fillclr ) ;
               break;
               case 'M':
               FontSize = 5*h/9;
-              uiSplashString ( D , m->msg , ( int ) ( m->x1+D->xo ) , ( int ) ( ( m->y1+D->yo ) ) , \
-                   w , h , D->gc.SplashFont , D->gc.SplashFillColor , D->gc.SplashCharColor , \
-                   FontSize , just , 0.25 ) ;
+              uiSplashString ( D , m->msg , ( int ) ( m->x1+D->xo ) , \
+                   ( int ) ( ( m->y1+D->yo ) ) , \
+              w , h , D->gc.SplashFont , D->gc.SplashFillColor , D->gc.SplashCharColor , \
+              FontSize , just , 0.25 ) ;
               break;
               case 'B':
 //           _ui_diamessage(D,m->x1+D->xo,m->y1+D->yo,m->x2+D->xo,m->y2+D->yo,m->msg);
@@ -18272,7 +18403,7 @@ void transch(int c) {
               uiSet_full_scrn ( WC ( D ) ) ;
               _dvrect_fill ( WC ( D ) , x1 , ( y1 ) , x2 , y2 , D->gc.msg_fill ) ;
               uiMessageString ( D , m->msg , x1 , y1 , x2-x1 , y2-y1 , D->gc.MsgFont , \
-                   D->gc.msg_char , D->gc.GuiFontSize , just , D->gc.msg_fill ) ;
+              D->gc.msg_char , D->gc.GuiFontSize , just , D->gc.msg_fill ) ;
               _dv_draw_bound ( ( D ) , x1 , ( y1 ) , x2 , y2 , D->gc.msg_bodr ) ;
               uiRest_clip_limits ( WC ( D ) ) ;
               break;
@@ -18318,7 +18449,7 @@ void transch(int c) {
       uiSet_full_scrn ( wc ) ;
       df = br->hitem;
       item = _uiGetSItem ( kbe , br->MS.ixx , br->MS.iyy+br->MS.thirty/2 , \
-           br->MS.ixu , br->MS.iyu-br->MS.thirty/2 ) ;
+      br->MS.ixu , br->MS.iyu-br->MS.thirty/2 ) ;
       if ( item ) {
           item = ( kbe.y - ( br->MS.iyy+br->MS.thirty/2 ) ) /br->MS.thirty+1;
           if ( item < 1 ) item = 1;
@@ -18381,7 +18512,7 @@ void transch(int c) {
       jj = iy + ( k ) *br->MS.thirty;
       kk = -1;
       item = _uiGetSItem ( kbe , br->MS.ixx , br->MS.iyy+br->MS.thirty/2 , \
-           br->MS.ixu , br->MS.iyu-br->MS.thirty/2 ) ;
+      br->MS.ixu , br->MS.iyu-br->MS.thirty/2 ) ;
       if ( item ) {
           item = ( kbe.y - ( br->MS.iyy+br->MS.thirty/2 ) ) /br->MS.thirty+1;
           if ( item < 1 ) item = 1;
@@ -18605,7 +18736,7 @@ void transch(int c) {
       yoffset = br->offset;
       xoffset = Y->offset;
       pos = _uiGetSItem ( kbe , br->x1+xoffset , br->y1+yoffset , \
-           br->x2-xoffset-br->w , br->y2-yoffset ) ;
+      br->x2-xoffset-br->w , br->y2-yoffset ) ;
       if ( pos ) {
           iy = ( kbe.y - ( br->y1+yoffset ) ) ;
           if ( iy > 0 ) iy = iy/br->width;
@@ -18623,7 +18754,7 @@ void transch(int c) {
       return ret;
   }
   int kgGetThumbNailItemRectangle ( DIY *Y , int item , \
-       int *x1 , int *y1 , int *x2 , int *y2 ) \
+  int *x1 , int *y1 , int *x2 , int *y2 ) \
   {
       int ret = 0 , ix , iy , xoffset , yoffset , size;
       BRW_STR *br;
@@ -18659,7 +18790,7 @@ void transch(int c) {
       wc = br->D->wc;
       df = br->df;
       item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-           br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+      br->rsx2 , br->rsy1+br->sy+br->shy ) ;
       if ( item ) {
           _ui_process_y_move ( y , kbe ) ;
           return -100;
@@ -18667,7 +18798,7 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       item = _uiGetSItem ( kbe , br->x1+xoffset , br->y1+yoffset , \
-           br->x2-xoffset-br->w , br->y2-yoffset ) ;
+      br->x2-xoffset-br->w , br->y2-yoffset ) ;
       if ( item ) {
           if ( kbe.button != 1 ) { uiRest_clip_limits ( wc ) ; return -1; }
           iy = ( kbe.y - ( br->y1+yoffset ) ) ;
@@ -18762,7 +18893,7 @@ void transch(int c) {
 //      if ( item) {
       {
           item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-               br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+          br->rsx2 , br->rsy1+br->sy+br->shy ) ;
           if ( item ) {
               do {
                   fac = 0.0;
@@ -19306,7 +19437,7 @@ void transch(int c) {
       wc = br->D->wc;
       df = br->df;
       item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-           br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+      br->rsx2 , br->rsy1+br->sy+br->shy ) ;
       if ( item ) {
 //        printf("_ui_process_r_move\n");
           _ui_process_r_move ( y , kbe ) ;
@@ -19315,7 +19446,7 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       item = _uiGetSItem ( kbe , br->x1+xoffset , br->y1+offset , \
-           br->x2-xoffset-br->w , br->y2-offset ) ;
+      br->x2-xoffset-br->w , br->y2-offset ) ;
       if ( item ) {
           if ( kbe.button != 1 ) { uiRest_clip_limits ( wc ) ; return -1; }
           iy = ( kbe.y - ( br->y1+offset ) ) ;
@@ -19412,7 +19543,7 @@ void transch(int c) {
 //      if ( item) {
       {
           item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-               br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+          br->rsx2 , br->rsy1+br->sy+br->shy ) ;
           if ( item ) {
               do {
                   fac = 0.0;
@@ -19502,7 +19633,7 @@ void transch(int c) {
       wc = br->D->wc;
       df = br->df;
       item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-           br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+      br->rsx2 , br->rsy1+br->sy+br->shy ) ;
       if ( item ) {
           _ui_process_x_move ( y , kbe ) ;
           return -100;
@@ -19510,7 +19641,7 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       item = _uiGetSItem ( kbe , br->x1+xoffset , br->y1+offset , \
-           br->x2-xoffset-br->w , br->y2-offset ) ;
+      br->x2-xoffset-br->w , br->y2-offset ) ;
       if ( item ) {
           if ( kbe.button != 1 ) { uiRest_clip_limits ( wc ) ; return -1; }
           iy = ( kbe.y - ( br->y1+offset ) ) ;
@@ -19606,7 +19737,7 @@ void transch(int c) {
 //      if ( item) {
       {
           item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-               br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+          br->rsx2 , br->rsy1+br->sy+br->shy ) ;
           if ( item ) {
               do {
                   fac = 0.0;
@@ -19695,7 +19826,7 @@ void transch(int c) {
       wc = br->D->wc;
       df = br->df;
       item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-           br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+      br->rsx2 , br->rsy1+br->sy+br->shy ) ;
       if ( item ) {
           _ui_process_e_move ( y , kbe ) ;
           return -100;
@@ -19703,7 +19834,7 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       item = _uiGetSItem ( kbe , br->x1+xoffset , br->y1+offset , \
-           br->x2-xoffset-br->w , br->y2-offset ) ;
+      br->x2-xoffset-br->w , br->y2-offset ) ;
       if ( item ) {
           if ( kbe.button != 1 ) { uiRest_clip_limits ( wc ) ; return -1; }
           iy = ( kbe.y - ( br->y1+offset ) ) ;
@@ -19797,7 +19928,7 @@ void transch(int c) {
 //      if ( item) {
       {
           item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-               br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+          br->rsx2 , br->rsy1+br->sy+br->shy ) ;
           if ( item ) {
               do {
                   fac = 0.0;
@@ -19882,13 +20013,13 @@ void transch(int c) {
       wc = br->D->wc;
       df = br->df;
       item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-           br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+      br->rsx2 , br->rsy1+br->sy+br->shy ) ;
       if ( item ) {
           _ui_process_m_move ( y , kbe ) ;
           return -100;
       }
       item = _uiGetSItem ( kbe , br->x1+xoffset , br->y1+offset , \
-           br->x2-xoffset-br->w , br->y2-offset ) ;
+      br->x2-xoffset-br->w , br->y2-offset ) ;
       if ( item ) {
           if ( kbe.button != 1 ) return -1;
       }
@@ -19966,7 +20097,7 @@ void transch(int c) {
 //      if ( item) {
       {
           item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-               br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+          br->rsx2 , br->rsy1+br->sy+br->shy ) ;
           if ( item ) {
               do {
                   fac = 0.0;
@@ -20055,7 +20186,7 @@ void transch(int c) {
       wc = br->D->wc;
       df = br->df;
       item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-           br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+      br->rsx2 , br->rsy1+br->sy+br->shy ) ;
       if ( item ) {
           _ui_process_w_move ( y , kbe ) ;
           return -1;
@@ -20063,7 +20194,7 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       item = _uiGetSItem ( kbe , br->x1+xoffset , br->y1+offset , \
-           br->x2-xoffset-br->w , br->y2-offset ) ;
+      br->x2-xoffset-br->w , br->y2-offset ) ;
       if ( item ) {
           if ( kbe.button != 1 ) { uiRest_clip_limits ( wc ) ; return -1; }
           iy = ( kbe.y - ( br->y1+offset ) ) /br->width;
@@ -20158,7 +20289,7 @@ void transch(int c) {
 //      if ( item) {
       {
           item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-               br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+          br->rsx2 , br->rsy1+br->sy+br->shy ) ;
           if ( item ) {
               do {
                   fac = 0.0;
@@ -20250,7 +20381,7 @@ void transch(int c) {
       wc = br->D->wc;
       df = br->df;
       item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-           br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+      br->rsx2 , br->rsy1+br->sy+br->shy ) ;
       if ( item ) {
           _ui_process_c_move ( y , kbe ) ;
           return -100;
@@ -20258,7 +20389,7 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       item = _uiGetSItem ( kbe , br->x1+xoffset , br->y1+offset , \
-           br->x2-xoffset-br->w , br->y2-offset ) ;
+      br->x2-xoffset-br->w , br->y2-offset ) ;
       if ( item ) {
           if ( kbe.button != 1 ) { uiRest_clip_limits ( wc ) ; return -1; }
           iy = ( kbe.y - ( br->y1+offset ) ) ;
@@ -20353,7 +20484,7 @@ void transch(int c) {
 //      if ( item) {
       {
           item = _uiGetSItem ( kbe , br->rsx1 , br->rsy1+br->sy , \
-               br->rsx2 , br->rsy1+br->sy+br->shy ) ;
+          br->rsx2 , br->rsy1+br->sy+br->shy ) ;
           if ( item ) {
               do {
                   fac = 0.0;
@@ -20404,7 +20535,7 @@ void transch(int c) {
       uiSet_full_scrn ( wc ) ;
       df = br->hitem;
       item = _uiGetSItem ( kbe , br->MS.ixx , br->MS.iyy+br->MS.thirty/2 , \
-           br->MS.ixu , br->MS.iyu-br->MS.thirty/2 ) ;
+      br->MS.ixu , br->MS.iyu-br->MS.thirty/2 ) ;
       if ( item ) {
           item = ( kbe.y - ( br->MS.iyy+br->MS.thirty/2 ) ) /br->MS.thirty+1;
           if ( item < 1 ) item = 1;
@@ -20465,7 +20596,7 @@ void transch(int c) {
       jj = iy + ( k ) *br->MS.thirty;
       kk = -1;
       item = _uiGetSItem ( kbe , br->MS.ixx , br->MS.iyy+br->MS.thirty/2 , \
-           br->MS.ixu , br->MS.iyu-br->MS.thirty/2 ) ;
+      br->MS.ixu , br->MS.iyu-br->MS.thirty/2 ) ;
       if ( item ) {
           item = ( kbe.y - ( br->MS.iyy+br->MS.thirty/2 ) ) /br->MS.thirty+1;
           if ( item < 1 ) item = 1;
@@ -20584,7 +20715,7 @@ void transch(int c) {
       return;
   }
   void _ui_draw_menu_bound ( DIALOG *D , int x1 , \
-       int y1 , int x2 , int y2 , int c_bound ) \
+  int y1 , int x2 , int y2 , int c_bound ) \
   {
       unsigned int temp;
       int EVGAY;
@@ -20637,10 +20768,10 @@ void transch(int c) {
 #else
 #if 1
       if ( br->D != NULL ) _ui_draw_bound ( D , br->MS.ixx+1 , \
-           ( EVGAY-br->MS.iyy-1 ) , br->MS.ixu-1 , \
+       ( EVGAY-br->MS.iyy-1 ) , br->MS.ixu-1 , \
        ( EVGAY-br->MS.iyu+1 ) , br->MS.color2 ) ;
       else _ui_draw_menu_bound ( D , br->MS.ixx , \
-           ( EVGAY-br->MS.iyy ) , br->MS.ixu , \
+       ( EVGAY-br->MS.iyy ) , br->MS.ixu , \
        ( EVGAY-br->MS.iyu ) , br->MS.color2 ) ;
 #else
       _ui_draw_menu_bound ( D , br->MS.ixx , ( EVGAY-br->MS.iyy ) , br->MS.ixu , \
@@ -20665,8 +20796,9 @@ void transch(int c) {
 #else
           ixp = br->MS.ixx+5;
           iyp = jj+12-br->MS.thirty;
-          uiString ( D , br->MS.menu [ kk ] , ( int ) ixp , ( int ) iyp , ln , br->MS.thirty , \
-               D->gc.MsgFont , D->gc.msg_char , D->gc.FontSize , -1 , -1 ) ;
+          uiString ( D , br->MS.menu [ kk ] , ( int ) ixp , \
+               ( int ) iyp , ln , br->MS.thirty , \
+          D->gc.MsgFont , D->gc.msg_char , D->gc.FontSize , -1 , -1 ) ;
 #endif
       }
       uiRest_clip_limits ( WC ( D ) ) ;
@@ -20718,8 +20850,8 @@ void transch(int c) {
       br->pos = pos;
       pos = ( pos/y->nx ) *y->nx;
       menu = list+pos;
-      if ( y->bkgr == 1 ) _dvrect_fill ( WC ( D ) ,  \
-          ( br->x1+xoffset ) , ( br->y1+xoffset ) , \
+      if ( y->bkgr == 1 ) _dvrect_fill ( WC ( D ) , \
+       ( br->x1+xoffset ) , ( br->y1+xoffset ) , \
        ( br->x2-xoffset-w ) , ( br->y2-xoffset ) , D->gc.twin_fill ) ;
       else _dvrect_fill ( WC ( D ) , ( br->x1+xoffset ) , ( br->y1+xoffset ) , \
        ( br->x2-xoffset-w ) , ( br->y2-xoffset ) , D->gc.fill_clr ) ;
@@ -20739,7 +20871,7 @@ void transch(int c) {
           ixp = br->x1+xoffset+xi* ( y->lngth+y->xgap ) +br->xshift;
           iyp = br->y1+yoffset+yi*br->width;
           _dvrect_fill ( WC ( D ) , ixp , iyp , ixp+y->lngth+y->xgap , \
-               iyp+y->width+6 , D->gc.ItemHighColor ) ;
+          iyp+y->width+6 , D->gc.ItemHighColor ) ;
       }
 #endif
       kk = 0;
@@ -20758,7 +20890,7 @@ void transch(int c) {
               if ( swv == 1 ) { img->bkgrclr = D->gc.SplashCharColor; }
               else img->bkgrclr = D->gc.twin_fill;
               kgImage ( D , xpm , ixp+2 , iyp+2 , y->lngth+y->xgap-4 , \
-                   y->width+2 , 0.0 , 1.0 ) ;
+              y->width+2 , 0.0 , 1.0 ) ;
           }
 	//TCB NEW
 #if 0
@@ -20770,8 +20902,9 @@ void transch(int c) {
 #endif
 //            uiString(D,menu[kk]->name,ixp,iyp,y->width+y->xgap,th,D->gc.MsgFont,D->gc.info_char,D->gc.FontSize,0,-1);
     //      if ( ( list != NULL ) && ( menu [ kk ]->name != NULL ) ) kgImage ( D , y->imgs [ kk+pos ] , ixp , iyp , y->lngth+y->xgap , th , 0.0 , 1.0 ) ;
-          if ( ( list != NULL ) && ( menu [ kk ]->name != NULL ) ) kgImage ( D , y->imgs [ kk+pos ] , \
-               ixp , iyp , y->lngth+y->xgap , 2*D->gc.FontSize+2 , 0.0 , 1.0 ) ;
+          if ( ( list != NULL ) && ( menu [ kk ]->name != NULL ) ) kgImage  \
+              ( D , y->imgs [ kk+pos ] , \
+          ixp , iyp , y->lngth+y->xgap , 2*D->gc.FontSize+2 , 0.0 , 1.0 ) ;
           kk++;
       }
       uiRest_clip_limits ( WC ( D ) ) ;
@@ -20784,7 +20917,7 @@ void transch(int c) {
       int k , kk , knew , jj , ln , ln1;
       int n , iy , iyp , ixp , ixmid;
       int scroll = 1 , *sw , swv , nx , ny , yi , xi , scrsize , \
-           xoffset , yoffset , th , w , xgap , lngth , bxln;
+      xoffset , yoffset , th , w , xgap , lngth , bxln;
       int EVGAY;
       DIALOG *D;
       void *xpm = NULL;
@@ -20850,7 +20983,7 @@ void transch(int c) {
 #endif
       if ( y->bordr == 1 ) {
           _dv_draw_bound ( D , ( br->x1+xoffset ) , ( br->y1+xoffset ) , \
-               ( br->x2-xoffset-w ) -1 , \
+           ( br->x2-xoffset-w ) -1 , \
            ( br->y2-xoffset ) , D->gc.high_clr ) ;
       }
       jj = iy;
@@ -20864,7 +20997,7 @@ void transch(int c) {
               yi = br->hitem-pos;
               iyp = br->y1+yoffset+yi*br->width;
               _dvrect_fill ( WC ( D ) , ixp+2 , iyp+2 , br->x2-xoffset-w-2 , \
-                   iyp+br->width-2 , D->gc.high_clr ) ;
+              iyp+br->width-2 , D->gc.high_clr ) ;
           }
 #else
           if ( y->itemhi ) {
@@ -20873,7 +21006,7 @@ void transch(int c) {
               ixp = br->x1+xoffset+xi*bxln;
               iyp = br->y1+yoffset+yi*br->width;
               _dvrect_fill ( WC ( D ) , ixp+2 , iyp+2 , ixp+bxln-2 , \
-                   iyp+br->width-2 , D->gc.ItemHighColor ) ;
+              iyp+br->width-2 , D->gc.ItemHighColor ) ;
           }
 #endif
       }
@@ -20895,14 +21028,14 @@ void transch(int c) {
               if ( y->sw [ kk+pos ] == 1 ) { img->bkgrclr = 1; }
               else img->bkgrclr = -1;
               kgImage ( D , xpm , ixp+2 , iyp+4 , y->width+y->xgap-4 , \
-                   y->width , 0.0 , 1.0 ) ;
+              y->width , 0.0 , 1.0 ) ;
           }
 #endif
 #if 0
           if ( ( menu != NULL ) ) uiCheckString ( D , \
-               menu [ kk ]->name , ( int ) ixp , \
+          menu [ kk ]->name , ( int ) ixp , \
            ( int ) iyp , bxln , th , D->gc.Font , D->gc.menu_char , \
-                D->gc.FontSize , swv ) ;
+          D->gc.FontSize , swv ) ;
 #endif
           if ( menu != NULL ) {
               kgImage ( D , y->imgs [ kk+pos ] , ( int ) ( ixp+3.0*D->gc.FontSize ) , \
@@ -20924,7 +21057,7 @@ void transch(int c) {
       int k , kk , knew , jj , ln , bxln , bxwd , ln1;
       int n , iy , iyp , ixp , ixmid , xgap , lngth;
       int scroll = 1 , swv , nx , ny , yi , xi , \
-           scrsize , xoffset , yoffset , th , w;
+      scrsize , xoffset , yoffset , th , w;
       int xoff = 1;
       int dx , dy;
       int EVGAY;
@@ -20990,7 +21123,7 @@ void transch(int c) {
 #endif
       if ( y->bordr == 1 ) {
           _dv_draw_bound ( D , ( br->x1+xoffset ) , ( br->y1+xoffset ) , \
-               ( br->x2-xoffset-w ) -1 , \
+           ( br->x2-xoffset-w ) -1 , \
            ( br->y2-xoffset ) , D->gc.twin_bodr ) ;
       }
       jj = iy;
@@ -21005,7 +21138,7 @@ void transch(int c) {
               ixp = br->x1+xoffset+xi*bxln;
               iyp = br->y1+yoffset+yi*br->width;
               _dvrect_fill ( WC ( D ) , ixp+2 , iyp+2 , ixp+bxln-2 , \
-                   iyp+br->width-2 , D->gc.ItemHighColor ) ;
+              iyp+br->width-2 , D->gc.ItemHighColor ) ;
           }
       }
 #endif
@@ -21040,13 +21173,13 @@ void transch(int c) {
 #if 0
               if ( y->type <= 1 ) uiMenuString ( D , menu [ kk ]->name , ( int ) ixp , \
                ( int ) iyp , bxln , y->width , D->gc.Font , D->gc.menu_char , \
-                    D->gc.FontSize , swv ) ;
+              D->gc.FontSize , swv ) ;
               else uiString ( D , menu [ kk ]->name , ( int ) ixp , ( int ) iyp , bxln , \
-                   y->width , D->gc.Font , D->gc.menu_char , D->gc.FontSize , -1 , -1 ) ;
+              y->width , D->gc.Font , D->gc.menu_char , D->gc.FontSize , -1 , -1 ) ;
 #else
               if ( ( ( y->type ) %10 ) <= 1 ) {
                   kgImage ( D , y->imgs [ kk+pos ] , ( int ) ixp , ( int ) iyp , \
-                       bxln-y->width , y->width , 0.0 , 1.0 ) ;
+                  bxln-y->width , y->width , 0.0 , 1.0 ) ;
                   if ( swv == 0 ) kgImage ( D , y->nimg , ( int ) ixp+bxln-y->width , \
                    ( int ) iyp , y->width , y->width , 0.0 , 1.0 ) ;
                   if ( swv == 1 ) kgImage ( D , y->himg , ( int ) ixp+bxln-y->width , \
@@ -21070,7 +21203,7 @@ void transch(int c) {
       int k , kk , knew , jj , ln , bxln , bxwd;
       int n , iy , iyp , ixp , ixmid;
       int scroll = 1 , swv , nx , ny , yi , xi , \
-           scrsize , xoffset , yoffset , th , w;
+      scrsize , xoffset , yoffset , th , w;
       int offset = 2;
       int xoff = 1;
       int dx , dy;
@@ -21117,7 +21250,7 @@ void transch(int c) {
 #endif
       if ( y->bordr == 1 ) {
           _dv_draw_bound ( D , ( br->x1+xoffset ) , ( br->y1+xoffset ) , \
-               ( br->x2-xoffset-w ) -1 , \
+           ( br->x2-xoffset-w ) -1 , \
            ( br->y2-xoffset ) , D->gc.high_clr ) ;
       }
       jj = iy;
@@ -21129,7 +21262,7 @@ void transch(int c) {
               yi = br->hitem-pos;
               iyp = br->y1+yoffset+yi*br->width;
               _dvrect_fill ( WC ( D ) , ixp+2 , iyp+2 , br->x2-xoffset-w-2 , \
-                   iyp+br->width-2 , D->gc.ItemHighColor ) ;
+              iyp+br->width-2 , D->gc.ItemHighColor ) ;
           }
       }
 #endif
@@ -21165,7 +21298,7 @@ void transch(int c) {
       int k , kk , knew , jj , ln , bxln , bxwd;
       int n , iy , iyp , ixp , ixmid;
       int scroll = 1 , swv , nx , ny , yi , xi , \
-           scrsize , xoffset , yoffset , th , w;
+      scrsize , xoffset , yoffset , th , w;
       int xoff = 1;
       int EVGAY;
       DIALOG *D;
@@ -21205,7 +21338,7 @@ void transch(int c) {
        ( br->x2-xoffset-w ) -1 , ( br->y2-xoffset ) , D->gc.info_fill ) ;
       if ( y->bordr == 1 ) {
           _dv_draw_bound ( D , ( br->x1+xoffset ) , ( br->y1+xoffset ) , \
-               ( br->x2-xoffset-w ) -1 , \
+           ( br->x2-xoffset-w ) -1 , \
            ( br->y2-xoffset ) , D->gc.high_clr ) ;
       }
 #else
@@ -21217,7 +21350,7 @@ void transch(int c) {
           _dvrect_fill ( WC ( D ) , ( br->x1+xoffset ) , ( br->y1+xoffset ) , \
            ( br->x2-xoffset-w ) -1 , ( br->y2-xoffset ) , br->MS.color2 ) ;
           _dvrect_fill ( WC ( D ) , ( br->x1+xoffset+offset ) , \
-               ( br->y1+xoffset+offset ) , \
+           ( br->y1+xoffset+offset ) , \
            ( br->x2-xoffset-w-1-offset ) , ( br->y2-xoffset-offset ) , br->MS.color1 ) ;
       }
 #endif
@@ -21237,13 +21370,14 @@ void transch(int c) {
           if ( ( list != NULL ) && ( list [ kk+pos ] != NULL ) ) {
 #if 1
               uiString ( D , list [ kk+pos ] , ( int ) ixp+xoff*y->width , ( int ) iyp , \
-                   bxln , y->width , D->gc.MsgFont , br->MS.char_clr , \
-                   D->gc.FontSize , -1 , -1 ) ;
+              bxln , y->width , D->gc.MsgFont , br->MS.char_clr , \
+              D->gc.FontSize , -1 , -1 ) ;
 #else
 	    //TCB NEW
 	    //
-              uiMsgString ( D , list [ kk+pos ] , ( int ) ixp+xoff*y->width , ( int ) iyp , \
-                   br->MS.char_clr , D->gc.MsgFont , D->gc.FontSize ) ;
+              uiMsgString ( D , list [ kk+pos ] , ( int ) ixp+xoff*y->width , \
+                   ( int ) iyp , \
+              br->MS.char_clr , D->gc.MsgFont , D->gc.FontSize ) ;
 #endif
           }
           kk++;
@@ -21258,7 +21392,7 @@ void transch(int c) {
       int k , kk , knew , jj , ln , bxln , bxwd;
       int n , iy , iyp , ixp , ixmid;
       int scroll = 1 , swv , nx , ny , yi , xi , \
-           scrsize , xoffset , yoffset , th , w;
+      scrsize , xoffset , yoffset , th , w;
       int xoff = 1;
       int EVGAY;
       DIALOG *D;
@@ -21297,7 +21431,7 @@ void transch(int c) {
        ( br->x2-xoffset-w ) -1 , ( br->y2-xoffset ) , D->gc.fill_clr ) ;
       if ( y->bordr == 1 ) {
           _dv_draw_bound ( D , ( br->x1+xoffset ) , ( br->y1+xoffset ) , \
-               ( br->x2-xoffset-w ) -1 , \
+           ( br->x2-xoffset-w ) -1 , \
            ( br->y2-xoffset ) , D->gc.high_clr ) ;
       }
       jj = iy;
@@ -21309,7 +21443,7 @@ void transch(int c) {
               yi = br->hitem-pos;
               iyp = br->y1+yoffset+yi*br->width;
               _dvrect_fill ( WC ( D ) , ixp+2 , iyp+2 , br->x2-xoffset-w-2 , \
-                   iyp+br->width-2 , D->gc.ItemHighColor ) ;
+              iyp+br->width-2 , D->gc.ItemHighColor ) ;
           }
       }
 #endif
@@ -21346,7 +21480,7 @@ void transch(int c) {
       int k , kk , knew , jj , ln , ln1;
       int n , iy , iyp , ixp , ixmid;
       int scroll = 1 , swv , nx , ny , yi , xi , scrsize , \
-           xoffset , yoffset , th , w , xgap , lngth , bxln;
+      xoffset , yoffset , th , w , xgap , lngth , bxln;
       int EVGAY;
       DIALOG *D;
       void *xpm = NULL;
@@ -21412,7 +21546,7 @@ void transch(int c) {
 #endif
       if ( y->bordr == 1 ) {
           _dv_draw_bound ( D , ( br->x1+xoffset ) , ( br->y1+xoffset ) , \
-               ( br->x2-xoffset-w ) -1 , \
+           ( br->x2-xoffset-w ) -1 , \
            ( br->y2-xoffset ) , D->gc.high_clr ) ;
       }
       jj = iy;
@@ -21425,7 +21559,7 @@ void transch(int c) {
               yi = br->hitem-pos;
               iyp = br->y1+yoffset+yi*br->width;
               _dvrect_fill ( WC ( D ) , ixp+2 , iyp+2 , br->x2-xoffset-w-2 , \
-                   iyp+br->width-2 , D->gc.high_clr ) ;
+              iyp+br->width-2 , D->gc.high_clr ) ;
           }
 #else
           if ( y->itemhi ) {
@@ -21434,7 +21568,7 @@ void transch(int c) {
               ixp = br->x1+xoffset+xi*bxln;
               iyp = br->y1+yoffset+yi*br->width;
               _dvrect_fill ( WC ( D ) , ixp+2 , iyp+2 , ixp+bxln-2 , \
-                   iyp+br->width-2 , D->gc.ItemHighColor ) ;
+              iyp+br->width-2 , D->gc.ItemHighColor ) ;
           }
 #endif
       }
@@ -21457,7 +21591,7 @@ void transch(int c) {
               if ( y->sw [ kk+pos ] == 1 ) { img->bkgrclr = 1; }
               else img->bkgrclr = -1;
               kgImage ( D , xpm , ixp+2 , iyp+4 , y->width+y->xgap-4 , \
-                   y->width , 0.0 , 1.0 ) ;
+              y->width , 0.0 , 1.0 ) ;
           }
 #endif
           if ( list != NULL ) {
@@ -21471,7 +21605,7 @@ void transch(int c) {
 #if 0
           if ( ( list != NULL ) && ( menu [ kk ]->name != NULL ) ) uiRadioString \
            ( D , menu [ kk ]->name , ( int ) ixp , ( int ) iyp , bxln , th , \
-                D->gc.Font , D->gc.menu_char , D->gc.FontSize , swv ) ;
+          D->gc.Font , D->gc.menu_char , D->gc.FontSize , swv ) ;
 #endif
           kk++;
       }
@@ -21650,7 +21784,7 @@ void transch(int c) {
       uiRest_clip_limits ( WC ( D ) ) ;
   }
   void _uimove_vert_pointer ( DIALOG *D , int x , \
-       int y , int w , int h , int sy , int sh ) \
+  int y , int w , int h , int sy , int sh ) \
   {
       char tmp;
       int x1 , y1 , x2 , y2;
@@ -21756,7 +21890,7 @@ void transch(int c) {
   }
 //TCBTCB
   void _dvmove_vert_pointer ( DIALOG *D , int x , \
-       int y , int w , int h , int sy , int sh ) \
+  int y , int w , int h , int sy , int sh ) \
   {
       char tmp;
       int x1 , y1 , x2 , y2 , w2;
@@ -21782,7 +21916,7 @@ void transch(int c) {
       uiRest_clip_limits ( WC ( D ) ) ;
   }
   void _dvmove_hori_pointer ( DIALOG *D , int x , \
-       int y , int w , int h , int sy , int sh ) \
+  int y , int w , int h , int sy , int sh ) \
   {
       char tmp;
       int x1 , y1 , x2 , y2;
@@ -21809,7 +21943,7 @@ void transch(int c) {
   void _uiMoveYVertPointer ( void *tmp ) {
       DIY *y;
       int xx , yy , j , item , sh , sy , h , w , scr_ln , \
-           pos , nx , hitem , offset , himax;
+      pos , nx , hitem , offset , himax;
       float fac;
       DIALOG *D;
       BRW_STR *br;
@@ -21849,7 +21983,7 @@ void transch(int c) {
   void _uiMoveVVertPointer ( void *tmp ) {
       DIV *y;
       int xx , yy , j , item , sh , sy , h , w , scr_ln , \
-           pos , nx , hitem , offset , himax;
+      pos , nx , hitem , offset , himax;
       float fac;
       DIALOG *D;
       y = ( DIV * ) tmp;
@@ -21871,7 +22005,7 @@ void transch(int c) {
   void _uiMoveZVertPointer ( void *tmp ) {
       DIZ *y;
       int xx , yy , j , item , sh , sy , h , w , scr_ln , \
-           pos , nx , hitem , offset , himax;
+      pos , nx , hitem , offset , himax;
       float fac;
       DIALOG *D;
       y = ( DIZ * ) tmp;
@@ -21892,7 +22026,7 @@ void transch(int c) {
   void _uiMoveEVertPointer ( void *tmp ) {
       DIE *y;
       int xx , yy , j , item , sh , sy , h , w , scr_ln , \
-           pos , nx , hitem , offset , himax;
+      pos , nx , hitem , offset , himax;
       float fac;
       DIALOG *D;
       BRW_STR *br;
@@ -21932,7 +22066,7 @@ void transch(int c) {
   void _uiMoveMVertPointer ( void *tmp ) {
       DIS *y;
       int xx , yy , j , item , sh , sy , h , w , scr_ln , \
-           pos , nx , hitem , offset , himax;
+      pos , nx , hitem , offset , himax;
       float fac;
       DIALOG *D;
       BRW_STR *br;
@@ -21972,7 +22106,7 @@ void transch(int c) {
   void _uiMoveWVertPointer ( void *tmp ) {
       DIW *y;
       int xx , yy , j , item , sh , sy , h , w , scr_ln , \
-           pos , nx , hitem , offset , himax;
+      pos , nx , hitem , offset , himax;
       float fac;
       DIALOG *D;
       BRW_STR *br;
@@ -22049,16 +22183,16 @@ void transch(int c) {
       br->MS.iyu = br->MS.iyy +br->MS.iyl;
       br->MS.ixu = br->MS.ixx+br->MS.ixl-1;
       kg_scr_back ( WC ( D ) , br->MS.ixx-8 , br->MS.iyy-18 , \
-           ( br->MS.ixx+br->MS.ixl+31 ) , \
+       ( br->MS.ixx+br->MS.ixl+31 ) , \
        ( br->MS.iyy+br->MS.iyl+18 ) ) ;
       uiBkup_clip_limits ( WC ( D ) ) ;
       uiSet_full_scrn ( WC ( D ) ) ;
       _uirect_fill ( WC ( D ) , br->MS.ixx-8 , EVGAY-br->MS.iyy+18 , \
-           ( br->MS.ixx+br->MS.ixl+31 ) , EVGAY- \
+       ( br->MS.ixx+br->MS.ixl+31 ) , EVGAY- \
        ( br->MS.iyy+br->MS.iyl+18 ) , gc.fill_clr ) ;
 //   _uiborder3d(D, br->MS.ixx-8,br->MS.iyy-18,(br->MS.ixx+br->MS.ixl+31),(br->MS.iyy+br->MS.iyl+18));
       _uibordertype4 ( D , br->MS.ixx-8 , br->MS.iyy-18 , \
-           ( br->MS.ixx+br->MS.ixl+31 ) , \
+       ( br->MS.ixx+br->MS.ixl+31 ) , \
        ( br->MS.iyy+br->MS.iyl+18 ) ) ;
       uiRest_clip_limits ( WC ( D ) ) ;
       pos = 1;
@@ -22280,15 +22414,15 @@ void transch(int c) {
           uiSet_full_scrn ( WC ( D ) ) ;
 //    offset=scroll*4;
           _uirect_fill ( WC ( D ) , br->x1+ ( offset+2 ) , \
-               D->evgay-br->y1- ( offset+2 ) , br->x2- \
+          D->evgay-br->y1- ( offset+2 ) , br->x2- \
            ( offset+2 ) , D->evgay-br->y2+ ( offset+2 ) , gc.txt_fill ) ;
 #if 0
-          _uibordertype0 ( D , br->x1+ ( offset+2 ) , D->evgay-br->y1-  \
-              ( offset+2 ) , br->x2- \
+          _uibordertype0 ( D , br->x1+ ( offset+2 ) , D->evgay-br->y1- \
+           ( offset+2 ) , br->x2- \
            ( ( offset+2 ) -1 ) , D->evgay-br->y2+ ( ( offset+2 ) -1 ) , gc.vbright ) ;
 #else
-          _uibordertype1 ( D , br->x1+ ( offset+2 ) , D->evgay-br->y1-  \
-              ( offset+2 ) , br->x2- \
+          _uibordertype1 ( D , br->x1+ ( offset+2 ) , D->evgay-br->y1- \
+           ( offset+2 ) , br->x2- \
            ( ( offset+2 ) -1 ) , D->evgay-br->y2+ ( ( offset+2 ) -1 ) ) ;
 #endif
           uiRest_clip_limits ( WC ( D ) ) ;
@@ -22335,15 +22469,15 @@ void transch(int c) {
           if ( ( D->DrawBkgr != 0 ) ) {
               if ( ( y->bkgr == 1 ) ) {
                   img = kgBorderedRectangle ( br->x2-br->x1 , \
-                       br->y2-br->y1 , gc.twin_fill , 0.0 ) ;
+                  br->y2-br->y1 , gc.twin_fill , 0.0 ) ;
                   kgImage ( D , img , br->x1 , br->y1 , br->x2-br->x1 , \
-                       br->y2-br->y1 , 0.0 , 1.0 ) ;
+                  br->y2-br->y1 , 0.0 , 1.0 ) ;
               }
               else {
                   img = kgBorderedRectangle ( br->x2-br->x1 , \
-                       br->y2-br->y1 , gc.fill_clr , 0.0 ) ;
+                  br->y2-br->y1 , gc.fill_clr , 0.0 ) ;
                   kgImage ( D , img , br->x1 , br->y1 , br->x2-br->x1 , \
-                       br->y2-br->y1 , 0.0 , 1.0 ) ;
+                  br->y2-br->y1 , 0.0 , 1.0 ) ;
               }
           }
           if ( y->nitems != 0 ) {
@@ -22486,9 +22620,9 @@ void transch(int c) {
 //    _dvbordertype4(D, br->x1+(offset),br->y1+(offset),br->x2-(offset), br->y2-(offset));
 #else
               img = kgBorderedRectangle ( br->x2-br->x1 , \
-                   br->y2-br->y1 , gc.twin_fill , 0.0 ) ;
+              br->y2-br->y1 , gc.twin_fill , 0.0 ) ;
               kgImage ( D , img , br->x1 , br->y1 , br->x2-br->x1 , \
-                   br->y2-br->y1 , 0.0 , 1.0 ) ;
+              br->y2-br->y1 , 0.0 , 1.0 ) ;
 #endif
           }
           if ( y->nitems != 0 ) {
@@ -22524,8 +22658,8 @@ void transch(int c) {
 #ifndef D_RESTORE
           _dvrect_fill ( WC ( D ) , x1+1 , y1+1 , x2-1 , y2-1 , gc.fill_clr ) ;
 #else
-          if ( y->Bimg != NULL ) kgRestoreImagePart  \
-              ( D , y->Bimg , x1+1 , y1+1 , 1 , 1 , \
+          if ( y->Bimg != NULL ) kgRestoreImagePart \
+           ( D , y->Bimg , x1+1 , y1+1 , 1 , 1 , \
            ( x2-x1-1 ) , ( y2-y1-1 ) ) ;
 #endif
           _ui_vert_scroll_vbar ( y ) ;
@@ -22556,8 +22690,8 @@ void transch(int c) {
 #ifndef D_RESTORE
           _dvrect_fill ( WC ( D ) , x1+1 , y1+1 , x2-1 , y2-1 , gc.fill_clr ) ;
 #else
-          if ( y->Bimg != NULL ) kgRestoreImagePart  \
-              ( D , y->Bimg , x1+1 , y1+1 , 1 , 1 , \
+          if ( y->Bimg != NULL ) kgRestoreImagePart \
+           ( D , y->Bimg , x1+1 , y1+1 , 1 , 1 , \
            ( x2-x1-1 ) , ( y2-y1-1 ) ) ;
 #endif
           _ui_vert_scroll_vbar ( y ) ;
@@ -22753,11 +22887,11 @@ void transch(int c) {
       uiBkup_clip_limits ( WC ( D ) ) ;
       uiSet_full_scrn ( WC ( D ) ) ;
       _dvrect_fill ( WC ( D ) , br->x1+offset , br->y1+offset , \
-           br->x2-offset , br->y2-offset , gc.fill_clr ) ;
+      br->x2-offset , br->y2-offset , gc.fill_clr ) ;
 //TCBTCB
 #if 1
       _dvbordertype1 ( D , br->x1+offset , br->y1+offset , \
-           br->x2-offset , br->y2-offset ) ;
+      br->x2-offset , br->y2-offset ) ;
 #else
       if ( ( D->DrawBkgr != 0 ) && ( w->bkgr == 1 ) ) {
           _dvrect_fill ( WC ( D ) , br->x1+ ( offset ) , br->y1+ ( offset ) , br->x2- \
@@ -22786,7 +22920,7 @@ void transch(int c) {
       return;
   }
   void uiwrt_msg ( DIALOG *Dtmp , int ix , int iy , int max1 , \
-       char *ch1 , int fill_clr , int char_clr ) \
+  char *ch1 , int fill_clr , int char_clr ) \
   {
       int l , in = 0 , j , x1 , y1 , x2 , y2 , i , menu_x , menu_y;
       int nx , ny;
@@ -22824,7 +22958,7 @@ void transch(int c) {
 #else
 //     uiwrite_string(D,ch1,menu_x,menu_y,char_clr);
       uiString ( D , ch1 , ix , iy , max1*9 , 22 , D->gc.MsgFont , \
-           char_clr , D->gc.FontSize , -1 , fill_clr ) ;
+      char_clr , D->gc.FontSize , -1 , fill_clr ) ;
 #endif
       uiDefaultGuiFontSize ( D ) ;
       uiset_clr ( D , c_color ) ;
@@ -22932,7 +23066,7 @@ void transch(int c) {
       uiUpdateOn ( D ) ;
   }
   void ui_txtwinnew ( DIALOG *D , int ix , int iy , \
-       int chrs , int lines , int xbdr , int ybdr ) \
+  int chrs , int lines , int xbdr , int ybdr ) \
   {
       int x2 , y , y2;
       int pointer;
@@ -23020,7 +23154,7 @@ void transch(int c) {
           if ( yp > yu ) { yp-= lw; uiscroll_up_twin ( D , Twin ) ; };
 //    uiwrt_msg(D,xp,yp,n,buf,D->gc.info_fill,D->gc.info_char);
           uiString ( D , buf , xp , yp , ln , lw , D->gc.MsgFont , D->gc.info_char , \
-               D->gc.FontSize , -1 , D->gc.info_fill ) ;
+          D->gc.FontSize , -1 , D->gc.info_fill ) ;
           if ( * ( s+i ) != '\r' ) yp += lw;
           if ( ( * ( s+i ) < ' ' ) && ( * ( s+i ) != '\0' ) && \
            ( * ( s+i ) != '\n' ) ) i++;
@@ -23075,7 +23209,7 @@ void transch(int c) {
       int por , df , *pos;
       int xx , yy , h , sy = 0 , sh = 20 , mvnt = 0 , NOK = 1 , shift = 0;
       int n = 0 , i , j , k = 0 , item , ok , prop , \
-           max , it , scr_ln = 0 , jold , Attn = 0;
+      max , it , scr_ln = 0 , jold , Attn = 0;
       float fac = 1.;
       DIALOG *D;
       KBEVENT kbevent;

@@ -1022,6 +1022,7 @@ int kgGetTableCurpos ( void *Tmp );
 int kgGetTableStartChar ( void *Tmp );
 int kgScrollDownTable(void *Tmp,int row) ;
 int kgScrollUpTable(void *Tmp,int row) ;
+int kgPrintTableCell(void *Tbl,int cell);
 void * kgSetWidgetImage(void *Widget,void *img);
 void * kgGetWidgetImage(void *Widget);
 void kgSetTextItemEcho(void *Tmp,int item, int echo);
