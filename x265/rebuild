@@ -1,4 +1,4 @@
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=$KULINA ../source
+cmake3 -DCMAKE_INSTALL_PREFIX=$KULINA ../source
 make
 make install

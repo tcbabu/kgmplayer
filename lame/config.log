@@ -2796,7 +2796,10 @@ configure:15661: result: yes
 configure:15733: checking if I have to build the internal vector lib
 configure:15735: result: yes
 configure:15741: checking for nasm
-configure:15772: result: no
+configure:15759: found /bin/nasm
+configure:15772: result: /bin/nasm
+configure:15784: checking for assembler routines for this processor type
+configure:15811: result: no
 configure:15844: checking for additional optimizations
 configure:16028: result: no
 configure:16040: checking for debug options
@@ -2924,7 +2927,7 @@ ac_cv_path_EGREP='/bin/grep -E'
 ac_cv_path_FGREP='/bin/grep -F'
 ac_cv_path_GREP=/bin/grep
 ac_cv_path_GTK_CONFIG=no
-ac_cv_path_NASM=no
+ac_cv_path_NASM=/bin/nasm
 ac_cv_path_SED=/bin/sed
 ac_cv_path_install='/bin/install -c'
 ac_cv_path_mkdir=/bin/mkdir
