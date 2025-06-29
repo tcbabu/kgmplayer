@@ -15410,13 +15410,13 @@ void transch(int c) {
               x1 = elmt [ cell ] .x1;
               y1 = elmt [ cell ] .y1;
               x2 = elmt [ cell ] .x2;
-              y2 = elmt [ cell ] .y2;
+              y2 = elmt [ cell ] .y2+1;
               img = kgGetBackground ( D , x1 , y1 , x2 , y2 ) ;
               cell1 = cell+T->nx;
               x1 = elmt [ cell1 ] .x1;
               y1 = elmt [ cell1 ] .y1;
               x2 = elmt [ cell1 ] .x2;
-              y2 = elmt [ cell1 ] .y2;
+              y2 = elmt [ cell1 ] .y2+1;
               strcpy ( elmt [ cell1 ] .df , elmt [ cell ] .df ) ;
               elmt [ cell1 ] .startchar = elmt [ cell ] . startchar;
               elmt [ cell1 ] . img =  elmt [ cell ] .img;
@@ -15447,13 +15447,13 @@ void transch(int c) {
               x1 = elmt [ cell ] .x1;
               y1 = elmt [ cell ] .y1;
               x2 = elmt [ cell ] .x2;
-              y2 = elmt [ cell ] .y2;
+              y2 = elmt [ cell ] .y2+1;
               img = kgGetBackground ( D , x1 , y1 , x2 , y2 ) ;
               cell1 = cell-T->nx;
               x1 = elmt [ cell1 ] .x1;
               y1 = elmt [ cell1 ] .y1;
               x2 = elmt [ cell1 ] .x2;
-              y2 = elmt [ cell1 ] .y2;
+              y2 = elmt [ cell1 ] .y2+1;
               strcpy ( elmt [ cell1 ] .df , elmt [ cell ] .df ) ;
               elmt [ cell1 ] . img =  elmt [ cell ] .img;
               if ( img != NULL ) {

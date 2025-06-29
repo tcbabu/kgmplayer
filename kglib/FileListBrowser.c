@@ -19,14 +19,14 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   butn0[0].xpmp=NULL;
   butn0[0].xpmh=NULL;
   butn0[0].bkgr=-1;
-  butn0[0].butncode='';
+  butn0[0].butncode='\0';
   butn0[1].sw=1;
   strcpy(butn0[1].title,(char *)"");
   butn0[1].xpmn=NULL;
   butn0[1].xpmp=NULL;
   butn0[1].xpmh=NULL;
   butn0[1].bkgr=-1;
-  butn0[1].butncode='';
+  butn0[1].butncode='\0';
   DIN b0 = { 
     'n',
     11,1,  
@@ -46,15 +46,15 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   T_ELMT *e1  ; 
   e1 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e1[0].fmt = (char *)malloc(6);
-  strcpy(e1[0].fmt,(char *)" %25s");
+  strcpy(e1[0].fmt,(char *)"%25s");
   e1[0].v=(void *)v[0];
   e1[0].sw=1;
   e1[0].noecho=0;
   e1[0].img=NULL;
   DIT t1 = { 
     't',
-    78,6,  
-    370,34,
+    86,6,  
+    380,34,
     20, 
     1,1, 
     e1,
@@ -142,21 +142,21 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
   butn5[0].bkgr=-1;
-  butn5[0].butncode='';
+  butn5[0].butncode='\0';
   butn5[1].sw=1;
   strcpy(butn5[1].title,(char *)"!f23!w32Select all");
   butn5[1].xpmn=NULL;
   butn5[1].xpmp=NULL;
   butn5[1].xpmh=NULL;
   butn5[1].bkgr=-1;
-  butn5[1].butncode='';
+  butn5[1].butncode='\0';
   butn5[2].sw=1;
   strcpy(butn5[2].title,(char *)"!c03!f23!w32Remove");
   butn5[2].xpmn=NULL;
   butn5[2].xpmp=NULL;
   butn5[2].xpmh=NULL;
   butn5[2].bkgr=-130160130;
-  butn5[2].butncode='';
+  butn5[2].butncode='\0';
   DIN b5 = { 
     'n',
     4,231,  
@@ -181,7 +181,7 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   butn6[0].xpmp=NULL;
   butn6[0].xpmh=NULL;
   butn6[0].bkgr=-255255255;
-  butn6[0].butncode='';
+  butn6[0].butncode='\0';
   DIL h6 = { 
     'h',
     880,6,  
@@ -206,21 +206,21 @@ int FileListBrowserGroup( DIALOG *D,void **v,void *pt) {
   butn7[0].xpmp=NULL;
   butn7[0].xpmh=NULL;
   butn7[0].bkgr=-1;
-  butn7[0].butncode='';
+  butn7[0].butncode='\0';
   butn7[1].sw=1;
   strcpy(butn7[1].title,(char *)"!f23!w32Select all");
   butn7[1].xpmn=NULL;
   butn7[1].xpmp=NULL;
   butn7[1].xpmh=NULL;
   butn7[1].bkgr=-1;
-  butn7[1].butncode='';
+  butn7[1].butncode='\0';
   butn7[2].sw=1;
   strcpy(butn7[2].title,(char *)"!f23!w32Add Files");
   butn7[2].xpmn=NULL;
   butn7[2].xpmp=NULL;
   butn7[2].xpmh=NULL;
   butn7[2].bkgr=-1;
-  butn7[2].butncode='';
+  butn7[2].butncode='\0';
   DIN b7 = { 
     'n',
     603,6,  
