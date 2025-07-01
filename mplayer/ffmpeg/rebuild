@@ -8,6 +8,7 @@
 --disable-vaapi \
 --enable-nonfree  \
 --enable-libfdk-aac \
+--enable-avfilter \
 --extra-libs="-lgnutls -lgnutlsxx -lnettle -lhogweed -lgmp -lfdk-aac" 
 #--disable-libxcb  --enable-libx264 --enable-libx265 \
 #--enable-nonfree --enable-openssl \
