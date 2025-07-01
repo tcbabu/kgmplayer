@@ -1113,6 +1113,7 @@ static   char *kgCheckAudioFile ( char *name ) {
       if(th == NULL) return ret;
       j = 0;
       while ( th [ j ] != NULL ) j++;
+      if(j == 0) return ret;
       if ( j > 0 ) {
           Strs = ( char ** ) malloc ( sizeof ( char * ) * ( j+1 ) ) ;
       }
@@ -1149,7 +1150,8 @@ static   char *kgCheckAudioFile ( char *name ) {
 	  j++;
       }
       if(Added==0) return 0;
-      if ( ! kgCheckMenu ( Tmp , 200 , 250 , "Add Selected" , 0 ) ) return 0;
+/* Warning supressed */
+//      if ( ! kgCheckMenu ( Tmp , 200 , 250 , "Add Selected" , 0 ) ) return 0;
 //      th = ( ThumbNail ** ) kgGetList ( Y1 ) ;
       j = 0;
       while ( th [ j ] != NULL ) {

@@ -19,8 +19,9 @@ int GetBaseIndex(char *s);
 int GetLine(int pip0,char *buff);
 int SearchString(char *s1,char *s2);
 int ProcessVolumeNew(void *stmp,int pip0,int Pid);
+int ChangeVolume (char *Infile,char *Outfile,double EnhFac);
 
-
+extern int Meandb;
 typedef struct _volstr {
 	char Infile[200];
 	char Outfile[200];
@@ -188,7 +189,7 @@ int RunNormalisebkgr_o(char *job,int (*ProcessOut)(int,int,int),int (*function)(
      close(Jstat[0]);
      RunMonitorJoin(NULL);
      KillJob(pid);
-     sprintf(buff,"cp %s %s",outfile,infile);
+     sprintf(buff,"cp \"%s\" \" %s\"",outfile,infile);
      system(buff);
      remove(outfile);
      exit(0);
@@ -231,7 +232,7 @@ int RunNormalisebkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(in
      MonitorJob(NULL,Jpipe[0],pid);
 //     KillJob(pid);
      WAIT(pid);
-        sprintf(buff,"cp %s %s",outfile,infile);
+        sprintf(buff,"cp \"%s\" \"%s\"",outfile,infile);
         system(buff);
         remove(outfile);
      return pid;
@@ -307,7 +308,7 @@ int RunVolJob(char *job,void *Msglines,int (*ProcessOut)(void *,int,int)){
      ffmpegfun(argc,args);
      printf("END:\n");
      if((Outfile!=NULL)&&(Outfile[0]>=' ')){
-	  sprintf(buff,"cp %s %s",Outfile,Infile);
+	  sprintf(buff,"cp \"%s\" \"%s\"",Outfile,Infile);
           system(buff);
           remove(Outfile);
      }
@@ -345,6 +346,7 @@ void *RunVolumeNormalise(void *stmp) {
 	Dlink *L=Dopen();
 	char *tpt;
 	int hr,min,sec,tot;
+        double EnhFac=1.0;
 	strcpy(Infile,Istr->Infile);
 	strcpy(Outfile,Istr->Outfile);
 	meanlevel = Istr->MeanDb;
@@ -369,15 +371,18 @@ void *RunVolumeNormalise(void *stmp) {
 	AddMonMessage(L,buff);
 	strcpy(buff,"!c08 Press !c03Cancel!c08 to kill");
 	AddMonMessage(L,buff);
-        sprintf(buff,"ffmpegfun -i \"%s\" -af \"volume=%lfdB\" -y \"%s\"", 
-                      Infile,corval,Outfile);
+        EnhFac = (30.0- Meandb)/(30.0 - Istr->histVol);
+        sprintf(buff,"ffmpegfun -i \"%s\" -af \"volume=%-ddB\" -y \"%s\"", 
+                    Infile,(int)corval,Outfile);
+//        sprintf(buff,"ffmpegfun -i \"%s\" -af \"pan=stereo|c0=%-lf*c0|c1=%-lf*c1\" -y \"%s\"", 
+//                     Infile,EnhFac,EnhFac,Outfile);
 //        RunNormalisebkgr(buff,ProcessToPipe,ffmpegfun,Infile,Outfile);
         Resetlink(L);
         pid = RunVolJob(buff,L,MonitorJob);
 //        pid = RunVolJob(buff,NULL,NULL);
 	free(stmp);
 #if 0
-        sprintf(buff,"cp %s %s",Outfile,Infile);
+        sprintf(buff,"cp \"%s\" \"%s\"",Outfile,Infile);
         system(buff);
         remove(Outfile);
 #endif
@@ -399,7 +404,6 @@ void *RunVolumeDetect(void *stmp) {
 	strcpy(Outfile,Istr->Outfile);
 	meanlevel = Istr->MeanDb;
 	corval = Istr->corval;
-
 	AddMonMessage(L,Infile);
 #if 1
 	sprintf(buff,"Processing file: %s",Infile);
@@ -415,7 +419,7 @@ void *RunVolumeDetect(void *stmp) {
         pid = RunVolJob(buff,L,ProcessVolumeNew);
 //	free(stmp);
 #if 0
-        sprintf(buff,"cp %s %s",Outfile,Infile);
+        sprintf(buff,"cp \"%s\" \"%s\"",Outfile,Infile);
         system(buff);
         remove(Outfile);
 #endif
