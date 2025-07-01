@@ -4,7 +4,6 @@
 --disable-doc --enable-libmp3lame  \
 --enable-version3 --enable-gmp --enable-gnutls \
 --disable-libxcb   --enable-libx265 --enable-libx264 \
---enable-x11grab \
 --disable-vaapi \
 --enable-nonfree  \
 --enable-libfdk-aac \

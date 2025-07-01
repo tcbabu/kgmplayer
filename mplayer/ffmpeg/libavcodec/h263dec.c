@@ -129,7 +129,7 @@ av_cold int ff_h263_decode_init(AVCodecContext *avctx)
         if (avctx->extradata_size == 56 && avctx->extradata[0] == 1)
             s->ehc_mode = 1;
 
-    /* for h263, we allocate the images after having read the header */
+    /* for H.263, we allocate the images after having read the header */
     if (avctx->codec->id != AV_CODEC_ID_H263 &&
         avctx->codec->id != AV_CODEC_ID_H263P &&
         avctx->codec->id != AV_CODEC_ID_MPEG4) {
@@ -261,7 +261,7 @@ static int decode_slice(MpegEncContext *s)
             if (ret < 0) {
                 const int xy = s->mb_x + s->mb_y * s->mb_stride;
                 if (ret == SLICE_END) {
-                    ff_mpv_decode_mb(s, s->block);
+                    ff_mpv_reconstruct_mb(s, s->block);
                     if (s->loop_filter)
                         ff_h263_loop_filter(s);
 
@@ -289,12 +289,12 @@ static int decode_slice(MpegEncContext *s)
                 ff_er_add_slice(&s->er, s->resync_mb_x, s->resync_mb_y,
                                 s->mb_x, s->mb_y, ER_MB_ERROR & part_mask);
 
-                if (s->avctx->err_recognition & AV_EF_IGNORE_ERR)
+                if ((s->avctx->err_recognition & AV_EF_IGNORE_ERR) && get_bits_left(&s->gb) > 0)
                     continue;
                 return AVERROR_INVALIDDATA;
             }
 
-            ff_mpv_decode_mb(s, s->block);
+            ff_mpv_reconstruct_mb(s, s->block);
             if (s->loop_filter)
                 ff_h263_loop_filter(s);
         }
@@ -414,7 +414,9 @@ int ff_h263_decode_frame(AVCodecContext *avctx, void *data, int *got_frame,
     MpegEncContext *s  = avctx->priv_data;
     int ret;
     int slice_ret = 0;
+
     AVFrame *pict = data;
+    int bak_width, bak_height;
 
     /* no supplementary picture */
     if (buf_size == 0) {
@@ -475,8 +477,11 @@ retry:
         return ret;
 
     if (!s->context_initialized)
-        // we need the idct permutaton for reading a custom matrix
+        // we need the idct permutation for reading a custom matrix
         ff_mpv_idct_init(s);
+
+    bak_width  = s->width;
+    bak_height = s->height;
 
     /* let's go :-) */
     if (CONFIG_WMV2_DECODER && s->msmpeg4_version == 5) {
@@ -500,11 +505,12 @@ retry:
     }
 
     if (ret < 0 || ret == FRAME_SKIPPED) {
-        if (   s->width  != avctx->coded_width
-            || s->height != avctx->coded_height) {
+        if (   s->width  != bak_width
+            || s->height != bak_height) {
                 av_log(s->avctx, AV_LOG_WARNING, "Reverting picture dimensions change due to header decoding failure\n");
-                s->width = avctx->coded_width;
-                s->height= avctx->coded_height;
+                s->width = bak_width;
+                s->height= bak_height;
+
         }
     }
     if (ret == FRAME_SKIPPED)
@@ -532,13 +538,15 @@ retry:
     avctx->has_b_frames = !s->low_delay;
 
     if (CONFIG_MPEG4_DECODER && avctx->codec_id == AV_CODEC_ID_MPEG4) {
+        if (s->pict_type != AV_PICTURE_TYPE_B && s->mb_num/2 > get_bits_left(&s->gb))
+            return AVERROR_INVALIDDATA;
         if (ff_mpeg4_workaround_bugs(avctx) == 1)
             goto retry;
     }
 
-    /* After H263 & mpeg4 header decode we have the height, width,
+    /* After H.263 & MPEG-4 header decode we have the height, width,
      * and other parameters. So then we could init the picture.
-     * FIXME: By the way H263 decoder is evolving it should have
+     * FIXME: By the way H.263 decoder is evolving it should have
      * an H263EncContext */
     if (s->width  != avctx->coded_width  ||
         s->height != avctx->coded_height ||
@@ -637,7 +645,7 @@ retry:
     slice_ret = decode_slice(s);
     while (s->mb_y < s->mb_height) {
         if (s->msmpeg4_version) {
-            if (s->slice_height == 0 || s->mb_x != 0 ||
+            if (s->slice_height == 0 || s->mb_x != 0 || slice_ret < 0 ||
                 (s->mb_y % s->slice_height) != 0 || get_bits_left(&s->gb) < 0)
                 break;
         } else {
@@ -713,7 +721,7 @@ frame_end:
     }
 
     if (slice_ret < 0 && (avctx->err_recognition & AV_EF_EXPLODE))
-        return ret;
+        return slice_ret;
     else
         return get_consumed_bytes(s, buf_size);
 }
@@ -743,6 +751,7 @@ AVCodec ff_h263_decoder = {
     .decode         = ff_h263_decode_frame,
     .capabilities   = AV_CODEC_CAP_DRAW_HORIZ_BAND | AV_CODEC_CAP_DR1 |
                       AV_CODEC_CAP_TRUNCATED | AV_CODEC_CAP_DELAY,
+    .caps_internal  = FF_CODEC_CAP_SKIP_FRAME_FILL_PARAM,
     .flush          = ff_mpeg_flush,
     .max_lowres     = 3,
     .pix_fmts       = ff_h263_hwaccel_pixfmt_list_420,
@@ -759,6 +768,7 @@ AVCodec ff_h263p_decoder = {
     .decode         = ff_h263_decode_frame,
     .capabilities   = AV_CODEC_CAP_DRAW_HORIZ_BAND | AV_CODEC_CAP_DR1 |
                       AV_CODEC_CAP_TRUNCATED | AV_CODEC_CAP_DELAY,
+    .caps_internal  = FF_CODEC_CAP_SKIP_FRAME_FILL_PARAM,
     .flush          = ff_mpeg_flush,
     .max_lowres     = 3,
     .pix_fmts       = ff_h263_hwaccel_pixfmt_list_420,

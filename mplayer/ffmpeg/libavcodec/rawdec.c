@@ -128,10 +128,6 @@ static av_cold int raw_init_decoder(AVCodecContext *avctx)
         avctx->pix_fmt   == AV_PIX_FMT_YUYV422)
         context->is_yuv2 = 1;
 
-    /* Temporary solution until PAL8 is implemented in nut */
-    if (context->is_pal8 && avctx->bits_per_coded_sample == 1)
-        avctx->pix_fmt = AV_PIX_FMT_NONE;
-
     return 0;
 }
 
@@ -206,25 +202,11 @@ static int raw_decode(AVCodecContext *avctx, void *data, int *got_frame,
         return AVERROR_INVALIDDATA;
     }
 
-    /* Temporary solution until PAL8 is implemented in nut */
-    if (avctx->pix_fmt == AV_PIX_FMT_NONE &&
-        avctx->bits_per_coded_sample == 1 &&
-        avctx->frame_number == 0 &&
-        context->palette &&
-        AV_RB64(context->palette->data) == 0xFFFFFFFF00000000
-    ) {
-        const uint8_t *pal = av_packet_get_side_data(avpkt, AV_PKT_DATA_PALETTE, NULL);
-        if (!pal) {
-            avctx->pix_fmt = AV_PIX_FMT_MONOWHITE;
-            context->is_pal8 = 0;
-            context->is_mono = 1;
-        } else
-            avctx->pix_fmt = AV_PIX_FMT_PAL8;
-    }
     desc = av_pix_fmt_desc_get(avctx->pix_fmt);
 
-    if ((avctx->bits_per_coded_sample == 8 || avctx->bits_per_coded_sample == 4
-            || avctx->bits_per_coded_sample <= 2) &&
+    if ((avctx->bits_per_coded_sample == 8 || avctx->bits_per_coded_sample == 4 ||
+         avctx->bits_per_coded_sample == 2 || avctx->bits_per_coded_sample == 1 ||
+         (avctx->bits_per_coded_sample == 0 && (context->is_nut_pal8 || context->is_mono)) ) &&
         (context->is_mono || context->is_pal8) &&
         (!avctx->codec_tag || avctx->codec_tag == MKTAG('r','a','w',' ') ||
                 context->is_nut_mono || context->is_nut_pal8)) {
@@ -239,7 +221,7 @@ static int raw_decode(AVCodecContext *avctx, void *data, int *got_frame,
                                                            FFALIGN(avctx->width, 16),
                                                            avctx->height, 1);
     } else {
-        context->is_lt_16bpp = av_get_bits_per_pixel(desc) == 16 && avctx->bits_per_coded_sample && avctx->bits_per_coded_sample < 16;
+        context->is_lt_16bpp = av_get_bits_per_pixel(desc) == 16 && avctx->bits_per_coded_sample > 8 && avctx->bits_per_coded_sample < 16;
         context->frame_size = av_image_get_buffer_size(avctx->pix_fmt, avctx->width,
                                                        avctx->height, 1);
     }
@@ -255,8 +237,8 @@ static int raw_decode(AVCodecContext *avctx, void *data, int *got_frame,
     if (res < 0)
         return res;
 
-    av_frame_set_pkt_pos     (frame, avctx->internal->pkt->pos);
-    av_frame_set_pkt_duration(frame, avctx->internal->pkt->duration);
+    frame->pkt_pos      = avctx->internal->last_pkt_props->pos;
+    frame->pkt_duration = avctx->internal->last_pkt_props->duration;
 
     if (context->tff >= 0) {
         frame->interlaced_frame = 1;
@@ -382,26 +364,49 @@ static int raw_decode(AVCodecContext *avctx, void *data, int *got_frame,
     }
 
     if (avctx->pix_fmt == AV_PIX_FMT_PAL8) {
+        int pal_size;
         const uint8_t *pal = av_packet_get_side_data(avpkt, AV_PKT_DATA_PALETTE,
-                                                     NULL);
+                                                     &pal_size);
+        int ret;
+
+        if (pal && pal_size != AVPALETTE_SIZE) {
+            av_log(avctx, AV_LOG_ERROR, "Palette size %d is wrong\n", pal_size);
+            pal = NULL;
+        }
+
+        if (!context->palette)
+            context->palette = av_buffer_alloc(AVPALETTE_SIZE);
+        if (!context->palette) {
+            av_buffer_unref(&frame->buf[0]);
+            return AVERROR(ENOMEM);
+        }
+        ret = av_buffer_make_writable(&context->palette);
+        if (ret < 0) {
+            av_buffer_unref(&frame->buf[0]);
+            return ret;
+        }
 
         if (pal) {
-            av_buffer_unref(&context->palette);
-            context->palette = av_buffer_alloc(AVPALETTE_SIZE);
-            if (!context->palette) {
-                av_buffer_unref(&frame->buf[0]);
-                return AVERROR(ENOMEM);
-            }
             memcpy(context->palette->data, pal, AVPALETTE_SIZE);
             frame->palette_has_changed = 1;
+        } else if (context->is_nut_pal8) {
+            int vid_size = avctx->width * avctx->height;
+            int pal_size = avpkt->size - vid_size;
+
+            if (avpkt->size > vid_size && pal_size <= AVPALETTE_SIZE) {
+                pal = avpkt->data + vid_size;
+                memcpy(context->palette->data, pal, pal_size);
+                frame->palette_has_changed = 1;
+            }
         }
     }
 
-    if ((avctx->pix_fmt==AV_PIX_FMT_BGR24    ||
-        avctx->pix_fmt==AV_PIX_FMT_GRAY8    ||
-        avctx->pix_fmt==AV_PIX_FMT_RGB555LE ||
-        avctx->pix_fmt==AV_PIX_FMT_RGB555BE ||
-        avctx->pix_fmt==AV_PIX_FMT_RGB565LE ||
+    if ((avctx->pix_fmt==AV_PIX_FMT_RGB24    ||
+        avctx->pix_fmt==AV_PIX_FMT_BGR24     ||
+        avctx->pix_fmt==AV_PIX_FMT_GRAY8     ||
+        avctx->pix_fmt==AV_PIX_FMT_RGB555LE  ||
+        avctx->pix_fmt==AV_PIX_FMT_RGB555BE  ||
+        avctx->pix_fmt==AV_PIX_FMT_RGB565LE  ||
         avctx->pix_fmt==AV_PIX_FMT_MONOWHITE ||
         avctx->pix_fmt==AV_PIX_FMT_MONOBLACK ||
         avctx->pix_fmt==AV_PIX_FMT_PAL8) &&
@@ -453,6 +458,20 @@ static int raw_decode(AVCodecContext *avctx, void *data, int *got_frame,
             for (x = 0; x < avctx->width; x++)
                 line[2 * x + 1] ^= 0x80;
             line += frame->linesize[0];
+        }
+    }
+
+    if (avctx->codec_tag == AV_RL32("b64a") &&
+        avctx->pix_fmt   == AV_PIX_FMT_RGBA64BE) {
+        uint8_t *dst = frame->data[0];
+        uint64_t v;
+        int x, y;
+        for (y = 0; y < avctx->height; y++) {
+            for (x = 0; x >> 3 < avctx->width; x += 8) {
+                v = AV_RB64(&dst[x]);
+                AV_WB64(&dst[x], v << 16 | v >> 48);
+            }
+            dst += frame->linesize[0];
         }
     }
 

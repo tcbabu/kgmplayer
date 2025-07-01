@@ -53,12 +53,11 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     AVSubtitle *sub = data;
     const uint8_t *buf_end = buf + buf_size;
     uint8_t *bitmap;
-    int w, h, x, y, i;
+    int w, h, x, y, i, ret;
     int64_t packet_time = 0;
     GetBitContext gb;
     int has_alpha = avctx->codec_tag == MKTAG('D','X','S','A');
-    AVSubtitleRect *rect;
-    int j;
+    int64_t start_display_time, end_display_time;
 
     // check that at least header fits
     if (buf_size < 27 + 7 * 2 + 4 * (3 + has_alpha)) {
@@ -73,8 +72,14 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     }
     if (avpkt->pts != AV_NOPTS_VALUE)
         packet_time = av_rescale_q(avpkt->pts, AV_TIME_BASE_Q, (AVRational){1, 1000});
-    sub->start_display_time = parse_timecode(buf +  1, packet_time);
-    sub->end_display_time   = parse_timecode(buf + 14, packet_time);
+
+    sub->start_display_time = start_display_time = parse_timecode(buf +  1, packet_time);
+    sub->end_display_time   = end_display_time   = parse_timecode(buf + 14, packet_time);
+    if (sub->start_display_time != start_display_time ||
+        sub->  end_display_time !=   end_display_time) {
+        av_log(avctx, AV_LOG_ERROR, "time code not representable in 32bit\n");
+        return -1;
+    }
     buf += 27;
 
     // read header
@@ -92,6 +97,9 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     // however there are files in which it has a bogus value and thus
     // we just ignore it
     bytestream_get_le16(&buf);
+
+    if (buf_end - buf < h + 3*4)
+        return AVERROR_INVALIDDATA;
 
     // allocate sub and set values
     sub->rects =  av_mallocz(sizeof(*sub->rects));
@@ -129,21 +137,26 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
             ((uint32_t *)sub->rects[0]->data[1])[i] |= 0xff000000;
     } else {
         for (i = 0; i < sub->rects[0]->nb_colors; i++)
-            ((uint32_t *)sub->rects[0]->data[1])[i] |= *buf++ << 24;
+            ((uint32_t *)sub->rects[0]->data[1])[i] |= (unsigned)*buf++ << 24;
     }
 
 #if FF_API_AVPICTURE
 FF_DISABLE_DEPRECATION_WARNINGS
+{
+    AVSubtitleRect *rect;
+    int j;
     rect = sub->rects[0];
     for (j = 0; j < 4; j++) {
         rect->pict.data[j] = rect->data[j];
         rect->pict.linesize[j] = rect->linesize[j];
     }
+}
 FF_ENABLE_DEPRECATION_WARNINGS
 #endif
 
     // process RLE-compressed data
-    init_get_bits(&gb, buf, (buf_end - buf) * 8);
+    if ((ret = init_get_bits8(&gb, buf, buf_end - buf)) < 0)
+        return ret;
     bitmap = sub->rects[0]->data[0];
     for (y = 0; y < h; y++) {
         // interlaced: do odd lines

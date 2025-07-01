@@ -36,7 +36,7 @@
 
 #define TYPE_ALL 2
 
-typedef struct {
+typedef struct ConcatContext {
     const AVClass *class;
     unsigned nb_streams[TYPE_ALL]; /**< number of out streams of each type */
     unsigned nb_segments;
@@ -260,7 +260,6 @@ static int send_silence(AVFilterContext *ctx, unsigned in_no, unsigned out_no,
     int frame_nb_samples, ret;
     AVRational rate_tb = { 1, ctx->inputs[in_no]->sample_rate };
     AVFrame *buf;
-    int nb_channels = av_get_channel_layout_nb_channels(outlink->channel_layout);
 
     if (!rate_tb.den)
         return AVERROR_BUG;
@@ -273,7 +272,7 @@ static int send_silence(AVFilterContext *ctx, unsigned in_no, unsigned out_no,
         if (!buf)
             return AVERROR(ENOMEM);
         av_samples_set_silence(buf->extended_data, 0, frame_nb_samples,
-                               nb_channels, outlink->format);
+                               outlink->channels, outlink->format);
         buf->pts = base_pts + av_rescale_q(sent, rate_tb, outlink->time_base);
         ret = ff_filter_frame(outlink, buf);
         if (ret < 0)
@@ -362,6 +361,7 @@ static av_cold int init(AVFilterContext *ctx)
 {
     ConcatContext *cat = ctx->priv;
     unsigned seg, type, str;
+    int ret;
 
     /* create input pads */
     for (seg = 0; seg < cat->nb_segments; seg++) {
@@ -374,7 +374,10 @@ static av_cold int init(AVFilterContext *ctx)
                     .filter_frame     = filter_frame,
                 };
                 pad.name = av_asprintf("in%d:%c%d", seg, "va"[type], str);
-                ff_insert_inpad(ctx, ctx->nb_inputs, &pad);
+                if ((ret = ff_insert_inpad(ctx, ctx->nb_inputs, &pad)) < 0) {
+                    av_freep(&pad.name);
+                    return ret;
+                }
             }
         }
     }
@@ -387,7 +390,10 @@ static av_cold int init(AVFilterContext *ctx)
                 .request_frame = request_frame,
             };
             pad.name = av_asprintf("out:%c%d", "va"[type], str);
-            ff_insert_outpad(ctx, ctx->nb_outputs, &pad);
+            if ((ret = ff_insert_outpad(ctx, ctx->nb_outputs, &pad)) < 0) {
+                av_freep(&pad.name);
+                return ret;
+            }
         }
     }
 

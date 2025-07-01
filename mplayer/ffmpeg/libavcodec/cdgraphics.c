@@ -80,11 +80,8 @@ static av_cold int cdg_decode_init(AVCodecContext *avctx)
         return AVERROR(ENOMEM);
     cc->transparency = -1;
 
-    avctx->width   = CDG_FULL_WIDTH;
-    avctx->height  = CDG_FULL_HEIGHT;
     avctx->pix_fmt = AV_PIX_FMT_PAL8;
-
-    return 0;
+    return ff_set_dimensions(avctx, CDG_FULL_WIDTH, CDG_FULL_HEIGHT);
 }
 
 static void cdg_border_preset(CDGraphicsContext *cc, uint8_t *data)
@@ -241,7 +238,7 @@ static void cdg_scroll(CDGraphicsContext *cc, uint8_t *data,
     for (y = FFMAX(0, vinc); y < FFMIN(CDG_FULL_HEIGHT + vinc, CDG_FULL_HEIGHT); y++)
         memcpy(out + FFMAX(0, hinc) + stride * y,
                in + FFMAX(0, hinc) - hinc + (y - vinc) * stride,
-               FFMIN(stride + hinc, stride));
+               FFABS(stride) - FFABS(hinc));
 
     if (vinc > 0)
         cdg_fill_wrapper(0, 0, out,

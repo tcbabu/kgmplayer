@@ -282,6 +282,8 @@ fail:
         goto restart;
     }
 fail1:
+    if (fd >= 0)
+        closesocket(fd);
     ret = AVERROR(EIO);
     freeaddrinfo(ai);
     return ret;
@@ -359,7 +361,7 @@ static int sctp_get_file_handle(URLContext *h)
     return s->fd;
 }
 
-URLProtocol ff_sctp_protocol = {
+const URLProtocol ff_sctp_protocol = {
     .name                = "sctp",
     .url_open            = sctp_open,
     .url_read            = sctp_read,

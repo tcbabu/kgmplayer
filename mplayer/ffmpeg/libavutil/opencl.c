@@ -169,7 +169,7 @@ const char *av_opencl_errstr(cl_int status)
 static void free_device_list(AVOpenCLDeviceList *device_list)
 {
     int i, j;
-    if (!device_list)
+    if (!device_list || !device_list->platform_node)
         return;
     for (i = 0; i < device_list->platform_num; i++) {
         if (!device_list->platform_node[i])
@@ -445,7 +445,7 @@ cl_program av_opencl_compile(const char *program_name, const char *build_opts)
     int i;
     cl_int status, build_status;
     int kernel_code_idx = 0;
-    const char *kernel_source;
+    const char *kernel_source = NULL;
     size_t kernel_code_len;
     char* ptr = NULL;
     cl_program program = NULL;

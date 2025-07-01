@@ -529,9 +529,9 @@ static int8_t store_weight(int weight)
 
 static int restore_weight(int8_t weight)
 {
-    int result;
+    int result = 8 * weight;
 
-    if ((result = (int) weight << 3) > 0)
+    if (result > 0)
         result += (result + 64) >> 7;
 
     return result;
@@ -1990,7 +1990,7 @@ static void encode_flush(WavPackEncodeContext *s)
                 put_bits(pb, 31, 0x7FFFFFFF);
                 cbits -= 31;
             } else {
-                put_bits(pb, cbits, (1 << cbits) - 1);
+                put_bits(pb, cbits, (1U << cbits) - 1);
                 cbits = 0;
             }
         } while (cbits);
@@ -2019,7 +2019,7 @@ static void encode_flush(WavPackEncodeContext *s)
                     put_bits(pb, 31, 0x7FFFFFFF);
                     cbits -= 31;
                 } else {
-                    put_bits(pb, cbits, (1 << cbits) - 1);
+                    put_bits(pb, cbits, (1U << cbits) - 1);
                     cbits = 0;
                 }
             } while (cbits);
@@ -2571,7 +2571,7 @@ static int wavpack_encode_block(WavPackEncodeContext *s,
             ret = wv_mono(s, samples_l, !s->num_terms, 1);
     } else {
         for (i = 0; i < nb_samples; i++)
-            crc += (crc << 3) + (samples_l[i] << 1) + samples_l[i] + samples_r[i];
+            crc += (crc << 3) + ((uint32_t)samples_l[i] << 1) + samples_l[i] + samples_r[i];
 
         if (s->num_passes)
             ret = wv_stereo(s, samples_l, samples_r, !s->num_terms, 1);

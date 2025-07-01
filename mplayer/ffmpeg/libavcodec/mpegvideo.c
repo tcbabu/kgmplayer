@@ -59,7 +59,7 @@ static void dct_unquantize_mpeg1_intra_c(MpegEncContext *s,
     nCoeffs= s->block_last_index[n];
 
     block[0] *= n < 4 ? s->y_dc_scale : s->c_dc_scale;
-    /* XXX: only mpeg1 */
+    /* XXX: only MPEG-1 */
     quant_matrix = s->intra_matrix;
     for(i=1;i<=nCoeffs;i++) {
         int j= s->intra_scantable.permutated[i];
@@ -225,7 +225,7 @@ static void dct_unquantize_h263_intra_c(MpegEncContext *s,
     if(s->ac_pred)
         nCoeffs=63;
     else
-        nCoeffs= s->inter_scantable.raster_end[ s->block_last_index[n] ];
+        nCoeffs= s->intra_scantable.raster_end[ s->block_last_index[n] ];
 
     for(i=1; i<=nCoeffs; i++) {
         level = block[i];
@@ -567,7 +567,7 @@ do {\
     s->workaround_bugs      = s1->workaround_bugs;
     s->padding_bug_score    = s1->padding_bug_score;
 
-    // MPEG4 timing info
+    // MPEG-4 timing info
     memcpy(&s->last_time_base, &s1->last_time_base,
            (char *) &s1->pb_field_time + sizeof(s1->pb_field_time) -
            (char *) &s1->last_time_base);
@@ -598,7 +598,7 @@ do {\
                AV_INPUT_BUFFER_PADDING_SIZE);
     }
 
-    // linesize dependend scratch buffer allocation
+    // linesize-dependent scratch buffer allocation
     if (!s->sc.edge_emu_buffer)
         if (s1->linesize) {
             if (ff_mpeg_framesize_alloc(s->avctx, &s->me,
@@ -612,7 +612,7 @@ do {\
                    "be allocated due to unknown size.\n");
         }
 
-    // MPEG2/interlacing info
+    // MPEG-2/interlacing info
     memcpy(&s->progressive_sequence, &s1->progressive_sequence,
            (char *) &s1->rtp_mode - (char *) &s1->progressive_sequence);
 
@@ -705,7 +705,8 @@ static int init_context_frame(MpegEncContext *s)
     if (s->mb_height & 1)
         yc_size += 2*s->b8_stride + 2*s->mb_stride;
 
-    FF_ALLOCZ_OR_GOTO(s->avctx, s->mb_index2xy, (s->mb_num + 1) * sizeof(int), fail); // error ressilience code looks cleaner with this
+    FF_ALLOCZ_OR_GOTO(s->avctx, s->mb_index2xy, (s->mb_num + 1) * sizeof(int),
+                      fail); // error resilience code looks cleaner with this
     for (y = 0; y < s->mb_height; y++)
         for (x = 0; x < s->mb_width; x++)
             s->mb_index2xy[x + y * s->mb_width] = x + y * s->mb_stride;
@@ -772,7 +773,7 @@ static int init_context_frame(MpegEncContext *s)
 
     if (s->h263_pred || s->h263_plus || !s->encoding) {
         /* dc values */
-        // MN: we need these for  error resilience of intra-frames
+        // MN: we need these for error resilience of intra-frames
         FF_ALLOCZ_OR_GOTO(s->avctx, s->dc_val_base, yc_size * sizeof(int16_t), fail);
         s->dc_val[0] = s->dc_val_base + s->b8_stride + 1;
         s->dc_val[1] = s->dc_val_base + y_size + s->mb_stride + 1;
@@ -781,13 +782,13 @@ static int init_context_frame(MpegEncContext *s)
             s->dc_val_base[i] = 1024;
     }
 
-    /* which mb is a intra block */
+    /* which mb is an intra block */
     FF_ALLOCZ_OR_GOTO(s->avctx, s->mbintra_table, mb_array_size, fail);
     memset(s->mbintra_table, 1, mb_array_size);
 
     /* init macroblock skip table */
     FF_ALLOCZ_OR_GOTO(s->avctx, s->mbskip_table, mb_array_size + 2, fail);
-    // Note the + 1 is for  a quicker mpeg4 slice_end detection
+    // Note the + 1 is for a quicker MPEG-4 slice_end detection
 
     return ff_mpeg_er_init(s);
 fail:
@@ -822,9 +823,7 @@ static void clear_context(MpegEncContext *s)
     s->sc.b_scratchpad =
     s->sc.obmc_scratchpad = NULL;
 
-    s->parse_context.buffer = NULL;
-    s->parse_context.buffer_size = 0;
-    s->parse_context.overread = 0;
+
     s->bitstream_buffer = NULL;
     s->allocated_bitstream_buffer_size = 0;
     s->picture          = NULL;
@@ -941,37 +940,37 @@ av_cold int ff_mpv_common_init(MpegEncContext *s)
     if (!s->new_picture.f)
         goto fail;
 
-        if (init_context_frame(s))
-            goto fail;
+    if (init_context_frame(s))
+        goto fail;
 
-        s->parse_context.state = -1;
+    s->parse_context.state = -1;
 
-        s->context_initialized = 1;
-        memset(s->thread_context, 0, sizeof(s->thread_context));
-        s->thread_context[0]   = s;
+    s->context_initialized = 1;
+    memset(s->thread_context, 0, sizeof(s->thread_context));
+    s->thread_context[0]   = s;
 
 //     if (s->width && s->height) {
-        if (nb_slices > 1) {
-            for (i = 0; i < nb_slices; i++) {
-                if (i) {
-                    s->thread_context[i] = av_memdup(s, sizeof(MpegEncContext));
-                    if (!s->thread_context[i])
-                        goto fail;
-                }
-                if (init_duplicate_context(s->thread_context[i]) < 0)
+    if (nb_slices > 1) {
+        for (i = 0; i < nb_slices; i++) {
+            if (i) {
+                s->thread_context[i] = av_memdup(s, sizeof(MpegEncContext));
+                if (!s->thread_context[i])
                     goto fail;
-                    s->thread_context[i]->start_mb_y =
-                        (s->mb_height * (i) + nb_slices / 2) / nb_slices;
-                    s->thread_context[i]->end_mb_y   =
-                        (s->mb_height * (i + 1) + nb_slices / 2) / nb_slices;
             }
-        } else {
-            if (init_duplicate_context(s) < 0)
+            if (init_duplicate_context(s->thread_context[i]) < 0)
                 goto fail;
-            s->start_mb_y = 0;
-            s->end_mb_y   = s->mb_height;
+            s->thread_context[i]->start_mb_y =
+                (s->mb_height * (i) + nb_slices / 2) / nb_slices;
+            s->thread_context[i]->end_mb_y   =
+                (s->mb_height * (i + 1) + nb_slices / 2) / nb_slices;
         }
-        s->slice_context_count = nb_slices;
+    } else {
+        if (init_duplicate_context(s) < 0)
+            goto fail;
+        s->start_mb_y = 0;
+        s->end_mb_y   = s->mb_height;
+    }
+    s->slice_context_count = nb_slices;
 //     }
 
     return 0;
@@ -1072,6 +1071,13 @@ int ff_mpv_common_frame_size_change(MpegEncContext *s)
         (err = av_image_check_size(s->width, s->height, 0, s->avctx)) < 0)
         goto fail;
 
+    /* set chroma shifts */
+    err = av_pix_fmt_get_chroma_sub_sample(s->avctx->pix_fmt,
+                                           &s->chroma_x_shift,
+                                           &s->chroma_y_shift);
+    if (err < 0)
+        return err;
+
     if ((err = init_context_frame(s)))
         goto fail;
 
@@ -1091,10 +1097,10 @@ int ff_mpv_common_frame_size_change(MpegEncContext *s)
                 }
                 if ((err = init_duplicate_context(s->thread_context[i])) < 0)
                     goto fail;
-                    s->thread_context[i]->start_mb_y =
-                        (s->mb_height * (i) + nb_slices / 2) / nb_slices;
-                    s->thread_context[i]->end_mb_y   =
-                        (s->mb_height * (i + 1) + nb_slices / 2) / nb_slices;
+                s->thread_context[i]->start_mb_y =
+                    (s->mb_height * (i) + nb_slices / 2) / nb_slices;
+                s->thread_context[i]->end_mb_y   =
+                    (s->mb_height * (i + 1) + nb_slices / 2) / nb_slices;
             }
         } else {
             err = init_duplicate_context(s);
@@ -1206,7 +1212,7 @@ int ff_mpv_frame_start(MpegEncContext *s, AVCodecContext *avctx)
     }
 
     /* release forgotten pictures */
-    /* if (mpeg124/h263) */
+    /* if (MPEG-124 / H.263) */
     for (i = 0; i < MAX_PICTURE_COUNT; i++) {
         if (&s->picture[i] != s->last_picture_ptr &&
             &s->picture[i] != s->next_picture_ptr &&
@@ -1216,6 +1222,8 @@ int ff_mpv_frame_start(MpegEncContext *s, AVCodecContext *avctx)
     }
 
     ff_mpeg_unref_picture(s->avctx, &s->current_picture);
+    ff_mpeg_unref_picture(s->avctx, &s->last_picture);
+    ff_mpeg_unref_picture(s->avctx, &s->next_picture);
 
     /* release non reference frames */
     for (i = 0; i < MAX_PICTURE_COUNT; i++) {
@@ -1224,7 +1232,7 @@ int ff_mpv_frame_start(MpegEncContext *s, AVCodecContext *avctx)
     }
 
     if (s->current_picture_ptr && !s->current_picture_ptr->f->buf[0]) {
-        // we already have a unused image
+        // we already have an unused image
         // (maybe it was set before reading the header)
         pic = s->current_picture_ptr;
     } else {
@@ -1282,8 +1290,7 @@ int ff_mpv_frame_start(MpegEncContext *s, AVCodecContext *avctx)
             s->pict_type, s->droppable);
 
     if ((!s->last_picture_ptr || !s->last_picture_ptr->f->buf[0]) &&
-        (s->pict_type != AV_PICTURE_TYPE_I ||
-         s->picture_structure != PICT_FRAME)) {
+        (s->pict_type != AV_PICTURE_TYPE_I)) {
         int h_chroma_shift, v_chroma_shift;
         av_pix_fmt_get_chroma_sub_sample(s->avctx->pix_fmt,
                                          &h_chroma_shift, &v_chroma_shift);
@@ -1293,9 +1300,6 @@ int ff_mpv_frame_start(MpegEncContext *s, AVCodecContext *avctx)
         else if (s->pict_type != AV_PICTURE_TYPE_I)
             av_log(avctx, AV_LOG_ERROR,
                    "warning: first frame is no keyframe\n");
-        else if (s->picture_structure != PICT_FRAME)
-            av_log(avctx, AV_LOG_DEBUG,
-                   "allocate dummy last picture for field based first keyframe\n");
 
         /* Allocate a dummy frame */
         i = ff_find_unused_picture(s->avctx, s->picture, 0);
@@ -1367,14 +1371,12 @@ int ff_mpv_frame_start(MpegEncContext *s, AVCodecContext *avctx)
     memset(s->next_picture.f->data, 0, sizeof(s->next_picture.f->data));
 #endif
     if (s->last_picture_ptr) {
-        ff_mpeg_unref_picture(s->avctx, &s->last_picture);
         if (s->last_picture_ptr->f->buf[0] &&
             (ret = ff_mpeg_ref_picture(s->avctx, &s->last_picture,
                                        s->last_picture_ptr)) < 0)
             return ret;
     }
     if (s->next_picture_ptr) {
-        ff_mpeg_unref_picture(s->avctx, &s->next_picture);
         if (s->next_picture_ptr->f->buf[0] &&
             (ret = ff_mpeg_ref_picture(s->avctx, &s->next_picture,
                                        s->next_picture_ptr)) < 0)
@@ -1398,8 +1400,8 @@ int ff_mpv_frame_start(MpegEncContext *s, AVCodecContext *avctx)
     }
 
     /* set dequantizer, we can't do it during init as
-     * it might change for mpeg4 and we can't do it in the header
-     * decode as init is not called for mpeg4 there yet */
+     * it might change for MPEG-4 and we can't do it in the header
+     * decode as init is not called for MPEG-4 there yet */
     if (s->mpeg_quant || s->codec_id == AV_CODEC_ID_MPEG2VIDEO) {
         s->dct_unquantize_intra = s->dct_unquantize_mpeg2_intra;
         s->dct_unquantize_inter = s->dct_unquantize_mpeg2_inter;
@@ -1744,6 +1746,7 @@ void ff_print_debug_info2(AVCodecContext *avctx, AVFrame *pict, uint8_t *mbskip_
         }
     }
 
+#if FF_API_DEBUG_MV
     if ((avctx->debug & (FF_DEBUG_VIS_QP | FF_DEBUG_VIS_MB_TYPE)) ||
         (avctx->debug_mv)) {
         int mb_y;
@@ -1759,7 +1762,8 @@ void ff_print_debug_info2(AVCodecContext *avctx, AVFrame *pict, uint8_t *mbskip_
         const int mv_stride      = (mb_width << mv_sample_log2) +
                                    (avctx->codec->id == AV_CODEC_ID_H264 ? 0 : 1);
 
-        *low_delay = 0; // needed to see the vectors without trashing the buffers
+        if (low_delay)
+            *low_delay = 0; // needed to see the vectors without trashing the buffers
 
         avcodec_get_chroma_sub_sample(avctx->pix_fmt, &h_chroma_shift, &v_chroma_shift);
 
@@ -1956,6 +1960,7 @@ void ff_print_debug_info2(AVCodecContext *avctx, AVFrame *pict, uint8_t *mbskip_
             }
         }
     }
+#endif
 }
 
 void ff_print_debug_info(MpegEncContext *s, Picture *p, AVFrame *pict)
@@ -2116,7 +2121,9 @@ static av_always_inline void mpeg_motion_lowres(MpegEncContext *s,
         ptr_y = s->sc.edge_emu_buffer;
         if (!CONFIG_GRAY || !(s->avctx->flags & AV_CODEC_FLAG_GRAY)) {
             uint8_t *ubuf = s->sc.edge_emu_buffer + 18 * s->linesize;
-            uint8_t *vbuf =ubuf + 9 * s->uvlinesize;
+            uint8_t *vbuf =ubuf + 10 * s->uvlinesize;
+            if (s->workaround_bugs & FF_BUG_IEDGE)
+                vbuf -= s->uvlinesize;
             s->vdsp.emulated_edge_mc(ubuf,  ptr_cb,
                                      uvlinesize >> field_based, uvlinesize >> field_based,
                                      9, 9 + field_based,
@@ -2469,7 +2476,7 @@ void ff_clean_intra_table_entries(MpegEncContext *s)
    s->interlaced_dct : true if interlaced dct used (mpeg2)
  */
 static av_always_inline
-void mpv_decode_mb_internal(MpegEncContext *s, int16_t block[12][64],
+void mpv_reconstruct_mb_internal(MpegEncContext *s, int16_t block[12][64],
                             int lowres_flag, int is_mpeg12)
 {
     const int mb_xy = s->mb_y * s->mb_stride + s->mb_x;
@@ -2717,16 +2724,16 @@ skip_idct:
     }
 }
 
-void ff_mpv_decode_mb(MpegEncContext *s, int16_t block[12][64])
+void ff_mpv_reconstruct_mb(MpegEncContext *s, int16_t block[12][64])
 {
 #if !CONFIG_SMALL
     if(s->out_format == FMT_MPEG1) {
-        if(s->avctx->lowres) mpv_decode_mb_internal(s, block, 1, 1);
-        else                 mpv_decode_mb_internal(s, block, 0, 1);
+        if(s->avctx->lowres) mpv_reconstruct_mb_internal(s, block, 1, 1);
+        else                 mpv_reconstruct_mb_internal(s, block, 0, 1);
     } else
 #endif
-    if(s->avctx->lowres) mpv_decode_mb_internal(s, block, 1, 0);
-    else                  mpv_decode_mb_internal(s, block, 0, 0);
+    if(s->avctx->lowres) mpv_reconstruct_mb_internal(s, block, 1, 0);
+    else                  mpv_reconstruct_mb_internal(s, block, 0, 0);
 }
 
 void ff_mpeg_draw_horiz_band(MpegEncContext *s, int y, int h)

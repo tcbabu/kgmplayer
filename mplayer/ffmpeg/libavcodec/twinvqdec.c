@@ -149,7 +149,7 @@ static int very_broken_op(int a, int b)
 /**
  * Sum to data a periodic peak of a given period, width and shape.
  *
- * @param period the period of the peak divised by 400.0
+ * @param period the period of the peak divided by 400.0
  */
 static void add_peak(int period, int width, const float *shape,
                      float ppc_gain, float *speech, int len)
@@ -404,7 +404,7 @@ static av_cold int twinvq_decode_init(AVCodecContext *avctx)
     tctx->frame_size     = avctx->bit_rate * tctx->mtab->size
                                            / avctx->sample_rate + 8;
     tctx->is_6kbps       = 0;
-    if (avctx->block_align && avctx->block_align * 8 / tctx->frame_size > 1) {
+    if (avctx->block_align && avctx->block_align * 8LL / tctx->frame_size > 1) {
         av_log(avctx, AV_LOG_ERROR,
                "VQF TwinVQ should have only one frame per packet\n");
         return AVERROR_INVALIDDATA;

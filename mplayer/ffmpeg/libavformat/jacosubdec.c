@@ -135,22 +135,29 @@ static int get_shift(int timeres, const char *buf)
 {
     int sign = 1;
     int a = 0, b = 0, c = 0, d = 0;
+    int64_t ret;
 #define SSEP "%*1[.:]"
     int n = sscanf(buf, "%d"SSEP"%d"SSEP"%d"SSEP"%d", &a, &b, &c, &d);
 #undef SSEP
+
+    if (a == INT_MIN)
+        return 0;
 
     if (*buf == '-' || a < 0) {
         sign = -1;
         a = FFABS(a);
     }
 
+    ret = 0;
     switch (n) {
-    case 4: return sign * ((a*3600 + b*60 + c) * timeres + d);
-    case 3: return sign * ((         a*60 + b) * timeres + c);
-    case 2: return sign * ((                a) * timeres + b);
+    case 4: ret = sign * (((int64_t)a*3600 + b*60 + c) * timeres + d);
+    case 3: ret = sign * ((         (int64_t)a*60 + b) * timeres + c);
+    case 2: ret = sign * ((                (int64_t)a) * timeres + b);
     }
+    if ((int)ret != ret)
+        ret = 0;
 
-    return 0;
+    return ret;
 }
 
 static int jacosub_read_header(AVFormatContext *s)
@@ -167,8 +174,8 @@ static int jacosub_read_header(AVFormatContext *s)
     if (!st)
         return AVERROR(ENOMEM);
     avpriv_set_pts_info(st, 64, 1, 100);
-    st->codec->codec_type = AVMEDIA_TYPE_SUBTITLE;
-    st->codec->codec_id   = AV_CODEC_ID_JACOSUB;
+    st->codecpar->codec_type = AVMEDIA_TYPE_SUBTITLE;
+    st->codecpar->codec_id   = AV_CODEC_ID_JACOSUB;
 
     jacosub->timeres = 30;
 
@@ -187,8 +194,10 @@ static int jacosub_read_header(AVFormatContext *s)
             AVPacket *sub;
 
             sub = ff_subtitles_queue_insert(&jacosub->q, line, len, merge_line);
-            if (!sub)
-                return AVERROR(ENOMEM);
+            if (!sub) {
+                ret = AVERROR(ENOMEM);
+                goto fail;
+            }
             sub->pos = pos;
             merge_line = len > 1 && !strcmp(&line[len - 2], "\\\n");
             continue;
@@ -219,18 +228,21 @@ static int jacosub_read_header(AVFormatContext *s)
             }
             av_bprintf(&header, "#S %s", p);
             break;
-        case 'T': // ...but must be placed after TIMERES
-            jacosub->timeres = strtol(p, NULL, 10);
-            if (!jacosub->timeres)
+        case 'T': { // ...but must be placed after TIMERES
+            int64_t timeres = strtol(p, NULL, 10);
+            if (timeres <= 0 || timeres > UINT32_MAX) {
                 jacosub->timeres = 30;
-            else
+            } else {
+                jacosub->timeres = timeres;
                 av_bprintf(&header, "#T %s", p);
+            }
             break;
+        }
         }
     }
 
     /* general/essential directives in the extradata */
-    ret = avpriv_bprint_to_extradata(st->codec, &header);
+    ret = ff_bprint_to_codecpar_extradata(st->codecpar, &header);
     if (ret < 0)
         goto fail;
 

@@ -57,7 +57,7 @@ typedef struct Point {
     uint32_t val;
 } Point;
 
-typedef struct {
+typedef struct MBContext {
     const AVClass *class;
     int w, h;
     AVRational frame_rate;
@@ -133,6 +133,9 @@ static av_cold int init(AVFilterContext *ctx)
     s->point_cache= av_malloc_array(s->cache_allocated, sizeof(*s->point_cache));
     s-> next_cache= av_malloc_array(s->cache_allocated, sizeof(*s-> next_cache));
     s-> zyklus    = av_malloc_array(s->maxiter + 16, sizeof(*s->zyklus));
+
+    if (!s->point_cache || !s->next_cache || !s->zyklus)
+        return AVERROR(ENOMEM);
 
     return 0;
 }

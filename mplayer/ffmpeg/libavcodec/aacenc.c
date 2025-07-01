@@ -28,6 +28,7 @@
  *              TODOs:
  * add sane pulse detection
  ***********************************/
+#include <float.h>
 
 #include "libavutil/libm.h"
 #include "libavutil/thread.h"
@@ -78,11 +79,10 @@ static void put_audio_specific_config(AVCodecContext *avctx)
 
 void ff_quantize_band_cost_cache_init(struct AACEncContext *s)
 {
-    int sf, g;
-    for (sf = 0; sf < 256; sf++) {
-        for (g = 0; g < 128; g++) {
-            s->quantize_band_cost_cache[sf][g].bits = -1;
-        }
+    ++s->quantize_band_cost_cache_generation;
+    if (s->quantize_band_cost_cache_generation == 0) {
+        memset(s->quantize_band_cost_cache, 0, sizeof(s->quantize_band_cost_cache));
+        s->quantize_band_cost_cache_generation = 1;
     }
 }
 
@@ -521,13 +521,13 @@ static int aac_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
     int chan_el_counter[4];
     FFPsyWindowInfo windows[AAC_MAX_CHANNELS];
 
-    if (s->last_frame == 2)
-        return 0;
-
     /* add current frame to queue */
     if (frame) {
         if ((ret = ff_af_queue_add(&s->afq, frame)) < 0)
             return ret;
+    } else {
+        if (!s->afq.remaining_samples || (!s->afq.frame_alloc && !s->afq.frame_count))
+            return 0;
     }
 
     copy_input_samples(s, frame);
@@ -555,10 +555,11 @@ static int aac_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
             if (!frame)
                 la = NULL;
             if (tag == TYPE_LFE) {
-                wi[ch].window_type[0] = ONLY_LONG_SEQUENCE;
+                wi[ch].window_type[0] = wi[ch].window_type[1] = ONLY_LONG_SEQUENCE;
                 wi[ch].window_shape   = 0;
                 wi[ch].num_windows    = 1;
                 wi[ch].grouping[0]    = 1;
+                wi[ch].clipping[0]    = 0;
 
                 /* Only the lowest 12 coefficients are used in a LFE channel.
                  * The expression below results in only the bottom 8 coefficients
@@ -583,9 +584,22 @@ static int aac_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
             ics->tns_max_bands      = wi[ch].window_type[0] == EIGHT_SHORT_SEQUENCE ?
                                         ff_tns_max_bands_128 [s->samplerate_index]:
                                         ff_tns_max_bands_1024[s->samplerate_index];
-            clip_avoidance_factor = 0.0f;
+
             for (w = 0; w < ics->num_windows; w++)
                 ics->group_len[w] = wi[ch].grouping[w];
+
+            /* Calculate input sample maximums and evaluate clipping risk */
+            clip_avoidance_factor = 0.0f;
+            for (w = 0; w < ics->num_windows; w++) {
+                const float *wbuf = overlap + w * 128;
+                const int wlen = 2048 / ics->num_windows;
+                float max = 0;
+                int j;
+                /* mdct input is 2 * output */
+                for (j = 0; j < wlen; j++)
+                    max = FFMAX(max, fabsf(wbuf[j]));
+                wi[ch].clipping[w] = max;
+            }
             for (w = 0; w < ics->num_windows; w++) {
                 if (wi[ch].clipping[w] > CLIP_AVOIDANCE_FACTOR) {
                     ics->window_clipping[w] = 1;
@@ -609,8 +623,8 @@ static int aac_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
             }
 
             for (k = 0; k < 1024; k++) {
-                if (!isfinite(cpe->ch[ch].coeffs[k])) {
-                    av_log(avctx, AV_LOG_ERROR, "Input contains NaN/+-Inf\n");
+                if (!(fabs(cpe->ch[ch].coeffs[k]) < 1E16)) { // Ensure headroom for energy calculation
+                    av_log(avctx, AV_LOG_ERROR, "Input contains (near) NaN/+-Inf\n");
                     return AVERROR(EINVAL);
                 }
             }
@@ -756,7 +770,7 @@ static int aac_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
             start_ch += chans;
         }
 
-        if (avctx->flags & CODEC_FLAG_QSCALE) {
+        if (avctx->flags & AV_CODEC_FLAG_QSCALE) {
             /* When using a constant Q-scale, don't mess with lambda */
             break;
         }
@@ -795,7 +809,7 @@ static int aac_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
                 /* Not so fast though */
                 ratio = sqrtf(ratio);
             }
-            s->lambda = FFMIN(s->lambda * ratio, 65536.f);
+            s->lambda = av_clipf(s->lambda * ratio, FLT_EPSILON, 65536.f);
 
             /* Keep iterating if we must reduce and lambda is in the sky */
             if (ratio > 0.9f && ratio < 1.1f) {
@@ -828,9 +842,6 @@ static int aac_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
     s->lambda_sum += s->lambda;
     s->lambda_count++;
 
-    if (!frame)
-        s->last_frame++;
-
     ff_af_queue_remove(&s->afq, avctx->frame_size, &avpkt->pts,
                        &avpkt->duration);
 
@@ -843,7 +854,7 @@ static av_cold int aac_encode_end(AVCodecContext *avctx)
 {
     AACEncContext *s = avctx->priv_data;
 
-    av_log(avctx, AV_LOG_INFO, "Qavg: %.3f\n", s->lambda_sum / s->lambda_count);
+    av_log(avctx, AV_LOG_INFO, "Qavg: %.3f\n", s->lambda_count ? s->lambda_sum / s->lambda_count : NAN);
 
     ff_mdct_end(&s->mdct1024);
     ff_mdct_end(&s->mdct128);
@@ -986,9 +997,9 @@ static av_cold int aac_encode_init(AVCodecContext *avctx)
 
     /* Coder limitations */
     s->coder = &ff_aac_coders[s->options.coder];
-    if (s->options.coder != AAC_CODER_TWOLOOP) {
+    if (s->options.coder == AAC_CODER_ANMR) {
         ERROR_IF(avctx->strict_std_compliance > FF_COMPLIANCE_EXPERIMENTAL,
-                 "Coders other than twoloop require -strict -2 and some may be removed in the future\n");
+                 "The ANMR coder is considered experimental, add -strict -2 to enable!\n");
         s->options.intensity_stereo = 0;
         s->options.pns = 0;
     }
@@ -1018,7 +1029,13 @@ static av_cold int aac_encode_init(AVCodecContext *avctx)
         goto fail;
     s->psypp = ff_psy_preprocess_init(avctx);
     ff_lpc_init(&s->lpc, 2*avctx->frame_size, TNS_MAX_ORDER, FF_LPC_TYPE_LEVINSON);
-    av_lfg_init(&s->lfg, 0x72adca55);
+    s->random_state = 0x1f2e3d4c;
+
+    s->abs_pow34   = abs_pow34_v;
+    s->quant_bands = quantize_bands;
+
+    if (ARCH_X86)
+        ff_aac_dsp_init_x86(s);
 
     if (HAVE_MIPSDSP)
         ff_aac_coder_init_mips(s);

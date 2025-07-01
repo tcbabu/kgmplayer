@@ -1,12 +1,12 @@
 prefix=/usr
 exec_prefix=${prefix}
-libdir=${prefix}/lib
-includedir=${prefix}/include
+libdir=/usr/lib
+includedir=/usr/include
 
 Name: libpostproc
 Description: FFmpeg postprocessing library
-Version: 54.0.100
-Requires: libavutil >= 55.17.103
+Version: 54.7.100
+Requires: libavutil >= 55.78.100
 Requires.private: 
 Conflicts:
 Libs: -L${libdir}  -lpostproc 

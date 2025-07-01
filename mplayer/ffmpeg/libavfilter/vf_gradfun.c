@@ -26,9 +26,9 @@
  *
  * Apply a boxblur debanding algorithm (based on the gradfun2db
  * AviSynth filter by prunedtree).
- * Foreach pixel, if it's within threshold of the blurred value, make it closer.
- * So now we have a smoothed and higher bitdepth version of all the shallow
- * gradients, while leaving detailed areas untouched.
+ * For each pixel, if it is within the threshold of the blurred value, make it
+ * closer. So now we have a smoothed and higher bitdepth version of all the
+ * shallow gradients, while leaving detailed areas untouched.
  * Dither it back to 8bit.
  */
 
@@ -92,7 +92,7 @@ static void filter(GradFunContext *ctx, uint8_t *dst, const uint8_t *src, int wi
     for (y = 0; y < r; y++)
         ctx->blur_line(dc, buf + y * bstride, buf + (y - 1) * bstride, src + 2 * y * src_linesize, src_linesize, width / 2);
     for (;;) {
-        if (y < height - r) {
+        if (y + 1 < height - r) {
             int mod = ((y + r) / 2) % r;
             uint16_t *buf0 = buf + mod * bstride;
             uint16_t *buf1 = buf + (mod ? mod - 1 : r - 1) * bstride;

@@ -81,8 +81,8 @@ static int tmv_read_header(AVFormatContext *s)
     if (!(ast = avformat_new_stream(s, NULL)))
         return AVERROR(ENOMEM);
 
-    ast->codec->sample_rate = avio_rl16(pb);
-    if (!ast->codec->sample_rate) {
+    ast->codecpar->sample_rate = avio_rl16(pb);
+    if (!ast->codecpar->sample_rate) {
         av_log(s, AV_LOG_ERROR, "invalid sample rate\n");
         return -1;
     }
@@ -103,6 +103,10 @@ static int tmv_read_header(AVFormatContext *s)
     char_cols = avio_r8(pb);
     char_rows = avio_r8(pb);
     tmv->video_chunk_size = char_cols * char_rows * 2;
+    if (!tmv->video_chunk_size) {
+        av_log(s, AV_LOG_ERROR, "invalid video chunk size\n");
+        return AVERROR_INVALIDDATA;
+    }
 
     features  = avio_r8(pb);
     if (features & ~(TMV_PADDING | TMV_STEREO)) {
@@ -111,29 +115,29 @@ static int tmv_read_header(AVFormatContext *s)
         return -1;
     }
 
-    ast->codec->codec_type            = AVMEDIA_TYPE_AUDIO;
-    ast->codec->codec_id              = AV_CODEC_ID_PCM_U8;
+    ast->codecpar->codec_type            = AVMEDIA_TYPE_AUDIO;
+    ast->codecpar->codec_id              = AV_CODEC_ID_PCM_U8;
     if (features & TMV_STEREO) {
-        ast->codec->channels       = 2;
-        ast->codec->channel_layout = AV_CH_LAYOUT_STEREO;
+        ast->codecpar->channels       = 2;
+        ast->codecpar->channel_layout = AV_CH_LAYOUT_STEREO;
     } else {
-        ast->codec->channels       = 1;
-        ast->codec->channel_layout = AV_CH_LAYOUT_MONO;
+        ast->codecpar->channels       = 1;
+        ast->codecpar->channel_layout = AV_CH_LAYOUT_MONO;
     }
-    ast->codec->bits_per_coded_sample = 8;
-    ast->codec->bit_rate              = ast->codec->sample_rate *
-                                        ast->codec->bits_per_coded_sample;
-    avpriv_set_pts_info(ast, 32, 1, ast->codec->sample_rate);
+    ast->codecpar->bits_per_coded_sample = 8;
+    ast->codecpar->bit_rate              = ast->codecpar->sample_rate *
+                                           ast->codecpar->bits_per_coded_sample;
+    avpriv_set_pts_info(ast, 32, 1, ast->codecpar->sample_rate);
 
-    fps.num = ast->codec->sample_rate * ast->codec->channels;
+    fps.num = ast->codecpar->sample_rate * ast->codecpar->channels;
     fps.den = tmv->audio_chunk_size;
     av_reduce(&fps.num, &fps.den, fps.num, fps.den, 0xFFFFFFFFLL);
 
-    vst->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    vst->codec->codec_id   = AV_CODEC_ID_TMV;
-    vst->codec->pix_fmt    = AV_PIX_FMT_PAL8;
-    vst->codec->width      = char_cols * 8;
-    vst->codec->height     = char_rows * 8;
+    vst->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+    vst->codecpar->codec_id   = AV_CODEC_ID_TMV;
+    vst->codecpar->format     = AV_PIX_FMT_PAL8;
+    vst->codecpar->width      = char_cols * 8;
+    vst->codecpar->height     = char_rows * 8;
     avpriv_set_pts_info(vst, 32, fps.den, fps.num);
 
     if (features & TMV_PADDING)
@@ -141,8 +145,8 @@ static int tmv_read_header(AVFormatContext *s)
             ((tmv->video_chunk_size + tmv->audio_chunk_size + 511) & ~511) -
              (tmv->video_chunk_size + tmv->audio_chunk_size);
 
-    vst->codec->bit_rate = ((tmv->video_chunk_size + tmv->padding) *
-                            fps.num * 8) / fps.den;
+    vst->codecpar->bit_rate = ((tmv->video_chunk_size + tmv->padding) *
+                               fps.num * 8) / fps.den;
 
     return 0;
 }

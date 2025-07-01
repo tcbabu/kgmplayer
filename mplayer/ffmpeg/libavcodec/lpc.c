@@ -93,7 +93,8 @@ static void lpc_compute_autocorr_c(const double *data, int len, int lag,
  * Quantize LPC coefficients
  */
 static void quantize_lpc_coefs(double *lpc_in, int order, int precision,
-                               int32_t *lpc_out, int *shift, int max_shift, int zero_shift)
+                               int32_t *lpc_out, int *shift, int min_shift,
+                               int max_shift, int zero_shift)
 {
     int i;
     double cmax, error;
@@ -118,7 +119,7 @@ static void quantize_lpc_coefs(double *lpc_in, int order, int precision,
 
     /* calculate level shift which scales max coeff to available bits */
     sh = max_shift;
-    while((cmax * (1 << sh) > qmax) && (sh > 0)) {
+    while((cmax * (1 << sh) > qmax) && (sh > min_shift)) {
         sh--;
     }
 
@@ -176,9 +177,10 @@ double ff_lpc_calc_ref_coefs_f(LPCContext *s, const float *samples, int len,
     const double a = 0.5f, b = 1.0f - a;
 
     /* Apply windowing */
-    for (i = 0; i < len; i++) {
+    for (i = 0; i <= len / 2; i++) {
         double weight = a - b*cos((2*M_PI*i)/(len - 1));
         s->windowed_samples[i] = weight*samples[i];
+        s->windowed_samples[len-1-i] = weight*samples[len-1-i];
     }
 
     s->lpc_compute_autocorr(s->windowed_samples, len, order, autoc);
@@ -186,7 +188,7 @@ double ff_lpc_calc_ref_coefs_f(LPCContext *s, const float *samples, int len,
     compute_ref_coefs(autoc, order, ref, error);
     for (i = 0; i < order; i++)
         avg_err = (avg_err + error[i])/2.0f;
-    return signal/avg_err;
+    return avg_err ? signal/avg_err : NAN;
 }
 
 /**
@@ -200,7 +202,7 @@ int ff_lpc_calc_coefs(LPCContext *s,
                       int max_order, int precision,
                       int32_t coefs[][MAX_LPC_ORDER], int *shift,
                       enum FFLPCType lpc_type, int lpc_passes,
-                      int omethod, int max_shift, int zero_shift)
+                      int omethod, int min_shift, int max_shift, int zero_shift)
 {
     double autoc[MAX_LPC_ORDER+1];
     double ref[MAX_LPC_ORDER] = { 0 };
@@ -241,8 +243,10 @@ int ff_lpc_calc_coefs(LPCContext *s,
         double av_uninit(weight);
         memset(var, 0, FFALIGN(MAX_LPC_ORDER+1,4)*sizeof(*var));
 
-        for(j=0; j<max_order; j++)
-            m[0].coeff[max_order-1][j] = -lpc[max_order-1][j];
+        /* Avoids initializing with an unused value when lpc_passes == 1 */
+        if (lpc_passes > 1)
+            for(j=0; j<max_order; j++)
+                m[0].coeff[max_order-1][j] = -lpc[max_order-1][j];
 
         for(; pass<lpc_passes; pass++){
             avpriv_init_lls(&m[pass&1], max_order);
@@ -283,10 +287,12 @@ int ff_lpc_calc_coefs(LPCContext *s,
     if(omethod == ORDER_METHOD_EST) {
         opt_order = estimate_best_order(ref, min_order, max_order);
         i = opt_order-1;
-        quantize_lpc_coefs(lpc[i], i+1, precision, coefs[i], &shift[i], max_shift, zero_shift);
+        quantize_lpc_coefs(lpc[i], i+1, precision, coefs[i], &shift[i],
+                           min_shift, max_shift, zero_shift);
     } else {
         for(i=min_order-1; i<max_order; i++) {
-            quantize_lpc_coefs(lpc[i], i+1, precision, coefs[i], &shift[i], max_shift, zero_shift);
+            quantize_lpc_coefs(lpc[i], i+1, precision, coefs[i], &shift[i],
+                               min_shift, max_shift, zero_shift);
         }
     }
 

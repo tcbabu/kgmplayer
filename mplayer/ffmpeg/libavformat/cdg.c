@@ -39,8 +39,8 @@ static int read_header(AVFormatContext *s)
     if (!vst)
         return AVERROR(ENOMEM);
 
-    vst->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    vst->codec->codec_id   = AV_CODEC_ID_CDGRAPHICS;
+    vst->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+    vst->codecpar->codec_id   = AV_CODEC_ID_CDGRAPHICS;
 
     /// 75 sectors/sec * 4 packets/sector = 300 packets/sec
     avpriv_set_pts_info(vst, 32, 1, 300);
@@ -49,7 +49,7 @@ static int read_header(AVFormatContext *s)
     if (ret < 0) {
         av_log(s, AV_LOG_WARNING, "Cannot calculate duration as file size cannot be determined\n");
     } else
-        vst->duration = (ret * vst->time_base.den) / (CDG_PACKET_SIZE * 300);
+        vst->duration = (ret * (int64_t)vst->time_base.den) / (CDG_PACKET_SIZE * 300);
 
     return 0;
 }

@@ -94,7 +94,7 @@ static int read_header(AVFormatContext *s)
     type = avio_rl16(pb);
     length = avio_rl32(pb);
 
-    if (type != MM_TYPE_HEADER)
+    if (type != MM_TYPE_HEADER || length < 10)
         return AVERROR_INVALIDDATA;
 
     /* read header */
@@ -109,11 +109,11 @@ static int read_header(AVFormatContext *s)
     st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
-    st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id = AV_CODEC_ID_MMVIDEO;
-    st->codec->codec_tag = 0;  /* no fourcc */
-    st->codec->width = width;
-    st->codec->height = height;
+    st->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+    st->codecpar->codec_id = AV_CODEC_ID_MMVIDEO;
+    st->codecpar->codec_tag = 0;  /* no fourcc */
+    st->codecpar->width = width;
+    st->codecpar->height = height;
     avpriv_set_pts_info(st, 64, 1, frame_rate);
 
     /* audio stream */
@@ -121,12 +121,12 @@ static int read_header(AVFormatContext *s)
         st = avformat_new_stream(s, NULL);
         if (!st)
             return AVERROR(ENOMEM);
-        st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
-        st->codec->codec_tag = 0; /* no fourcc */
-        st->codec->codec_id = AV_CODEC_ID_PCM_U8;
-        st->codec->channels = 1;
-        st->codec->channel_layout = AV_CH_LAYOUT_MONO;
-        st->codec->sample_rate = 8000;
+        st->codecpar->codec_type = AVMEDIA_TYPE_AUDIO;
+        st->codecpar->codec_tag = 0; /* no fourcc */
+        st->codecpar->codec_id = AV_CODEC_ID_PCM_U8;
+        st->codecpar->channels = 1;
+        st->codecpar->channel_layout = AV_CH_LAYOUT_MONO;
+        st->codecpar->sample_rate = 8000;
         avpriv_set_pts_info(st, 64, 1, 8000); /* 8000 hz */
     }
 
@@ -174,6 +174,8 @@ static int read_packet(AVFormatContext *s,
             return 0;
 
         case MM_TYPE_AUDIO :
+            if (s->nb_streams < 2)
+                return AVERROR_INVALIDDATA;
             if (av_get_packet(s->pb, pkt, length)<0)
                 return AVERROR(ENOMEM);
             pkt->stream_index = 1;
