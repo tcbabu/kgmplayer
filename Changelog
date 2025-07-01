@@ -1,3 +1,14 @@
+Ver 5.2.0 Dated 01/07/2025
+Updated ffmpeg source tp ver 3.4
+to support filter 'loud norm'
+
+Ver 5.1.0
+Updated Normalise
+
+Ver: 5.0.0
+Updated x264/x265 
+New Gui using new kglib
+
 Ver: 4.4.0 Dated 14th Dec 2022
 Fixed many bugs, all tools should work as expected.
 Optimised tools, expected to work faster and cleaner.

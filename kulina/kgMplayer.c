@@ -6,7 +6,7 @@
 //#define S2CLR -230200050
 //#define S2CLR -69128181
 #define S2CLR -1
-char VER[]="Ver 5.1.0";
+char VER[]="Ver 5.2.0";
 //int Thred=15,Thgreen=17,Thblue=15;
 int Thred=165,Thgreen=177,Thblue=165;
 char urlstring[500];
