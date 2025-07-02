@@ -895,7 +895,7 @@ static void fixup_ctrl_state(int *ctrl_state, int state)
 
 static int handle_x11_event(Display *mydisplay, XEvent *event)
 {
-    int key = 0;
+    int key = 0,pesc=0;
     uint8_t buf[16] = {0};
     KeySym keySym;
     static XComposeStatus stat;
@@ -1316,7 +1316,6 @@ final:
 
   XSync(mDisplay, False);
   vo_mouse_autohide = 1;
-}
 #ifdef D_KULINA
   {
     MWIN = (unsigned long)vo_window;
@@ -1324,6 +1323,7 @@ final:
     fflush(stderr);
   }
 #endif
+}
 
 void vo_x11_clearwindow_part(Display * mDisplay, Window vo_window,
                              int img_width, int img_height, int use_fs)
