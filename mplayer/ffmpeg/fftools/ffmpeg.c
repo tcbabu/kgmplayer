@@ -4854,9 +4854,11 @@ int kgffmpeg(int argc, char **argv)
     exit_program(received_nb_signals ? 255 : main_return_code);
     return main_return_code;
 }
+#if 0
 int main(int argc, char **argv) {
    return kgffmpeg( argc,argv);
 }
+#endif
 #ifdef D_KULINA
 int ffmpegfun(int argc, char **argv)
 {

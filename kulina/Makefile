@@ -48,6 +48,8 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Runbackground.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
 	 ReorderImages.o ReorderImagesCallbacks.o
+	 mv ../ffmpeg/fftools/ffmain.o ../ffmpeg/
+	 touch ../ffmpeg/fftools/ffmain.o
 	 ar -r  kgMplayer.a  kgMplayer.o kgMplayerCallbacks.o main.o \
 	 FullScreen.o FullScreenCallbacks.o  \
 	ControlsCallbacks.o Controls.o AControls.o Rip.o \
@@ -97,6 +99,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 ReorderImages.o ReorderImagesCallbacks.o \
 	 $(FFMPEGOBJS)
 	 echo $(FFMPEGOBJS)
+	 mv ../ffmpeg/ffmain.o ../ffmpeg/fftools/
 kgMplayer.o	: kgMplayer.c 
 	 $(CC) -c kgMplayer.c
 kgMplayerCallbacks.o	: kgMplayerCallbacks.c 
