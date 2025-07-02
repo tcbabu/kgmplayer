@@ -146,7 +146,7 @@ libAVFilter_JoinFilterGraph(libAVFilter *this, IFilterGraph *graph,
 
     this->info.pGraph = graph;
     if (name)
-        wcscpy(this->info.achName, name);
+        wcscpy_s(this->info.achName, sizeof(this->info.achName) / sizeof(wchar_t), name);
 
     return S_OK;
 }
@@ -157,9 +157,7 @@ libAVFilter_QueryVendorInfo(libAVFilter *this, wchar_t **info)
 
     if (!info)
         return E_POINTER;
-    *info = wcsdup(L"libAV");
-
-    return S_OK;
+    return E_NOTIMPL; /* don't have to do anything here */
 }
 
 static int

@@ -1,12 +1,12 @@
 prefix=/usr
 exec_prefix=${prefix}
-libdir=${prefix}/lib
-includedir=${prefix}/include
+libdir=/usr/lib
+includedir=/usr/include
 
 Name: libswresample
 Description: FFmpeg audio resampling library
-Version: 2.0.101
-Requires: libavutil >= 55.17.103
+Version: 2.9.100
+Requires: libavutil >= 55.78.100
 Requires.private: 
 Conflicts:
 Libs: -L${libdir}  -lswresample -lm

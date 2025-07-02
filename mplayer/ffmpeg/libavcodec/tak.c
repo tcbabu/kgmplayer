@@ -21,6 +21,8 @@
 
 #include "libavutil/crc.h"
 #include "libavutil/intreadwrite.h"
+
+#define BITSTREAM_READER_LE
 #include "tak.h"
 
 static const int64_t tak_channel_layouts[] = {
@@ -150,6 +152,9 @@ int ff_tak_decode_frame_header(AVCodecContext *avctx, GetBitContext *gb,
     }
 
     if (ti->flags & TAK_FRAME_FLAG_HAS_METADATA)
+        return AVERROR_INVALIDDATA;
+
+    if (get_bits_left(gb) < 24)
         return AVERROR_INVALIDDATA;
 
     skip_bits(gb, 24);

@@ -49,7 +49,7 @@ int av_timecode_adjust_ntsc_framenum2(int framenum, int fps)
     d = framenum / frames_per_10mins;
     m = framenum % frames_per_10mins;
 
-    return framenum + 9 * drop_frames * d + drop_frames * ((m - drop_frames) / (frames_per_10mins / 10));
+    return framenum + 9U * drop_frames * d + drop_frames * ((m - drop_frames) / (frames_per_10mins / 10));
 }
 
 uint32_t av_timecode_get_smpte_from_framenum(const AVTimecode *tc, int framenum)
@@ -96,8 +96,8 @@ char *av_timecode_make_string(const AVTimecode *tc, char *buf, int framenum)
     }
     ff = framenum % fps;
     ss = framenum / fps        % 60;
-    mm = framenum / (fps*60)   % 60;
-    hh = framenum / (fps*3600);
+    mm = framenum / (fps*60LL) % 60;
+    hh = framenum / (fps*3600LL);
     if (tc->flags & AV_TIMECODE_FLAG_24HOURSMAX)
         hh = hh % 24;
     snprintf(buf, AV_TIMECODE_STR_SIZE, "%s%02d:%02d:%02d%c%02d",
@@ -129,7 +129,8 @@ char *av_timecode_make_smpte_tc_string(char *buf, uint32_t tcsmpte, int prevent_
 
 char *av_timecode_make_mpeg_tc_string(char *buf, uint32_t tc25bit)
 {
-    snprintf(buf, AV_TIMECODE_STR_SIZE, "%02u:%02u:%02u%c%02u",
+    snprintf(buf, AV_TIMECODE_STR_SIZE,
+             "%02"PRIu32":%02"PRIu32":%02"PRIu32"%c%02"PRIu32,
              tc25bit>>19 & 0x1f,              // 5-bit hours
              tc25bit>>13 & 0x3f,              // 6-bit minutes
              tc25bit>>6  & 0x3f,              // 6-bit seconds
@@ -172,7 +173,7 @@ static int fps_from_frame_rate(AVRational rate)
 {
     if (!rate.den || !rate.num)
         return -1;
-    return (rate.num + rate.den/2) / rate.den;
+    return (rate.num + rate.den/2LL) / rate.den;
 }
 
 int av_timecode_check_frame_rate(AVRational rate)

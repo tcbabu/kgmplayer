@@ -70,8 +70,8 @@ static int realtext_read_header(AVFormatContext *s)
     if (!st)
         return AVERROR(ENOMEM);
     avpriv_set_pts_info(st, 64, 1, 100);
-    st->codec->codec_type = AVMEDIA_TYPE_SUBTITLE;
-    st->codec->codec_id   = AV_CODEC_ID_REALTEXT;
+    st->codecpar->codec_type = AVMEDIA_TYPE_SUBTITLE;
+    st->codecpar->codec_id   = AV_CODEC_ID_REALTEXT;
 
     av_bprint_init(&buf, 0, AV_BPRINT_SIZE_UNLIMITED);
 
@@ -87,14 +87,18 @@ static int realtext_read_header(AVFormatContext *s)
             /* save header to extradata */
             const char *p = ff_smil_get_attr_ptr(buf.str, "duration");
 
+            if (st->codecpar->extradata) {
+                res = AVERROR_INVALIDDATA;
+                goto end;
+            }
             if (p)
                 duration = read_ts(p);
-            st->codec->extradata = av_strdup(buf.str);
-            if (!st->codec->extradata) {
+            st->codecpar->extradata = av_strdup(buf.str);
+            if (!st->codecpar->extradata) {
                 res = AVERROR(ENOMEM);
                 goto end;
             }
-            st->codec->extradata_size = buf.len + 1;
+            st->codecpar->extradata_size = buf.len + 1;
         } else {
             /* if we just read a <time> tag, introduce a new event, otherwise merge
              * with the previous one */
@@ -107,10 +111,11 @@ static int realtext_read_header(AVFormatContext *s)
             if (!merge) {
                 const char *begin = ff_smil_get_attr_ptr(buf.str, "begin");
                 const char *end   = ff_smil_get_attr_ptr(buf.str, "end");
+                int64_t endi = end ? read_ts(end) : 0;
 
                 sub->pos      = pos;
                 sub->pts      = begin ? read_ts(begin) : 0;
-                sub->duration = end ? (read_ts(end) - sub->pts) : duration;
+                sub->duration = (end && endi > sub->pts && endi - (uint64_t)sub->pts <= INT64_MAX) ? endi - sub->pts : duration;
             }
         }
         av_bprint_clear(&buf);
@@ -119,6 +124,8 @@ static int realtext_read_header(AVFormatContext *s)
 
 end:
     av_bprint_finalize(&buf, NULL);
+    if (res < 0)
+        ff_subtitles_queue_clean(&rt->q);
     return res;
 }
 

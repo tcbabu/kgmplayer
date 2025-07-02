@@ -160,54 +160,6 @@ static int set_params(AVFilterContext *ctx, const char *params)
             if (ret < 0)
                 return ret;
         }
-
-        av_log(ctx, AV_LOG_VERBOSE,
-               "idx:%d name:'%s' type:%s explanation:'%s' ",
-               i, info.name,
-               info.type == F0R_PARAM_BOOL     ? "bool"     :
-               info.type == F0R_PARAM_DOUBLE   ? "double"   :
-               info.type == F0R_PARAM_COLOR    ? "color"    :
-               info.type == F0R_PARAM_POSITION ? "position" :
-               info.type == F0R_PARAM_STRING   ? "string"   : "unknown",
-               info.explanation);
-
-#ifdef DEBUG
-        av_log(ctx, AV_LOG_DEBUG, "value:");
-        switch (info.type) {
-            void *v;
-            double d;
-            char str[128];
-            f0r_param_color_t col;
-            f0r_param_position_t pos;
-
-        case F0R_PARAM_BOOL:
-            v = &d;
-            s->get_param_value(s->instance, v, i);
-            av_log(ctx, AV_LOG_DEBUG, "%s", d >= 0.5 && d <= 1.0 ? "y" : "n");
-            break;
-        case F0R_PARAM_DOUBLE:
-            v = &d;
-            s->get_param_value(s->instance, v, i);
-            av_log(ctx, AV_LOG_DEBUG, "%f", d);
-            break;
-        case F0R_PARAM_COLOR:
-            v = &col;
-            s->get_param_value(s->instance, v, i);
-            av_log(ctx, AV_LOG_DEBUG, "%f/%f/%f", col.r, col.g, col.b);
-            break;
-        case F0R_PARAM_POSITION:
-            v = &pos;
-            s->get_param_value(s->instance, v, i);
-            av_log(ctx, AV_LOG_DEBUG, "%f/%f", pos.x, pos.y);
-            break;
-        default: /* F0R_PARAM_STRING */
-            v = str;
-            s->get_param_value(s->instance, v, i);
-            av_log(ctx, AV_LOG_DEBUG, "'%s'", str);
-            break;
-        }
-#endif
-        av_log(ctx, AV_LOG_VERBOSE, ".\n");
     }
 
     return 0;
@@ -396,14 +348,20 @@ static int filter_frame(AVFilterLink *inlink, AVFrame *in)
 {
     Frei0rContext *s = inlink->dst->priv;
     AVFilterLink *outlink = inlink->dst->outputs[0];
-    AVFrame *out;
+    AVFrame *out = ff_default_get_video_buffer2(outlink, outlink->w, outlink->h, 16);
+    if (!out)
+        goto fail;
 
-    out = ff_get_video_buffer(outlink, outlink->w, outlink->h);
-    if (!out) {
-        av_frame_free(&in);
-        return AVERROR(ENOMEM);
-    }
     av_frame_copy_props(out, in);
+
+    if (in->linesize[0] != out->linesize[0]) {
+        AVFrame *in2 = ff_default_get_video_buffer2(outlink, outlink->w, outlink->h, 16);
+        if (!in2)
+            goto fail;
+        av_frame_copy(in2, in);
+        av_frame_free(&in);
+        in = in2;
+    }
 
     s->update(s->instance, in->pts * av_q2d(inlink->time_base) * 1000,
                    (const uint32_t *)in->data[0],
@@ -412,6 +370,10 @@ static int filter_frame(AVFilterLink *inlink, AVFrame *in)
     av_frame_free(&in);
 
     return ff_filter_frame(outlink, out);
+fail:
+    av_frame_free(&in);
+    av_frame_free(&out);
+    return AVERROR(ENOMEM);
 }
 
 #define OFFSET(x) offsetof(Frei0rContext, x)
@@ -494,7 +456,7 @@ static int source_config_props(AVFilterLink *outlink)
 static int source_request_frame(AVFilterLink *outlink)
 {
     Frei0rContext *s = outlink->src->priv;
-    AVFrame *frame = ff_get_video_buffer(outlink, outlink->w, outlink->h);
+    AVFrame *frame = ff_default_get_video_buffer2(outlink, outlink->w, outlink->h, 16);
 
     if (!frame)
         return AVERROR(ENOMEM);
@@ -510,7 +472,7 @@ static int source_request_frame(AVFilterLink *outlink)
 
 static const AVOption frei0r_src_options[] = {
     { "size",          "Dimensions of the generated video.", OFFSET(w),         AV_OPT_TYPE_IMAGE_SIZE, { .str = "320x240" }, .flags = FLAGS },
-    { "framerate",     NULL,                                 OFFSET(framerate), AV_OPT_TYPE_VIDEO_RATE, { .str = "25" }, .flags = FLAGS },
+    { "framerate",     NULL,                                 OFFSET(framerate), AV_OPT_TYPE_VIDEO_RATE, { .str = "25" }, 0, INT_MAX, .flags = FLAGS },
     { "filter_name",   NULL,                                 OFFSET(dl_name),   AV_OPT_TYPE_STRING,                  .flags = FLAGS },
     { "filter_params", NULL,                                 OFFSET(params),    AV_OPT_TYPE_STRING,                  .flags = FLAGS },
     { NULL },

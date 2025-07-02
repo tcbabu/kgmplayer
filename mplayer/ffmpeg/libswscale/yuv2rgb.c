@@ -46,20 +46,23 @@
  *
  * where Y = cr * R + cg * G + cb * B and cr + cg + cb = 1.
  */
-const int32_t ff_yuv2rgb_coeffs[8][4] = {
-    { 117504, 138453, 13954, 34903 }, /* no sequence_display_extension */
-    { 117504, 138453, 13954, 34903 }, /* ITU-R Rec. 709 (1990) */
+const int32_t ff_yuv2rgb_coeffs[11][4] = {
+    { 117489, 138438, 13975, 34925 }, /* no sequence_display_extension */
+    { 117489, 138438, 13975, 34925 }, /* ITU-R Rec. 709 (1990) */
     { 104597, 132201, 25675, 53279 }, /* unspecified */
     { 104597, 132201, 25675, 53279 }, /* reserved */
     { 104448, 132798, 24759, 53109 }, /* FCC */
     { 104597, 132201, 25675, 53279 }, /* ITU-R Rec. 624-4 System B, G */
     { 104597, 132201, 25675, 53279 }, /* SMPTE 170M */
-    { 117579, 136230, 16907, 35559 }  /* SMPTE 240M (1987) */
+    { 117579, 136230, 16907, 35559 }, /* SMPTE 240M (1987) */
+    {      0                       }, /* YCgCo */
+    { 110013, 140363, 12277, 42626 }, /* Bt-2020-NCL */
+    { 110013, 140363, 12277, 42626 }, /* Bt-2020-CL */
 };
 
 const int *sws_getCoefficients(int colorspace)
 {
-    if (colorspace > 7 || colorspace < 0)
+    if (colorspace > 10 || colorspace < 0 || colorspace == 8)
         colorspace = SWS_CS_DEFAULT;
     return ff_yuv2rgb_coeffs[colorspace];
 }
@@ -135,10 +138,11 @@ const int *sws_getCoefficients(int colorspace)
             srcStride[2] *= 2;                                              \
         }                                                                   \
         for (y = 0; y < srcSliceH; y += 2) {                                \
+            int yd = y + srcSliceY;                                         \
             dst_type *dst_1 =                                               \
-                (dst_type *)(dst[0] + (y + srcSliceY)     * dstStride[0]);  \
+                (dst_type *)(dst[0] + (yd)     * dstStride[0]);             \
             dst_type *dst_2 =                                               \
-                (dst_type *)(dst[0] + (y + srcSliceY + 1) * dstStride[0]);  \
+                (dst_type *)(dst[0] + (yd + 1) * dstStride[0]);             \
             dst_type av_unused *r, *g, *b;                                  \
             const uint8_t *py_1 = src[0] +  y       * srcStride[0];         \
             const uint8_t *py_2 = py_1   +            srcStride[0];         \
@@ -487,8 +491,8 @@ CLOSEYUV2RGBFUNC(8)
 
 // r, g, b, dst_1, dst_2
 YUV2RGBFUNC(yuv2rgb_c_8_ordered_dither, uint8_t, 0)
-    const uint8_t *d32 = ff_dither_8x8_32[y & 7];
-    const uint8_t *d64 = ff_dither_8x8_73[y & 7];
+    const uint8_t *d32 = ff_dither_8x8_32[yd & 7];
+    const uint8_t *d64 = ff_dither_8x8_73[yd & 7];
 
 #define PUTRGB8(dst, src, i, o)                     \
     Y              = src[2 * i];                    \
@@ -517,8 +521,8 @@ YUV2RGBFUNC(yuv2rgb_c_8_ordered_dither, uint8_t, 0)
     PUTRGB8(dst_1, py_1, 3, 6);
 
 ENDYUV2RGBLINE(8, 0)
-    const uint8_t *d32 = ff_dither_8x8_32[y & 7];
-    const uint8_t *d64 = ff_dither_8x8_73[y & 7];
+    const uint8_t *d32 = ff_dither_8x8_32[yd & 7];
+    const uint8_t *d64 = ff_dither_8x8_73[yd & 7];
     LOADCHROMA(0);
     PUTRGB8(dst_1, py_1, 0, 0);
     PUTRGB8(dst_2, py_2, 0, 0 + 8);
@@ -528,8 +532,8 @@ ENDYUV2RGBLINE(8, 0)
     PUTRGB8(dst_1, py_1, 1, 2);
 
 ENDYUV2RGBLINE(8, 1)
-    const uint8_t *d32 = ff_dither_8x8_32[y & 7];
-    const uint8_t *d64 = ff_dither_8x8_73[y & 7];
+    const uint8_t *d32 = ff_dither_8x8_32[yd & 7];
+    const uint8_t *d64 = ff_dither_8x8_73[yd & 7];
     LOADCHROMA(0);
     PUTRGB8(dst_1, py_1, 0, 0);
     PUTRGB8(dst_2, py_2, 0, 0 + 8);
@@ -538,8 +542,8 @@ ENDYUV2RGBFUNC()
 
 
 YUV2RGBFUNC(yuv2rgb_c_4_ordered_dither, uint8_t, 0)
-    const uint8_t * d64 = ff_dither_8x8_73[y & 7];
-    const uint8_t *d128 = ff_dither_8x8_220[y & 7];
+    const uint8_t * d64 = ff_dither_8x8_73[yd & 7];
+    const uint8_t *d128 = ff_dither_8x8_220[yd & 7];
     int acc;
 
 #define PUTRGB4D(dst, src, i, o)                    \
@@ -570,8 +574,8 @@ YUV2RGBFUNC(yuv2rgb_c_4_ordered_dither, uint8_t, 0)
     PUTRGB4D(dst_1, py_1, 3, 6);
 
 ENDYUV2RGBLINE(4, 0)
-    const uint8_t * d64 = ff_dither_8x8_73[y & 7];
-    const uint8_t *d128 = ff_dither_8x8_220[y & 7];
+    const uint8_t * d64 = ff_dither_8x8_73[yd & 7];
+    const uint8_t *d128 = ff_dither_8x8_220[yd & 7];
     int acc;
     LOADCHROMA(0);
     PUTRGB4D(dst_1, py_1, 0, 0);
@@ -582,8 +586,8 @@ ENDYUV2RGBLINE(4, 0)
     PUTRGB4D(dst_1, py_1, 1, 2);
 
 ENDYUV2RGBLINE(4, 1)
-    const uint8_t * d64 = ff_dither_8x8_73[y & 7];
-    const uint8_t *d128 = ff_dither_8x8_220[y & 7];
+    const uint8_t * d64 = ff_dither_8x8_73[yd & 7];
+    const uint8_t *d128 = ff_dither_8x8_220[yd & 7];
     int acc;
     LOADCHROMA(0);
     PUTRGB4D(dst_1, py_1, 0, 0);
@@ -591,8 +595,8 @@ ENDYUV2RGBLINE(4, 1)
 ENDYUV2RGBFUNC()
 
 YUV2RGBFUNC(yuv2rgb_c_4b_ordered_dither, uint8_t, 0)
-    const uint8_t *d64  = ff_dither_8x8_73[y & 7];
-    const uint8_t *d128 = ff_dither_8x8_220[y & 7];
+    const uint8_t *d64  = ff_dither_8x8_73[yd & 7];
+    const uint8_t *d128 = ff_dither_8x8_220[yd & 7];
 
 #define PUTRGB4DB(dst, src, i, o)                   \
     Y              = src[2 * i];                    \
@@ -620,8 +624,8 @@ YUV2RGBFUNC(yuv2rgb_c_4b_ordered_dither, uint8_t, 0)
     PUTRGB4DB(dst_2, py_2, 3, 6 + 8);
     PUTRGB4DB(dst_1, py_1, 3, 6);
 ENDYUV2RGBLINE(8, 0)
-    const uint8_t *d64  = ff_dither_8x8_73[y & 7];
-    const uint8_t *d128 = ff_dither_8x8_220[y & 7];
+    const uint8_t *d64  = ff_dither_8x8_73[yd & 7];
+    const uint8_t *d128 = ff_dither_8x8_220[yd & 7];
     LOADCHROMA(0);
     PUTRGB4DB(dst_1, py_1, 0, 0);
     PUTRGB4DB(dst_2, py_2, 0, 0 + 8);
@@ -630,15 +634,15 @@ ENDYUV2RGBLINE(8, 0)
     PUTRGB4DB(dst_2, py_2, 1, 2 + 8);
     PUTRGB4DB(dst_1, py_1, 1, 2);
 ENDYUV2RGBLINE(8, 1)
-    const uint8_t *d64  = ff_dither_8x8_73[y & 7];
-    const uint8_t *d128 = ff_dither_8x8_220[y & 7];
+    const uint8_t *d64  = ff_dither_8x8_73[yd & 7];
+    const uint8_t *d128 = ff_dither_8x8_220[yd & 7];
     LOADCHROMA(0);
     PUTRGB4DB(dst_1, py_1, 0, 0);
     PUTRGB4DB(dst_2, py_2, 0, 0 + 8);
 ENDYUV2RGBFUNC()
 
 YUV2RGBFUNC(yuv2rgb_c_1_ordered_dither, uint8_t, 0)
-    const uint8_t *d128 = ff_dither_8x8_220[y & 7];
+    const uint8_t *d128 = ff_dither_8x8_220[yd & 7];
     char out_1 = 0, out_2 = 0;
     g = c->table_gU[128 + YUVRGB_TABLE_HEADROOM] + c->table_gV[128 + YUVRGB_TABLE_HEADROOM];
 
@@ -813,29 +817,29 @@ av_cold int ff_yuv2rgb_c_init_tables(SwsContext *c, const int inv_table[4],
     cbu  = (cbu * contrast * saturation) >> 32;
     cgu  = (cgu * contrast * saturation) >> 32;
     cgv  = (cgv * contrast * saturation) >> 32;
-    oy  -= 256 * brightness;
+    oy  -= 256LL * brightness;
 
     c->uOffset = 0x0400040004000400LL;
     c->vOffset = 0x0400040004000400LL;
-    c->yCoeff  = roundToInt16(cy  * 8192) * 0x0001000100010001ULL;
-    c->vrCoeff = roundToInt16(crv * 8192) * 0x0001000100010001ULL;
-    c->ubCoeff = roundToInt16(cbu * 8192) * 0x0001000100010001ULL;
-    c->vgCoeff = roundToInt16(cgv * 8192) * 0x0001000100010001ULL;
-    c->ugCoeff = roundToInt16(cgu * 8192) * 0x0001000100010001ULL;
-    c->yOffset = roundToInt16(oy  *    8) * 0x0001000100010001ULL;
+    c->yCoeff  = roundToInt16(cy  * (1 << 13)) * 0x0001000100010001ULL;
+    c->vrCoeff = roundToInt16(crv * (1 << 13)) * 0x0001000100010001ULL;
+    c->ubCoeff = roundToInt16(cbu * (1 << 13)) * 0x0001000100010001ULL;
+    c->vgCoeff = roundToInt16(cgv * (1 << 13)) * 0x0001000100010001ULL;
+    c->ugCoeff = roundToInt16(cgu * (1 << 13)) * 0x0001000100010001ULL;
+    c->yOffset = roundToInt16(oy  * (1 <<  3)) * 0x0001000100010001ULL;
 
-    c->yuv2rgb_y_coeff   = (int16_t)roundToInt16(cy  << 13);
-    c->yuv2rgb_y_offset  = (int16_t)roundToInt16(oy  <<  9);
-    c->yuv2rgb_v2r_coeff = (int16_t)roundToInt16(crv << 13);
-    c->yuv2rgb_v2g_coeff = (int16_t)roundToInt16(cgv << 13);
-    c->yuv2rgb_u2g_coeff = (int16_t)roundToInt16(cgu << 13);
-    c->yuv2rgb_u2b_coeff = (int16_t)roundToInt16(cbu << 13);
+    c->yuv2rgb_y_coeff   = (int16_t)roundToInt16(cy  * (1 << 13));
+    c->yuv2rgb_y_offset  = (int16_t)roundToInt16(oy  * (1 <<  9));
+    c->yuv2rgb_v2r_coeff = (int16_t)roundToInt16(crv * (1 << 13));
+    c->yuv2rgb_v2g_coeff = (int16_t)roundToInt16(cgv * (1 << 13));
+    c->yuv2rgb_u2g_coeff = (int16_t)roundToInt16(cgu * (1 << 13));
+    c->yuv2rgb_u2b_coeff = (int16_t)roundToInt16(cbu * (1 << 13));
 
     //scale coefficients by cy
-    crv = ((crv << 16) + 0x8000) / FFMAX(cy, 1);
-    cbu = ((cbu << 16) + 0x8000) / FFMAX(cy, 1);
-    cgu = ((cgu << 16) + 0x8000) / FFMAX(cy, 1);
-    cgv = ((cgv << 16) + 0x8000) / FFMAX(cy, 1);
+    crv = ((crv * (1 << 16)) + 0x8000) / FFMAX(cy, 1);
+    cbu = ((cbu * (1 << 16)) + 0x8000) / FFMAX(cy, 1);
+    cgu = ((cgu * (1 << 16)) + 0x8000) / FFMAX(cy, 1);
+    cgv = ((cgv * (1 << 16)) + 0x8000) / FFMAX(cy, 1);
 
     av_freep(&c->yuvTable);
 

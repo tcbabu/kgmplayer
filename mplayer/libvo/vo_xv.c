@@ -1,4 +1,4 @@
-//#define D_KULINA
+//define D_KULINA
 /*
  * X11 Xv interface
  *
@@ -391,34 +391,46 @@ static int draw_slice(uint8_t * image[], int stride[], int w, int h,
                            int x, int y)
 {
     uint8_t *dst;
+    int idx_p1 = 1, idx_p2 = 2;
 
     dst = xvimage[current_buf]->data + xvimage[current_buf]->offsets[0] +
         xvimage[current_buf]->pitches[0] * y + x;
     memcpy_pic(dst, image[0], w, h, xvimage[current_buf]->pitches[0],
                stride[0]);
 
-    x /= 2;
-    y /= 2;
-    w /= 2;
-    h /= 2;
+    switch (image_format) {
+    case IMGFMT_YV12:
+        idx_p1 = 2; idx_p2 = 1;
+    case IMGFMT_I420:
+    case IMGFMT_IYUV:
+        x /= 2;
+        y /= 2;
+        w /= 2;
+        h /= 2;
 
-    dst = xvimage[current_buf]->data + xvimage[current_buf]->offsets[1] +
-        xvimage[current_buf]->pitches[1] * y + x;
-    if (image_format != IMGFMT_YV12)
-        memcpy_pic(dst, image[1], w, h, xvimage[current_buf]->pitches[1],
-                   stride[1]);
-    else
-        memcpy_pic(dst, image[2], w, h, xvimage[current_buf]->pitches[1],
-                   stride[2]);
+        dst = xvimage[current_buf]->data + xvimage[current_buf]->offsets[1] +
+            xvimage[current_buf]->pitches[1] * y + x;
+        memcpy_pic(dst, image[idx_p1], w, h, xvimage[current_buf]->pitches[1],
+            stride[idx_p1]);
 
-    dst = xvimage[current_buf]->data + xvimage[current_buf]->offsets[2] +
-        xvimage[current_buf]->pitches[2] * y + x;
-    if (image_format == IMGFMT_YV12)
-        memcpy_pic(dst, image[1], w, h, xvimage[current_buf]->pitches[1],
-                   stride[1]);
-    else
-        memcpy_pic(dst, image[2], w, h, xvimage[current_buf]->pitches[1],
-                   stride[2]);
+        dst = xvimage[current_buf]->data + xvimage[current_buf]->offsets[2] +
+            xvimage[current_buf]->pitches[2] * y + x;
+        memcpy_pic(dst, image[idx_p2], w, h, xvimage[current_buf]->pitches[2],
+            stride[idx_p2]);
+        break;
+    case IMGFMT_NV12:
+    case IMGFMT_NV21:
+        x &= ~1;
+        y /= 2;
+        w &= ~1;
+        h /= 2;
+
+        dst = xvimage[current_buf]->data + xvimage[current_buf]->offsets[1] +
+            xvimage[current_buf]->pitches[1] * y + x;
+        memcpy_pic(dst, image[idx_p1], w, h, xvimage[current_buf]->pitches[1],
+            stride[idx_p1]);
+        break;
+    }
 
     return 0;
 }
@@ -481,36 +493,33 @@ static uint32_t get_image(mp_image_t * mpi)
     if ((mpi->flags & (MP_IMGFLAG_ACCEPT_STRIDE | MP_IMGFLAG_ACCEPT_WIDTH))
         || (mpi->width * (mpi->bpp / 8) == xvimage[buf]->pitches[0]))
     {
+        int idx_p1 = 1, idx_p2 = 2;
         current_buf = buf;
         mpi->planes[0] =
             xvimage[current_buf]->data + xvimage[current_buf]->offsets[0];
         mpi->stride[0] = xvimage[current_buf]->pitches[0];
         mpi->width = mpi->stride[0] / (mpi->bpp / 8);
-        if (mpi->flags & MP_IMGFLAG_PLANAR)
-        {
-            if (mpi->flags & MP_IMGFLAG_SWAPPED)
-            {
-                // I420
-                mpi->planes[1] =
-                    xvimage[current_buf]->data +
-                    xvimage[current_buf]->offsets[1];
-                mpi->planes[2] =
-                    xvimage[current_buf]->data +
-                    xvimage[current_buf]->offsets[2];
-                mpi->stride[1] = xvimage[current_buf]->pitches[1];
-                mpi->stride[2] = xvimage[current_buf]->pitches[2];
-            } else
-            {
-                // YV12
-                mpi->planes[1] =
-                    xvimage[current_buf]->data +
-                    xvimage[current_buf]->offsets[2];
-                mpi->planes[2] =
-                    xvimage[current_buf]->data +
-                    xvimage[current_buf]->offsets[1];
-                mpi->stride[1] = xvimage[current_buf]->pitches[2];
-                mpi->stride[2] = xvimage[current_buf]->pitches[1];
-            }
+        switch (image_format) {
+        case IMGFMT_YV12:
+            idx_p1 = 2; idx_p2 = 1;
+        case IMGFMT_I420:
+        case IMGFMT_IYUV:
+            mpi->planes[1] =
+                xvimage[current_buf]->data +
+                xvimage[current_buf]->offsets[idx_p1];
+            mpi->planes[2] =
+                xvimage[current_buf]->data +
+                xvimage[current_buf]->offsets[idx_p2];
+            mpi->stride[1] = xvimage[current_buf]->pitches[idx_p1];
+            mpi->stride[2] = xvimage[current_buf]->pitches[idx_p2];
+            break;
+        case IMGFMT_NV12:
+        case IMGFMT_NV21:
+            mpi->planes[1] =
+                xvimage[current_buf]->data +
+                xvimage[current_buf]->offsets[1];
+            mpi->stride[1] = xvimage[current_buf]->pitches[1];
+            break;
         }
         mpi->flags |= MP_IMGFLAG_DIRECT;
         mpi->priv = (void *)(intptr_t)current_buf;
@@ -520,10 +529,27 @@ static uint32_t get_image(mp_image_t * mpi)
     return VO_FALSE;
 }
 
+static int is_supported_format(uint32_t format)
+{
+    switch (format) {
+    case IMGFMT_YV12:
+    case IMGFMT_I420:
+    case IMGFMT_IYUV:
+    case IMGFMT_NV12:
+    case IMGFMT_NV21:
+        return 1;
+    default:
+        return !mp_get_chroma_shift(image_format, NULL, NULL, NULL);
+    }
+}
+
 static int query_format(uint32_t format)
 {
     uint32_t i;
     int flag = VFCAP_CSP_SUPPORTED | VFCAP_CSP_SUPPORTED_BY_HW | VFCAP_HWSCALE_UP | VFCAP_HWSCALE_DOWN | VFCAP_OSD | VFCAP_ACCEPT_STRIDE;       // FIXME! check for DOWN
+    if (!is_supported_format(format)) {
+        return 0;
+    }
 
     /* check image formats */
     for (i = 0; i < formats; i++)

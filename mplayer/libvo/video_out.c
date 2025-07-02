@@ -130,7 +130,6 @@ extern const vo_functions_t video_out_directx;
 extern const vo_functions_t video_out_kva;
 extern const vo_functions_t video_out_dxr2;
 extern const vo_functions_t video_out_dxr3;
-extern const vo_functions_t video_out_ivtv;
 extern const vo_functions_t video_out_v4l2;
 extern const vo_functions_t video_out_jpeg;
 extern const vo_functions_t video_out_gif89a;
@@ -173,6 +172,9 @@ const vo_functions_t* const video_out_drivers[] =
         &video_out_kva,
 #endif
 #ifdef CONFIG_COREVIDEO
+#ifdef CONFIG_GL
+        &video_out_gl_nosw,
+#endif
         &video_out_corevideo,
 #endif
 #ifdef CONFIG_QUARTZ
@@ -202,8 +204,10 @@ const vo_functions_t* const video_out_drivers[] =
 #ifdef CONFIG_XV
         &video_out_xv,
 #endif
+#ifndef CONFIG_COREVIDEO
 #ifdef CONFIG_GL
         &video_out_gl_nosw,
+#endif
 #endif
 #ifdef CONFIG_X11
         &video_out_x11,
@@ -246,9 +250,6 @@ const vo_functions_t* const video_out_drivers[] =
 #ifdef CONFIG_DXR3
         &video_out_dxr3,
 #endif
-#ifdef CONFIG_IVTV
-        &video_out_ivtv,
-#endif
 #ifdef CONFIG_V4L2_DECODER
         &video_out_v4l2,
 #endif
@@ -275,11 +276,11 @@ const vo_functions_t* const video_out_drivers[] =
 #endif
         &video_out_cvidix,
 #endif
-        &video_out_null,
         // should not be auto-selected
 #if CONFIG_XVMC
         &video_out_xvmc,
 #endif
+        &video_out_null,
         &video_out_mpegpes,
 #ifdef CONFIG_YUV4MPEG
         &video_out_yuv4mpeg,
@@ -471,8 +472,7 @@ void calc_src_dst_rects(int src_width, int src_height, struct vo_rect *src, stru
     src_dst_split_scaling(src_height, vo_dheight, scaled_height, vo_border_pos_y,
                           &src->top, &src->bottom, &dst->top, &dst->bottom);
   }
-  src->left += crop->left; src->right  += crop->left;
-  src->top  += crop->top;  src->bottom += crop->top;
+
 #ifdef D_KULINA
 //TCB
   src->left +=1;
@@ -481,6 +481,8 @@ void calc_src_dst_rects(int src_width, int src_height, struct vo_rect *src, stru
   src->bottom  -=1;
 //
 #endif
+  src->left += crop->left; src->right  += crop->left;
+  src->top  += crop->top;  src->bottom += crop->top;
   src->width  = src->right  - src->left;
   src->height = src->bottom - src->top;
   dst->width  = dst->right  - dst->left;

@@ -32,10 +32,10 @@
 #include "libavutil/imgutils.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/timer.h"
+
 #include "avcodec.h"
 #include "internal.h"
 #include "rangecoder.h"
-#include "golomb.h"
 #include "mathops.h"
 #include "ffv1.h"
 
@@ -114,6 +114,13 @@ av_cold int ff_ffv1_init_slices_state(FFV1Context *f)
     return 0;
 }
 
+int ff_need_new_slices(int width, int num_h_slices, int chroma_shift) {
+    int mpw = 1<<chroma_shift;
+    int i = width * (int64_t)(num_h_slices - 1) / num_h_slices;
+
+    return width % mpw && (width - i) % mpw == 0;
+}
+
 av_cold int ff_ffv1_init_slice_contexts(FFV1Context *f)
 {
     int i;
@@ -144,7 +151,11 @@ av_cold int ff_ffv1_init_slice_contexts(FFV1Context *f)
 
         fs->sample_buffer = av_malloc_array((fs->width + 6), 3 * MAX_PLANES *
                                       sizeof(*fs->sample_buffer));
-        if (!fs->sample_buffer) {
+        fs->sample_buffer32 = av_malloc_array((fs->width + 6), 3 * MAX_PLANES *
+                                        sizeof(*fs->sample_buffer32));
+        if (!fs->sample_buffer || !fs->sample_buffer32) {
+            av_freep(&fs->sample_buffer);
+            av_freep(&fs->sample_buffer32);
             av_freep(&f->slice_context[i]);
             goto memfail;
         }
@@ -154,6 +165,7 @@ av_cold int ff_ffv1_init_slice_contexts(FFV1Context *f)
 memfail:
     while(--i >= 0) {
         av_freep(&f->slice_context[i]->sample_buffer);
+        av_freep(&f->slice_context[i]->sample_buffer32);
         av_freep(&f->slice_context[i]);
     }
     return AVERROR(ENOMEM);
@@ -224,6 +236,7 @@ av_cold int ff_ffv1_close(AVCodecContext *avctx)
             av_freep(&p->vlc_state);
         }
         av_freep(&fs->sample_buffer);
+        av_freep(&fs->sample_buffer32);
     }
 
     av_freep(&avctx->stats_out);

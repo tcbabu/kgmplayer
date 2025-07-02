@@ -328,10 +328,13 @@ static int16_t g729d_voice_decision(int onset, int prev_voice_decision, const in
 
 static int32_t scalarproduct_int16_c(const int16_t * v1, const int16_t * v2, int order)
 {
-    int res = 0;
+    int64_t res = 0;
 
     while (order--)
         res += *v1++ * *v2++;
+
+    if      (res > INT32_MAX) return INT32_MAX;
+    else if (res < INT32_MIN) return INT32_MIN;
 
     return res;
 }
@@ -413,7 +416,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *got_frame_ptr,
         return ret;
     out_frame = (int16_t*) frame->data[0];
 
-    if (buf_size % 10 == 0) {
+    if (buf_size && buf_size % 10 == 0) {
         packet_type = FORMAT_G729_8K;
         format = &format_g729_8k;
         //Reset voice decision
@@ -533,12 +536,13 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *got_frame_ptr,
           fc_v[i] = <
                      \ fc_v[i] + gain_pitch * fc_v[i-pitch_delay], i >= pitch_delay
         */
-        ff_acelp_weighted_vector_sum(fc + pitch_delay_int[i],
-                                     fc + pitch_delay_int[i],
-                                     fc, 1 << 14,
-                                     av_clip(ctx->past_gain_pitch[0], SHARP_MIN, SHARP_MAX),
-                                     0, 14,
-                                     SUBFRAME_SIZE - pitch_delay_int[i]);
+        if (SUBFRAME_SIZE > pitch_delay_int[i])
+            ff_acelp_weighted_vector_sum(fc + pitch_delay_int[i],
+                                         fc + pitch_delay_int[i],
+                                         fc, 1 << 14,
+                                         av_clip(ctx->past_gain_pitch[0], SHARP_MIN, SHARP_MAX),
+                                         0, 14,
+                                         SUBFRAME_SIZE - pitch_delay_int[i]);
 
         memmove(ctx->past_gain_pitch+1, ctx->past_gain_pitch, 5 * sizeof(int16_t));
         ctx->past_gain_code[1] = ctx->past_gain_code[0];

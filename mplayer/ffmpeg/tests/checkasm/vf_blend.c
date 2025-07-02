@@ -79,9 +79,9 @@
                      dst2 + dst_offset, WIDTH, WIDTH, HEIGHT, &param, NULL);               \
             if (memcmp(top1, top2, BUF_SIZE) || memcmp(bot1, bot2, BUF_SIZE) || memcmp(dst1, dst2, BUF_SIZE)) \
                 fail();                                                                    \
-            bench_new(top2 + src_offset, WIDTH, bot2 + src_offset, WIDTH,                  \
-                      dst2, WIDTH, WIDTH, HEIGHT, &param, NULL);                           \
         }                                                                                  \
+        bench_new(top2, WIDTH / 4, bot2, WIDTH / 4, dst2, WIDTH / 4,                       \
+                  WIDTH / 4, HEIGHT / 4, &param, NULL);                                    \
     } while (0)
 
 void checkasm_check_blend(void)
@@ -103,11 +103,11 @@ void checkasm_check_blend(void)
         check_blend_func();
 
     check_and_report(addition, BLEND_ADDITION)
-    check_and_report(addition128, BLEND_ADDITION128)
+    check_and_report(grainmerge, BLEND_GRAINMERGE)
     check_and_report(and, BLEND_AND)
     check_and_report(average, BLEND_AVERAGE)
     check_and_report(darken, BLEND_DARKEN)
-    check_and_report(difference128, BLEND_DIFFERENCE128)
+    check_and_report(grainextract, BLEND_GRAINEXTRACT)
     check_and_report(hardmix, BLEND_HARDMIX)
     check_and_report(lighten, BLEND_LIGHTEN)
     check_and_report(multiply, BLEND_MULTIPLY)
@@ -117,6 +117,7 @@ void checkasm_check_blend(void)
     check_and_report(subtract, BLEND_SUBTRACT)
     check_and_report(xor, BLEND_XOR)
     check_and_report(difference, BLEND_DIFFERENCE)
+    check_and_report(extremity, BLEND_EXTREMITY)
     check_and_report(negation, BLEND_NEGATION)
 
     report("8bit");

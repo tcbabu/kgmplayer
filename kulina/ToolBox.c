@@ -42,6 +42,7 @@ int MakevflipGroup(DIALOG *D,void *arg);
 int MakehflipGroup(DIALOG *D,void *arg);
 int MakesliceGroup(DIALOG *D,void *arg);
 int MakeNormaliseGroup(DIALOG *D,void *arg);
+int MakeLoudnormGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -147,6 +148,14 @@ TOOLGRP ToolList[ ] = {
        "Output is an audio file, in case one need to change in the media\n"
        "use the tool for extracting  media audio, and add output audio.\n"
        "Remember lossless formats are best for further editing.\n"
+  },
+  { 0, MakeLoudnormGroup,"!f23Loudness  normalise filter for Audio Files",346,40,RunHelper,0,
+       "\nCan be used to normalize loudness \n"
+       "No specific setting  required\n"
+       "Output is an audio file, in case one need to change in the media\n"
+       "use the tool for extracting  media audio, and add output audio.\n"
+       "Remember lossless formats are best for further editing.\n"
+       "Filter over writes input file; backup input file if needed\n"
   },
   { 0, MakevtobwGroup,"!f23Convert Video to Black&White", 346,40 ,RunHelper,0,
        "\n\n\nConverts a video to gray scale or Balck&White\n"

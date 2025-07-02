@@ -144,7 +144,7 @@ char *av_d2str(double d)
     return str;
 }
 
-#define WHITESPACES " \n\t"
+#define WHITESPACES " \n\t\r"
 
 char *av_get_token(const char **buf, const char *term)
 {
@@ -222,13 +222,37 @@ int av_strcasecmp(const char *a, const char *b)
 
 int av_strncasecmp(const char *a, const char *b, size_t n)
 {
-    const char *end = a + n;
     uint8_t c1, c2;
+    if (n <= 0)
+        return 0;
     do {
         c1 = av_tolower(*a++);
         c2 = av_tolower(*b++);
-    } while (a < end && c1 && c1 == c2);
+    } while (--n && c1 && c1 == c2);
     return c1 - c2;
+}
+
+char *av_strireplace(const char *str, const char *from, const char *to)
+{
+    char *ret = NULL;
+    const char *pstr2, *pstr = str;
+    size_t tolen = strlen(to), fromlen = strlen(from);
+    AVBPrint pbuf;
+
+    av_bprint_init(&pbuf, 1, AV_BPRINT_SIZE_UNLIMITED);
+    while ((pstr2 = av_stristr(pstr, from))) {
+        av_bprint_append_data(&pbuf, pstr, pstr2 - pstr);
+        pstr = pstr2 + fromlen;
+        av_bprint_append_data(&pbuf, to, tolen);
+    }
+    av_bprint_append_data(&pbuf, pstr, strlen(pstr));
+    if (!av_bprint_is_complete(&pbuf)) {
+        av_bprint_finalize(&pbuf, NULL);
+    } else {
+        av_bprint_finalize(&pbuf, &ret);
+    }
+
+    return ret;
 }
 
 const char *av_basename(const char *path)
@@ -427,75 +451,13 @@ int av_match_list(const char *name, const char *list, char separator)
                 if (k && (!p[k] || p[k] == separator))
                     return 1;
             q = strchr(q, separator);
-            q += !!q;
+            if(q)
+                q++;
         }
         p = strchr(p, separator);
-        p += !!p;
+        if (p)
+            p++;
     }
 
     return 0;
 }
-
-#ifdef TEST
-
-int main(void)
-{
-    int i;
-    char *fullpath;
-    static const char * const strings[] = {
-        "''",
-        "",
-        ":",
-        "\\",
-        "'",
-        "    ''    :",
-        "    ''  ''  :",
-        "foo   '' :",
-        "'foo'",
-        "foo     ",
-        "  '  foo  '  ",
-        "foo\\",
-        "foo':  blah:blah",
-        "foo\\:  blah:blah",
-        "foo\'",
-        "'foo :  '  :blahblah",
-        "\\ :blah",
-        "     foo",
-        "      foo       ",
-        "      foo     \\ ",
-        "foo ':blah",
-        " foo   bar    :   blahblah",
-        "\\f\\o\\o",
-        "'foo : \\ \\  '   : blahblah",
-        "'\\fo\\o:': blahblah",
-        "\\'fo\\o\\:':  foo  '  :blahblah"
-    };
-
-    printf("Testing av_get_token()\n");
-    for (i = 0; i < FF_ARRAY_ELEMS(strings); i++) {
-        const char *p = strings[i];
-        char *q;
-        printf("|%s|", p);
-        q = av_get_token(&p, ":");
-        printf(" -> |%s|", q);
-        printf(" + |%s|\n", p);
-        av_free(q);
-    }
-
-    printf("Testing av_append_path_component()\n");
-    #define TEST_APPEND_PATH_COMPONENT(path, component, expected) \
-        fullpath = av_append_path_component((path), (component)); \
-        printf("%s = %s\n", fullpath ? fullpath : "(null)", expected); \
-        av_free(fullpath);
-    TEST_APPEND_PATH_COMPONENT(NULL, NULL, "(null)")
-    TEST_APPEND_PATH_COMPONENT("path", NULL, "path");
-    TEST_APPEND_PATH_COMPONENT(NULL, "comp", "comp");
-    TEST_APPEND_PATH_COMPONENT("path", "comp", "path/comp");
-    TEST_APPEND_PATH_COMPONENT("path/", "comp", "path/comp");
-    TEST_APPEND_PATH_COMPONENT("path", "/comp", "path/comp");
-    TEST_APPEND_PATH_COMPONENT("path/", "/comp", "path/comp");
-    TEST_APPEND_PATH_COMPONENT("path/path2/", "/comp/comp2", "path/path2/comp/comp2");
-    return 0;
-}
-
-#endif /* TEST */

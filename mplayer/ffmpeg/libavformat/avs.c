@@ -123,7 +123,8 @@ avs_read_video_packet(AVFormatContext * s, AVPacket * pkt,
 static int avs_read_audio_packet(AVFormatContext * s, AVPacket * pkt)
 {
     AvsFormat *avs = s->priv_data;
-    int ret, size;
+    int ret;
+    int64_t size;
 
     size = avio_tell(s->pb);
     ret = ff_voc_get_packet(s, pkt, avs->st_audio, avs->remaining_audio_size);
@@ -134,6 +135,10 @@ static int avs_read_audio_packet(AVFormatContext * s, AVPacket * pkt)
         return 0;    /* this indicate EOS */
     if (ret < 0)
         return ret;
+    if (size != (int)size) {
+        av_packet_unref(pkt);
+        return AVERROR(EDOM);
+    }
 
     pkt->stream_index = avs->st_audio->index;
     pkt->flags |= AV_PKT_FLAG_KEY;
@@ -184,11 +189,11 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
                     avs->st_video = avformat_new_stream(s, NULL);
                     if (!avs->st_video)
                         return AVERROR(ENOMEM);
-                    avs->st_video->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-                    avs->st_video->codec->codec_id = AV_CODEC_ID_AVS;
-                    avs->st_video->codec->width = avs->width;
-                    avs->st_video->codec->height = avs->height;
-                    avs->st_video->codec->bits_per_coded_sample=avs->bits_per_sample;
+                    avs->st_video->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+                    avs->st_video->codecpar->codec_id = AV_CODEC_ID_AVS;
+                    avs->st_video->codecpar->width = avs->width;
+                    avs->st_video->codecpar->height = avs->height;
+                    avs->st_video->codecpar->bits_per_coded_sample=avs->bits_per_sample;
                     avs->st_video->nb_frames = avs->nb_frames;
 #if FF_API_R_FRAME_RATE
                     avs->st_video->r_frame_rate =
@@ -203,7 +208,7 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
                     avs->st_audio = avformat_new_stream(s, NULL);
                     if (!avs->st_audio)
                         return AVERROR(ENOMEM);
-                    avs->st_audio->codec->codec_type = AVMEDIA_TYPE_AUDIO;
+                    avs->st_audio->codecpar->codec_type = AVMEDIA_TYPE_AUDIO;
                 }
                 avs->remaining_audio_size = size - 4;
                 size = avs_read_audio_packet(s, pkt);

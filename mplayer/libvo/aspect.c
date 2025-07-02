@@ -80,15 +80,6 @@ void aspect_save_orig(int orgw, int orgh){
 #endif
   aspdat.orgw_norot = orgw;
   aspdat.orgh_norot = orgh;
-#ifdef D_KULINA
-#if 0
-  if(Kulina) {
-  aspdat.orgw_norot = ((orgw*(1+Xs))/4)*4;
-  aspdat.orgh_norot = ((orgh*(1+Ys))/4)*4;
-  }
-#endif
-#endif
-
 }
 
 void aspect_save_prescale(int prew, int preh){
@@ -97,6 +88,7 @@ void aspect_save_prescale(int prew, int preh){
 #endif
   aspdat.prew_norot = prew;
   aspdat.preh_norot = preh;
+
 #ifdef D_KULINA
   if(Kulina) {
 #if 1
@@ -107,9 +99,7 @@ void aspect_save_prescale(int prew, int preh){
 #endif
   }
 #endif
-
 }
-
 void aspect_save_screenres(int scrw, int scrh){
 #ifdef ASPECT_DEBUG
   printf("aspect_save_screenres %dx%d \n",scrw,scrh);
@@ -134,20 +124,6 @@ void aspect_save_screenres(int scrw, int scrh){
 
 void aspect_fit(int *srcw, int *srch, int fitw, int fith){
   int tmpw;
-  int fitho,fitwo;
-  fitho = fith;
-  fitwo = fitw;
-#ifdef D_KULINA
-#if 0
-  if(Kulina) {
-    if( (Xs>0.01)||(Ys>0.01)) {
-      fitw *= (1+Ys);
-      fith *= (1+Ys);
-    }
-  }
-#endif
-#endif
-
 
   aspect_rotate();
 #ifdef ASPECT_DEBUG
@@ -209,7 +185,6 @@ void aspect_fit(int *srcw, int *srch, int fitw, int fith){
 //      *srch=fith;}
 #endif
 #endif
-
 #ifdef ASPECT_DEBUG
   printf("aspect(3) wh: %dx%d (org: %dx%d)\n",*srcw,*srch,aspdat.prew,aspdat.preh);
 #endif

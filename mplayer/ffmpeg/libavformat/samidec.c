@@ -59,8 +59,8 @@ static int sami_read_header(AVFormatContext *s)
     if (!st)
         return AVERROR(ENOMEM);
     avpriv_set_pts_info(st, 64, 1, 1000);
-    st->codec->codec_type = AVMEDIA_TYPE_SUBTITLE;
-    st->codec->codec_id   = AV_CODEC_ID_SAMI;
+    st->codecpar->codec_type = AVMEDIA_TYPE_SUBTITLE;
+    st->codecpar->codec_id   = AV_CODEC_ID_SAMI;
 
     av_bprint_init(&buf,     0, AV_BPRINT_SIZE_UNLIMITED);
     av_bprint_init(&hdr_buf, 0, AV_BPRINT_SIZE_UNLIMITED);
@@ -95,19 +95,26 @@ static int sami_read_header(AVFormatContext *s)
                 const char *p = ff_smil_get_attr_ptr(buf.str, "Start");
                 sub->pos      = pos;
                 sub->pts      = p ? strtol(p, NULL, 10) : 0;
+                if (sub->pts <= INT64_MIN/2 || sub->pts >= INT64_MAX/2) {
+                    res = AVERROR_PATCHWELCOME;
+                    goto end;
+                }
+
                 sub->duration = -1;
             }
         }
         av_bprint_clear(&buf);
     }
 
-    res = avpriv_bprint_to_extradata(st->codec, &hdr_buf);
+    res = ff_bprint_to_codecpar_extradata(st->codecpar, &hdr_buf);
     if (res < 0)
         goto end;
 
     ff_subtitles_queue_finalize(s, &sami->q);
 
 end:
+    if (res < 0)
+        ff_subtitles_queue_clean(&sami->q);
     av_bprint_finalize(&buf, NULL);
     return res;
 }

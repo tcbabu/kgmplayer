@@ -31,10 +31,10 @@
 #include <stdarg.h>
 #include <time.h>
 #include <string.h>
-#include <strings.h>
 #include <errno.h>
 
 #include "config.h"
+#include "libavutil/avstring.h"
 #include "video_out.h"
 #include "video_out_internal.h"
 #include "libmpcodecs/vf.h"
@@ -92,6 +92,7 @@ static int osdx, osdy;
 static int osd_text_length = 0;
 int aaconfigmode=1;
 font_desc_t* vo_font_save = NULL;
+font_desc_t* sub_font_save = NULL;
 static struct SwsContext *sws=NULL;
 
 /* configuration */
@@ -250,7 +251,8 @@ config(uint32_t width, uint32_t height, uint32_t d_width,
     /* now init our own 'font' */
     if(!vo_font_save) vo_font_save = vo_font;
     if(vo_font == vo_font_save) {
-      vo_font=malloc(sizeof(font_desc_t));//if(!desc) return NULL;
+      sub_font_save = sub_font;
+      sub_font=vo_font=malloc(sizeof(font_desc_t));//if(!desc) return NULL;
       memset(vo_font,0,sizeof(font_desc_t));
       vo_font->pic_a[0]=malloc(sizeof(raw_file));
       memset(vo_font->pic_a[0],0,sizeof(raw_file));
@@ -517,6 +519,10 @@ uninit(void) {
       vo_font = vo_font_save;
       vo_font_save = NULL;
     }
+    if(sub_font_save) {
+      sub_font = sub_font_save;
+      sub_font_save = NULL;
+    }
     aa_close(c);
 }
 
@@ -566,11 +572,11 @@ getcolor(char * s){
     if  (s==NULL) return -1;
     i=strtol(s, &rest, 10);
     if ((rest==NULL || strlen(rest)==0) && i>=0 && i<=5) return i;
-    if (!strcasecmp(s, "normal")) return AA_NORMAL;
-    else if (!strcasecmp(s, "dim")) return AA_DIM;
-    else if (!strcasecmp(s, "bold")) return AA_BOLD;
-    else if (!strcasecmp(s, "boldfont")) return AA_BOLDFONT;
-    else if (!strcasecmp(s, "special")) return AA_SPECIAL;
+    if (!av_strcasecmp(s, "normal")) return AA_NORMAL;
+    else if (!av_strcasecmp(s, "dim")) return AA_DIM;
+    else if (!av_strcasecmp(s, "bold")) return AA_BOLD;
+    else if (!av_strcasecmp(s, "boldfont")) return AA_BOLDFONT;
+    else if (!av_strcasecmp(s, "special")) return AA_SPECIAL;
     else return -1;
 }
 
@@ -682,17 +688,15 @@ static int preinit(const char *arg)
 	struct stat sbuf;
 	char fname[12];
 	FILE *fp = NULL;
-	int fd, vt;
+	int vt;
 	/* check /dev/vcsa<vt> */
 	/* check only, if no driver is explicit set */
-	fd = dup (fileno (stderr));
-	if (fstat (fd, &sbuf) != -1) {
+	if (fstat (2, &sbuf) != -1) {
 	// vt number stored in device minor
 	vt = sbuf.st_rdev & 0xff;
 	sprintf (fname, "/dev/vcsa%2.2i", vt);
 	fp = fopen (fname, "w+");
 	}
-	close (fd);
 	if (fp==NULL){
 	    fprintf(stderr,"VO: [aa] cannot open %s for writing,"
 			"so we'll not use linux driver\n", fname);

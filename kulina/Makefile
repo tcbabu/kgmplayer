@@ -2,7 +2,7 @@ include config.mak
 #CC	=g++ -pthread
 #CC	=cc -pthread -fPIC 
 CC	=gcc -pthread -fPIC  $(X11_CFLAGS) -I$(KULINA)/include
-FFMPEGOBJS	=$(foreach part, ../mplayer/ffmpeg, $(wildcard $(addprefix $(part)/,*.[o])))
+FFMPEGOBJS	=$(foreach part, ../mplayer/ffmpeg/fftools, $(wildcard $(addprefix $(part)/,*.[o])))
 kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
                   FullScreenCallbacks.o main.o ControlsCallbacks.o \
 	        Controls.o AControls.o Rip.o Manage.o ManageCallbacks.o\
@@ -38,6 +38,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 kgGetFiles.o kgGetFilesCallbacks.o \
 	 normalize.o normalizeCallbacks.o \
 	 Normalise.o NormaliseCallbacks.o \
+	 Loudnorm.o LoudnormCallbacks.o \
 	 vtobw.o vtobwCallbacks.o \
 	 vflip.o vflipCallbacks.o \
 	 hflip.o hflipCallbacks.o \
@@ -48,6 +49,8 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Runbackground.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
 	 ReorderImages.o ReorderImagesCallbacks.o
+	 mv ../ffmpeg/fftools/ffmain.o ../ffmpeg/
+	 touch ../ffmpeg/fftools/ffmain.o
 	 ar -r  kgMplayer.a  kgMplayer.o kgMplayerCallbacks.o main.o \
 	 FullScreen.o FullScreenCallbacks.o  \
 	ControlsCallbacks.o Controls.o AControls.o Rip.o \
@@ -85,6 +88,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 kgGetFiles.o kgGetFilesCallbacks.o \
 	 normalize.o normalizeCallbacks.o \
 	 Normalise.o NormaliseCallbacks.o \
+	 Loudnorm.o LoudnormCallbacks.o \
 	 vtobw.o vtobwCallbacks.o \
 	 vflip.o vflipCallbacks.o \
 	 hflip.o hflipCallbacks.o \
@@ -97,6 +101,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 ReorderImages.o ReorderImagesCallbacks.o \
 	 $(FFMPEGOBJS)
 	 echo $(FFMPEGOBJS)
+	 mv ../ffmpeg/ffmain.o ../ffmpeg/fftools/
 kgMplayer.o	: kgMplayer.c 
 	 $(CC) -c kgMplayer.c
 kgMplayerCallbacks.o	: kgMplayerCallbacks.c 
@@ -217,6 +222,10 @@ Normalise.o		: Normalise.c
 	 	$(CC) -c Normalise.c
 NormaliseCallbacks.o		: NormaliseCallbacks.c
 		$(CC) -c NormaliseCallbacks.c
+Loudnorm.o		: Loudnorm.c
+	 	$(CC) -c Loudnorm.c
+LoudnormCallbacks.o		: LoudnormCallbacks.c
+		$(CC) -c LoudnormCallbacks.c
 vtobw.o		: vtobw.c
 		 $(CC) -c vtobw.c
 vtobwCallbacks.o	: vtobwCallbacks.c

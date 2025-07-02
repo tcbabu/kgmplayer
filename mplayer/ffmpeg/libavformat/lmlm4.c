@@ -65,15 +65,15 @@ static int lmlm4_read_header(AVFormatContext *s)
 
     if (!(st = avformat_new_stream(s, NULL)))
         return AVERROR(ENOMEM);
-    st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id   = AV_CODEC_ID_MPEG4;
+    st->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+    st->codecpar->codec_id   = AV_CODEC_ID_MPEG4;
     st->need_parsing      = AVSTREAM_PARSE_HEADERS;
     avpriv_set_pts_info(st, 64, 1001, 30000);
 
     if (!(st = avformat_new_stream(s, NULL)))
         return AVERROR(ENOMEM);
-    st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
-    st->codec->codec_id   = AV_CODEC_ID_MP2;
+    st->codecpar->codec_type = AVMEDIA_TYPE_AUDIO;
+    st->codecpar->codec_id   = AV_CODEC_ID_MP2;
     st->need_parsing      = AVSTREAM_PARSE_HEADERS;
 
     /* the parameters will be extracted from the compressed bitstream */
@@ -94,15 +94,15 @@ static int lmlm4_read_packet(AVFormatContext *s, AVPacket *pkt)
 
     if (frame_type > LMLM4_MPEG1L2 || frame_type == LMLM4_INVALID) {
         av_log(s, AV_LOG_ERROR, "invalid or unsupported frame_type\n");
-        return AVERROR(EIO);
+        return AVERROR_INVALIDDATA;
     }
     if (packet_size > LMLM4_MAX_PACKET_SIZE || packet_size<=8) {
         av_log(s, AV_LOG_ERROR, "packet size %d is invalid\n", packet_size);
-        return AVERROR(EIO);
+        return AVERROR_INVALIDDATA;
     }
 
     if ((ret = av_get_packet(pb, pkt, frame_size)) <= 0)
-        return AVERROR(EIO);
+        return ret < 0 ? ret : AVERROR(EIO);
 
     avio_skip(pb, padding);
 

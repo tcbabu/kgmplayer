@@ -28,6 +28,7 @@
  */
 
 #include "libavutil/channel_layout.h"
+#include "libavutil/imgutils.h"
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
 #include "internal.h"
@@ -71,6 +72,7 @@ static int vid_read_header(AVFormatContext *s)
 {
     BVID_DemuxContext *vid = s->priv_data;
     AVIOContext *pb = s->pb;
+    int ret;
 
     /* load main header. Contents:
     *    bytes: 'V' 'I' 'D'
@@ -82,6 +84,10 @@ static int vid_read_header(AVFormatContext *s)
     vid->height  = avio_rl16(pb);
     vid->bethsoft_global_delay = avio_rl16(pb);
     avio_rl16(pb);
+
+    ret = av_image_check_size(vid->width, vid->height, 0, s);
+    if (ret < 0)
+        return ret;
 
     // wait until the first packet to create each stream
     vid->video_index = -1;
@@ -116,13 +122,13 @@ static int read_frame(BVID_DemuxContext *vid, AVIOContext *pb, AVPacket *pkt,
                                   "video packet");
         }
         avpriv_set_pts_info(st, 64, 185, vid->sample_rate);
-        st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-        st->codec->codec_id   = AV_CODEC_ID_BETHSOFTVID;
-        st->codec->width      = vid->width;
-        st->codec->height     = vid->height;
+        st->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+        st->codecpar->codec_id   = AV_CODEC_ID_BETHSOFTVID;
+        st->codecpar->width      = vid->width;
+        st->codecpar->height     = vid->height;
     }
     st      = s->streams[vid->video_index];
-    npixels = st->codec->width * st->codec->height;
+    npixels = st->codecpar->width * st->codecpar->height;
 
     vidbuf_start = av_malloc(vidbuf_capacity = BUFFER_PADDING_SIZE);
     if(!vidbuf_start)
@@ -146,9 +152,13 @@ static int read_frame(BVID_DemuxContext *vid, AVIOContext *pb, AVPacket *pkt,
     }
 
     do{
-        vidbuf_start = av_fast_realloc(vidbuf_start, &vidbuf_capacity, vidbuf_nbytes + BUFFER_PADDING_SIZE);
-        if(!vidbuf_start)
-            return AVERROR(ENOMEM);
+        uint8_t *tmp = av_fast_realloc(vidbuf_start, &vidbuf_capacity,
+                                       vidbuf_nbytes + BUFFER_PADDING_SIZE);
+        if (!tmp) {
+            ret = AVERROR(ENOMEM);
+            goto fail;
+        }
+        vidbuf_start = tmp;
 
         code = avio_r8(pb);
         vidbuf_start[vidbuf_nbytes++] = code;
@@ -245,13 +255,13 @@ static int vid_read_packet(AVFormatContext *s,
                 if (!st)
                     return AVERROR(ENOMEM);
                 vid->audio_index                 = st->index;
-                st->codec->codec_type            = AVMEDIA_TYPE_AUDIO;
-                st->codec->codec_id              = AV_CODEC_ID_PCM_U8;
-                st->codec->channels              = 1;
-                st->codec->channel_layout        = AV_CH_LAYOUT_MONO;
-                st->codec->bits_per_coded_sample = 8;
-                st->codec->sample_rate           = vid->sample_rate;
-                st->codec->bit_rate              = 8 * st->codec->sample_rate;
+                st->codecpar->codec_type            = AVMEDIA_TYPE_AUDIO;
+                st->codecpar->codec_id              = AV_CODEC_ID_PCM_U8;
+                st->codecpar->channels              = 1;
+                st->codecpar->channel_layout        = AV_CH_LAYOUT_MONO;
+                st->codecpar->bits_per_coded_sample = 8;
+                st->codecpar->sample_rate           = vid->sample_rate;
+                st->codecpar->bit_rate              = 8 * st->codecpar->sample_rate;
                 st->start_time                   = 0;
                 avpriv_set_pts_info(st, 64, 1, vid->sample_rate);
             }

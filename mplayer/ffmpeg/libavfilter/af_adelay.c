@@ -138,14 +138,20 @@ static int config_input(AVFilterLink *inlink)
     for (i = 0; i < s->nb_delays; i++) {
         ChanDelay *d = &s->chandelay[i];
         float delay;
+        char type = 0;
+        int ret;
 
         if (!(arg = av_strtok(p, "|", &saveptr)))
             break;
 
         p = NULL;
-        sscanf(arg, "%f", &delay);
 
-        d->delay = delay * inlink->sample_rate / 1000.0;
+        ret = sscanf(arg, "%d%c", &d->delay, &type);
+        if (ret != 2 || type != 'S') {
+            sscanf(arg, "%f", &delay);
+            d->delay = delay * inlink->sample_rate / 1000.0;
+        }
+
         if (d->delay < 0) {
             av_log(ctx, AV_LOG_ERROR, "Delay must be non negative number.\n");
             return AVERROR(EINVAL);
@@ -163,11 +169,6 @@ static int config_input(AVFilterLink *inlink)
             return AVERROR(ENOMEM);
 
         s->max_delay = FFMAX(s->max_delay, d->delay);
-    }
-
-    if (!s->max_delay) {
-        av_log(ctx, AV_LOG_ERROR, "At least one delay >0 must be specified.\n");
-        return AVERROR(EINVAL);
     }
 
     switch (inlink->format) {

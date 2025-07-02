@@ -24,8 +24,6 @@
  * JPEG 2000 encoder using libopenjpeg
  */
 
-#define  OPJ_STATIC
-
 #include "libavutil/avassert.h"
 #include "libavutil/common.h"
 #include "libavutil/imgutils.h"
@@ -34,7 +32,11 @@
 #include "avcodec.h"
 #include "internal.h"
 
-#if HAVE_OPENJPEG_2_1_OPENJPEG_H
+#if HAVE_OPENJPEG_2_3_OPENJPEG_H
+#  include <openjpeg-2.3/openjpeg.h>
+#elif HAVE_OPENJPEG_2_2_OPENJPEG_H
+#  include <openjpeg-2.2/openjpeg.h>
+#elif HAVE_OPENJPEG_2_1_OPENJPEG_H
 #  include <openjpeg-2.1/openjpeg.h>
 #elif HAVE_OPENJPEG_2_0_OPENJPEG_H
 #  include <openjpeg-2.0/openjpeg.h>
@@ -44,7 +46,7 @@
 #  include <openjpeg.h>
 #endif
 
-#if HAVE_OPENJPEG_2_1_OPENJPEG_H || HAVE_OPENJPEG_2_0_OPENJPEG_H
+#if HAVE_OPENJPEG_2_3_OPENJPEG_H || HAVE_OPENJPEG_2_2_OPENJPEG_H || HAVE_OPENJPEG_2_1_OPENJPEG_H || HAVE_OPENJPEG_2_0_OPENJPEG_H
 #  define OPENJPEG_MAJOR_VERSION 2
 #  define OPJ(x) OPJ_##x
 #else
@@ -54,7 +56,9 @@
 
 typedef struct LibOpenJPEGContext {
     AVClass *avclass;
+#if OPENJPEG_MAJOR_VERSION == 1
     opj_image_t *image;
+#endif // OPENJPEG_MAJOR_VERSION == 1
     opj_cparameters_t enc_params;
 #if OPENJPEG_MAJOR_VERSION == 1
     opj_event_mgr_t event_mgr;
@@ -64,9 +68,8 @@ typedef struct LibOpenJPEGContext {
     int prog_order;
     int cinema_mode;
     int numresolution;
-    int numlayers;
+    int irreversible;
     int disto_alloc;
-    int fixed_alloc;
     int fixed_quality;
 } LibOpenJPEGContext;
 
@@ -306,7 +309,7 @@ static av_cold int libopenjpeg_encode_init(AVCodecContext *avctx)
 
     opj_set_default_encoder_parameters(&ctx->enc_params);
 
-#if HAVE_OPENJPEG_2_1_OPENJPEG_H
+#if HAVE_OPENJPEG_2_3_OPENJPEG_H || HAVE_OPENJPEG_2_2_OPENJPEG_H || HAVE_OPENJPEG_2_1_OPENJPEG_H
     switch (ctx->cinema_mode) {
     case OPJ_CINEMA2K_24:
         ctx->enc_params.rsiz = OPJ_PROFILE_CINEMA_2K;
@@ -352,31 +355,40 @@ static av_cold int libopenjpeg_encode_init(AVCodecContext *avctx)
     ctx->enc_params.cp_cinema = ctx->cinema_mode;
 #endif
 
-    ctx->enc_params.mode = !!avctx->global_quality;
+    if (!ctx->numresolution) {
+        ctx->numresolution = 6;
+        while (FFMIN(avctx->width, avctx->height) >> ctx->numresolution < 1)
+            ctx->numresolution --;
+    }
+
     ctx->enc_params.prog_order = ctx->prog_order;
     ctx->enc_params.numresolution = ctx->numresolution;
+    ctx->enc_params.irreversible = ctx->irreversible;
     ctx->enc_params.cp_disto_alloc = ctx->disto_alloc;
-    ctx->enc_params.cp_fixed_alloc = ctx->fixed_alloc;
     ctx->enc_params.cp_fixed_quality = ctx->fixed_quality;
-    ctx->enc_params.tcp_numlayers = ctx->numlayers;
+    ctx->enc_params.tcp_numlayers = 1;
     ctx->enc_params.tcp_rates[0] = FFMAX(avctx->compression_level, 0) * 2;
 
     if (ctx->cinema_mode > 0) {
         cinema_parameters(&ctx->enc_params);
     }
 
+#if OPENJPEG_MAJOR_VERSION == 1
     ctx->image = mj2_create_image(avctx, &ctx->enc_params);
     if (!ctx->image) {
         av_log(avctx, AV_LOG_ERROR, "Error creating the mj2 image\n");
         err = AVERROR(EINVAL);
         goto fail;
     }
+#endif // OPENJPEG_MAJOR_VERSION == 1
 
     return 0;
 
 fail:
+#if OPENJPEG_MAJOR_VERSION == 1
     opj_image_destroy(ctx->image);
     ctx->image = NULL;
+#endif // OPENJPEG_MAJOR_VERSION == 1
     return err;
 }
 
@@ -411,7 +423,7 @@ static int libopenjpeg_copy_packed8(AVCodecContext *avctx, const AVFrame *frame,
         for (; y < image->comps[compno].h; ++y) {
             image_line = image->comps[compno].data + y * image->comps[compno].w;
             for (x = 0; x < image->comps[compno].w; ++x) {
-                image_line[x] = image_line[x - image->comps[compno].w];
+                image_line[x] = image_line[x - (int)image->comps[compno].w];
             }
         }
     }
@@ -451,7 +463,7 @@ static int libopenjpeg_copy_packed12(AVCodecContext *avctx, const AVFrame *frame
         for (; y < image->comps[compno].h; ++y) {
             image_line = image->comps[compno].data + y * image->comps[compno].w;
             for (x = 0; x < image->comps[compno].w; ++x) {
-                image_line[x] = image_line[x - image->comps[compno].w];
+                image_line[x] = image_line[x - (int)image->comps[compno].w];
             }
         }
     }
@@ -491,7 +503,7 @@ static int libopenjpeg_copy_packed16(AVCodecContext *avctx, const AVFrame *frame
         for (; y < image->comps[compno].h; ++y) {
             image_line = image->comps[compno].data + y * image->comps[compno].w;
             for (x = 0; x < image->comps[compno].w; ++x) {
-                image_line[x] = image_line[x - image->comps[compno].w];
+                image_line[x] = image_line[x - (int)image->comps[compno].w];
             }
         }
     }
@@ -518,8 +530,8 @@ static int libopenjpeg_copy_unpacked8(AVCodecContext *avctx, const AVFrame *fram
     }
 
     for (compno = 0; compno < numcomps; ++compno) {
-        width  = avctx->width / image->comps[compno].dx;
-        height = avctx->height / image->comps[compno].dy;
+        width  = (avctx->width + image->comps[compno].dx - 1) / image->comps[compno].dx;
+        height = (avctx->height + image->comps[compno].dy - 1) / image->comps[compno].dy;
         for (y = 0; y < height; ++y) {
             image_line = image->comps[compno].data + y * image->comps[compno].w;
             frame_index = y * frame->linesize[compno];
@@ -532,7 +544,7 @@ static int libopenjpeg_copy_unpacked8(AVCodecContext *avctx, const AVFrame *fram
         for (; y < image->comps[compno].h; ++y) {
             image_line = image->comps[compno].data + y * image->comps[compno].w;
             for (x = 0; x < image->comps[compno].w; ++x) {
-                image_line[x] = image_line[x - image->comps[compno].w];
+                image_line[x] = image_line[x - (int)image->comps[compno].w];
             }
         }
     }
@@ -560,8 +572,8 @@ static int libopenjpeg_copy_unpacked16(AVCodecContext *avctx, const AVFrame *fra
     }
 
     for (compno = 0; compno < numcomps; ++compno) {
-        width     = avctx->width / image->comps[compno].dx;
-        height    = avctx->height / image->comps[compno].dy;
+        width     = (avctx->width + image->comps[compno].dx - 1) / image->comps[compno].dx;
+        height    = (avctx->height + image->comps[compno].dy - 1) / image->comps[compno].dy;
         frame_ptr = (uint16_t *)frame->data[compno];
         for (y = 0; y < height; ++y) {
             image_line = image->comps[compno].data + y * image->comps[compno].w;
@@ -575,7 +587,7 @@ static int libopenjpeg_copy_unpacked16(AVCodecContext *avctx, const AVFrame *fra
         for (; y < image->comps[compno].h; ++y) {
             image_line = image->comps[compno].data + y * image->comps[compno].w;
             for (x = 0; x < image->comps[compno].w; ++x) {
-                image_line[x] = image_line[x - image->comps[compno].w];
+                image_line[x] = image_line[x - (int)image->comps[compno].w];
             }
         }
     }
@@ -587,18 +599,25 @@ static int libopenjpeg_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
                                     const AVFrame *frame, int *got_packet)
 {
     LibOpenJPEGContext *ctx = avctx->priv_data;
-    opj_image_t *image      = ctx->image;
+    int ret;
+    AVFrame *gbrframe;
+    int cpyresult = 0;
 #if OPENJPEG_MAJOR_VERSION == 1
+    opj_image_t *image      = ctx->image;
     opj_cinfo_t *compress   = NULL;
     opj_cio_t *stream       = NULL;
     int len;
 #else // OPENJPEG_MAJOR_VERSION == 2
+    PacketWriter writer     = { 0 };
     opj_codec_t *compress   = NULL;
     opj_stream_t *stream    = NULL;
+    opj_image_t *image      = mj2_create_image(avctx, &ctx->enc_params);
+    if (!image) {
+        av_log(avctx, AV_LOG_ERROR, "Error creating the mj2 image\n");
+        ret = AVERROR(EINVAL);
+        goto done;
+    }
 #endif // OPENJPEG_MAJOR_VERSION == 1
-    int cpyresult = 0;
-    int ret;
-    AVFrame *gbrframe;
 
     switch (avctx->pix_fmt) {
     case AV_PIX_FMT_RGB24:
@@ -621,8 +640,10 @@ static int libopenjpeg_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     case AV_PIX_FMT_GBRP14:
     case AV_PIX_FMT_GBRP16:
         gbrframe = av_frame_clone(frame);
-        if (!gbrframe)
-            return AVERROR(ENOMEM);
+        if (!gbrframe) {
+            ret = AVERROR(ENOMEM);
+            goto done;
+        }
         gbrframe->data[0] = frame->data[2]; // swap to be rgb
         gbrframe->data[1] = frame->data[0];
         gbrframe->data[2] = frame->data[1];
@@ -679,19 +700,21 @@ static int libopenjpeg_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
         av_log(avctx, AV_LOG_ERROR,
                "The frame's pixel format '%s' is not supported\n",
                av_get_pix_fmt_name(avctx->pix_fmt));
-        return AVERROR(EINVAL);
+        ret = AVERROR(EINVAL);
+        goto done;
         break;
     }
 
     if (!cpyresult) {
         av_log(avctx, AV_LOG_ERROR,
                "Could not copy the frame data to the internal image buffer\n");
-        return -1;
+        ret = -1;
+        goto done;
     }
 
 #if OPENJPEG_MAJOR_VERSION == 2
     if ((ret = ff_alloc_packet2(avctx, pkt, 1024, 0)) < 0) {
-        return ret;
+        goto done;
     }
 #endif // OPENJPEG_MAJOR_VERSION == 2
 
@@ -746,11 +769,11 @@ static int libopenjpeg_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
 
     memcpy(pkt->data, stream->buffer, len);
 #else // OPENJPEG_MAJOR_VERSION == 2
-    PacketWriter writer = {0, pkt};
+    writer.packet = pkt;
     opj_stream_set_write_function(stream, stream_write);
     opj_stream_set_skip_function(stream, stream_skip);
     opj_stream_set_seek_function(stream, stream_seek);
-#if HAVE_OPENJPEG_2_1_OPENJPEG_H
+#if HAVE_OPENJPEG_2_3_OPENJPEG_H || HAVE_OPENJPEG_2_2_OPENJPEG_H || HAVE_OPENJPEG_2_1_OPENJPEG_H
     opj_stream_set_user_data(stream, &writer, NULL);
 #elif HAVE_OPENJPEG_2_0_OPENJPEG_H
     opj_stream_set_user_data(stream, &writer);
@@ -758,7 +781,7 @@ static int libopenjpeg_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
 #error Missing call to opj_stream_set_user_data
 #endif
 
-    if (!opj_start_compress(compress, ctx->image, stream) ||
+    if (!opj_start_compress(compress, image, stream) ||
         !opj_encode(compress, stream) ||
         !opj_end_compress(compress, stream)) {
         av_log(avctx, AV_LOG_ERROR, "Error during the opj encode\n");
@@ -777,6 +800,7 @@ done:
 #if OPENJPEG_MAJOR_VERSION == 2
     opj_stream_destroy(stream);
     opj_destroy_codec(compress);
+    opj_image_destroy(image);
 #else
     opj_cio_close(stream);
     opj_destroy_compress(compress);
@@ -786,10 +810,12 @@ done:
 
 static av_cold int libopenjpeg_encode_close(AVCodecContext *avctx)
 {
+#if OPENJPEG_MAJOR_VERSION == 1
     LibOpenJPEGContext *ctx = avctx->priv_data;
 
     opj_image_destroy(ctx->image);
     ctx->image = NULL;
+#endif // OPENJPEG_MAJOR_VERSION == 1
     return 0;
 }
 
@@ -814,11 +840,10 @@ static const AVOption options[] = {
     { "rpcl",          NULL,                0,                     AV_OPT_TYPE_CONST, { .i64 = OPJ(RPCL)    }, 0,         0,           VE, "prog_order"  },
     { "pcrl",          NULL,                0,                     AV_OPT_TYPE_CONST, { .i64 = OPJ(PCRL)    }, 0,         0,           VE, "prog_order"  },
     { "cprl",          NULL,                0,                     AV_OPT_TYPE_CONST, { .i64 = OPJ(CPRL)    }, 0,         0,           VE, "prog_order"  },
-    { "numresolution", NULL,                OFFSET(numresolution), AV_OPT_TYPE_INT,   { .i64 = 6           }, 1,         INT_MAX,     VE                },
-    { "numlayers",     NULL,                OFFSET(numlayers),     AV_OPT_TYPE_INT,   { .i64 = 1           }, 1,         10,          VE                },
-    { "disto_alloc",   NULL,                OFFSET(disto_alloc),   AV_OPT_TYPE_INT,   { .i64 = 1           }, 0,         1,           VE                },
-    { "fixed_alloc",   NULL,                OFFSET(fixed_alloc),   AV_OPT_TYPE_INT,   { .i64 = 0           }, 0,         1,           VE                },
-    { "fixed_quality", NULL,                OFFSET(fixed_quality), AV_OPT_TYPE_INT,   { .i64 = 0           }, 0,         1,           VE                },
+    { "numresolution", NULL,                OFFSET(numresolution), AV_OPT_TYPE_INT,   { .i64 = 6            }, 0,         33,          VE                },
+    { "irreversible",  NULL,                OFFSET(irreversible),  AV_OPT_TYPE_INT,   { .i64 = 0            }, 0,         1,           VE                },
+    { "disto_alloc",   NULL,                OFFSET(disto_alloc),   AV_OPT_TYPE_INT,   { .i64 = 1            }, 0,         1,           VE                },
+    { "fixed_quality", NULL,                OFFSET(fixed_quality), AV_OPT_TYPE_INT,   { .i64 = 0            }, 0,         1,           VE                },
     { NULL },
 };
 

@@ -24,8 +24,6 @@
  * JPEG 2000 decoder using libopenjpeg
  */
 
-#define  OPJ_STATIC
-
 #include "libavutil/common.h"
 #include "libavutil/imgutils.h"
 #include "libavutil/intreadwrite.h"
@@ -36,7 +34,11 @@
 #include "internal.h"
 #include "thread.h"
 
-#if HAVE_OPENJPEG_2_1_OPENJPEG_H
+#if HAVE_OPENJPEG_2_3_OPENJPEG_H
+#  include <openjpeg-2.3/openjpeg.h>
+#elif HAVE_OPENJPEG_2_2_OPENJPEG_H
+#  include <openjpeg-2.2/openjpeg.h>
+#elif HAVE_OPENJPEG_2_1_OPENJPEG_H
 #  include <openjpeg-2.1/openjpeg.h>
 #elif HAVE_OPENJPEG_2_0_OPENJPEG_H
 #  include <openjpeg-2.0/openjpeg.h>
@@ -46,7 +48,7 @@
 #  include <openjpeg.h>
 #endif
 
-#if HAVE_OPENJPEG_2_1_OPENJPEG_H || HAVE_OPENJPEG_2_0_OPENJPEG_H
+#if HAVE_OPENJPEG_2_3_OPENJPEG_H || HAVE_OPENJPEG_2_2_OPENJPEG_H || HAVE_OPENJPEG_2_1_OPENJPEG_H || HAVE_OPENJPEG_2_0_OPENJPEG_H
 #  define OPENJPEG_MAJOR_VERSION 2
 #  define OPJ(x) OPJ_##x
 #else
@@ -126,10 +128,12 @@ typedef struct BufferReader {
 static OPJ_SIZE_T stream_read(void *out_buffer, OPJ_SIZE_T nb_bytes, void *user_data)
 {
     BufferReader *reader = user_data;
+    int remaining;
+
     if (reader->pos == reader->size) {
         return (OPJ_SIZE_T)-1;
     }
-    int remaining = reader->size - reader->pos;
+    remaining = reader->size - reader->pos;
     if (nb_bytes > remaining) {
         nb_bytes = remaining;
     }
@@ -149,10 +153,12 @@ static OPJ_OFF_T stream_skip(OPJ_OFF_T nb_bytes, void *user_data)
             nb_bytes = -reader->pos;
         }
     } else {
+        int remaining;
+
         if (reader->pos == reader->size) {
             return (OPJ_SIZE_T)-1;
         }
-        int remaining = reader->size - reader->pos;
+        remaining = reader->size - reader->pos;
         if (nb_bytes > remaining) {
             nb_bytes = remaining;
         }
@@ -427,7 +433,7 @@ static int libopenjpeg_decode_frame(AVCodecContext *avctx,
     opj_stream_set_read_function(stream, stream_read);
     opj_stream_set_skip_function(stream, stream_skip);
     opj_stream_set_seek_function(stream, stream_seek);
-#if HAVE_OPENJPEG_2_1_OPENJPEG_H
+#if HAVE_OPENJPEG_2_3_OPENJPEG_H || HAVE_OPENJPEG_2_2_OPENJPEG_H || HAVE_OPENJPEG_2_1_OPENJPEG_H
     opj_stream_set_user_data(stream, &reader, NULL);
 #elif HAVE_OPENJPEG_2_0_OPENJPEG_H
     opj_stream_set_user_data(stream, &reader);
@@ -538,12 +544,14 @@ static int libopenjpeg_decode_frame(AVCodecContext *avctx,
         }
         break;
     default:
-        av_log(avctx, AV_LOG_ERROR, "unsupported pixel size %d\n", pixel_size);
+        avpriv_report_missing_feature(avctx, "Pixel size %d", pixel_size);
         ret = AVERROR_PATCHWELCOME;
         goto done;
     }
 
     *got_frame = 1;
+    picture->pict_type = AV_PICTURE_TYPE_I;
+    picture->key_frame = 1;
     ret        = buf_size;
 
 done:
