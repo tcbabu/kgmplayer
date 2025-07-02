@@ -390,6 +390,43 @@ void *RunVolumeNormalise(void *stmp) {
 #endif
 	return NULL;
 }
+void *RunVolumeLoudnorm(void *stmp) {
+	VOLSTR *Istr=(VOLSTR *)stmp;
+	char Infile[200],Outfile[200],buff[500];
+	double corval=0.0;
+	int meanlevel;
+	int pid;
+	Dlink *L=Dopen();
+	char *tpt;
+	int hr,min,sec,tot;
+        double EnhFac=1.0;
+	strcpy(Infile,Istr->Infile);
+	strcpy(Outfile,Istr->Outfile);
+	meanlevel = Istr->MeanDb;
+	corval = Istr->corval;
+	tot = (int)Istr->duration;
+	hr = tot/3600;
+	min = tot %3600;
+	sec = min%60;
+	min = min/60;
+
+#if 1
+	sprintf(buff,"Loudness Normalisation");
+	AddMonMessage(L,buff);
+	sprintf(buff,"Processing file: %s",Infile);
+	AddMonMessage(L,buff);
+	strcpy(buff,"!c08 Press !c03Cancel!c08 to kill");
+	AddMonMessage(L,buff);
+        sprintf(buff,"ffmpegfun -i \"%s\" -af \"loudnorm\" -y \"%s\"", 
+                    Infile,Outfile);
+        Resetlink(L);
+        pid = RunVolJob(buff,L,MonitorJob);
+//        pid = RunVolJob(buff,NULL,NULL);
+	free(stmp);
+	Dempty(L);
+#endif
+	return NULL;
+}
 void *RunVolumeDetect(void *stmp) {
 	VOLSTR *Istr=(VOLSTR *)stmp;
 	char Infile[200],Outfile[200],buff[500];
