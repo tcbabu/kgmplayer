@@ -1,3 +1,4 @@
+#define D_KULINA
 /*
  * ffmpeg filter configuration
  *

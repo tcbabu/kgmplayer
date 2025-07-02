@@ -1,4 +1,4 @@
-
+#define D_KULINA
 /*
  * ffmpeg option parsing
  *

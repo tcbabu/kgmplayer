@@ -2,7 +2,7 @@ include config.mak
 #CC	=g++ -pthread
 #CC	=cc -pthread -fPIC 
 CC	=gcc -pthread -fPIC  $(X11_CFLAGS) -I$(KULINA)/include
-FFMPEGOBJS	=$(foreach part, ../mplayer/ffmpeg, $(wildcard $(addprefix $(part)/,*.[o])))
+FFMPEGOBJS	=$(foreach part, ../mplayer/ffmpeg/fftools, $(wildcard $(addprefix $(part)/,*.[o])))
 kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
                   FullScreenCallbacks.o main.o ControlsCallbacks.o \
 	        Controls.o AControls.o Rip.o Manage.o ManageCallbacks.o\
