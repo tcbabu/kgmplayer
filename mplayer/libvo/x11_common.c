@@ -28,10 +28,10 @@
 #include "mp_msg.h"
 #include "mp_fifo.h"
 #include "libavutil/common.h"
+#include "libavutil/avstring.h"
 #include "x11_common.h"
 
 #include <string.h>
-#include <strings.h>
 #include <unistd.h>
 #include <assert.h>
 
@@ -85,6 +85,7 @@
 #define WIN_LAYER_NORMAL                 4
 #define WIN_LAYER_ONTOP                  6
 #define WIN_LAYER_ABOVE_DOCK             10
+
 #ifdef D_KULINA
 #include "kulina.h"
 #include <pthread.h>
@@ -558,7 +559,7 @@ int vo_init(void)
 
     saver_off(mDisplay);
 #ifdef D_KULINA
-    kgHide=1;
+    kgHide =1;
 #endif
     return 1;
 }
@@ -847,6 +848,7 @@ static int to_utf8(const uint8_t *in)
 err:
     return 0;
 }
+
 #ifdef D_KULINA
 static int CheckEscape(Display *Dsp,XEvent *event) {
   static int Scan_code[256];
@@ -878,8 +880,6 @@ static int CheckEscape(Display *Dsp,XEvent *event) {
   else return 0;
 }
 #endif
-
-
 static void fixup_ctrl_state(int *ctrl_state, int state)
 {
     // Attempt to fix if somehow our state got out of
@@ -895,11 +895,12 @@ static void fixup_ctrl_state(int *ctrl_state, int state)
 
 static int handle_x11_event(Display *mydisplay, XEvent *event)
 {
-    int key = 0,pesc=0;
+    int key = 0;
     uint8_t buf[16] = {0};
     KeySym keySym;
     static XComposeStatus stat;
     static int ctrl_state;
+
 #ifdef D_KULINA
     if(Kulina) {
         switch (event->type)
@@ -937,7 +938,6 @@ static int handle_x11_event(Display *mydisplay, XEvent *event)
         }
         } // if(Kulina);
 #endif
-
 #ifdef CONFIG_GUI
         if (use_gui)
         {
@@ -1187,10 +1187,10 @@ Window vo_x11_create_smooth_window(Display * mDisplay, Window mRoot,
     if (f_gc == None)
         f_gc = XCreateGC(mDisplay, ret_win, 0, 0);
     XSetForeground(mDisplay, f_gc, 0);
+
 #ifdef D_KULINA
     MWIN = (unsigned long)ret_win;
 #endif
-
     return ret_win;
 }
 
@@ -1316,6 +1316,7 @@ final:
 
   XSync(mDisplay, False);
   vo_mouse_autohide = 1;
+}
 #ifdef D_KULINA
   {
     MWIN = (unsigned long)vo_window;
@@ -1323,8 +1324,6 @@ final:
     fflush(stderr);
   }
 #endif
-
-}
 
 void vo_x11_clearwindow_part(Display * mDisplay, Window vo_window,
                              int img_width, int img_height, int use_fs)
@@ -2009,11 +2008,11 @@ uint32_t vo_x11_set_equalizer(const char *name, int value)
     if (cmap == None)
         return VO_NOTAVAIL;
 
-    if (!strcasecmp(name, "brightness"))
+    if (!av_strcasecmp(name, "brightness"))
         vo_brightness = value;
-    else if (!strcasecmp(name, "contrast"))
+    else if (!av_strcasecmp(name, "contrast"))
         vo_contrast = value;
-    else if (!strcasecmp(name, "gamma"))
+    else if (!av_strcasecmp(name, "gamma"))
         vo_gamma = value;
     else
         return VO_NOTIMPL;
@@ -2044,11 +2043,11 @@ uint32_t vo_x11_get_equalizer(const char *name, int *value)
 {
     if (cmap == None)
         return VO_NOTAVAIL;
-    if (!strcasecmp(name, "brightness"))
+    if (!av_strcasecmp(name, "brightness"))
         *value = vo_brightness;
-    else if (!strcasecmp(name, "contrast"))
+    else if (!av_strcasecmp(name, "contrast"))
         *value = vo_contrast;
-    else if (!strcasecmp(name, "gamma"))
+    else if (!av_strcasecmp(name, "gamma"))
         *value = vo_gamma;
     else
         return VO_NOTIMPL;
@@ -2076,29 +2075,29 @@ int vo_xv_set_eq(uint32_t xv_port, const char *name, int value)
                 int hue = 0, port_value, port_min, port_max;
 
                 if (!strcmp(attributes[i].name, "XV_BRIGHTNESS") &&
-                    (!strcasecmp(name, "brightness")))
+                    (!av_strcasecmp(name, "brightness")))
                     port_value = value;
                 else if (!strcmp(attributes[i].name, "XV_CONTRAST") &&
-                         (!strcasecmp(name, "contrast")))
+                         (!av_strcasecmp(name, "contrast")))
                     port_value = value;
                 else if (!strcmp(attributes[i].name, "XV_SATURATION") &&
-                         (!strcasecmp(name, "saturation")))
+                         (!av_strcasecmp(name, "saturation")))
                     port_value = value;
                 else if (!strcmp(attributes[i].name, "XV_HUE") &&
-                         (!strcasecmp(name, "hue")))
+                         (!av_strcasecmp(name, "hue")))
                 {
                     port_value = value;
                     hue = 1;
                 } else
                     /* Note: since 22.01.2002 GATOS supports these attrs for radeons (NK) */
                 if (!strcmp(attributes[i].name, "XV_RED_INTENSITY") &&
-                        (!strcasecmp(name, "red_intensity")))
+                        (!av_strcasecmp(name, "red_intensity")))
                     port_value = value;
                 else if (!strcmp(attributes[i].name, "XV_GREEN_INTENSITY")
-                         && (!strcasecmp(name, "green_intensity")))
+                         && (!av_strcasecmp(name, "green_intensity")))
                     port_value = value;
                 else if (!strcmp(attributes[i].name, "XV_BLUE_INTENSITY")
-                         && (!strcasecmp(name, "blue_intensity")))
+                         && (!av_strcasecmp(name, "blue_intensity")))
                     port_value = value;
                 else
                     continue;
@@ -2154,16 +2153,16 @@ int vo_xv_get_eq(uint32_t xv_port, const char *name, int *value)
                     100;
 
                 if (!strcmp(attributes[i].name, "XV_BRIGHTNESS") &&
-                    (!strcasecmp(name, "brightness")))
+                    (!av_strcasecmp(name, "brightness")))
                     *value = val;
                 else if (!strcmp(attributes[i].name, "XV_CONTRAST") &&
-                         (!strcasecmp(name, "contrast")))
+                         (!av_strcasecmp(name, "contrast")))
                     *value = val;
                 else if (!strcmp(attributes[i].name, "XV_SATURATION") &&
-                         (!strcasecmp(name, "saturation")))
+                         (!av_strcasecmp(name, "saturation")))
                     *value = val;
                 else if (!strcmp(attributes[i].name, "XV_HUE") &&
-                         (!strcasecmp(name, "hue")))
+                         (!av_strcasecmp(name, "hue")))
                 {
                     /* nasty nvidia detect */
                     if (port_min == 0 && port_max == 360)
@@ -2173,13 +2172,13 @@ int vo_xv_get_eq(uint32_t xv_port, const char *name, int *value)
                 } else
                     /* Note: since 22.01.2002 GATOS supports these attrs for radeons (NK) */
                 if (!strcmp(attributes[i].name, "XV_RED_INTENSITY") &&
-                        (!strcasecmp(name, "red_intensity")))
+                        (!av_strcasecmp(name, "red_intensity")))
                     *value = val;
                 else if (!strcmp(attributes[i].name, "XV_GREEN_INTENSITY")
-                         && (!strcasecmp(name, "green_intensity")))
+                         && (!av_strcasecmp(name, "green_intensity")))
                     *value = val;
                 else if (!strcmp(attributes[i].name, "XV_BLUE_INTENSITY")
-                         && (!strcasecmp(name, "blue_intensity")))
+                         && (!av_strcasecmp(name, "blue_intensity")))
                     *value = val;
                 else
                     continue;

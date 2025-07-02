@@ -30,6 +30,7 @@
 #include <string.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 /* ------------------------------------------------------------------------- */
 
@@ -81,7 +82,7 @@ const LIBVO_EXTERN (pnm)
 
 /* Global Variables */
 #ifdef D_KULINA
-static int pnm_type = PNM_TYPE_PPM;
+static int  pnm_type = PNM_TYPE_PPM;
 #else
 int pnm_type = PNM_TYPE_PPM;
 #endif
