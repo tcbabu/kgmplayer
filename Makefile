@@ -108,6 +108,8 @@ ffmpegbuild	:
 		 echo "export CFLAGS=\"$(CFLAGS) $(X11_CFLAGS)\"">>ffmpegbuild
 		 echo "export LDFLAGS=\"$(LDFLAGS) $(X11_LIBS)\"">>ffmpegbuild
 		 cat ffmpeg/rebuild >> ffmpegbuild
+		 cc -c ffmain.c
+		 cp ffmain.o ffmpeg/fftools
 		 chmod +x ffmpegbuild
 x264build	:  
 		 echo "#! /bin/bash" >x264build

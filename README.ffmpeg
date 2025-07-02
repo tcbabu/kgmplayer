@@ -1,0 +1,17 @@
+Note on Making ffmpeg work with kgmplayer
+
+one need to remove the exiting version ffmpeg under mplayer
+and untar the new ffpeg tar ball under mplayer and rename it
+to ffmpeg.
+
+There is link to mplayer/ffmpeg to ffmpeg
+
+Now one need to modify ffmpeg.c under ffmpeg/fftools
+Change the "int main(..)" to "int kgffmeg(...)"
+add 'ffmpegfun()' to ffmpeg.c. One may copy it from the
+existing version (so keep that as a backup).
+
+Now one need to modify the 'Makefile' unser ffmpeg/fftools to
+add ffmain.o to the object list.
+
+Probably it is done
