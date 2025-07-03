@@ -64,31 +64,6 @@ TOOLGRP ToolList[ ] = {
        "format like wav or flac\n"
   },
 
-  { 0, MakeConvertVideoGroup,"!f23Convert Video to mp4",340,0,RunHelper,0,
-      "\n\n\nConverting video to mp4 can reduce "
-	      "the file size substantially\n"
-      "without much loss of quality. One can opt \n"
-      "for different compression\n"
-      "levels by changing the quality level. \n"
-      "Higher quality is at the expense\n"
-      "of file size, but it is generally affordable.\n"
-      " If there is a plan to edit further, \n"
-      "opt for the best quality.\n"
-      "\nThanks to libx264/265, generally a good job is done\n"
-      "\n Aspect value 1 means the original aspect ratio,\n"
-      "greater than (>) 1.0 means a decrease in y resolution\n"
-      "less thsn (<) 1.0 means an increase in y resolution\n"
-      "\n Aspect ratio is Xres/Yres and a factor 1.0 means\n"
-      " fac = (Xres/Yres)/(AspRatio) where AspRatio is original\n"
-      "aspect ratio, so a factor greater than 1.0 means a decrease\n"
-      "new Yres and a value < 1.0 means an increase in new Yres\n"
-      "So new Yres if adjusted to maintain the new aspect ratio\n"
-  },
-  { 0, MakeVideoJoinGroup,"!f23Join Video Files",346,0 ,RunHelper,0,
-      "\nMuliple video files can be joined together to a single one\n"
-      "Files can be of diffrent aspect ratio or format and the output\n"
-      "is a file with aspect ratio\n"
-  },
   { 0, MakeAudioJoinGroup,"!f23Join Audio from Media Files",346,0,RunHelper,0,
       "\n\n\nJoin audios from multiple input files (can be audio or video)\n"
       "If there is a plan to edit further, select output format as lossless\n"
@@ -124,13 +99,6 @@ TOOLGRP ToolList[ ] = {
        "or adding audio to media\n"
   },
 
-  { 0, Makeimgs2vGroup,"!f23Images to Video",346,40,RunHelper,0,
-       "Useful in creating a video from a set of photographs or images\n"
-       "May not be the one for creating video from frames, though one\n"
-       "can attempt by reducing time for each image, probably for low\n"
-       "quality video for cartoons\n"
-       "Another tool is there for making video from frames.\n"
-  },
   /*
   { 0, MakenormalizeGroup,"!f23Normalize Audio File Volume",346,40,RunHelper,0,
        "\nCan be used to normalize volume to a common level for audio\n"
@@ -156,6 +124,38 @@ TOOLGRP ToolList[ ] = {
        "use the tool for extracting  media audio, and add output audio.\n"
        "Remember lossless formats are best for further editing.\n"
        "Filter over writes input file; backup input file if needed\n"
+  },
+  { 0, MakeConvertVideoGroup,"!f23Convert Video to mp4",340,0,RunHelper,0,
+      "\n\n\nConverting video to mp4 can reduce "
+	      "the file size substantially\n"
+      "without much loss of quality. One can opt \n"
+      "for different compression\n"
+      "levels by changing the quality level. \n"
+      "Higher quality is at the expense\n"
+      "of file size, but it is generally affordable.\n"
+      " If there is a plan to edit further, \n"
+      "opt for the best quality.\n"
+      "\nThanks to libx264/265, generally a good job is done\n"
+      "\n Aspect value 1 means the original aspect ratio,\n"
+      "greater than (>) 1.0 means a decrease in y resolution\n"
+      "less thsn (<) 1.0 means an increase in y resolution\n"
+      "\n Aspect ratio is Xres/Yres and a factor 1.0 means\n"
+      " fac = (Xres/Yres)/(AspRatio) where AspRatio is original\n"
+      "aspect ratio, so a factor greater than 1.0 means a decrease\n"
+      "new Yres and a value < 1.0 means an increase in new Yres\n"
+      "So new Yres if adjusted to maintain the new aspect ratio\n"
+  },
+  { 0, MakeVideoJoinGroup,"!f23Join Video Files",346,0 ,RunHelper,0,
+      "\nMuliple video files can be joined together to a single one\n"
+      "Files can be of diffrent aspect ratio or format and the output\n"
+      "is a file with aspect ratio\n"
+  },
+  { 0, Makeimgs2vGroup,"!f23Images to Video",346,40,RunHelper,0,
+       "Useful in creating a video from a set of photographs or images\n"
+       "May not be the one for creating video from frames, though one\n"
+       "can attempt by reducing time for each image, probably for low\n"
+       "quality video for cartoons\n"
+       "Another tool is there for making video from frames.\n"
   },
   { 0, MakevtobwGroup,"!f23Convert Video to Black&White", 346,40 ,RunHelper,0,
        "\n\n\nConverts a video to gray scale or Balck&White\n"
