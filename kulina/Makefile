@@ -39,6 +39,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 normalize.o normalizeCallbacks.o \
 	 Normalise.o NormaliseCallbacks.o \
 	 Loudnorm.o LoudnormCallbacks.o \
+	 Silence.o SilenceCallbacks.o \
 	 vtobw.o vtobwCallbacks.o \
 	 vflip.o vflipCallbacks.o \
 	 hflip.o hflipCallbacks.o \
@@ -89,6 +90,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 normalize.o normalizeCallbacks.o \
 	 Normalise.o NormaliseCallbacks.o \
 	 Loudnorm.o LoudnormCallbacks.o \
+	 Silence.o SilenceCallbacks.o \
 	 vtobw.o vtobwCallbacks.o \
 	 vflip.o vflipCallbacks.o \
 	 hflip.o hflipCallbacks.o \
@@ -226,6 +228,10 @@ Loudnorm.o		: Loudnorm.c
 	 	$(CC) -c Loudnorm.c
 LoudnormCallbacks.o		: LoudnormCallbacks.c
 		$(CC) -c LoudnormCallbacks.c
+Silence.o		: Silence.c
+	 	$(CC) -c Silence.c
+SilenceCallbacks.o		: SilenceCallbacks.c
+		$(CC) -c SilenceCallbacks.c
 vtobw.o		: vtobw.c
 		 $(CC) -c vtobw.c
 vtobwCallbacks.o	: vtobwCallbacks.c
