@@ -1,0 +1,11 @@
+int  vtobwtextbox1callback(int cellno,int i,void *Tmp);
+int  vtobwtextbox2callback(int cellno,int i,void *Tmp);
+int  vtobwbutton1callback(int butno,int i,void *Tmp) ;
+void  vtobwbutton1init(DIN *B,void *pt) ;
+int  vtobwsplbutton1callback(int butno,int i,void *Tmp) ;
+void  vtobwsplbutton1init(DIL *B,void *pt) ;
+int vtobwinit(void *Tmp) ;
+int vtobwcleanup(void *Tmp) ;
+int vtobwCallBack(void *Tmp,void *tmp) ;
+int vtobwResizeCallBack(void *Tmp) ;
+int vtobwWaitCallBack(void *Tmp) ;

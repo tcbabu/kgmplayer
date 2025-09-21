@@ -1,0 +1,16 @@
+int  AddAudiotextbox1callback(int cellno,int i,void *Tmp);
+int  AddAudiobutton1callback(int butno,int i,void *Tmp) ;
+void  AddAudiobutton1init(DIN *B,void *pt) ;
+int  AddAudiotextbox2callback(int cellno,int i,void *Tmp);
+int  AddAudiobrowser1callback(int item,int i,void *Tmp) ;
+void  AddAudiobrowser1init(DIRA *R,void *pt) ;
+int  AddAudiosplbutton1callback(int butno,int i,void *Tmp) ;
+void  AddAudiosplbutton1init(DIL *B,void *pt) ;
+int  AddAudiotextbox3callback(int cellno,int i,void *Tmp);
+int  AddAudiobutton2callback(int butno,int i,void *Tmp) ;
+void  AddAudiobutton2init(DIN *B,void *pt) ;
+int AddAudioinit(void *Tmp) ;
+int AddAudiocleanup(void *Tmp) ;
+int AddAudioCallBack(void *Tmp,void *tmp) ;
+int AddAudioResizeCallBack(void *Tmp) ;
+int AddAudioWaitCallBack(void *Tmp) ;

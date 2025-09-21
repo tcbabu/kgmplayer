@@ -1,0 +1,4 @@
+./configure --prefix=$KULINA --enable-static --enable-shared  --without-magick-plus-plus --without-perl  --without-jas  --without-lcms --without-lcms2 --without-trio --without-wmf --without-xml --x-libraries=/usr/X11R76/lib --x-includes=/usr/X11R76/include --disable-openmp --with-threads
+export CFLAGS= -I$KULINA/include
+make 
+make install

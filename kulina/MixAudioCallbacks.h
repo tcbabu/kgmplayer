@@ -1,0 +1,38 @@
+#include <kulina.h>
+
+char * MakeMixFile(void) ;
+char * MakeAudioMixFile(void) ;
+int GetWavHeaderLength(char *flname) ;
+int joinaudio(char *infile1,char *infile2,char *outfile) ;
+int  MixAudiotextbox1callback(int cellno,int i,void *Tmp) ;
+int  MixAudiobutton1callback(int butno,int i,void *Tmp) ;
+void  MixAudiobutton1init(DIN *B,void *pt) ;
+int  MixAudiotextbox2callback(int cellno,int i,void *Tmp) ;
+int  MixAudiobrowser1callback(int item,int i,void *Tmp) ;
+void  MixAudiobrowser1init(DIRA *R,void *pt) ;
+int  MixAudiosplbutton1callback(int butno,int i,void *Tmp) ;
+void  MixAudiosplbutton1init(DIL *B,void *pt) ;
+int  MixAudiotextbox3callback(int cellno,int i,void *Tmp) ;
+int  MixAudiobutton2callback(int butno,int i,void *Tmp) ;
+void  MixAudiobutton2init(DIN *B,void *pt) ;
+int MixAudioinit(void *Tmp) ;
+int MixAudiocleanup(void *Tmp) ;
+int MixAudioCallBack(void *Tmp,void *tmp) ;
+int MixAudioResizeCallBack(void *Tmp) ;
+int MixAudioWaitCallBack(void *Tmp) ;
+int  AmixAudiotextbox1callback(int cellno,int i,void *Tmp) ;
+int  AmixAudiobutton1callback(int butno,int i,void *Tmp) ;
+void  AmixAudiobutton1init(DIN *B,void *pt) ;
+int  AmixAudiotextbox2callback(int cellno,int i,void *Tmp) ;
+int  AmixAudiobrowser1callback(int item,int i,void *Tmp) ;
+void  AmixAudiobrowser1init(DIRA *R,void *pt) ;
+int  AmixAudiosplbutton1callback(int butno,int i,void *Tmp) ;
+void  AmixAudiosplbutton1init(DIL *B,void *pt) ;
+int  AmixAudiotextbox3callback(int cellno,int i,void *Tmp) ;
+int  AmixAudiobutton2callback(int butno,int i,void *Tmp) ;
+void  AmixAudiobutton2init(DIN *B,void *pt) ;
+int AmixAudioinit(void *Tmp) ;
+int AmixAudiocleanup(void *Tmp) ;
+int AmixAudioCallBack(void *Tmp,void *tmp) ;
+int AmixAudioResizeCallBack(void *Tmp) ;
+int AmixAudioWaitCallBack(void *Tmp) ;

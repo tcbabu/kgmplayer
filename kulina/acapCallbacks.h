@@ -1,0 +1,15 @@
+int  acaptextbox1callback(int cellno,int i,void *Tmp);
+int  acapbutton1callback(int butno,int i,void *Tmp) ;
+void  acapbutton1init(DIN *B,void *pt) ;
+int  acapbutton2callback(int butno,int i,void *Tmp) ;
+void  acapbutton2init(DIN *B,void *pt) ;
+int  acapbutton3callback(int butno,int i,void *Tmp) ;
+void  acapbutton3init(DIN *B,void *pt) ;
+int  acapbutton4callback(int butno,int i,void *Tmp) ;
+void  acapbutton4init(DIN *B,void *pt) ;
+int acapinit(void *Tmp) ;
+int acapcleanup(void *Tmp) ;
+int Modifyacap(void *Tmp,int GrpId) ;
+int acapCallBack(void *Tmp,void *tmp) ;
+int acapResizeCallBack(void *Tmp) ;
+int acapWaitCallBack(void *Tmp) ;

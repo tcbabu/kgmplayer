@@ -1,0 +1,27 @@
+#! /bin/bash 
+PREFIX=/home/kulina/BUILD/kgmplayer
+KULINA=/home/kulina/BUILD/kgmplayer
+export CFLAGS="-fPIC -fpic -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 "
+export CPPFLAGS="-fPIC -fpic -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 "
+export LDFLAGS="-L/lib -L/home/kulina/BUILD/kgmplayer/lib "
+export X11_CFLAGS="-I/home/kulina/BUILD/kgmplayer/include "
+export X11_LIBS="-lX11 "
+export PKG_CONFIG_PATH=/home/kulina/BUILD/kgmplayer/lib/pkgconfig:/usr/X11R76/lib/pkgconfig:/home/kulina/BUILD/kgmplayer/lib/pkgconfig:/usr/X11R76/lib/pkgconfig
+export LD_LIBRARY_PATH=/home/kulina/BUILD/kgmplayer/lib:/usr/X11R76/lib:
+export PATH=/home/kulina/BUILD/kgmplayer/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+#export PKG_CONFIG_PATH=$KULINA/lib/pkgconfig
+export LD_CONFIG_PATH=$LD_CONFIG_PATH:$KULINA/lib
+export ZLIBLIB=$KULINA/lib
+export ZLIBINC=$KULINA/include
+export CFLAGS=$CFLAGS 
+echo $CFLAGS
+echo $PKG_CONFIG_PATH
+echo "$X11_LIBS"
+echo "$X11_CFLAGS"
+tar xf fontconfig-2.13.1.tar.bz2
+cd fontconfig-2.13.1
+./configure --prefix=$KULINA --enable-static
+make -j4 
+make install
+cd ..
+rm -rf fontconfig-2.13.1

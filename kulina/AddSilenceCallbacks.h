@@ -1,0 +1,15 @@
+int  AddSilencebrowser1callback(int item,int i,void *Tmp) ;
+void  AddSilencebrowser1init(DIX *X,void *pt) ;
+int  AddSilencebutton1callback(int butno,int i,void *Tmp) ;
+void  AddSilencebutton1init(DIN *B,void *pt) ;
+int  AddSilencetextbox1callback(int cellno,int i,void *Tmp);
+int  AddSilencesplbutton1callback(int butno,int i,void *Tmp) ;
+void  AddSilencesplbutton1init(DIL *B,void *pt) ;
+int  AddSilencetextbox2callback(int cellno,int i,void *Tmp);
+int  AddSilencebutton2callback(int butno,int i,void *Tmp) ;
+void  AddSilencebutton2init(DIN *B,void *pt) ;
+int AddSilenceinit(void *Tmp) ;
+int AddSilencecleanup(void *Tmp) ;
+int AddSilenceCallBack(void *Tmp,void *tmp) ;
+int AddSilenceResizeCallBack(void *Tmp) ;
+int AddSilenceWaitCallBack(void *Tmp) ;

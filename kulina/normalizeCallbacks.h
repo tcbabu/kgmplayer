@@ -1,0 +1,14 @@
+int  normalizetextbox1callback(int cellno,int i,void *Tmp);
+int  normalizetextbox2callback(int cellno,int i,void *Tmp);
+int  normalizebutton1callback(int butno,int i,void *Tmp) ;
+void  normalizebutton1init(DIN *B,void *pt) ;
+int  normalizebutton2callback(int butno,int i,void *Tmp) ;
+void  normalizebutton2init(DIN *B,void *pt) ;
+int  normalizetextbox3callback(int cellno,int i,void *Tmp);
+int  normalizesplbutton1callback(int butno,int i,void *Tmp) ;
+void  normalizesplbutton1init(DIL *B,void *pt) ;
+int normalizeinit(void *Tmp) ;
+int normalizecleanup(void *Tmp) ;
+int normalizeCallBack(void *Tmp,void *tmp) ;
+int normalizeResizeCallBack(void *Tmp) ;
+int normalizeWaitCallBack(void *Tmp) ;

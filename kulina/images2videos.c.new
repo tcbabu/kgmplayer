@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <kulina.h>
+#include "images2videos.h"
+#include "mediainfo.h"
+#include "images2videos.h"
+
+
+int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
+int kgffmpeg(int,char **);
+int ProcessSkip(int pip0,int pip1,int Pid);
+int ProcessPrint(int pip0,int pip1,int Pid);
+
+
+int Imgs2Videos( IMGS2VDATA *is2vdata) {
+  char Fifo[500];
+  char Folder[500],Tmpimage[500],Vname[500];
+  int id,xl,yl,off,xv,yv,dx=0,dy=0;
+  char command[1000],options[500],HOME[500];
+  GMIMG *Img=NULL,*Timg=NULL;
+  double iaspect,raspect;
+  int vid=0,pid=0;
+  Dlink *L;
+  MEDIAINFO *Minfo;
+  id = getpid();
+  sprintf(Fifo,"/tmp/Fifo%-d",id);
+//  mkfifo(Fifo,0600);
+  if( (pid=fork())==0) { 
+  sprintf(Folder,"%-s/%-d",getenv("HOME"),id);
+  if(FileStat(Folder)) kgCleanDir(Folder);
+  mkdir(Folder,0700);
+  L = (Dlink *)(is2vdata->List);
+  if(L== NULL) return;
+  Resetlink(L);
+  sprintf(Tmpimage,"%-s/Image.jpg",Folder);
+  sprintf(command,"kgffmpeg -f lavfi -i color=c=black:s=%-dx%-d  "
+         "-t %-5.2f "
+         " -y -f mp4 -b:v 3000K -vcodec libx264 \"%-s/%-d\"",
+         is2vdata->Xsize,is2vdata->Ysize,is2vdata->imagetime, Folder,id);
+//  system(command);
+  runfunction (command,ProcessPrint,kgffmpeg);
+ // system(command);
+  while ( (Minfo= Getrecord(L)) != NULL) {
+    sprintf(Vname,"%-s/Img%-5.5d.mp4",Folder,vid);
+    Img = kgGetImage(Minfo->Flname);
+    xl = Img->image_width;
+    yl = Img->image_height;
+    dx=0,dy=0;
+    iaspect = (double)yl/xl;
+    raspect = (double)is2vdata->Ysize/is2vdata->Xsize;
+    if(iaspect>raspect) {
+     if(is2vdata->fittoscrn) {
+      xv = is2vdata->Xsize;
+      yv = (int)(xv*iaspect);
+     }
+     else {
+      yv = is2vdata->Ysize;
+      xv = (int)(yv/iaspect);
+      dx = (is2vdata->Xsize -xv)/2;
+     }
+     Timg = kgChangeSizeImage(Img, xv,yv);
+     off = (yv - is2vdata->Ysize)/2;
+     kgFreeImage(Img);
+     Img = kgCropImage(Timg,0,off,xv-1,yv-1-off);
+    }
+    else {
+     if(is2vdata->fittoscrn) {
+      yv = is2vdata->Ysize;
+      xv = (int)(yv/iaspect);
+     }
+     else{
+      xv = is2vdata->Xsize;
+      yv = (int)(xv*iaspect);
+      dy = (is2vdata->Ysize -yv)/2;
+     }
+     Timg = kgChangeSizeImage(Img, xv,yv);
+     off = (xv - is2vdata->Xsize)/2;
+     kgFreeImage(Img);
+     Img = kgCropImage(Timg,off,0,xv-1-off,yv-1);
+    }
+    kgFreeImage(Timg);
+    kgWriteImage(Img, Tmpimage);
+    kgFreeImage(Img);
+    sprintf(command,"kgffmpeg -i \"%-s/%-d\" -i \"%s\" -filter_complex"
+     " overlay=%-d:%-d -f mp4 -b:v 3000K -vcodec libx264 -y \"%-s\" ",
+         Folder,id,Tmpimage,dx,dy,Vname);
+    runfunction (command,ProcessPrint,kgffmpeg);
+    //system(command);
+    vid++;
+  } // while...
+#if 0
+  remove(Tmpimage);
+  sprintf(Tmpimage,"%-s/%d",Folder,id);
+  remove(Tmpimage);
+  sprintf(Tmpimage,"%-s/%d",Folder,id+1);
+  remove(Tmpimage);
+#endif
+   exit(0);
+  }
+  else {
+    int status;
+    waitpid(pid,&status,0);
+  }
+  
+ // if(FileStat(Folder)) kgCleanDir(Folder);
+
+  
+}

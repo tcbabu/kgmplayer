@@ -1,0 +1,4 @@
+cd build
+cmake3 -DCMAKE_INSTALL_PREFIX=$KULINA -DENABLE_LIBNUMA=false ../source
+make
+make install

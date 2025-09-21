@@ -1,0 +1,119 @@
+D      //GUI dimensions xo,yo,xl,yl,lw,rw,tw,bw,df,bor_type,bkup
+10 10 621 269
+4 4 4 4
+6 4 1 0 1 1 0 0 0 0 1 0 0.000000 0 100 100 0
+//Select Menu
+x
+x     //code
+209 85  //x1,y1
+594 187 //x2,y2
+10 2   //ygap
+252 25 //Width 
+0  //Ny,
+4 16  // offset, scroll width 
+0 1 1 1 0 // type,item hight,bordr,bkgr,hide 
+"MakeCutsWidget1"
+//Button Box
+n
+n     //code
+448 53  //x1,y1
+588 83  //x2,y2
+2 2  //xgap,ygap
+64 //length 
+20 //Width 
+2 1  //Nx,Ny,
+1 //status
+"Add" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-1 //back ground color
+ //keyboard code
+1 //status
+"Delete" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-1 //back ground color
+ //keyboard code
+5 0.150000 0  //type,fac
+0 0 //hide
+"MakeCutsWidget2"
+//Message Box
+m
+m     //code
+208 58  //x1,y1
+"Cuts info"/Message
+308 78 //x2,y2
+-1 0 //justification,hide
+"MakeCutsWidget3"
+//Text Box
+t
+t     //code
+219 189  //x1,y1
+20 //Width 
+1 1  //Nx,Ny,
+//element formats
+"Output%30s"
+596 223  //x2,y2
+1 1 0 //Cursor Position
+18 9 0 //hide
+"MakeCutsWidget9"
+//Horiz bar
+h
+h     //code
+501 227  //x1,y1
+607 260  //x2,y2
+2 0  //xgap,ygap
+96 //length 
+25 //Width 
+1 1  //Nx,Ny,
+1 //status
+"Make Cuts" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-132206230 //back ground color
+ //keyboard code
+4 0.500000 0  //type,fac
+0 0 //hide
+"MakeCutsWidget11"
+//Text Box
+t
+t     //code
+202 15  //x1,y1
+20 //Width 
+1 1  //Nx,Ny,
+//element formats
+"Audio Media%20s"
+532 46  //x2,y2
+1 1 0 //Cursor Position
+18 9 0 //hide
+"MakeCutsWidget9"
+//Button Box
+n
+n     //code
+531 14  //x1,y1
+605 48  //x2,y2
+2 2  //xgap,ygap
+64 //length 
+24 //Width 
+1 1  //Nx,Ny,
+1 //status
+"Browse" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-1 //back ground color
+B //keyboard code
+4 0.150000 0  //type,fac
+0 0 //hide
+"MakeCutsWidget11"
+//Message Box
+m
+m     //code
+213 233  //x1,y1
+"!c01Note: Extension decides output format"/Message
+479 257 //x2,y2
+-1 0 //justification,hide
+"MakeCutsWidget8"

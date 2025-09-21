@@ -1,0 +1,102 @@
+D      //GUI dimensions xo,yo,xl,yl,lw,rw,tw,bw,df,bor_type,bkup
+10 10 587 256
+4 4 4 4
+5 4 1 0 1 1 0 0 0 0 1 0 0.000000 0 100 100 0
+//Select Menu
+x
+x     //code
+209 40  //x1,y1
+576 140 //x2,y2
+10 2   //ygap
+252 25 //Width 
+1  //Ny,
+4 16  // offset, scroll width 
+0 1 1 1 0 // type,item hight,bordr,bkgr,hide 
+"VideoJoinWidget1"
+//Button Box
+n
+n     //code
+435 8  //x1,y1
+575 38  //x2,y2
+2 2  //xgap,ygap
+64 //length 
+20 //Width 
+2 1  //Nx,Ny,
+1 //status
+"Add" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-1 //back ground color
+ //keyboard code
+1 //status
+"Delete" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-1 //back ground color
+ //keyboard code
+5 0.150000 0  //type,fac
+0 0 //hide
+"VideoJoinWidget2"
+//Message Box
+m
+m     //code
+208 13  //x1,y1
+"Input Files"/Message
+308 33 //x2,y2
+-1 0 //justification,hide
+"VideoJoinWidget3"
+//Text Box
+t
+t     //code
+207 143  //x1,y1
+20 //Width 
+1 1  //Nx,Ny,
+//element formats
+"Output%30s"
+584 177  //x2,y2
+1 1 0 //Cursor Position
+18 9 0 //hide
+"VideoJoinWidget9"
+//Horiz bar
+h
+h     //code
+472 218  //x1,y1
+578 251  //x2,y2
+2 0  //xgap,ygap
+96 //length 
+25 //Width 
+1 1  //Nx,Ny,
+1 //status
+"Join Videos" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-132206230 //back ground color
+ //keyboard code
+4 0.500000 0  //type,fac
+0 0 //hide
+"VideoJoinWidget11"
+//Radio Button
+r
+r     //code
+279 181  //x1,y1
+568 208  //x2,y2
+8 0  //xgap, ygap
+80 25  //item length,Width 
+3     //ny 
+0 2  // offset, scroll width 
+0 0 1 0 0 // type,item hight,bordr,bkgr,hide 
+"Very Good" //item
+"Good" //item
+"Mediaum" //item
+"VideoJoinWidget7"
+//Message Box
+m
+m     //code
+206 181  //x1,y1
+"Quality"/Message
+278 206 //x2,y2
+1 0 //justification,hide
+"VideoJoinWidget8"

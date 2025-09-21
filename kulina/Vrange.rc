@@ -1,0 +1,28 @@
+D      //GUI dimensions xo,yo,xl,yl,lw,rw,tw,bw,df,bor_type,bkup
+10 10 599 240
+4 4 4 4
+1 0 1 0 1 1 0 0 0 0 1 0 0.000000 0 100 100 0
+//Text Box
+t
+t     //code
+146 204  //x1,y1
+20 //Width 
+1 1  //Nx,Ny,
+//element formats
+"Start%8F"
+316 238  //x2,y2
+1 1 0 //Cursor Position
+18 9 0 //hide
+"VrangeWidget19"
+//Text Box
+t
+t     //code
+317 204  //x1,y1
+20 //Width 
+1 1  //Nx,Ny,
+//element formats
+"End%8F"
+469 238  //x2,y2
+1 1 0 //Cursor Position
+18 9 0 //hide
+"VrangeWidget21"

@@ -1,0 +1,5 @@
+tar xf fontconfig-2.13.1.tar.bz2 >../out
+cd fontconfig-2.13.1
+./configure --prefix=$KULINA --enable-static --disable-shared --disable-docs
+make -j4
+make  install

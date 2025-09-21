@@ -1,0 +1,40 @@
+#!/bin/bash 
+PREFIX=/home/kulina/BUILD/kgmplayer
+KULINA=/home/kulina/BUILD/kgmplayer
+export CFLAGS="-fPIC -fpic -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2"
+export CPPFLAGS="-fPIC -fpic -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2"
+export LDFLAGS="-L/lib -L/home/kulina/BUILD/kgmplayer/lib "
+export X11_CFLAGS="-I/home/kulina/BUILD/kgmplayer/include "
+export X11_LIBS="-lX11 "
+export PKG_CONFIG_PATH=/home/kulina/BUILD/kgmplayer/lib/pkgconfig:/usr/X11R76/lib/pkgconfig:/home/kulina/BUILD/kgmplayer/lib/pkgconfig:/usr/X11R76/lib/pkgconfig
+export LD_LIBRARY_PATH=/home/kulina/BUILD/kgmplayer/lib:/usr/X11R76/lib:
+export PATH=/home/kulina/BUILD/kgmplayer/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+#export PKG_CONFIG_PATH=$KULINA/lib/pkgconfig
+export LD_CONFIG_PATH=$LD_CONFIG_PATH:$KULINA/lib
+export ZLIBLIB=$KULINA/lib
+export ZLIBINC=$KULINA/include
+export CFLAGS="$CFLAGS -Wno-incompatible-pointer-types"
+export CXXFLAGS=$CFLAGS
+echo $CFLAGS
+echo $PKG_CONFIG_PATH
+echo "$X11_LIBS"
+echo "$X11_CFLAGS"
+tar xf pulseaudio-12.2.tar.xz
+cd pulseaudio-12.2
+CFLAGS="$CFLAGS -Wno-implicit-function-declaration"  ./configure --prefix=$KULINA --enable-static --disable-openssl \
+ --disable-x11 --disable-glib2 --disable-dbus --disable-rpath --disable-tests \
+--disable-default-build-tests --without-caps \
+--with-module-dir=$KULINA/lib --with-udev-rules-dir=$KULINA/lib
+make -j4
+make install
+cp $KULINA/lib/pulseaudio/*.a $KULINA/lib/
+mkdir $KULINA/include/pulse
+mkdir $KULINA/OpenSource/pulseaudio-12.2/src/pulse/*.h $KULINA/include/pulse/
+cd ..
+rm -rf pulseaudio-12.2
+#rm -rf ../lib/*.so*
+#rm -rf pulseaudio-16.1
+#rm -rf ../lib/*.so*
+#rm -rf pulseaudio-16.1
+echo "Open Source Over........................"
+#waitforenter

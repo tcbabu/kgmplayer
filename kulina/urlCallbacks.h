@@ -1,0 +1,14 @@
+int  urltextbox1callback(int cellno,int i,void *Tmp);
+int  urlbrowser1callback(int item,int i,void *Tmp) ;
+void  urlbrowser1init(DIRA *R,void *pt) ;
+int  urlbutton1callback(int butno,int i,void *Tmp) ;
+void  urlbutton1init(DIN *B,void *pt) ;
+int  urlbutton2callback(int butno,int i,void *Tmp) ;
+void  urlbutton2init(DIN *B,void *pt) ;
+int  urlbutton3callback(int butno,int i,void *Tmp) ;
+void  urlbutton3init(DIN *B,void *pt) ;
+int urlinit(void *Tmp) ;
+int urlcleanup(void *Tmp) ;
+int urlCallBack(void *Tmp,void *tmp) ;
+int urlResizeCallBack(void *Tmp) ;
+int urlWaitCallBack(void *Tmp) ;

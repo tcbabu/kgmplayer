@@ -1,0 +1,15 @@
+int  Managesplbutton1callback(int butno,int i,void *Tmp) ;
+void  Managesplbutton1init(DIL *B,void *pt) ;
+int  Managebrowser1callback(int item,int i,void *Tmp) ;
+int  Managebrowser2callback(int item,int i,void *Tmp) ;
+void  Managebrowser2init(DIRA *R,void *pt) ;
+int  Managebrowser3callback(int item,int i,void *Tmp) ;
+void  Managebrowser3init(DIRA *R,void *pt) ;
+int  Managebrowser4callback(int item,int i,void *Tmp) ;
+int  Managebrowser5callback(int item,int i,void *Tmp) ;
+void  Managebrowser5init(DIRA *R,void *pt) ;
+int Manageinit(void *Tmp) ;
+int Managecleanup(void *Tmp) ;
+int ManageCallBack(void *Tmp,void *tmp) ;
+int ManageResizeCallBack(void *Tmp) ;
+int ManageWaitCallBack(void *Tmp) ;

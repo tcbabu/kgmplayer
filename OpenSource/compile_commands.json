@@ -1,0 +1,1568 @@
+[
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_client-conf.c.o -MF src/libpulsecommon-16.1.so.p/pulse_client-conf.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_client-conf.c.o -c pulseaudio-16.1/src/pulse/client-conf.c",
+    "file": "pulseaudio-16.1/src/pulse/client-conf.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_client-conf.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_error.c.o -MF src/libpulsecommon-16.1.so.p/pulse_error.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_error.c.o -c pulseaudio-16.1/src/pulse/error.c",
+    "file": "pulseaudio-16.1/src/pulse/error.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_error.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_fork-detect.c.o -MF src/libpulsecommon-16.1.so.p/pulse_fork-detect.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_fork-detect.c.o -c pulseaudio-16.1/src/pulse/fork-detect.c",
+    "file": "pulseaudio-16.1/src/pulse/fork-detect.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_fork-detect.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_format.c.o -MF src/libpulsecommon-16.1.so.p/pulse_format.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_format.c.o -c pulseaudio-16.1/src/pulse/format.c",
+    "file": "pulseaudio-16.1/src/pulse/format.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_format.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_mainloop-api.c.o -MF src/libpulsecommon-16.1.so.p/pulse_mainloop-api.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_mainloop-api.c.o -c pulseaudio-16.1/src/pulse/mainloop-api.c",
+    "file": "pulseaudio-16.1/src/pulse/mainloop-api.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_mainloop-api.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_xmalloc.c.o -MF src/libpulsecommon-16.1.so.p/pulse_xmalloc.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_xmalloc.c.o -c pulseaudio-16.1/src/pulse/xmalloc.c",
+    "file": "pulseaudio-16.1/src/pulse/xmalloc.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_xmalloc.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_proplist.c.o -MF src/libpulsecommon-16.1.so.p/pulse_proplist.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_proplist.c.o -c pulseaudio-16.1/src/pulse/proplist.c",
+    "file": "pulseaudio-16.1/src/pulse/proplist.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_proplist.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_utf8.c.o -MF src/libpulsecommon-16.1.so.p/pulse_utf8.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_utf8.c.o -c pulseaudio-16.1/src/pulse/utf8.c",
+    "file": "pulseaudio-16.1/src/pulse/utf8.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_utf8.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_channelmap.c.o -MF src/libpulsecommon-16.1.so.p/pulse_channelmap.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_channelmap.c.o -c pulseaudio-16.1/src/pulse/channelmap.c",
+    "file": "pulseaudio-16.1/src/pulse/channelmap.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_channelmap.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_sample.c.o -MF src/libpulsecommon-16.1.so.p/pulse_sample.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_sample.c.o -c pulseaudio-16.1/src/pulse/sample.c",
+    "file": "pulseaudio-16.1/src/pulse/sample.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_sample.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_util.c.o -MF src/libpulsecommon-16.1.so.p/pulse_util.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_util.c.o -c pulseaudio-16.1/src/pulse/util.c",
+    "file": "pulseaudio-16.1/src/pulse/util.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_util.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_timeval.c.o -MF src/libpulsecommon-16.1.so.p/pulse_timeval.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_timeval.c.o -c pulseaudio-16.1/src/pulse/timeval.c",
+    "file": "pulseaudio-16.1/src/pulse/timeval.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_timeval.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_rtclock.c.o -MF src/libpulsecommon-16.1.so.p/pulse_rtclock.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_rtclock.c.o -c pulseaudio-16.1/src/pulse/rtclock.c",
+    "file": "pulseaudio-16.1/src/pulse/rtclock.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_rtclock.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulse_volume.c.o -MF src/libpulsecommon-16.1.so.p/pulse_volume.c.o.d -o src/libpulsecommon-16.1.so.p/pulse_volume.c.o -c pulseaudio-16.1/src/pulse/volume.c",
+    "file": "pulseaudio-16.1/src/pulse/volume.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulse_volume.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_authkey.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_authkey.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_authkey.c.o -c pulseaudio-16.1/src/pulsecore/authkey.c",
+    "file": "pulseaudio-16.1/src/pulsecore/authkey.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_authkey.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_conf-parser.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_conf-parser.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_conf-parser.c.o -c pulseaudio-16.1/src/pulsecore/conf-parser.c",
+    "file": "pulseaudio-16.1/src/pulsecore/conf-parser.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_conf-parser.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_core-error.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_core-error.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_core-error.c.o -c pulseaudio-16.1/src/pulsecore/core-error.c",
+    "file": "pulseaudio-16.1/src/pulsecore/core-error.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_core-error.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_core-format.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_core-format.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_core-format.c.o -c pulseaudio-16.1/src/pulsecore/core-format.c",
+    "file": "pulseaudio-16.1/src/pulsecore/core-format.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_core-format.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_core-rtclock.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_core-rtclock.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_core-rtclock.c.o -c pulseaudio-16.1/src/pulsecore/core-rtclock.c",
+    "file": "pulseaudio-16.1/src/pulsecore/core-rtclock.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_core-rtclock.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_core-util.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_core-util.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_core-util.c.o -c pulseaudio-16.1/src/pulsecore/core-util.c",
+    "file": "pulseaudio-16.1/src/pulsecore/core-util.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_core-util.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_dynarray.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_dynarray.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_dynarray.c.o -c pulseaudio-16.1/src/pulsecore/dynarray.c",
+    "file": "pulseaudio-16.1/src/pulsecore/dynarray.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_dynarray.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_fdsem.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_fdsem.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_fdsem.c.o -c pulseaudio-16.1/src/pulsecore/fdsem.c",
+    "file": "pulseaudio-16.1/src/pulsecore/fdsem.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_fdsem.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_flist.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_flist.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_flist.c.o -c pulseaudio-16.1/src/pulsecore/flist.c",
+    "file": "pulseaudio-16.1/src/pulsecore/flist.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_flist.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_g711.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_g711.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_g711.c.o -c pulseaudio-16.1/src/pulsecore/g711.c",
+    "file": "pulseaudio-16.1/src/pulsecore/g711.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_g711.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_hashmap.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_hashmap.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_hashmap.c.o -c pulseaudio-16.1/src/pulsecore/hashmap.c",
+    "file": "pulseaudio-16.1/src/pulsecore/hashmap.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_hashmap.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_i18n.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_i18n.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_i18n.c.o -c pulseaudio-16.1/src/pulsecore/i18n.c",
+    "file": "pulseaudio-16.1/src/pulsecore/i18n.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_i18n.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_idxset.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_idxset.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_idxset.c.o -c pulseaudio-16.1/src/pulsecore/idxset.c",
+    "file": "pulseaudio-16.1/src/pulsecore/idxset.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_idxset.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_arpa-inet.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_arpa-inet.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_arpa-inet.c.o -c pulseaudio-16.1/src/pulsecore/arpa-inet.c",
+    "file": "pulseaudio-16.1/src/pulsecore/arpa-inet.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_arpa-inet.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_iochannel.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_iochannel.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_iochannel.c.o -c pulseaudio-16.1/src/pulsecore/iochannel.c",
+    "file": "pulseaudio-16.1/src/pulsecore/iochannel.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_iochannel.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_ioline.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_ioline.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_ioline.c.o -c pulseaudio-16.1/src/pulsecore/ioline.c",
+    "file": "pulseaudio-16.1/src/pulsecore/ioline.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_ioline.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_ipacl.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_ipacl.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_ipacl.c.o -c pulseaudio-16.1/src/pulsecore/ipacl.c",
+    "file": "pulseaudio-16.1/src/pulsecore/ipacl.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_ipacl.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_json.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_json.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_json.c.o -c pulseaudio-16.1/src/pulsecore/json.c",
+    "file": "pulseaudio-16.1/src/pulsecore/json.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_json.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_lock-autospawn.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_lock-autospawn.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_lock-autospawn.c.o -c pulseaudio-16.1/src/pulsecore/lock-autospawn.c",
+    "file": "pulseaudio-16.1/src/pulsecore/lock-autospawn.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_lock-autospawn.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_log.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_log.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_log.c.o -c pulseaudio-16.1/src/pulsecore/log.c",
+    "file": "pulseaudio-16.1/src/pulsecore/log.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_log.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_ratelimit.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_ratelimit.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_ratelimit.c.o -c pulseaudio-16.1/src/pulsecore/ratelimit.c",
+    "file": "pulseaudio-16.1/src/pulsecore/ratelimit.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_ratelimit.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_mcalign.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_mcalign.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_mcalign.c.o -c pulseaudio-16.1/src/pulsecore/mcalign.c",
+    "file": "pulseaudio-16.1/src/pulsecore/mcalign.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_mcalign.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_memblock.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_memblock.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_memblock.c.o -c pulseaudio-16.1/src/pulsecore/memblock.c",
+    "file": "pulseaudio-16.1/src/pulsecore/memblock.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_memblock.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_memblockq.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_memblockq.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_memblockq.c.o -c pulseaudio-16.1/src/pulsecore/memblockq.c",
+    "file": "pulseaudio-16.1/src/pulsecore/memblockq.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_memblockq.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_memchunk.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_memchunk.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_memchunk.c.o -c pulseaudio-16.1/src/pulsecore/memchunk.c",
+    "file": "pulseaudio-16.1/src/pulsecore/memchunk.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_memchunk.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_native-common.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_native-common.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_native-common.c.o -c pulseaudio-16.1/src/pulsecore/native-common.c",
+    "file": "pulseaudio-16.1/src/pulsecore/native-common.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_native-common.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_once.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_once.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_once.c.o -c pulseaudio-16.1/src/pulsecore/once.c",
+    "file": "pulseaudio-16.1/src/pulsecore/once.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_once.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_packet.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_packet.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_packet.c.o -c pulseaudio-16.1/src/pulsecore/packet.c",
+    "file": "pulseaudio-16.1/src/pulsecore/packet.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_packet.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_parseaddr.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_parseaddr.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_parseaddr.c.o -c pulseaudio-16.1/src/pulsecore/parseaddr.c",
+    "file": "pulseaudio-16.1/src/pulsecore/parseaddr.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_parseaddr.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_pdispatch.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_pdispatch.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_pdispatch.c.o -c pulseaudio-16.1/src/pulsecore/pdispatch.c",
+    "file": "pulseaudio-16.1/src/pulsecore/pdispatch.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_pdispatch.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_pid.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_pid.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_pid.c.o -c pulseaudio-16.1/src/pulsecore/pid.c",
+    "file": "pulseaudio-16.1/src/pulsecore/pid.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_pid.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_pipe.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_pipe.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_pipe.c.o -c pulseaudio-16.1/src/pulsecore/pipe.c",
+    "file": "pulseaudio-16.1/src/pulsecore/pipe.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_pipe.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_memtrap.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_memtrap.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_memtrap.c.o -c pulseaudio-16.1/src/pulsecore/memtrap.c",
+    "file": "pulseaudio-16.1/src/pulsecore/memtrap.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_memtrap.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_aupdate.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_aupdate.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_aupdate.c.o -c pulseaudio-16.1/src/pulsecore/aupdate.c",
+    "file": "pulseaudio-16.1/src/pulsecore/aupdate.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_aupdate.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_proplist-util.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_proplist-util.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_proplist-util.c.o -c pulseaudio-16.1/src/pulsecore/proplist-util.c",
+    "file": "pulseaudio-16.1/src/pulsecore/proplist-util.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_proplist-util.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_pstream-util.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_pstream-util.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_pstream-util.c.o -c pulseaudio-16.1/src/pulsecore/pstream-util.c",
+    "file": "pulseaudio-16.1/src/pulsecore/pstream-util.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_pstream-util.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_pstream.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_pstream.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_pstream.c.o -c pulseaudio-16.1/src/pulsecore/pstream.c",
+    "file": "pulseaudio-16.1/src/pulsecore/pstream.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_pstream.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_queue.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_queue.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_queue.c.o -c pulseaudio-16.1/src/pulsecore/queue.c",
+    "file": "pulseaudio-16.1/src/pulsecore/queue.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_queue.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_random.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_random.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_random.c.o -c pulseaudio-16.1/src/pulsecore/random.c",
+    "file": "pulseaudio-16.1/src/pulsecore/random.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_random.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_srbchannel.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_srbchannel.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_srbchannel.c.o -c pulseaudio-16.1/src/pulsecore/srbchannel.c",
+    "file": "pulseaudio-16.1/src/pulsecore/srbchannel.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_srbchannel.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_sample-util.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_sample-util.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_sample-util.c.o -c pulseaudio-16.1/src/pulsecore/sample-util.c",
+    "file": "pulseaudio-16.1/src/pulsecore/sample-util.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_sample-util.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_shm.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_shm.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_shm.c.o -c pulseaudio-16.1/src/pulsecore/shm.c",
+    "file": "pulseaudio-16.1/src/pulsecore/shm.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_shm.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_bitset.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_bitset.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_bitset.c.o -c pulseaudio-16.1/src/pulsecore/bitset.c",
+    "file": "pulseaudio-16.1/src/pulsecore/bitset.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_bitset.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_socket-client.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_socket-client.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_socket-client.c.o -c pulseaudio-16.1/src/pulsecore/socket-client.c",
+    "file": "pulseaudio-16.1/src/pulsecore/socket-client.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_socket-client.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_socket-util.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_socket-util.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_socket-util.c.o -c pulseaudio-16.1/src/pulsecore/socket-util.c",
+    "file": "pulseaudio-16.1/src/pulsecore/socket-util.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_socket-util.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_strbuf.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_strbuf.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_strbuf.c.o -c pulseaudio-16.1/src/pulsecore/strbuf.c",
+    "file": "pulseaudio-16.1/src/pulsecore/strbuf.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_strbuf.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_strlist.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_strlist.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_strlist.c.o -c pulseaudio-16.1/src/pulsecore/strlist.c",
+    "file": "pulseaudio-16.1/src/pulsecore/strlist.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_strlist.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_tagstruct.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_tagstruct.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_tagstruct.c.o -c pulseaudio-16.1/src/pulsecore/tagstruct.c",
+    "file": "pulseaudio-16.1/src/pulsecore/tagstruct.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_tagstruct.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_time-smoother.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_time-smoother.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_time-smoother.c.o -c pulseaudio-16.1/src/pulsecore/time-smoother.c",
+    "file": "pulseaudio-16.1/src/pulsecore/time-smoother.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_time-smoother.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_time-smoother_2.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_time-smoother_2.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_time-smoother_2.c.o -c pulseaudio-16.1/src/pulsecore/time-smoother_2.c",
+    "file": "pulseaudio-16.1/src/pulsecore/time-smoother_2.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_time-smoother_2.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_tokenizer.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_tokenizer.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_tokenizer.c.o -c pulseaudio-16.1/src/pulsecore/tokenizer.c",
+    "file": "pulseaudio-16.1/src/pulsecore/tokenizer.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_tokenizer.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_usergroup.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_usergroup.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_usergroup.c.o -c pulseaudio-16.1/src/pulsecore/usergroup.c",
+    "file": "pulseaudio-16.1/src/pulsecore/usergroup.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_usergroup.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_sndfile-util.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_sndfile-util.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_sndfile-util.c.o -c pulseaudio-16.1/src/pulsecore/sndfile-util.c",
+    "file": "pulseaudio-16.1/src/pulsecore/sndfile-util.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_sndfile-util.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_mutex-posix.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_mutex-posix.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_mutex-posix.c.o -c pulseaudio-16.1/src/pulsecore/mutex-posix.c",
+    "file": "pulseaudio-16.1/src/pulsecore/mutex-posix.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_mutex-posix.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_semaphore-posix.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_semaphore-posix.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_semaphore-posix.c.o -c pulseaudio-16.1/src/pulsecore/semaphore-posix.c",
+    "file": "pulseaudio-16.1/src/pulsecore/semaphore-posix.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_semaphore-posix.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/libpulsecommon-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/libpulsecommon-16.1.so.p/pulsecore_thread-posix.c.o -MF src/libpulsecommon-16.1.so.p/pulsecore_thread-posix.c.o.d -o src/libpulsecommon-16.1.so.p/pulsecore_thread-posix.c.o -c pulseaudio-16.1/src/pulsecore/thread-posix.c",
+    "file": "pulseaudio-16.1/src/pulsecore/thread-posix.c",
+    "output": "src/libpulsecommon-16.1.so.p/pulsecore_thread-posix.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/channelmap.c.o -MF src/pulse/libpulse.so.0.24.2.p/channelmap.c.o.d -o src/pulse/libpulse.so.0.24.2.p/channelmap.c.o -c pulseaudio-16.1/src/pulse/channelmap.c",
+    "file": "pulseaudio-16.1/src/pulse/channelmap.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/channelmap.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/context.c.o -MF src/pulse/libpulse.so.0.24.2.p/context.c.o.d -o src/pulse/libpulse.so.0.24.2.p/context.c.o -c pulseaudio-16.1/src/pulse/context.c",
+    "file": "pulseaudio-16.1/src/pulse/context.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/context.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/direction.c.o -MF src/pulse/libpulse.so.0.24.2.p/direction.c.o.d -o src/pulse/libpulse.so.0.24.2.p/direction.c.o -c pulseaudio-16.1/src/pulse/direction.c",
+    "file": "pulseaudio-16.1/src/pulse/direction.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/direction.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/error.c.o -MF src/pulse/libpulse.so.0.24.2.p/error.c.o.d -o src/pulse/libpulse.so.0.24.2.p/error.c.o -c pulseaudio-16.1/src/pulse/error.c",
+    "file": "pulseaudio-16.1/src/pulse/error.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/error.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/ext-device-manager.c.o -MF src/pulse/libpulse.so.0.24.2.p/ext-device-manager.c.o.d -o src/pulse/libpulse.so.0.24.2.p/ext-device-manager.c.o -c pulseaudio-16.1/src/pulse/ext-device-manager.c",
+    "file": "pulseaudio-16.1/src/pulse/ext-device-manager.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/ext-device-manager.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/ext-device-restore.c.o -MF src/pulse/libpulse.so.0.24.2.p/ext-device-restore.c.o.d -o src/pulse/libpulse.so.0.24.2.p/ext-device-restore.c.o -c pulseaudio-16.1/src/pulse/ext-device-restore.c",
+    "file": "pulseaudio-16.1/src/pulse/ext-device-restore.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/ext-device-restore.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/ext-stream-restore.c.o -MF src/pulse/libpulse.so.0.24.2.p/ext-stream-restore.c.o.d -o src/pulse/libpulse.so.0.24.2.p/ext-stream-restore.c.o -c pulseaudio-16.1/src/pulse/ext-stream-restore.c",
+    "file": "pulseaudio-16.1/src/pulse/ext-stream-restore.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/ext-stream-restore.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/format.c.o -MF src/pulse/libpulse.so.0.24.2.p/format.c.o.d -o src/pulse/libpulse.so.0.24.2.p/format.c.o -c pulseaudio-16.1/src/pulse/format.c",
+    "file": "pulseaudio-16.1/src/pulse/format.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/format.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/introspect.c.o -MF src/pulse/libpulse.so.0.24.2.p/introspect.c.o.d -o src/pulse/libpulse.so.0.24.2.p/introspect.c.o -c pulseaudio-16.1/src/pulse/introspect.c",
+    "file": "pulseaudio-16.1/src/pulse/introspect.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/introspect.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/mainloop-api.c.o -MF src/pulse/libpulse.so.0.24.2.p/mainloop-api.c.o.d -o src/pulse/libpulse.so.0.24.2.p/mainloop-api.c.o -c pulseaudio-16.1/src/pulse/mainloop-api.c",
+    "file": "pulseaudio-16.1/src/pulse/mainloop-api.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/mainloop-api.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/mainloop-signal.c.o -MF src/pulse/libpulse.so.0.24.2.p/mainloop-signal.c.o.d -o src/pulse/libpulse.so.0.24.2.p/mainloop-signal.c.o -c pulseaudio-16.1/src/pulse/mainloop-signal.c",
+    "file": "pulseaudio-16.1/src/pulse/mainloop-signal.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/mainloop-signal.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/mainloop.c.o -MF src/pulse/libpulse.so.0.24.2.p/mainloop.c.o.d -o src/pulse/libpulse.so.0.24.2.p/mainloop.c.o -c pulseaudio-16.1/src/pulse/mainloop.c",
+    "file": "pulseaudio-16.1/src/pulse/mainloop.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/mainloop.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/operation.c.o -MF src/pulse/libpulse.so.0.24.2.p/operation.c.o.d -o src/pulse/libpulse.so.0.24.2.p/operation.c.o -c pulseaudio-16.1/src/pulse/operation.c",
+    "file": "pulseaudio-16.1/src/pulse/operation.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/operation.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/proplist.c.o -MF src/pulse/libpulse.so.0.24.2.p/proplist.c.o.d -o src/pulse/libpulse.so.0.24.2.p/proplist.c.o -c pulseaudio-16.1/src/pulse/proplist.c",
+    "file": "pulseaudio-16.1/src/pulse/proplist.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/proplist.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/rtclock.c.o -MF src/pulse/libpulse.so.0.24.2.p/rtclock.c.o.d -o src/pulse/libpulse.so.0.24.2.p/rtclock.c.o -c pulseaudio-16.1/src/pulse/rtclock.c",
+    "file": "pulseaudio-16.1/src/pulse/rtclock.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/rtclock.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/sample.c.o -MF src/pulse/libpulse.so.0.24.2.p/sample.c.o.d -o src/pulse/libpulse.so.0.24.2.p/sample.c.o -c pulseaudio-16.1/src/pulse/sample.c",
+    "file": "pulseaudio-16.1/src/pulse/sample.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/sample.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/scache.c.o -MF src/pulse/libpulse.so.0.24.2.p/scache.c.o.d -o src/pulse/libpulse.so.0.24.2.p/scache.c.o -c pulseaudio-16.1/src/pulse/scache.c",
+    "file": "pulseaudio-16.1/src/pulse/scache.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/scache.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/stream.c.o -MF src/pulse/libpulse.so.0.24.2.p/stream.c.o.d -o src/pulse/libpulse.so.0.24.2.p/stream.c.o -c pulseaudio-16.1/src/pulse/stream.c",
+    "file": "pulseaudio-16.1/src/pulse/stream.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/stream.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/subscribe.c.o -MF src/pulse/libpulse.so.0.24.2.p/subscribe.c.o.d -o src/pulse/libpulse.so.0.24.2.p/subscribe.c.o -c pulseaudio-16.1/src/pulse/subscribe.c",
+    "file": "pulseaudio-16.1/src/pulse/subscribe.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/subscribe.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/thread-mainloop.c.o -MF src/pulse/libpulse.so.0.24.2.p/thread-mainloop.c.o.d -o src/pulse/libpulse.so.0.24.2.p/thread-mainloop.c.o -c pulseaudio-16.1/src/pulse/thread-mainloop.c",
+    "file": "pulseaudio-16.1/src/pulse/thread-mainloop.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/thread-mainloop.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/timeval.c.o -MF src/pulse/libpulse.so.0.24.2.p/timeval.c.o.d -o src/pulse/libpulse.so.0.24.2.p/timeval.c.o -c pulseaudio-16.1/src/pulse/timeval.c",
+    "file": "pulseaudio-16.1/src/pulse/timeval.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/timeval.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/utf8.c.o -MF src/pulse/libpulse.so.0.24.2.p/utf8.c.o.d -o src/pulse/libpulse.so.0.24.2.p/utf8.c.o -c pulseaudio-16.1/src/pulse/utf8.c",
+    "file": "pulseaudio-16.1/src/pulse/utf8.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/utf8.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/util.c.o -MF src/pulse/libpulse.so.0.24.2.p/util.c.o.d -o src/pulse/libpulse.so.0.24.2.p/util.c.o -c pulseaudio-16.1/src/pulse/util.c",
+    "file": "pulseaudio-16.1/src/pulse/util.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/util.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/volume.c.o -MF src/pulse/libpulse.so.0.24.2.p/volume.c.o.d -o src/pulse/libpulse.so.0.24.2.p/volume.c.o -c pulseaudio-16.1/src/pulse/volume.c",
+    "file": "pulseaudio-16.1/src/pulse/volume.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/volume.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse.so.0.24.2.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse.so.0.24.2.p/xmalloc.c.o -MF src/pulse/libpulse.so.0.24.2.p/xmalloc.c.o.d -o src/pulse/libpulse.so.0.24.2.p/xmalloc.c.o -c pulseaudio-16.1/src/pulse/xmalloc.c",
+    "file": "pulseaudio-16.1/src/pulse/xmalloc.c",
+    "output": "src/pulse/libpulse.so.0.24.2.p/xmalloc.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulse/libpulse-simple.so.0.1.1.p -Isrc/pulse -Ipulseaudio-16.1/src/pulse -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/pulse/libpulse-simple.so.0.1.1.p/simple.c.o -MF src/pulse/libpulse-simple.so.0.1.1.p/simple.c.o.d -o src/pulse/libpulse-simple.so.0.1.1.p/simple.c.o -c pulseaudio-16.1/src/pulse/simple.c",
+    "file": "pulseaudio-16.1/src/pulse/simple.c",
+    "output": "src/pulse/libpulse-simple.so.0.1.1.p/simple.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/liblibpulsecore_simd_mmx.a.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -mmmx -MD -MQ src/pulsecore/liblibpulsecore_simd_mmx.a.p/remap_mmx.c.o -MF src/pulsecore/liblibpulsecore_simd_mmx.a.p/remap_mmx.c.o.d -o src/pulsecore/liblibpulsecore_simd_mmx.a.p/remap_mmx.c.o -c pulseaudio-16.1/src/pulsecore/remap_mmx.c",
+    "file": "pulseaudio-16.1/src/pulsecore/remap_mmx.c",
+    "output": "src/pulsecore/liblibpulsecore_simd_mmx.a.p/remap_mmx.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/liblibpulsecore_simd_mmx.a.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -mmmx -MD -MQ src/pulsecore/liblibpulsecore_simd_mmx.a.p/svolume_mmx.c.o -MF src/pulsecore/liblibpulsecore_simd_mmx.a.p/svolume_mmx.c.o.d -o src/pulsecore/liblibpulsecore_simd_mmx.a.p/svolume_mmx.c.o -c pulseaudio-16.1/src/pulsecore/svolume_mmx.c",
+    "file": "pulseaudio-16.1/src/pulsecore/svolume_mmx.c",
+    "output": "src/pulsecore/liblibpulsecore_simd_mmx.a.p/svolume_mmx.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/liblibpulsecore_simd_sse.a.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -msse -MD -MQ src/pulsecore/liblibpulsecore_simd_sse.a.p/remap_sse.c.o -MF src/pulsecore/liblibpulsecore_simd_sse.a.p/remap_sse.c.o.d -o src/pulsecore/liblibpulsecore_simd_sse.a.p/remap_sse.c.o -c pulseaudio-16.1/src/pulsecore/remap_sse.c",
+    "file": "pulseaudio-16.1/src/pulsecore/remap_sse.c",
+    "output": "src/pulsecore/liblibpulsecore_simd_sse.a.p/remap_sse.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/liblibpulsecore_simd_sse.a.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -msse -MD -MQ src/pulsecore/liblibpulsecore_simd_sse.a.p/sconv_sse.c.o -MF src/pulsecore/liblibpulsecore_simd_sse.a.p/sconv_sse.c.o.d -o src/pulsecore/liblibpulsecore_simd_sse.a.p/sconv_sse.c.o -c pulseaudio-16.1/src/pulsecore/sconv_sse.c",
+    "file": "pulseaudio-16.1/src/pulsecore/sconv_sse.c",
+    "output": "src/pulsecore/liblibpulsecore_simd_sse.a.p/sconv_sse.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/liblibpulsecore_simd_sse.a.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -msse -MD -MQ src/pulsecore/liblibpulsecore_simd_sse.a.p/svolume_sse.c.o -MF src/pulsecore/liblibpulsecore_simd_sse.a.p/svolume_sse.c.o.d -o src/pulsecore/liblibpulsecore_simd_sse.a.p/svolume_sse.c.o -c pulseaudio-16.1/src/pulsecore/svolume_sse.c",
+    "file": "pulseaudio-16.1/src/pulsecore/svolume_sse.c",
+    "output": "src/pulsecore/liblibpulsecore_simd_sse.a.p/svolume_sse.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/asyncmsgq.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/asyncmsgq.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/asyncmsgq.c.o -c pulseaudio-16.1/src/pulsecore/asyncmsgq.c",
+    "file": "pulseaudio-16.1/src/pulsecore/asyncmsgq.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/asyncmsgq.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/asyncq.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/asyncq.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/asyncq.c.o -c pulseaudio-16.1/src/pulsecore/asyncq.c",
+    "file": "pulseaudio-16.1/src/pulsecore/asyncq.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/asyncq.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/auth-cookie.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/auth-cookie.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/auth-cookie.c.o -c pulseaudio-16.1/src/pulsecore/auth-cookie.c",
+    "file": "pulseaudio-16.1/src/pulsecore/auth-cookie.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/auth-cookie.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/card.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/card.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/card.c.o -c pulseaudio-16.1/src/pulsecore/card.c",
+    "file": "pulseaudio-16.1/src/pulsecore/card.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/card.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/cli-command.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/cli-command.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/cli-command.c.o -c pulseaudio-16.1/src/pulsecore/cli-command.c",
+    "file": "pulseaudio-16.1/src/pulsecore/cli-command.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/cli-command.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/cli-text.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/cli-text.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/cli-text.c.o -c pulseaudio-16.1/src/pulsecore/cli-text.c",
+    "file": "pulseaudio-16.1/src/pulsecore/cli-text.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/cli-text.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/client.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/client.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/client.c.o -c pulseaudio-16.1/src/pulsecore/client.c",
+    "file": "pulseaudio-16.1/src/pulsecore/client.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/client.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/core-scache.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/core-scache.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/core-scache.c.o -c pulseaudio-16.1/src/pulsecore/core-scache.c",
+    "file": "pulseaudio-16.1/src/pulsecore/core-scache.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/core-scache.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/core-subscribe.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/core-subscribe.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/core-subscribe.c.o -c pulseaudio-16.1/src/pulsecore/core-subscribe.c",
+    "file": "pulseaudio-16.1/src/pulsecore/core-subscribe.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/core-subscribe.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/core.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/core.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/core.c.o -c pulseaudio-16.1/src/pulsecore/core.c",
+    "file": "pulseaudio-16.1/src/pulsecore/core.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/core.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/cpu.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/cpu.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/cpu.c.o -c pulseaudio-16.1/src/pulsecore/cpu.c",
+    "file": "pulseaudio-16.1/src/pulsecore/cpu.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/cpu.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/cpu-arm.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/cpu-arm.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/cpu-arm.c.o -c pulseaudio-16.1/src/pulsecore/cpu-arm.c",
+    "file": "pulseaudio-16.1/src/pulsecore/cpu-arm.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/cpu-arm.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/cpu-orc.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/cpu-orc.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/cpu-orc.c.o -c pulseaudio-16.1/src/pulsecore/cpu-orc.c",
+    "file": "pulseaudio-16.1/src/pulsecore/cpu-orc.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/cpu-orc.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/cpu-x86.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/cpu-x86.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/cpu-x86.c.o -c pulseaudio-16.1/src/pulsecore/cpu-x86.c",
+    "file": "pulseaudio-16.1/src/pulsecore/cpu-x86.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/cpu-x86.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/device-port.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/device-port.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/device-port.c.o -c pulseaudio-16.1/src/pulsecore/device-port.c",
+    "file": "pulseaudio-16.1/src/pulsecore/device-port.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/device-port.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/database.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/database.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/database.c.o -c pulseaudio-16.1/src/pulsecore/database.c",
+    "file": "pulseaudio-16.1/src/pulsecore/database.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/database.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/ffmpeg_resample2.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/ffmpeg_resample2.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/ffmpeg_resample2.c.o -c pulseaudio-16.1/src/pulsecore/ffmpeg/resample2.c",
+    "file": "pulseaudio-16.1/src/pulsecore/ffmpeg/resample2.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/ffmpeg_resample2.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/filter_biquad.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/filter_biquad.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/filter_biquad.c.o -c pulseaudio-16.1/src/pulsecore/filter/biquad.c",
+    "file": "pulseaudio-16.1/src/pulsecore/filter/biquad.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/filter_biquad.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/filter_crossover.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/filter_crossover.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/filter_crossover.c.o -c pulseaudio-16.1/src/pulsecore/filter/crossover.c",
+    "file": "pulseaudio-16.1/src/pulsecore/filter/crossover.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/filter_crossover.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/filter_lfe-filter.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/filter_lfe-filter.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/filter_lfe-filter.c.o -c pulseaudio-16.1/src/pulsecore/filter/lfe-filter.c",
+    "file": "pulseaudio-16.1/src/pulsecore/filter/lfe-filter.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/filter_lfe-filter.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/hook-list.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/hook-list.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/hook-list.c.o -c pulseaudio-16.1/src/pulsecore/hook-list.c",
+    "file": "pulseaudio-16.1/src/pulsecore/hook-list.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/hook-list.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/ltdl-helper.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/ltdl-helper.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/ltdl-helper.c.o -c pulseaudio-16.1/src/pulsecore/ltdl-helper.c",
+    "file": "pulseaudio-16.1/src/pulsecore/ltdl-helper.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/ltdl-helper.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/message-handler.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/message-handler.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/message-handler.c.o -c pulseaudio-16.1/src/pulsecore/message-handler.c",
+    "file": "pulseaudio-16.1/src/pulsecore/message-handler.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/message-handler.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/mix.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/mix.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/mix.c.o -c pulseaudio-16.1/src/pulsecore/mix.c",
+    "file": "pulseaudio-16.1/src/pulsecore/mix.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/mix.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/modargs.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/modargs.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/modargs.c.o -c pulseaudio-16.1/src/pulsecore/modargs.c",
+    "file": "pulseaudio-16.1/src/pulsecore/modargs.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/modargs.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/modinfo.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/modinfo.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/modinfo.c.o -c pulseaudio-16.1/src/pulsecore/modinfo.c",
+    "file": "pulseaudio-16.1/src/pulsecore/modinfo.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/modinfo.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/module.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/module.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/module.c.o -c pulseaudio-16.1/src/pulsecore/module.c",
+    "file": "pulseaudio-16.1/src/pulsecore/module.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/module.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/msgobject.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/msgobject.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/msgobject.c.o -c pulseaudio-16.1/src/pulsecore/msgobject.c",
+    "file": "pulseaudio-16.1/src/pulsecore/msgobject.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/msgobject.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/namereg.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/namereg.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/namereg.c.o -c pulseaudio-16.1/src/pulsecore/namereg.c",
+    "file": "pulseaudio-16.1/src/pulsecore/namereg.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/namereg.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/object.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/object.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/object.c.o -c pulseaudio-16.1/src/pulsecore/object.c",
+    "file": "pulseaudio-16.1/src/pulsecore/object.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/object.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/play-memblockq.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/play-memblockq.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/play-memblockq.c.o -c pulseaudio-16.1/src/pulsecore/play-memblockq.c",
+    "file": "pulseaudio-16.1/src/pulsecore/play-memblockq.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/play-memblockq.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/play-memchunk.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/play-memchunk.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/play-memchunk.c.o -c pulseaudio-16.1/src/pulsecore/play-memchunk.c",
+    "file": "pulseaudio-16.1/src/pulsecore/play-memchunk.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/play-memchunk.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/remap.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/remap.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/remap.c.o -c pulseaudio-16.1/src/pulsecore/remap.c",
+    "file": "pulseaudio-16.1/src/pulsecore/remap.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/remap.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/resampler.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/resampler.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/resampler.c.o -c pulseaudio-16.1/src/pulsecore/resampler.c",
+    "file": "pulseaudio-16.1/src/pulsecore/resampler.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/resampler.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/resampler_ffmpeg.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/resampler_ffmpeg.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/resampler_ffmpeg.c.o -c pulseaudio-16.1/src/pulsecore/resampler/ffmpeg.c",
+    "file": "pulseaudio-16.1/src/pulsecore/resampler/ffmpeg.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/resampler_ffmpeg.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/resampler_peaks.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/resampler_peaks.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/resampler_peaks.c.o -c pulseaudio-16.1/src/pulsecore/resampler/peaks.c",
+    "file": "pulseaudio-16.1/src/pulsecore/resampler/peaks.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/resampler_peaks.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/resampler_trivial.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/resampler_trivial.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/resampler_trivial.c.o -c pulseaudio-16.1/src/pulsecore/resampler/trivial.c",
+    "file": "pulseaudio-16.1/src/pulsecore/resampler/trivial.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/resampler_trivial.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/rtpoll.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/rtpoll.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/rtpoll.c.o -c pulseaudio-16.1/src/pulsecore/rtpoll.c",
+    "file": "pulseaudio-16.1/src/pulsecore/rtpoll.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/rtpoll.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/sconv-s16be.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/sconv-s16be.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/sconv-s16be.c.o -c pulseaudio-16.1/src/pulsecore/sconv-s16be.c",
+    "file": "pulseaudio-16.1/src/pulsecore/sconv-s16be.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/sconv-s16be.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/sconv-s16le.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/sconv-s16le.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/sconv-s16le.c.o -c pulseaudio-16.1/src/pulsecore/sconv-s16le.c",
+    "file": "pulseaudio-16.1/src/pulsecore/sconv-s16le.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/sconv-s16le.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/sconv.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/sconv.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/sconv.c.o -c pulseaudio-16.1/src/pulsecore/sconv.c",
+    "file": "pulseaudio-16.1/src/pulsecore/sconv.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/sconv.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/shared.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/shared.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/shared.c.o -c pulseaudio-16.1/src/pulsecore/shared.c",
+    "file": "pulseaudio-16.1/src/pulsecore/shared.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/shared.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/sink.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/sink.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/sink.c.o -c pulseaudio-16.1/src/pulsecore/sink.c",
+    "file": "pulseaudio-16.1/src/pulsecore/sink.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/sink.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/sink-input.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/sink-input.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/sink-input.c.o -c pulseaudio-16.1/src/pulsecore/sink-input.c",
+    "file": "pulseaudio-16.1/src/pulsecore/sink-input.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/sink-input.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/sioman.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/sioman.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/sioman.c.o -c pulseaudio-16.1/src/pulsecore/sioman.c",
+    "file": "pulseaudio-16.1/src/pulsecore/sioman.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/sioman.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/socket-server.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/socket-server.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/socket-server.c.o -c pulseaudio-16.1/src/pulsecore/socket-server.c",
+    "file": "pulseaudio-16.1/src/pulsecore/socket-server.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/socket-server.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/sound-file-stream.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/sound-file-stream.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/sound-file-stream.c.o -c pulseaudio-16.1/src/pulsecore/sound-file-stream.c",
+    "file": "pulseaudio-16.1/src/pulsecore/sound-file-stream.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/sound-file-stream.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/sound-file.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/sound-file.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/sound-file.c.o -c pulseaudio-16.1/src/pulsecore/sound-file.c",
+    "file": "pulseaudio-16.1/src/pulsecore/sound-file.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/sound-file.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/source.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/source.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/source.c.o -c pulseaudio-16.1/src/pulsecore/source.c",
+    "file": "pulseaudio-16.1/src/pulsecore/source.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/source.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/source-output.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/source-output.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/source-output.c.o -c pulseaudio-16.1/src/pulsecore/source-output.c",
+    "file": "pulseaudio-16.1/src/pulsecore/source-output.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/source-output.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/start-child.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/start-child.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/start-child.c.o -c pulseaudio-16.1/src/pulsecore/start-child.c",
+    "file": "pulseaudio-16.1/src/pulsecore/start-child.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/start-child.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/stream-util.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/stream-util.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/stream-util.c.o -c pulseaudio-16.1/src/pulsecore/stream-util.c",
+    "file": "pulseaudio-16.1/src/pulsecore/stream-util.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/stream-util.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/svolume_arm.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/svolume_arm.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/svolume_arm.c.o -c pulseaudio-16.1/src/pulsecore/svolume_arm.c",
+    "file": "pulseaudio-16.1/src/pulsecore/svolume_arm.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/svolume_arm.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/svolume_c.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/svolume_c.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/svolume_c.c.o -c pulseaudio-16.1/src/pulsecore/svolume_c.c",
+    "file": "pulseaudio-16.1/src/pulsecore/svolume_c.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/svolume_c.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/svolume_mmx.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/svolume_mmx.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/svolume_mmx.c.o -c pulseaudio-16.1/src/pulsecore/svolume_mmx.c",
+    "file": "pulseaudio-16.1/src/pulsecore/svolume_mmx.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/svolume_mmx.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/svolume_sse.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/svolume_sse.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/svolume_sse.c.o -c pulseaudio-16.1/src/pulsecore/svolume_sse.c",
+    "file": "pulseaudio-16.1/src/pulsecore/svolume_sse.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/svolume_sse.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/thread-mq.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/thread-mq.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/thread-mq.c.o -c pulseaudio-16.1/src/pulsecore/thread-mq.c",
+    "file": "pulseaudio-16.1/src/pulsecore/thread-mq.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/thread-mq.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libpulsecore-16.1.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/pulsecore/libpulsecore-16.1.so.p/database-simple.c.o -MF src/pulsecore/libpulsecore-16.1.so.p/database-simple.c.o.d -o src/pulsecore/libpulsecore-16.1.so.p/database-simple.c.o -c pulseaudio-16.1/src/pulsecore/database-simple.c",
+    "file": "pulseaudio-16.1/src/pulsecore/database-simple.c",
+    "output": "src/pulsecore/libpulsecore-16.1.so.p/database-simple.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libcli.so.p -Isrc/pulsecore -Ipulseaudio-16.1/src/pulsecore -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DHAVE_SIMPLEDB -MD -MQ src/pulsecore/libcli.so.p/cli.c.o -MF src/pulsecore/libcli.so.p/cli.c.o.d -o src/pulsecore/libcli.so.p/cli.c.o -c pulseaudio-16.1/src/pulsecore/cli.c",
+    "file": "pulseaudio-16.1/src/pulsecore/cli.c",
+    "output": "src/pulsecore/libcli.so.p/cli.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libprotocol-cli.so.p -Isrc/pulsecore -Ipulseaudio-16.1/src/pulsecore -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DHAVE_SIMPLEDB -MD -MQ src/pulsecore/libprotocol-cli.so.p/protocol-cli.c.o -MF src/pulsecore/libprotocol-cli.so.p/protocol-cli.c.o.d -o src/pulsecore/libprotocol-cli.so.p/protocol-cli.c.o -c pulseaudio-16.1/src/pulsecore/protocol-cli.c",
+    "file": "pulseaudio-16.1/src/pulsecore/protocol-cli.c",
+    "output": "src/pulsecore/libprotocol-cli.so.p/protocol-cli.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libprotocol-http.so.p -Isrc/pulsecore -Ipulseaudio-16.1/src/pulsecore -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DHAVE_SIMPLEDB -MD -MQ src/pulsecore/libprotocol-http.so.p/protocol-http.c.o -MF src/pulsecore/libprotocol-http.so.p/protocol-http.c.o.d -o src/pulsecore/libprotocol-http.so.p/protocol-http.c.o -c pulseaudio-16.1/src/pulsecore/protocol-http.c",
+    "file": "pulseaudio-16.1/src/pulsecore/protocol-http.c",
+    "output": "src/pulsecore/libprotocol-http.so.p/protocol-http.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libprotocol-http.so.p -Isrc/pulsecore -Ipulseaudio-16.1/src/pulsecore -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DHAVE_SIMPLEDB -MD -MQ src/pulsecore/libprotocol-http.so.p/mime-type.c.o -MF src/pulsecore/libprotocol-http.so.p/mime-type.c.o.d -o src/pulsecore/libprotocol-http.so.p/mime-type.c.o -c pulseaudio-16.1/src/pulsecore/mime-type.c",
+    "file": "pulseaudio-16.1/src/pulsecore/mime-type.c",
+    "output": "src/pulsecore/libprotocol-http.so.p/mime-type.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libprotocol-native.so.p -Isrc/pulsecore -Ipulseaudio-16.1/src/pulsecore -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DHAVE_SIMPLEDB -MD -MQ src/pulsecore/libprotocol-native.so.p/protocol-native.c.o -MF src/pulsecore/libprotocol-native.so.p/protocol-native.c.o.d -o src/pulsecore/libprotocol-native.so.p/protocol-native.c.o -c pulseaudio-16.1/src/pulsecore/protocol-native.c",
+    "file": "pulseaudio-16.1/src/pulsecore/protocol-native.c",
+    "output": "src/pulsecore/libprotocol-native.so.p/protocol-native.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/pulsecore/libprotocol-simple.so.p -Isrc/pulsecore -Ipulseaudio-16.1/src/pulsecore -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DHAVE_SIMPLEDB -MD -MQ src/pulsecore/libprotocol-simple.so.p/protocol-simple.c.o -MF src/pulsecore/libprotocol-simple.so.p/protocol-simple.c.o.d -o src/pulsecore/libprotocol-simple.so.p/protocol-simple.c.o -c pulseaudio-16.1/src/pulsecore/protocol-simple.c",
+    "file": "pulseaudio-16.1/src/pulsecore/protocol-simple.c",
+    "output": "src/pulsecore/libprotocol-simple.so.p/protocol-simple.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/daemon/pulseaudio.p -Isrc/daemon -Ipulseaudio-16.1/src/daemon -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/daemon/pulseaudio.p/caps.c.o -MF src/daemon/pulseaudio.p/caps.c.o.d -o src/daemon/pulseaudio.p/caps.c.o -c pulseaudio-16.1/src/daemon/caps.c",
+    "file": "pulseaudio-16.1/src/daemon/caps.c",
+    "output": "src/daemon/pulseaudio.p/caps.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/daemon/pulseaudio.p -Isrc/daemon -Ipulseaudio-16.1/src/daemon -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/daemon/pulseaudio.p/cmdline.c.o -MF src/daemon/pulseaudio.p/cmdline.c.o.d -o src/daemon/pulseaudio.p/cmdline.c.o -c pulseaudio-16.1/src/daemon/cmdline.c",
+    "file": "pulseaudio-16.1/src/daemon/cmdline.c",
+    "output": "src/daemon/pulseaudio.p/cmdline.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/daemon/pulseaudio.p -Isrc/daemon -Ipulseaudio-16.1/src/daemon -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/daemon/pulseaudio.p/cpulimit.c.o -MF src/daemon/pulseaudio.p/cpulimit.c.o.d -o src/daemon/pulseaudio.p/cpulimit.c.o -c pulseaudio-16.1/src/daemon/cpulimit.c",
+    "file": "pulseaudio-16.1/src/daemon/cpulimit.c",
+    "output": "src/daemon/pulseaudio.p/cpulimit.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/daemon/pulseaudio.p -Isrc/daemon -Ipulseaudio-16.1/src/daemon -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/daemon/pulseaudio.p/daemon-conf.c.o -MF src/daemon/pulseaudio.p/daemon-conf.c.o.d -o src/daemon/pulseaudio.p/daemon-conf.c.o -c pulseaudio-16.1/src/daemon/daemon-conf.c",
+    "file": "pulseaudio-16.1/src/daemon/daemon-conf.c",
+    "output": "src/daemon/pulseaudio.p/daemon-conf.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/daemon/pulseaudio.p -Isrc/daemon -Ipulseaudio-16.1/src/daemon -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/daemon/pulseaudio.p/dumpmodules.c.o -MF src/daemon/pulseaudio.p/dumpmodules.c.o.d -o src/daemon/pulseaudio.p/dumpmodules.c.o -c pulseaudio-16.1/src/daemon/dumpmodules.c",
+    "file": "pulseaudio-16.1/src/daemon/dumpmodules.c",
+    "output": "src/daemon/pulseaudio.p/dumpmodules.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/daemon/pulseaudio.p -Isrc/daemon -Ipulseaudio-16.1/src/daemon -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/daemon/pulseaudio.p/ltdl-bind-now.c.o -MF src/daemon/pulseaudio.p/ltdl-bind-now.c.o.d -o src/daemon/pulseaudio.p/ltdl-bind-now.c.o -c pulseaudio-16.1/src/daemon/ltdl-bind-now.c",
+    "file": "pulseaudio-16.1/src/daemon/ltdl-bind-now.c",
+    "output": "src/daemon/pulseaudio.p/ltdl-bind-now.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/daemon/pulseaudio.p -Isrc/daemon -Ipulseaudio-16.1/src/daemon -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/daemon/pulseaudio.p/main.c.o -MF src/daemon/pulseaudio.p/main.c.o.d -o src/daemon/pulseaudio.p/main.c.o -c pulseaudio-16.1/src/daemon/main.c",
+    "file": "pulseaudio-16.1/src/daemon/main.c",
+    "output": "src/daemon/pulseaudio.p/main.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/rtp/librtp.so.p -Isrc/modules/rtp -Ipulseaudio-16.1/src/modules/rtp -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -I/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/rtp/librtp.so.p/rtp-common.c.o -MF src/modules/rtp/librtp.so.p/rtp-common.c.o.d -o src/modules/rtp/librtp.so.p/rtp-common.c.o -c pulseaudio-16.1/src/modules/rtp/rtp-common.c",
+    "file": "pulseaudio-16.1/src/modules/rtp/rtp-common.c",
+    "output": "src/modules/rtp/librtp.so.p/rtp-common.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/rtp/librtp.so.p -Isrc/modules/rtp -Ipulseaudio-16.1/src/modules/rtp -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -I/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/rtp/librtp.so.p/sdp.c.o -MF src/modules/rtp/librtp.so.p/sdp.c.o.d -o src/modules/rtp/librtp.so.p/sdp.c.o -c pulseaudio-16.1/src/modules/rtp/sdp.c",
+    "file": "pulseaudio-16.1/src/modules/rtp/sdp.c",
+    "output": "src/modules/rtp/librtp.so.p/sdp.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/rtp/librtp.so.p -Isrc/modules/rtp -Ipulseaudio-16.1/src/modules/rtp -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -I/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/rtp/librtp.so.p/sap.c.o -MF src/modules/rtp/librtp.so.p/sap.c.o.d -o src/modules/rtp/librtp.so.p/sap.c.o -c pulseaudio-16.1/src/modules/rtp/sap.c",
+    "file": "pulseaudio-16.1/src/modules/rtp/sap.c",
+    "output": "src/modules/rtp/librtp.so.p/sap.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/rtp/librtp.so.p -Isrc/modules/rtp -Ipulseaudio-16.1/src/modules/rtp -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -I/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/rtp/librtp.so.p/rtsp_client.c.o -MF src/modules/rtp/librtp.so.p/rtsp_client.c.o.d -o src/modules/rtp/librtp.so.p/rtsp_client.c.o -c pulseaudio-16.1/src/modules/rtp/rtsp_client.c",
+    "file": "pulseaudio-16.1/src/modules/rtp/rtsp_client.c",
+    "output": "src/modules/rtp/librtp.so.p/rtsp_client.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/rtp/librtp.so.p -Isrc/modules/rtp -Ipulseaudio-16.1/src/modules/rtp -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -I/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/rtp/librtp.so.p/headerlist.c.o -MF src/modules/rtp/librtp.so.p/headerlist.c.o.d -o src/modules/rtp/librtp.so.p/headerlist.c.o -c pulseaudio-16.1/src/modules/rtp/headerlist.c",
+    "file": "pulseaudio-16.1/src/modules/rtp/headerlist.c",
+    "output": "src/modules/rtp/librtp.so.p/headerlist.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/rtp/librtp.so.p -Isrc/modules/rtp -Ipulseaudio-16.1/src/modules/rtp -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -I/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/rtp/librtp.so.p/rtp-native.c.o -MF src/modules/rtp/librtp.so.p/rtp-native.c.o.d -o src/modules/rtp/librtp.so.p/rtp-native.c.o -c pulseaudio-16.1/src/modules/rtp/rtp-native.c",
+    "file": "pulseaudio-16.1/src/modules/rtp/rtp-native.c",
+    "output": "src/modules/rtp/librtp.so.p/rtp-native.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/oss/liboss-util.so.p -Isrc/modules/oss -Ipulseaudio-16.1/src/modules/oss -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/oss/liboss-util.so.p/oss-util.c.o -MF src/modules/oss/liboss-util.so.p/oss-util.c.o.d -o src/modules/oss/liboss-util.so.p/oss-util.c.o -c pulseaudio-16.1/src/modules/oss/oss-util.c",
+    "file": "pulseaudio-16.1/src/modules/oss/oss-util.c",
+    "output": "src/modules/oss/liboss-util.so.p/oss-util.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/alsa/libalsa-util.so.p -Isrc/modules/alsa -Ipulseaudio-16.1/src/modules/alsa -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/alsa/libalsa-util.so.p/alsa-util.c.o -MF src/modules/alsa/libalsa-util.so.p/alsa-util.c.o.d -o src/modules/alsa/libalsa-util.so.p/alsa-util.c.o -c pulseaudio-16.1/src/modules/alsa/alsa-util.c",
+    "file": "pulseaudio-16.1/src/modules/alsa/alsa-util.c",
+    "output": "src/modules/alsa/libalsa-util.so.p/alsa-util.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/alsa/libalsa-util.so.p -Isrc/modules/alsa -Ipulseaudio-16.1/src/modules/alsa -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/alsa/libalsa-util.so.p/alsa-ucm.c.o -MF src/modules/alsa/libalsa-util.so.p/alsa-ucm.c.o.d -o src/modules/alsa/libalsa-util.so.p/alsa-ucm.c.o -c pulseaudio-16.1/src/modules/alsa/alsa-ucm.c",
+    "file": "pulseaudio-16.1/src/modules/alsa/alsa-ucm.c",
+    "output": "src/modules/alsa/libalsa-util.so.p/alsa-ucm.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/alsa/libalsa-util.so.p -Isrc/modules/alsa -Ipulseaudio-16.1/src/modules/alsa -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/alsa/libalsa-util.so.p/alsa-mixer.c.o -MF src/modules/alsa/libalsa-util.so.p/alsa-mixer.c.o.d -o src/modules/alsa/libalsa-util.so.p/alsa-mixer.c.o -c pulseaudio-16.1/src/modules/alsa/alsa-mixer.c",
+    "file": "pulseaudio-16.1/src/modules/alsa/alsa-mixer.c",
+    "output": "src/modules/alsa/libalsa-util.so.p/alsa-mixer.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/alsa/libalsa-util.so.p -Isrc/modules/alsa -Ipulseaudio-16.1/src/modules/alsa -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/alsa/libalsa-util.so.p/alsa-sink.c.o -MF src/modules/alsa/libalsa-util.so.p/alsa-sink.c.o.d -o src/modules/alsa/libalsa-util.so.p/alsa-sink.c.o -c pulseaudio-16.1/src/modules/alsa/alsa-sink.c",
+    "file": "pulseaudio-16.1/src/modules/alsa/alsa-sink.c",
+    "output": "src/modules/alsa/libalsa-util.so.p/alsa-sink.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/alsa/libalsa-util.so.p -Isrc/modules/alsa -Ipulseaudio-16.1/src/modules/alsa -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/alsa/libalsa-util.so.p/alsa-source.c.o -MF src/modules/alsa/libalsa-util.so.p/alsa-source.c.o.d -o src/modules/alsa/libalsa-util.so.p/alsa-source.c.o -c pulseaudio-16.1/src/modules/alsa/alsa-source.c",
+    "file": "pulseaudio-16.1/src/modules/alsa/alsa-source.c",
+    "output": "src/modules/alsa/libalsa-util.so.p/alsa-source.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/alsa/libalsa-util.so.p -Isrc/modules/alsa -Ipulseaudio-16.1/src/modules/alsa -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/alsa/libalsa-util.so.p/.._reserve-wrap.c.o -MF src/modules/alsa/libalsa-util.so.p/.._reserve-wrap.c.o.d -o src/modules/alsa/libalsa-util.so.p/.._reserve-wrap.c.o -c pulseaudio-16.1/src/modules/reserve-wrap.c",
+    "file": "pulseaudio-16.1/src/modules/reserve-wrap.c",
+    "output": "src/modules/alsa/libalsa-util.so.p/.._reserve-wrap.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/alsa/libalsa-util.so.p -Isrc/modules/alsa -Ipulseaudio-16.1/src/modules/alsa -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -MD -MQ src/modules/alsa/libalsa-util.so.p/.._udev-util.c.o -MF src/modules/alsa/libalsa-util.so.p/.._udev-util.c.o.d -o src/modules/alsa/libalsa-util.so.p/.._udev-util.c.o -c pulseaudio-16.1/src/modules/udev-util.c",
+    "file": "pulseaudio-16.1/src/modules/udev-util.c",
+    "output": "src/modules/alsa/libalsa-util.so.p/.._udev-util.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-allow-passthrough.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_allow_passthrough -MD -MQ src/modules/module-allow-passthrough.so.p/module-allow-passthrough.c.o -MF src/modules/module-allow-passthrough.so.p/module-allow-passthrough.c.o.d -o src/modules/module-allow-passthrough.so.p/module-allow-passthrough.c.o -c pulseaudio-16.1/src/modules/module-allow-passthrough.c",
+    "file": "pulseaudio-16.1/src/modules/module-allow-passthrough.c",
+    "output": "src/modules/module-allow-passthrough.so.p/module-allow-passthrough.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-always-sink.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_always_sink -MD -MQ src/modules/module-always-sink.so.p/module-always-sink.c.o -MF src/modules/module-always-sink.so.p/module-always-sink.c.o.d -o src/modules/module-always-sink.so.p/module-always-sink.c.o -c pulseaudio-16.1/src/modules/module-always-sink.c",
+    "file": "pulseaudio-16.1/src/modules/module-always-sink.c",
+    "output": "src/modules/module-always-sink.so.p/module-always-sink.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-always-source.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_always_source -MD -MQ src/modules/module-always-source.so.p/module-always-source.c.o -MF src/modules/module-always-source.so.p/module-always-source.c.o.d -o src/modules/module-always-source.so.p/module-always-source.c.o -c pulseaudio-16.1/src/modules/module-always-source.c",
+    "file": "pulseaudio-16.1/src/modules/module-always-source.c",
+    "output": "src/modules/module-always-source.so.p/module-always-source.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-augment-properties.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_augment_properties -MD -MQ src/modules/module-augment-properties.so.p/module-augment-properties.c.o -MF src/modules/module-augment-properties.so.p/module-augment-properties.c.o.d -o src/modules/module-augment-properties.so.p/module-augment-properties.c.o -c pulseaudio-16.1/src/modules/module-augment-properties.c",
+    "file": "pulseaudio-16.1/src/modules/module-augment-properties.c",
+    "output": "src/modules/module-augment-properties.so.p/module-augment-properties.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-card-restore.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_card_restore -MD -MQ src/modules/module-card-restore.so.p/module-card-restore.c.o -MF src/modules/module-card-restore.so.p/module-card-restore.c.o.d -o src/modules/module-card-restore.so.p/module-card-restore.c.o -c pulseaudio-16.1/src/modules/module-card-restore.c",
+    "file": "pulseaudio-16.1/src/modules/module-card-restore.c",
+    "output": "src/modules/module-card-restore.so.p/module-card-restore.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-cli.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_cli -MD -MQ src/modules/module-cli.so.p/module-cli.c.o -MF src/modules/module-cli.so.p/module-cli.c.o.d -o src/modules/module-cli.so.p/module-cli.c.o -c pulseaudio-16.1/src/modules/module-cli.c",
+    "file": "pulseaudio-16.1/src/modules/module-cli.c",
+    "output": "src/modules/module-cli.so.p/module-cli.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-cli-protocol-tcp.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_cli_protocol_tcp -DUSE_PROTOCOL_CLI -DUSE_TCP_SOCKETS -MD -MQ src/modules/module-cli-protocol-tcp.so.p/module-protocol-stub.c.o -MF src/modules/module-cli-protocol-tcp.so.p/module-protocol-stub.c.o.d -o src/modules/module-cli-protocol-tcp.so.p/module-protocol-stub.c.o -c pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "file": "pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "output": "src/modules/module-cli-protocol-tcp.so.p/module-protocol-stub.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-cli-protocol-unix.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_cli_protocol_unix -DUSE_PROTOCOL_CLI -DUSE_UNIX_SOCKETS -MD -MQ src/modules/module-cli-protocol-unix.so.p/module-protocol-stub.c.o -MF src/modules/module-cli-protocol-unix.so.p/module-protocol-stub.c.o.d -o src/modules/module-cli-protocol-unix.so.p/module-protocol-stub.c.o -c pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "file": "pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "output": "src/modules/module-cli-protocol-unix.so.p/module-protocol-stub.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-combine.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_combine -MD -MQ src/modules/module-combine.so.p/module-combine.c.o -MF src/modules/module-combine.so.p/module-combine.c.o.d -o src/modules/module-combine.so.p/module-combine.c.o -c pulseaudio-16.1/src/modules/module-combine.c",
+    "file": "pulseaudio-16.1/src/modules/module-combine.c",
+    "output": "src/modules/module-combine.so.p/module-combine.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-combine-sink.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_combine_sink -MD -MQ src/modules/module-combine-sink.so.p/module-combine-sink.c.o -MF src/modules/module-combine-sink.so.p/module-combine-sink.c.o.d -o src/modules/module-combine-sink.so.p/module-combine-sink.c.o -c pulseaudio-16.1/src/modules/module-combine-sink.c",
+    "file": "pulseaudio-16.1/src/modules/module-combine-sink.c",
+    "output": "src/modules/module-combine-sink.so.p/module-combine-sink.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-default-device-restore.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_default_device_restore -MD -MQ src/modules/module-default-device-restore.so.p/module-default-device-restore.c.o -MF src/modules/module-default-device-restore.so.p/module-default-device-restore.c.o.d -o src/modules/module-default-device-restore.so.p/module-default-device-restore.c.o -c pulseaudio-16.1/src/modules/module-default-device-restore.c",
+    "file": "pulseaudio-16.1/src/modules/module-default-device-restore.c",
+    "output": "src/modules/module-default-device-restore.so.p/module-default-device-restore.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-detect.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_detect -MD -MQ src/modules/module-detect.so.p/module-detect.c.o -MF src/modules/module-detect.so.p/module-detect.c.o.d -o src/modules/module-detect.so.p/module-detect.c.o -c pulseaudio-16.1/src/modules/module-detect.c",
+    "file": "pulseaudio-16.1/src/modules/module-detect.c",
+    "output": "src/modules/module-detect.so.p/module-detect.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-device-manager.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_device_manager -MD -MQ src/modules/module-device-manager.so.p/module-device-manager.c.o -MF src/modules/module-device-manager.so.p/module-device-manager.c.o.d -o src/modules/module-device-manager.so.p/module-device-manager.c.o -c pulseaudio-16.1/src/modules/module-device-manager.c",
+    "file": "pulseaudio-16.1/src/modules/module-device-manager.c",
+    "output": "src/modules/module-device-manager.so.p/module-device-manager.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-device-restore.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_device_restore -MD -MQ src/modules/module-device-restore.so.p/module-device-restore.c.o -MF src/modules/module-device-restore.so.p/module-device-restore.c.o.d -o src/modules/module-device-restore.so.p/module-device-restore.c.o -c pulseaudio-16.1/src/modules/module-device-restore.c",
+    "file": "pulseaudio-16.1/src/modules/module-device-restore.c",
+    "output": "src/modules/module-device-restore.so.p/module-device-restore.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-filter-apply.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_filter_apply -MD -MQ src/modules/module-filter-apply.so.p/module-filter-apply.c.o -MF src/modules/module-filter-apply.so.p/module-filter-apply.c.o.d -o src/modules/module-filter-apply.so.p/module-filter-apply.c.o -c pulseaudio-16.1/src/modules/module-filter-apply.c",
+    "file": "pulseaudio-16.1/src/modules/module-filter-apply.c",
+    "output": "src/modules/module-filter-apply.so.p/module-filter-apply.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-filter-heuristics.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_filter_heuristics -MD -MQ src/modules/module-filter-heuristics.so.p/module-filter-heuristics.c.o -MF src/modules/module-filter-heuristics.so.p/module-filter-heuristics.c.o.d -o src/modules/module-filter-heuristics.so.p/module-filter-heuristics.c.o -c pulseaudio-16.1/src/modules/module-filter-heuristics.c",
+    "file": "pulseaudio-16.1/src/modules/module-filter-heuristics.c",
+    "output": "src/modules/module-filter-heuristics.so.p/module-filter-heuristics.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-http-protocol-tcp.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_http_protocol_tcp -DUSE_PROTOCOL_HTTP -DUSE_TCP_SOCKETS -MD -MQ src/modules/module-http-protocol-tcp.so.p/module-protocol-stub.c.o -MF src/modules/module-http-protocol-tcp.so.p/module-protocol-stub.c.o.d -o src/modules/module-http-protocol-tcp.so.p/module-protocol-stub.c.o -c pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "file": "pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "output": "src/modules/module-http-protocol-tcp.so.p/module-protocol-stub.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-http-protocol-unix.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_http_protocol_unix -DUSE_PROTOCOL_HTTP -DUSE_UNIX_SOCKETS -MD -MQ src/modules/module-http-protocol-unix.so.p/module-protocol-stub.c.o -MF src/modules/module-http-protocol-unix.so.p/module-protocol-stub.c.o.d -o src/modules/module-http-protocol-unix.so.p/module-protocol-stub.c.o -c pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "file": "pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "output": "src/modules/module-http-protocol-unix.so.p/module-protocol-stub.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-intended-roles.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_intended_roles -MD -MQ src/modules/module-intended-roles.so.p/module-intended-roles.c.o -MF src/modules/module-intended-roles.so.p/module-intended-roles.c.o.d -o src/modules/module-intended-roles.so.p/module-intended-roles.c.o -c pulseaudio-16.1/src/modules/module-intended-roles.c",
+    "file": "pulseaudio-16.1/src/modules/module-intended-roles.c",
+    "output": "src/modules/module-intended-roles.so.p/module-intended-roles.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-ladspa-sink.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_ladspa_sink -DLADSPA_PATH=/home/kulina/BUILD/kgmplayer/lib64/ladspa:/usr/local/lib/ladspa:/usr/lib/ladspa:/usr/local/lib64/ladspa:/usr/lib64/ladspa -MD -MQ src/modules/module-ladspa-sink.so.p/module-ladspa-sink.c.o -MF src/modules/module-ladspa-sink.so.p/module-ladspa-sink.c.o.d -o src/modules/module-ladspa-sink.so.p/module-ladspa-sink.c.o -c pulseaudio-16.1/src/modules/module-ladspa-sink.c",
+    "file": "pulseaudio-16.1/src/modules/module-ladspa-sink.c",
+    "output": "src/modules/module-ladspa-sink.so.p/module-ladspa-sink.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-loopback.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_loopback -MD -MQ src/modules/module-loopback.so.p/module-loopback.c.o -MF src/modules/module-loopback.so.p/module-loopback.c.o.d -o src/modules/module-loopback.so.p/module-loopback.c.o -c pulseaudio-16.1/src/modules/module-loopback.c",
+    "file": "pulseaudio-16.1/src/modules/module-loopback.c",
+    "output": "src/modules/module-loopback.so.p/module-loopback.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-match.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_match -MD -MQ src/modules/module-match.so.p/module-match.c.o -MF src/modules/module-match.so.p/module-match.c.o.d -o src/modules/module-match.so.p/module-match.c.o -c pulseaudio-16.1/src/modules/module-match.c",
+    "file": "pulseaudio-16.1/src/modules/module-match.c",
+    "output": "src/modules/module-match.so.p/module-match.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-native-protocol-fd.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_native_protocol_fd -MD -MQ src/modules/module-native-protocol-fd.so.p/module-native-protocol-fd.c.o -MF src/modules/module-native-protocol-fd.so.p/module-native-protocol-fd.c.o.d -o src/modules/module-native-protocol-fd.so.p/module-native-protocol-fd.c.o -c pulseaudio-16.1/src/modules/module-native-protocol-fd.c",
+    "file": "pulseaudio-16.1/src/modules/module-native-protocol-fd.c",
+    "output": "src/modules/module-native-protocol-fd.so.p/module-native-protocol-fd.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-native-protocol-tcp.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_native_protocol_tcp -DUSE_PROTOCOL_NATIVE -DUSE_TCP_SOCKETS -MD -MQ src/modules/module-native-protocol-tcp.so.p/module-protocol-stub.c.o -MF src/modules/module-native-protocol-tcp.so.p/module-protocol-stub.c.o.d -o src/modules/module-native-protocol-tcp.so.p/module-protocol-stub.c.o -c pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "file": "pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "output": "src/modules/module-native-protocol-tcp.so.p/module-protocol-stub.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-native-protocol-unix.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_native_protocol_unix -DUSE_PROTOCOL_NATIVE -DUSE_UNIX_SOCKETS -MD -MQ src/modules/module-native-protocol-unix.so.p/module-protocol-stub.c.o -MF src/modules/module-native-protocol-unix.so.p/module-protocol-stub.c.o.d -o src/modules/module-native-protocol-unix.so.p/module-protocol-stub.c.o -c pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "file": "pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "output": "src/modules/module-native-protocol-unix.so.p/module-protocol-stub.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-null-sink.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_null_sink -MD -MQ src/modules/module-null-sink.so.p/module-null-sink.c.o -MF src/modules/module-null-sink.so.p/module-null-sink.c.o.d -o src/modules/module-null-sink.so.p/module-null-sink.c.o -c pulseaudio-16.1/src/modules/module-null-sink.c",
+    "file": "pulseaudio-16.1/src/modules/module-null-sink.c",
+    "output": "src/modules/module-null-sink.so.p/module-null-sink.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-null-source.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_null_source -MD -MQ src/modules/module-null-source.so.p/module-null-source.c.o -MF src/modules/module-null-source.so.p/module-null-source.c.o.d -o src/modules/module-null-source.so.p/module-null-source.c.o -c pulseaudio-16.1/src/modules/module-null-source.c",
+    "file": "pulseaudio-16.1/src/modules/module-null-source.c",
+    "output": "src/modules/module-null-source.so.p/module-null-source.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-position-event-sounds.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_position_event_sounds -MD -MQ src/modules/module-position-event-sounds.so.p/module-position-event-sounds.c.o -MF src/modules/module-position-event-sounds.so.p/module-position-event-sounds.c.o.d -o src/modules/module-position-event-sounds.so.p/module-position-event-sounds.c.o -c pulseaudio-16.1/src/modules/module-position-event-sounds.c",
+    "file": "pulseaudio-16.1/src/modules/module-position-event-sounds.c",
+    "output": "src/modules/module-position-event-sounds.so.p/module-position-event-sounds.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-remap-sink.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_remap_sink -MD -MQ src/modules/module-remap-sink.so.p/module-remap-sink.c.o -MF src/modules/module-remap-sink.so.p/module-remap-sink.c.o.d -o src/modules/module-remap-sink.so.p/module-remap-sink.c.o -c pulseaudio-16.1/src/modules/module-remap-sink.c",
+    "file": "pulseaudio-16.1/src/modules/module-remap-sink.c",
+    "output": "src/modules/module-remap-sink.so.p/module-remap-sink.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-remap-source.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_remap_source -MD -MQ src/modules/module-remap-source.so.p/module-remap-source.c.o -MF src/modules/module-remap-source.so.p/module-remap-source.c.o.d -o src/modules/module-remap-source.so.p/module-remap-source.c.o -c pulseaudio-16.1/src/modules/module-remap-source.c",
+    "file": "pulseaudio-16.1/src/modules/module-remap-source.c",
+    "output": "src/modules/module-remap-source.so.p/module-remap-source.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-rescue-streams.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_rescue_streams -MD -MQ src/modules/module-rescue-streams.so.p/module-rescue-streams.c.o -MF src/modules/module-rescue-streams.so.p/module-rescue-streams.c.o.d -o src/modules/module-rescue-streams.so.p/module-rescue-streams.c.o -c pulseaudio-16.1/src/modules/module-rescue-streams.c",
+    "file": "pulseaudio-16.1/src/modules/module-rescue-streams.c",
+    "output": "src/modules/module-rescue-streams.so.p/module-rescue-streams.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-role-cork.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_role_cork -MD -MQ src/modules/module-role-cork.so.p/module-role-cork.c.o -MF src/modules/module-role-cork.so.p/module-role-cork.c.o.d -o src/modules/module-role-cork.so.p/module-role-cork.c.o -c pulseaudio-16.1/src/modules/module-role-cork.c",
+    "file": "pulseaudio-16.1/src/modules/module-role-cork.c",
+    "output": "src/modules/module-role-cork.so.p/module-role-cork.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-role-cork.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_role_cork -MD -MQ src/modules/module-role-cork.so.p/stream-interaction.c.o -MF src/modules/module-role-cork.so.p/stream-interaction.c.o.d -o src/modules/module-role-cork.so.p/stream-interaction.c.o -c pulseaudio-16.1/src/modules/stream-interaction.c",
+    "file": "pulseaudio-16.1/src/modules/stream-interaction.c",
+    "output": "src/modules/module-role-cork.so.p/stream-interaction.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-role-ducking.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_role_ducking -MD -MQ src/modules/module-role-ducking.so.p/module-role-ducking.c.o -MF src/modules/module-role-ducking.so.p/module-role-ducking.c.o.d -o src/modules/module-role-ducking.so.p/module-role-ducking.c.o -c pulseaudio-16.1/src/modules/module-role-ducking.c",
+    "file": "pulseaudio-16.1/src/modules/module-role-ducking.c",
+    "output": "src/modules/module-role-ducking.so.p/module-role-ducking.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-role-ducking.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_role_ducking -MD -MQ src/modules/module-role-ducking.so.p/stream-interaction.c.o -MF src/modules/module-role-ducking.so.p/stream-interaction.c.o.d -o src/modules/module-role-ducking.so.p/stream-interaction.c.o -c pulseaudio-16.1/src/modules/stream-interaction.c",
+    "file": "pulseaudio-16.1/src/modules/stream-interaction.c",
+    "output": "src/modules/module-role-ducking.so.p/stream-interaction.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-simple-protocol-tcp.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_simple_protocol_tcp -DUSE_PROTOCOL_SIMPLE -DUSE_TCP_SOCKETS -MD -MQ src/modules/module-simple-protocol-tcp.so.p/module-protocol-stub.c.o -MF src/modules/module-simple-protocol-tcp.so.p/module-protocol-stub.c.o.d -o src/modules/module-simple-protocol-tcp.so.p/module-protocol-stub.c.o -c pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "file": "pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "output": "src/modules/module-simple-protocol-tcp.so.p/module-protocol-stub.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-simple-protocol-unix.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_simple_protocol_unix -DUSE_PROTOCOL_SIMPLE -DUSE_UNIX_SOCKETS -MD -MQ src/modules/module-simple-protocol-unix.so.p/module-protocol-stub.c.o -MF src/modules/module-simple-protocol-unix.so.p/module-protocol-stub.c.o.d -o src/modules/module-simple-protocol-unix.so.p/module-protocol-stub.c.o -c pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "file": "pulseaudio-16.1/src/modules/module-protocol-stub.c",
+    "output": "src/modules/module-simple-protocol-unix.so.p/module-protocol-stub.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-sine.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_sine -MD -MQ src/modules/module-sine.so.p/module-sine.c.o -MF src/modules/module-sine.so.p/module-sine.c.o.d -o src/modules/module-sine.so.p/module-sine.c.o -c pulseaudio-16.1/src/modules/module-sine.c",
+    "file": "pulseaudio-16.1/src/modules/module-sine.c",
+    "output": "src/modules/module-sine.so.p/module-sine.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-sine-source.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_sine_source -MD -MQ src/modules/module-sine-source.so.p/module-sine-source.c.o -MF src/modules/module-sine-source.so.p/module-sine-source.c.o.d -o src/modules/module-sine-source.so.p/module-sine-source.c.o -c pulseaudio-16.1/src/modules/module-sine-source.c",
+    "file": "pulseaudio-16.1/src/modules/module-sine-source.c",
+    "output": "src/modules/module-sine-source.so.p/module-sine-source.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-stream-restore.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_stream_restore -MD -MQ src/modules/module-stream-restore.so.p/module-stream-restore.c.o -MF src/modules/module-stream-restore.so.p/module-stream-restore.c.o.d -o src/modules/module-stream-restore.so.p/module-stream-restore.c.o -c pulseaudio-16.1/src/modules/module-stream-restore.c",
+    "file": "pulseaudio-16.1/src/modules/module-stream-restore.c",
+    "output": "src/modules/module-stream-restore.so.p/module-stream-restore.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-suspend-on-idle.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_suspend_on_idle -MD -MQ src/modules/module-suspend-on-idle.so.p/module-suspend-on-idle.c.o -MF src/modules/module-suspend-on-idle.so.p/module-suspend-on-idle.c.o.d -o src/modules/module-suspend-on-idle.so.p/module-suspend-on-idle.c.o -c pulseaudio-16.1/src/modules/module-suspend-on-idle.c",
+    "file": "pulseaudio-16.1/src/modules/module-suspend-on-idle.c",
+    "output": "src/modules/module-suspend-on-idle.so.p/module-suspend-on-idle.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-switch-on-connect.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_switch_on_connect -MD -MQ src/modules/module-switch-on-connect.so.p/module-switch-on-connect.c.o -MF src/modules/module-switch-on-connect.so.p/module-switch-on-connect.c.o.d -o src/modules/module-switch-on-connect.so.p/module-switch-on-connect.c.o -c pulseaudio-16.1/src/modules/module-switch-on-connect.c",
+    "file": "pulseaudio-16.1/src/modules/module-switch-on-connect.c",
+    "output": "src/modules/module-switch-on-connect.so.p/module-switch-on-connect.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-switch-on-port-available.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_switch_on_port_available -MD -MQ src/modules/module-switch-on-port-available.so.p/module-switch-on-port-available.c.o -MF src/modules/module-switch-on-port-available.so.p/module-switch-on-port-available.c.o.d -o src/modules/module-switch-on-port-available.so.p/module-switch-on-port-available.c.o -c pulseaudio-16.1/src/modules/module-switch-on-port-available.c",
+    "file": "pulseaudio-16.1/src/modules/module-switch-on-port-available.c",
+    "output": "src/modules/module-switch-on-port-available.so.p/module-switch-on-port-available.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-tunnel-sink.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_tunnel_sink -DTUNNEL_SINK=1 -MD -MQ src/modules/module-tunnel-sink.so.p/module-tunnel.c.o -MF src/modules/module-tunnel-sink.so.p/module-tunnel.c.o.d -o src/modules/module-tunnel-sink.so.p/module-tunnel.c.o -c pulseaudio-16.1/src/modules/module-tunnel.c",
+    "file": "pulseaudio-16.1/src/modules/module-tunnel.c",
+    "output": "src/modules/module-tunnel-sink.so.p/module-tunnel.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-tunnel-sink.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_tunnel_sink -DTUNNEL_SINK=1 -MD -MQ src/modules/module-tunnel-sink.so.p/restart-module.c.o -MF src/modules/module-tunnel-sink.so.p/restart-module.c.o.d -o src/modules/module-tunnel-sink.so.p/restart-module.c.o -c pulseaudio-16.1/src/modules/restart-module.c",
+    "file": "pulseaudio-16.1/src/modules/restart-module.c",
+    "output": "src/modules/module-tunnel-sink.so.p/restart-module.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-tunnel-sink-new.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_tunnel_sink_new -MD -MQ src/modules/module-tunnel-sink-new.so.p/module-tunnel-sink-new.c.o -MF src/modules/module-tunnel-sink-new.so.p/module-tunnel-sink-new.c.o.d -o src/modules/module-tunnel-sink-new.so.p/module-tunnel-sink-new.c.o -c pulseaudio-16.1/src/modules/module-tunnel-sink-new.c",
+    "file": "pulseaudio-16.1/src/modules/module-tunnel-sink-new.c",
+    "output": "src/modules/module-tunnel-sink-new.so.p/module-tunnel-sink-new.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-tunnel-sink-new.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_tunnel_sink_new -MD -MQ src/modules/module-tunnel-sink-new.so.p/restart-module.c.o -MF src/modules/module-tunnel-sink-new.so.p/restart-module.c.o.d -o src/modules/module-tunnel-sink-new.so.p/restart-module.c.o -c pulseaudio-16.1/src/modules/restart-module.c",
+    "file": "pulseaudio-16.1/src/modules/restart-module.c",
+    "output": "src/modules/module-tunnel-sink-new.so.p/restart-module.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-tunnel-source.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_tunnel_source -MD -MQ src/modules/module-tunnel-source.so.p/module-tunnel.c.o -MF src/modules/module-tunnel-source.so.p/module-tunnel.c.o.d -o src/modules/module-tunnel-source.so.p/module-tunnel.c.o -c pulseaudio-16.1/src/modules/module-tunnel.c",
+    "file": "pulseaudio-16.1/src/modules/module-tunnel.c",
+    "output": "src/modules/module-tunnel-source.so.p/module-tunnel.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-tunnel-source.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_tunnel_source -MD -MQ src/modules/module-tunnel-source.so.p/restart-module.c.o -MF src/modules/module-tunnel-source.so.p/restart-module.c.o.d -o src/modules/module-tunnel-source.so.p/restart-module.c.o -c pulseaudio-16.1/src/modules/restart-module.c",
+    "file": "pulseaudio-16.1/src/modules/restart-module.c",
+    "output": "src/modules/module-tunnel-source.so.p/restart-module.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-tunnel-source-new.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_tunnel_source_new -MD -MQ src/modules/module-tunnel-source-new.so.p/module-tunnel-source-new.c.o -MF src/modules/module-tunnel-source-new.so.p/module-tunnel-source-new.c.o.d -o src/modules/module-tunnel-source-new.so.p/module-tunnel-source-new.c.o -c pulseaudio-16.1/src/modules/module-tunnel-source-new.c",
+    "file": "pulseaudio-16.1/src/modules/module-tunnel-source-new.c",
+    "output": "src/modules/module-tunnel-source-new.so.p/module-tunnel-source-new.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-tunnel-source-new.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_tunnel_source_new -MD -MQ src/modules/module-tunnel-source-new.so.p/restart-module.c.o -MF src/modules/module-tunnel-source-new.so.p/restart-module.c.o.d -o src/modules/module-tunnel-source-new.so.p/restart-module.c.o -c pulseaudio-16.1/src/modules/restart-module.c",
+    "file": "pulseaudio-16.1/src/modules/restart-module.c",
+    "output": "src/modules/module-tunnel-source-new.so.p/restart-module.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-virtual-sink.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_virtual_sink -MD -MQ src/modules/module-virtual-sink.so.p/module-virtual-sink.c.o -MF src/modules/module-virtual-sink.so.p/module-virtual-sink.c.o.d -o src/modules/module-virtual-sink.so.p/module-virtual-sink.c.o -c pulseaudio-16.1/src/modules/module-virtual-sink.c",
+    "file": "pulseaudio-16.1/src/modules/module-virtual-sink.c",
+    "output": "src/modules/module-virtual-sink.so.p/module-virtual-sink.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-virtual-source.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_virtual_source -MD -MQ src/modules/module-virtual-source.so.p/module-virtual-source.c.o -MF src/modules/module-virtual-source.so.p/module-virtual-source.c.o.d -o src/modules/module-virtual-source.so.p/module-virtual-source.c.o -c pulseaudio-16.1/src/modules/module-virtual-source.c",
+    "file": "pulseaudio-16.1/src/modules/module-virtual-source.c",
+    "output": "src/modules/module-virtual-source.so.p/module-virtual-source.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-volume-restore.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_volume_restore -MD -MQ src/modules/module-volume-restore.so.p/module-volume-restore.c.o -MF src/modules/module-volume-restore.so.p/module-volume-restore.c.o.d -o src/modules/module-volume-restore.so.p/module-volume-restore.c.o -c pulseaudio-16.1/src/modules/module-volume-restore.c",
+    "file": "pulseaudio-16.1/src/modules/module-volume-restore.c",
+    "output": "src/modules/module-volume-restore.so.p/module-volume-restore.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-rtp-recv.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_rtp_recv -MD -MQ src/modules/module-rtp-recv.so.p/rtp_module-rtp-recv.c.o -MF src/modules/module-rtp-recv.so.p/rtp_module-rtp-recv.c.o.d -o src/modules/module-rtp-recv.so.p/rtp_module-rtp-recv.c.o -c pulseaudio-16.1/src/modules/rtp/module-rtp-recv.c",
+    "file": "pulseaudio-16.1/src/modules/rtp/module-rtp-recv.c",
+    "output": "src/modules/module-rtp-recv.so.p/rtp_module-rtp-recv.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-rtp-send.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_rtp_send -MD -MQ src/modules/module-rtp-send.so.p/rtp_module-rtp-send.c.o -MF src/modules/module-rtp-send.so.p/rtp_module-rtp-send.c.o.d -o src/modules/module-rtp-send.so.p/rtp_module-rtp-send.c.o -c pulseaudio-16.1/src/modules/rtp/module-rtp-send.c",
+    "file": "pulseaudio-16.1/src/modules/rtp/module-rtp-send.c",
+    "output": "src/modules/module-rtp-send.so.p/rtp_module-rtp-send.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-mmkbd-evdev.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_mmkbd_evdev -MD -MQ src/modules/module-mmkbd-evdev.so.p/module-mmkbd-evdev.c.o -MF src/modules/module-mmkbd-evdev.so.p/module-mmkbd-evdev.c.o.d -o src/modules/module-mmkbd-evdev.so.p/module-mmkbd-evdev.c.o -c pulseaudio-16.1/src/modules/module-mmkbd-evdev.c",
+    "file": "pulseaudio-16.1/src/modules/module-mmkbd-evdev.c",
+    "output": "src/modules/module-mmkbd-evdev.so.p/module-mmkbd-evdev.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-oss.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_oss -MD -MQ src/modules/module-oss.so.p/oss_module-oss.c.o -MF src/modules/module-oss.so.p/oss_module-oss.c.o.d -o src/modules/module-oss.so.p/oss_module-oss.c.o -c pulseaudio-16.1/src/modules/oss/module-oss.c",
+    "file": "pulseaudio-16.1/src/modules/oss/module-oss.c",
+    "output": "src/modules/module-oss.so.p/oss_module-oss.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-pipe-sink.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_pipe_sink -MD -MQ src/modules/module-pipe-sink.so.p/module-pipe-sink.c.o -MF src/modules/module-pipe-sink.so.p/module-pipe-sink.c.o.d -o src/modules/module-pipe-sink.so.p/module-pipe-sink.c.o -c pulseaudio-16.1/src/modules/module-pipe-sink.c",
+    "file": "pulseaudio-16.1/src/modules/module-pipe-sink.c",
+    "output": "src/modules/module-pipe-sink.so.p/module-pipe-sink.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-pipe-source.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_pipe_source -MD -MQ src/modules/module-pipe-source.so.p/module-pipe-source.c.o -MF src/modules/module-pipe-source.so.p/module-pipe-source.c.o.d -o src/modules/module-pipe-source.so.p/module-pipe-source.c.o -c pulseaudio-16.1/src/modules/module-pipe-source.c",
+    "file": "pulseaudio-16.1/src/modules/module-pipe-source.c",
+    "output": "src/modules/module-pipe-source.so.p/module-pipe-source.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-alsa-card.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_alsa_card -MD -MQ src/modules/module-alsa-card.so.p/alsa_module-alsa-card.c.o -MF src/modules/module-alsa-card.so.p/alsa_module-alsa-card.c.o.d -o src/modules/module-alsa-card.so.p/alsa_module-alsa-card.c.o -c pulseaudio-16.1/src/modules/alsa/module-alsa-card.c",
+    "file": "pulseaudio-16.1/src/modules/alsa/module-alsa-card.c",
+    "output": "src/modules/module-alsa-card.so.p/alsa_module-alsa-card.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-alsa-sink.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_alsa_sink -MD -MQ src/modules/module-alsa-sink.so.p/alsa_module-alsa-sink.c.o -MF src/modules/module-alsa-sink.so.p/alsa_module-alsa-sink.c.o.d -o src/modules/module-alsa-sink.so.p/alsa_module-alsa-sink.c.o -c pulseaudio-16.1/src/modules/alsa/module-alsa-sink.c",
+    "file": "pulseaudio-16.1/src/modules/alsa/module-alsa-sink.c",
+    "output": "src/modules/module-alsa-sink.so.p/alsa_module-alsa-sink.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-alsa-source.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_alsa_source -MD -MQ src/modules/module-alsa-source.so.p/alsa_module-alsa-source.c.o -MF src/modules/module-alsa-source.so.p/alsa_module-alsa-source.c.o.d -o src/modules/module-alsa-source.so.p/alsa_module-alsa-source.c.o -c pulseaudio-16.1/src/modules/alsa/module-alsa-source.c",
+    "file": "pulseaudio-16.1/src/modules/alsa/module-alsa-source.c",
+    "output": "src/modules/module-alsa-source.so.p/alsa_module-alsa-source.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-systemd-login.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -I/usr/include/elogind -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_systemd_login -MD -MQ src/modules/module-systemd-login.so.p/module-systemd-login.c.o -MF src/modules/module-systemd-login.so.p/module-systemd-login.c.o.d -o src/modules/module-systemd-login.so.p/module-systemd-login.c.o -c pulseaudio-16.1/src/modules/module-systemd-login.c",
+    "file": "pulseaudio-16.1/src/modules/module-systemd-login.c",
+    "output": "src/modules/module-systemd-login.so.p/module-systemd-login.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-udev-detect.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_udev_detect -MD -MQ src/modules/module-udev-detect.so.p/module-udev-detect.c.o -MF src/modules/module-udev-detect.so.p/module-udev-detect.c.o.d -o src/modules/module-udev-detect.so.p/module-udev-detect.c.o -c pulseaudio-16.1/src/modules/module-udev-detect.c",
+    "file": "pulseaudio-16.1/src/modules/module-udev-detect.c",
+    "output": "src/modules/module-udev-detect.so.p/module-udev-detect.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-hal-detect.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_hal_detect -MD -MQ src/modules/module-hal-detect.so.p/module-hal-detect-compat.c.o -MF src/modules/module-hal-detect.so.p/module-hal-detect-compat.c.o.d -o src/modules/module-hal-detect.so.p/module-hal-detect-compat.c.o -c pulseaudio-16.1/src/modules/module-hal-detect-compat.c",
+    "file": "pulseaudio-16.1/src/modules/module-hal-detect-compat.c",
+    "output": "src/modules/module-hal-detect.so.p/module-hal-detect-compat.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-echo-cancel.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_echo_cancel -DHAVE_ADRIAN_EC=1 -MD -MQ src/modules/module-echo-cancel.so.p/echo-cancel_module-echo-cancel.c.o -MF src/modules/module-echo-cancel.so.p/echo-cancel_module-echo-cancel.c.o.d -o src/modules/module-echo-cancel.so.p/echo-cancel_module-echo-cancel.c.o -c pulseaudio-16.1/src/modules/echo-cancel/module-echo-cancel.c",
+    "file": "pulseaudio-16.1/src/modules/echo-cancel/module-echo-cancel.c",
+    "output": "src/modules/module-echo-cancel.so.p/echo-cancel_module-echo-cancel.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-echo-cancel.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_echo_cancel -DHAVE_ADRIAN_EC=1 -MD -MQ src/modules/module-echo-cancel.so.p/echo-cancel_null.c.o -MF src/modules/module-echo-cancel.so.p/echo-cancel_null.c.o.d -o src/modules/module-echo-cancel.so.p/echo-cancel_null.c.o -c pulseaudio-16.1/src/modules/echo-cancel/null.c",
+    "file": "pulseaudio-16.1/src/modules/echo-cancel/null.c",
+    "output": "src/modules/module-echo-cancel.so.p/echo-cancel_null.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-echo-cancel.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_echo_cancel -DHAVE_ADRIAN_EC=1 -MD -MQ src/modules/module-echo-cancel.so.p/echo-cancel_adrian.c.o -MF src/modules/module-echo-cancel.so.p/echo-cancel_adrian.c.o.d -o src/modules/module-echo-cancel.so.p/echo-cancel_adrian.c.o -c pulseaudio-16.1/src/modules/echo-cancel/adrian.c",
+    "file": "pulseaudio-16.1/src/modules/echo-cancel/adrian.c",
+    "output": "src/modules/module-echo-cancel.so.p/echo-cancel_adrian.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/modules/module-echo-cancel.so.p -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -Isrc/modules -Ipulseaudio-16.1/src/modules -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -D__INCLUDED_FROM_PULSE_AUDIO -DPA_MODULE_NAME=module_echo_cancel -DHAVE_ADRIAN_EC=1 -MD -MQ src/modules/module-echo-cancel.so.p/echo-cancel_adrian-aec.c.o -MF src/modules/module-echo-cancel.so.p/echo-cancel_adrian-aec.c.o.d -o src/modules/module-echo-cancel.so.p/echo-cancel_adrian-aec.c.o -c pulseaudio-16.1/src/modules/echo-cancel/adrian-aec.c",
+    "file": "pulseaudio-16.1/src/modules/echo-cancel/adrian-aec.c",
+    "output": "src/modules/module-echo-cancel.so.p/echo-cancel_adrian-aec.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/utils/pacat.p -Isrc/utils -Ipulseaudio-16.1/src/utils -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/utils/pacat.p/pacat.c.o -MF src/utils/pacat.p/pacat.c.o.d -o src/utils/pacat.p/pacat.c.o -c pulseaudio-16.1/src/utils/pacat.c",
+    "file": "pulseaudio-16.1/src/utils/pacat.c",
+    "output": "src/utils/pacat.p/pacat.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/utils/pactl.p -Isrc/utils -Ipulseaudio-16.1/src/utils -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/utils/pactl.p/pactl.c.o -MF src/utils/pactl.p/pactl.c.o.d -o src/utils/pactl.p/pactl.c.o -c pulseaudio-16.1/src/utils/pactl.c",
+    "file": "pulseaudio-16.1/src/utils/pactl.c",
+    "output": "src/utils/pactl.p/pactl.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/utils/pasuspender.p -Isrc/utils -Ipulseaudio-16.1/src/utils -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/utils/pasuspender.p/pasuspender.c.o -MF src/utils/pasuspender.p/pasuspender.c.o.d -o src/utils/pasuspender.p/pasuspender.c.o -c pulseaudio-16.1/src/utils/pasuspender.c",
+    "file": "pulseaudio-16.1/src/utils/pasuspender.c",
+    "output": "src/utils/pasuspender.p/pasuspender.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/utils/pacmd.p -Isrc/utils -Ipulseaudio-16.1/src/utils -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -DHAVE_CONFIG_H -D_GNU_SOURCE -MD -MQ src/utils/pacmd.p/pacmd.c.o -MF src/utils/pacmd.p/pacmd.c.o.d -o src/utils/pacmd.p/pacmd.c.o -c pulseaudio-16.1/src/utils/pacmd.c",
+    "file": "pulseaudio-16.1/src/utils/pacmd.c",
+    "output": "src/utils/pacmd.p/pacmd.c.o"
+  },
+  {
+    "directory": "/home/kulina/BUILD/kgmplayer/OpenSource",
+    "command": "cc -Isrc/utils/libpulsedsp.so.p -Isrc/utils -Ipulseaudio-16.1/src/utils -I. -Ipulseaudio-16.1 -Isrc -Ipulseaudio-16.1/src -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=gnu11 -g -fPIC -pthread -DHAVE_CONFIG_H -D_GNU_SOURCE -Wno-nonnull-compare -MD -MQ src/utils/libpulsedsp.so.p/padsp.c.o -MF src/utils/libpulsedsp.so.p/padsp.c.o.d -o src/utils/libpulsedsp.so.p/padsp.c.o -c pulseaudio-16.1/src/utils/padsp.c",
+    "file": "pulseaudio-16.1/src/utils/padsp.c",
+    "output": "src/utils/libpulsedsp.so.p/padsp.c.o"
+  }
+]

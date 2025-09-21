@@ -1,0 +1,12 @@
+int  AudioJoinbrowser1callback(int item,int i,void *Tmp) ;
+void  AudioJoinbrowser1init(DIX *X,void *pt) ;
+int  AudioJoinbutton1callback(int butno,int i,void *Tmp) ;
+void  AudioJoinbutton1init(DIN *B,void *pt) ;
+int  AudioJointextbox1callback(int cellno,int i,void *Tmp);
+int  AudioJoinsplbutton1callback(int butno,int i,void *Tmp) ;
+void  AudioJoinsplbutton1init(DIL *B,void *pt) ;
+int AudioJoininit(void *Tmp) ;
+int AudioJoincleanup(void *Tmp) ;
+int AudioJoinCallBack(void *Tmp,void *tmp) ;
+int AudioJoinResizeCallBack(void *Tmp) ;
+int AudioJoinWaitCallBack(void *Tmp) ;

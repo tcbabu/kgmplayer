@@ -1,0 +1,36 @@
+D      //GUI dimensions xo,yo,xl,yl,lw,rw,tw,bw,df,bor_type,bkup
+10 10 599 233
+4 4 4 4
+2 0 1 0 1 1 0 0 0 0 1 0 0.000000 0 100 100 0
+// Hori Slidei Bar
+P
+P     //code
+-100 100  //min,max
+280 90  //x1,y1
+64 //length 
+NULL //prompt not used 
+368 108 //x2,y2
+0 0 8 -186206 //border,hide,type,color
+"EnVolumeWidget3"
+//Message Box
+m
+m     //code
+189 85  //x1,y1
+"Enhance Volume"/Message
+279 110 //x2,y2
+1 0 //justification,hide
+"EnVolumeWidget4"
+//Radio Button
+r
+r     //code
+367 85  //x1,y1
+593 111  //x2,y2
+8 0  //xgap, ygap
+60 20  //item length,Width 
+3     //ny 
+0 2  // offset, scroll width 
+0 0 1 0 0 // type,item hight,bordr,bkgr,hide 
+"Left" //item
+"Right" //item
+"Both" //item
+"EnVolumeWidget5"

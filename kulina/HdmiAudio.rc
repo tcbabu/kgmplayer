@@ -1,0 +1,25 @@
+D      //GUI dimensions xo,yo,xl,yl,lw,rw,tw,bw,df,bor_type,bkup
+10 10 572 257
+4 4 4 4
+0 4 1 0 1 1 0 0 0 0 1 0 0.000000 0 100 100 0
+//Radio Button
+r
+r     //code
+212 153  //x1,y1
+352 178  //x2,y2
+8 0  //xgap, ygap
+60 25  //item length,Width 
+2     //ny 
+0 2  // offset, scroll width 
+0 0 1 0 0 // type,item hight,bordr,bkgr,hide 
+"Yes" //item
+"No" //item
+"HdmiAudio"
+//Message Box
+m
+m     //code
+141 151  //x1,y1
+"HDMI Audio"/Message
+213 177 //x2,y2
+1 0 //justification,hide
+"HdmiAudioWidget2"

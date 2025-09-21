@@ -1,0 +1,13 @@
+int  AudioSpeedtextbox1callback(int cellno,int i,void *Tmp);
+int  AudioSpeedbutton1callback(int butno,int i,void *Tmp) ;
+void  AudioSpeedbutton1init(DIN *B,void *pt) ;
+int  AudioSpeedtextbox2callback(int cellno,int i,void *Tmp);
+int  AudioSpeedtextbox3callback(int cellno,int i,void *Tmp);
+int  AudioSpeedsplbutton1callback(int butno,int i,void *Tmp) ;
+void  AudioSpeedsplbutton1init(DIL *B,void *pt) ;
+int AudioSpeedinit(void *Tmp) ;
+int AudioSpeedcleanup(void *Tmp) ;
+int ModifyAudioSpeed(void *Tmp,int GrpId) ;
+int AudioSpeedCallBack(void *Tmp,void *tmp) ;
+int AudioSpeedResizeCallBack(void *Tmp) ;
+int AudioSpeedWaitCallBack(void *Tmp) ;

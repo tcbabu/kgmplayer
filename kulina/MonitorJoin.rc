@@ -1,0 +1,46 @@
+D      //GUI dimensions xo,yo,xl,yl,lw,rw,tw,bw,df,bor_type,bkup
+10 10 610 207
+4 4 4 4
+3 4 1 0 1 1 0 0 0 0 1 0 0.000000 0 100 100 0
+//Message Box
+m
+M     //code
+23 7  //x1,y1
+"Making Video"/Message
+591 35 //x2,y2
+0 0 //justification,hide
+"MonitorTitle"
+//Info Box
+i
+i     //code
+24 42  //x1,y1
+588 117 //x2,y2
+61 3 //nchrs,nlines
+0 //hide
+"MonitorInfo"
+//Progress Bar
+o
+o     //code
+45 130  //x1,y1
+565 148 //x2,y2
+0 //hide
+"JoinBar"
+//Horiz bar
+h
+h     //code
+240 168  //x1,y1
+322 201  //x2,y2
+2 0  //xgap,ygap
+72 //length 
+25 //Width 
+1 1  //Nx,Ny,
+1 //status
+"Cancel" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-1 //back ground color
+ //keyboard code
+4 0.500000 0  //type,fac
+0 0 //hide
+"MonitorJoinWidget4"

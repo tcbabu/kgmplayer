@@ -1,0 +1,221 @@
+Initially it was really difficult to bring up Bluetooth using Bluez 5. 
+It seems it was okay with Bluez 4.x. I have tried different
+versions of Bluez 5 on my LFS build. Even up to Bluez 5.28 
+it was not satisfactory.
+Now it is Bluz5.30, with this, LFS doc and lot of trail, I could manage.
+I feel Bluez is one of the most badly documented user unfriendly software.
+I also feel it is very buggy. It can hang machines forcing i
+to hard boot the system.
+I have seen Bluetooth forcing the Android phone also to reboot.
+So it is important to get the latest version of the software (hopefully).
+With Bluez 5.xx, there is no Alsa module for Bluez, 
+probably that may be the reason, 
+why most distributions still continue with Blus4.x.i
+ To make the Bluetooth speaker 
+work in Bluez 5.xx, you need Pulseaudio.
+It is better to get the latest version(again hopefully, PulseAudio is also a 
+very confusing software); here also LFS doc was fine. Alsa is also needed, 
+so make sure a compatible Alsa and its tools are installed
+So the process of connecting speaker was using
+bluetoothctl
+  power on
+  scan on
+  pairable on
+  pair <device>
+  agent on
+  default-agent
+  connect <device>
+
+Second time onward just a connection is fine. Probably you can trust the 
+device (trust <device> , in bluetoothctl).
+
+Now the actual sound. Here pactl and pacmd are useful.
+paplay -d <device> <wav file> can used to test devices.
+using pacmd with command list-sinks can show the devices.
+
+pacmd ->list-modules can show the modules loaded.
+How to change automatically the audio output to Bluetooth speaker when it
+is connected? For me in one machine it was working fine, with an identical
+LFS in another machine it was not working. Finally it was identified as a
+missing  module module-device-manager with arg do_routing=1.
+Once it was loaded everything was fine. This particular module was not shown 
+in the pulse configurations So I have to find that.
+ie pacmd
+ > load-module  module-device-manager do_routing=1
+One can add a line in the default configuration file available in /etc/pulse.
+or one can add it in the user configuration file also
+
+DATED 29th April 2015.
+Now to make the new Bluetooth speaker being used to play sound,
+For that issue the command 
+  'move-sink-input <present index> <new Bluetooth sink name>'
+using pacmd. You can find the sink names by issuing the command 
+  'list-sinks' using 'pacmd'.
+If your speaker is not connecting, it may be that it is already 
+connected elsewhere.
+If it is not so, remove-device; scan on; pair; and connect using bluetoothctl. 
+To find the input-index one can play a wav using 'paplay' and use 
+  'list'i
+ in pacmd. 
+One can find the index by scanning the list and identifying the 
+playing file name.
+
+6th May 2015
+
+Now I have updated my Bluez to Bluez 5.34 and Pulseaudio to 6.0,
+ hoping that this 
+will improve the the system. However, rather than improving, things became 
+worse. I am not sure whether it is Pulseaudio or Bluez.
+ Now I can just manage thing 
+by starting pulseaudio by issuing a cli ' pulseaudio -C -D' and bluetoothctl.
+ Any other way of starting pulseaudio does not make Bluetooth speaker work.
+ Still many a times it fails to route audio to speaker,
+  pulseaudio just fails to 
+identify the 'sink' even after connection.
+
+More about connecting Bluetooth speaker, especially by ordinary user.
+ To load and contact bluetoothd, Pulseaudio needs access to Dbus service. 
+This by default denied, to a rule has to added to 
+   /etc/dbus-x/system.d/bluetooth.conf, as follows;
+
+<policy group="pulse">
+    <allow send_destination="org.bluez"/>
+</policy>
+
+Now pulseaudio can contact Bluetooth using Dbus, and 
+pulseaudio can be started as user as follows;
+pulseaudio -D
+This also means that the user is also a member of the supplementary group
+ 'pulse'.
+Now 'bluetoothctl' can be issued as root or using 'sudo' i
+and connect to the speaker as explained earlier.
+Just by connecting the speaker may not be enough for using the speaker 
+This is because, the speaker may support many profile and thei
+ active profile may not be 'a2dp_sink'. 
+Here comes 'pacmd' as useful. Start,
+  pacmd
+   issue 'list-cards' 
+   if speaker is connected it will show the speaker and currently 
+   active profile.
+One of the profile may be off and it may be active;
+If it is not 'a2dp_sink' issue;
+
+ set-card-profile <card name> a2dp_sink
+ in pacmd.
+
+pulseaudio opting a wrong profile and getting disconnected is  unfortunate
+Again if there is connection problem;
+  remove <device>
+  scan on
+  devices
+  pair <device>
+  trust <device>
+  connect <device>
+
+Dated 31 Oct 2015
+rfkill is good tool to check and switch on/off Bluetooth and 
+wireless devices
+
+Date 22Nov 2015
+
+Addition as on 20th Jan 2017
+
+This is again about Bluetooth speaker
+
+This note became necessary since I had faced problems in connecting a new 
+Bluetooth speaker. I had a cheap Bluetooth speaker, which I managed to
+connect as described above. My new speaker is slightly better one compared
+to the old one ( I never buy anything too costly ). It failed to get connected.
+So I upgraded BlueZ5 and PulseAudio (9.0). Though occasionally it got connected
+it never got playing. I went on connecting , disconnecting and connecting again.
+On few occasions it worked. On further investigation it became clear that it
+generally get connected as headset and under that profile it hangs the music
+and finally get disconnected. I again upgraded PulseAudio to Ver 10.
+In this mode I got it working that too not in a random way but a definite one.
+
+The procedure is as follows:
+
+start 'bluetoothctl'
+
+(To start bluetoothctl as user you may have to add following lines
+in /etc/dbus-1/system.d/bluetooth.conf
+
+  <policy group="pulse">
+    <allow send_destination="org.bluez"/>
+  </policy>
+)
+
+connect <device>
+
+
+Once connection is ready in another terminal issue
+
+    pactl list sinks
+
+look for the bluez sink and the profile in 
+  bluetooth.protocol =
+if it is a2dp_sink  then it is fine, if it is not
+then issue
+    pactl list cards
+
+and find out the index for the bluez device.
+Then issue
+    pactl set-card-profile <card-index> off
+    pactl set-card-profile <card-index> a2dp_sink
+
+Now you must be able to play. Also one may check again
+for the profile in use by issuing
+    pactl list sinks
+
+One can check the volume also by setting it to 100% by
+issuing
+    pactl set-sink-volume <sink-index> 100%
+
+One can still use
+
+    pactl list sink-inputs
+
+to see the index of <sink-input> by playing and audio
+and issue
+
+    pactl move-sink-input <sink-input-index> <new-sink-index>
+
+Once it starts playing just a connect using 'blueboothctl' may be enough next
+time onward even after reboot.
+
+Thinking of developing an app to automate this.
+
+
+
+/**********************************************************/
+Bluetooth File Transfer
+
+Date 2nd May 2015
+
+I was worrying how to make file transfer using Bluetooth (Bluz5). 
+Actually very little information is available in LFS documentation or 
+in general in the NET. This very true and unfortunate about Bluez in general. 
+They do not provide any real user doc or nothing is available in net. So the steps are as follows:
+You need to install OBEX library. Then you build Bluez5 (if it not so already). It will install obexd.
+After installation you can find obexd in $PREFIX/libexec/Bluetooth/obexd.
+This is where you find bluetoothd also. One generally make a link for bluetoothd in /usr/sbin.
+A similar link can be made for obexd also. Once you start bluetoothd and obexd 
+you can find object transfer profiles in bluetoothctl->show.
+ Date 2nd May 2015
+If you need a phone to push objects to the computer, you need to run obexd with 
+ options '-a' and '-r <directory to get files>'. if '-a' is not given phone will fail to send the file.
+Dated 04/5/2015
+Now how to push a file from Computer to Phone. For this you need obexctl,
+ I do not think it is a finished tool, and it will not be installed while we build Bluez 5. 
+I have seen it in the source tree and copied to /usr/bin/. It should be used to connect 
+the Phone and when the connection is established one can 'send <file>' 
+and you have to accept the request in the phone.
+04/05/2015
+Starting obexd as daemon was a problem. When obexd was tried on a text terminal (init 3) 
+it was  not possible to start since it needs a dbus session which in turn needs  X display.
+ It means one need to login an X session before you start obexd. If you disable X 
+while building DBUS (--without-x) then Window Managers will not  work. 
+But there is solution with 'dus-run-session < command> [args]'. 
+That means you can start a service obexd (like bluetoothd) in the system start-up. 
+So just by switching on the Computer ( if pairing, trusting etc... was done earlier) 
+one can push files from Phone to computer. 

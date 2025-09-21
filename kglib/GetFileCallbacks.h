@@ -1,0 +1,14 @@
+int  GetFilebutton1callback(int butno,int i,void *Tmp) ;
+void  GetFilebutton1init(DIN *B,void *pt) ;
+int  GetFilebrowser1callback(int item,int i,void *Tmp) ;
+void  GetFilebrowser1init(DIX *X,void *pt) ;
+int  GetFilebrowser2callback(int item,int i,void *Tmp) ;
+void  GetFilebrowser2init(DIY *Y,void *pt) ;
+int  GetFilesplbutton1callback(int butno,int i,void *Tmp) ;
+void  GetFilesplbutton1init(DIL *B,void *pt) ;
+int GetFileinit(void *Tmp) ;
+int GetFilecleanup(void *Tmp) ;
+int ModifyGetFile(void *Tmp,int GrpId) ;
+int GetFileCallBack(void *Tmp,void *tmp) ;
+int GetFileResizeCallBack(void *Tmp) ;
+int GetFileWaitCallBack(void *Tmp) ;

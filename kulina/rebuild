@@ -1,0 +1,5 @@
+make
+make install
+cd ..
+make
+bin/kgmplayer

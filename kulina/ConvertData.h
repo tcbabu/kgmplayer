@@ -1,0 +1,34 @@
+#ifndef D_CNVDATA
+#define D_CNVDATA
+typedef struct _convert_data {
+  int code;
+  char infile[500];
+  char audiofile[500];
+  char outfile[500];
+  int Quality;
+  int VolEnh;
+  double Enhfac;
+  int FullRange;
+  double StartSec;
+  double EndSec;
+  int VQuality;
+  int VFullRange;
+  double VStartSec;
+  double VEndSec;
+  int ChngAsp;
+  int Scale;
+  double OldAsp;
+  double NewAsp;
+  int Xsize;
+  int Ysize;
+  float fps;
+  void *Vlist;
+  void *Alist;
+  void *Slist;
+  void *Cutlist;
+  void *Clist;
+  int Fcount;
+  int Achnls;
+  int Eol;
+} CONVDATA;
+#endif

@@ -1,0 +1,25 @@
+PREFIX=/home/babu/BUILD/kgmplayer-4.1.2
+KULINA=/home/babu/BUILD/kgmplayer-4.1.2
+export X11_CFLAGS="-I/home/babu/BUILD/kgmplayer-4.1.2/include "
+export X11_LIBS="-L/usr/X11R76/lib -lX11 "
+export PKG_CONFIG_PATH=/home/babu/BUILD/kgmplayer-4.1.2/lib/pkgconfig:/usr/X11R76/lib/pkgconfig
+#export PKG_CONFIG_PATH=$KULINA/lib/pkgconfig
+export LD_CONFIG_PATH=$LD_CONFIG_PATH:$KULINA/lib
+export LDFLAGS=-L$KULINA/lib
+echo $LDFLAGS
+export CFLAGS=-I$KULINA/include
+export CPPFLAGS=-I$KULINA/include
+export ZLIBLIB=$KULINA/lib
+export ZLIBINC=$KULINA/include
+echo $CFLAGS
+echo $PKG_CONFIG_PATH
+echo "$X11_LIBS"
+echo "$X11_CFLAGS"
+tar xf fdk-aac-0.1.5.tar.gz
+cd  fdk-aac-0.1.5
+./configure --prefix=$KULINA --enable-static --disable-shared
+make -j4
+make install
+cd ..
+rm -rf fdk-aac-0.1.5
+

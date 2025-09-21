@@ -1,0 +1,35 @@
+PREFIX=/home/Debian/kgmplayer-1.0
+KULINA=/home/Debian/kgmplayer-1.0
+X11CFLAGS=-I/usr/X11R76/include 
+X11LIBS="-L/usr/X11R76/lib -lX11 "
+export PKG_CONFIG_PATH=/home/Debian/kgmplayer-1.0/lib/pkgconfig
+#export PKG_CONFIG_PATH=$KULINA/lib/pkgconfig:$PKG_CONFIG_PATH
+echo $X11CFLAGS
+echo $X11LIBS
+export X11_CFLAGS=$X11CFLAGS
+export X11_LIBS=$X11LIBS
+export PKG_CONFIG_PATH=$KULINA/lib/pkgconfig
+echo $PKG_CONFIG_PATH
+echo "$X11_LIBS"
+echo "$X11_CFLAGS"
+tar xf json-c-0.12.tar.gz
+cd json-c-0.12
+./configure --prefix=$KULINA --enable-static --disable-shared
+make -j1
+make install
+cd ..
+rm -rf json-c-0.12
+tar xf libsndfile-1.0.25.tar.gz
+cd libsndfile-1.0.25
+./configure --prefix=$KULINA --enable-static --disable-shared
+make -j1
+make install
+cd ..
+rm -rf libsndfile-1.0.25
+tar xf pulseaudio-5.0.tar.xz
+cd pulseaudio-5.0
+./configure --prefix=$KULINA --enable-static --disable-shared  --without-caps
+make -j1
+make install
+cd ..
+rm -rf pulseaudio-5.0
