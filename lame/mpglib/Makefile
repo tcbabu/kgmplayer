@@ -86,7 +86,7 @@ AUTOMAKE = ${SHELL} /home/kulina/BUILD/kgmplayer/lame/missing --run automake-1.1
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS =  -Wall -pipe -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -I/home/kulina/BUILD/kgmplayer/include 
+CFLAGS =  -Wall -pipe -fPIC -fPIE -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -I/home/kulina/BUILD/kgmplayer/include 
 CONFIG_DEFS = 
 CONFIG_MATH_LIB = -lm
 CPP = gcc -E

@@ -407,9 +407,9 @@
 #undef CONFIG_BL
 #undef CONFIG_CACA
 
-#undef CONFIG_DGA
+#define CONFIG_DGA 1
 #undef CONFIG_DGA1
-#undef CONFIG_DGA2
+#define CONFIG_DGA2 1
 
 #undef CONFIG_DIRECTFB
 
@@ -472,9 +472,9 @@
 #define CONFIG_X11 1
 #undef CONFIG_XDPMS
 #define CONFIG_XF86XK 1
-#undef CONFIG_XINERAMA
+#define CONFIG_XINERAMA 1
 #undef CONFIG_XMGA
-#undef CONFIG_XSS
+#define CONFIG_XSS 1
 #define CONFIG_XV 1
 #define CONFIG_XVMC 0
 
