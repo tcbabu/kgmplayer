@@ -250,7 +250,7 @@ int  AddAudiosplbutton1callback(int butno,int i,void *Tmp) {
   n=0;
   while(cndata.infile[n]==' ') n++;
   if(cndata.infile[n]< ' ') return 0;
-  T = (DIT *)kgGetNamedWidget(Tmp,"AddTbox2");
+  T = (DIT *)kgGetNamedWidget(Tmp,"AddTbox3");
   T2 = T;
   strcpy(cndata.outfile,kgGetString(T,0));
   n=0;
@@ -302,7 +302,7 @@ int  AddAudiobutton2callback(int butno,int i,void *Tmp) {
   DIT *T;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
-  T = (DIT *)kgGetNamedWidget(Tmp,"AddTbox3");
+  T = (DIT *)kgGetNamedWidget(Tmp,"AddTbox2");
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
 //  kgFolderBrowser(NULL,100,100,FileName,"*");
@@ -327,7 +327,7 @@ int AddAudioinit(void *Tmp) {
   D = (DIALOG *)Tmp;
   DIT *T;
   pt = D->pt;
-  T = (DIT *)kgGetNamedWidget(Tmp,"AddTbox2");
+  T = (DIT *)kgGetNamedWidget(Tmp,"AddTbox3");
   return ret;
 }
 int AddAudiocleanup(void *Tmp) {

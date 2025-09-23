@@ -489,6 +489,7 @@ int ToolBox( void *parent,void **v,void *pt) {
   D.yl = 280;    /*  Width  of Dialog */
   if(parent == NULL ) {
     D.xl = 840;    /*  Length of Dialog */
+//    D.xl = 940;    /*  Length of Dialog */
     D.yl = 480;    /*  Width  of Dialog */
   }
   D.Initfun = ToolBoxinit;    /*   init fuction for Dialog */

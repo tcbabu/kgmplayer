@@ -17,7 +17,8 @@ rm -rf zlib-1.2.8
 tar xf bzip2-1.0.8.tgz
 cd bzip2-1.0.8
 make
-make  install PREFIX=$KULINA
+BZFLAG="$CFLAGS -fPIE"
+CFLAGS=$BZFLAG make  install PREFIX=$KULINA
 cd ..
 rm -rf bzip2-1.0.8
 echo "bzip2"

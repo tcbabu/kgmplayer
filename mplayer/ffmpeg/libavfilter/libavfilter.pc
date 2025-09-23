@@ -9,6 +9,6 @@ Version: 6.107.100
 Requires: libswscale >= 4.8.100, libpostproc >= 54.7.100, libavformat >= 57.83.100, libavcodec >= 57.107.100, libswresample >= 2.9.100, libavutil >= 55.78.100
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavfilter -L/home/kulina/BUILD/kgmplayer/lib -lgnutls -lasound -L/home/kulina/BUILD/kgmplayer/lib -lx265 -L/home/kulina/BUILD/kgmplayer/lib -lx264 -lmp3lame -L/home/kulina/BUILD/kgmplayer/lib -lfdk-aac -lm -L/home/kulina/BUILD/kgmplayer/lib -lgnutls -lgmp -lm -lbz2 -lz -pthread -pthread -lgnutls -lgnutlsxx -lnettle -lhogweed -lgmp -lfdk-aac
+Libs: -L${libdir}  -lavfilter -lXv -lX11 -lXext -L/home/kulina/kgmplayer.debian/lib -lgnutls -lasound -L/home/kulina/kgmplayer.debian/lib -lx265 -L/home/kulina/kgmplayer.debian/lib -lx264 -lmp3lame -L/home/kulina/kgmplayer.debian/lib -lfdk-aac -lm -L/home/kulina/kgmplayer.debian/lib -lgnutls -lgmp -lm -llzma -lbz2 -lz -pthread -pthread -lgnutls -lgnutlsxx -lnettle -lhogweed -lgmp -lfdk-aac
 Libs.private: 
 Cflags: -I${includedir}

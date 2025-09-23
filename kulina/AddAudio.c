@@ -45,14 +45,14 @@ int MakeAddAudioGroup(DIALOG *D,void *arg) {
    v1[0] = '\0';
    pt = MakeAddFile();
    v1[0] = '\0';
-   strcpy(v1,pt);
-   free(pt);
    int  *v2 ;
    v2 = (int *)malloc(sizeof(int));
    *v2 = 2;
    char  *v3 ;
    v3 = (char *)malloc(sizeof(char)*500);
    v3[0] = '\0';
+   strcpy(v3,pt);
+   free(pt);
    void** v=(void **)malloc(sizeof(void*)*5);
    v[4]=NULL;
    v[0]=(void *)(v0);
@@ -188,7 +188,7 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
   T_ELMT *e2  ; 
   e2 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e2[0].fmt = (char *)malloc(5);
-  strcpy(e2[0].fmt,(char *)"%30s");
+  strcpy(e2[0].fmt,(char *)"%20s");
   e2[0].v=(void *)v[1];
   e2[0].sw=1;
   e2[0].noecho=0;
@@ -196,7 +196,7 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
   DIT t2 = { 
     't',
     150,86,  
-    465,120,
+    375,120,
     20, 
     1,1, 
     e2,
@@ -276,7 +276,7 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
   T_ELMT *e6  ; 
   e6 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
   e6[0].fmt = (char *)malloc(5);
-  strcpy(e6[0].fmt,(char *)"%20s");
+  strcpy(e6[0].fmt,(char *)"%26s");
   e6[0].v=(void *)v[3];
   e6[0].sw=1;
   e6[0].noecho=0;
@@ -284,7 +284,7 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
   DIT t6 = { 
     't',
     178,174,  
-    403,208,
+    453,208,
     20, 
     1,1, 
     e6,
@@ -306,8 +306,8 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
   butn7[0].butncode=31;
   DIN b7 = { 
     'n',
-    404,172,  
-    486,206,
+    376,82,  
+    458,116,
     2,2,  
     72, 
     24, 
@@ -318,7 +318,7 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
     AddAudiobutton2callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(b7.Wid,(char *)"AddAudioWidget15");
+  strcpy(b7.Wid,(char *)"VideoBwsr");
   b7.item = -1;
   DIM m8 = { 
     'm',

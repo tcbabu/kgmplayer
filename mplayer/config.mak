@@ -33,8 +33,8 @@ INSTALL = install
 INSTALLSTRIP = -s
 WINDRES = windres
 
-CFLAGS   = -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -fno-tree-vectorize -fno-asynchronous-unwind-tables -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE  -DPIC -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include   -I/home/kulina/BUILD/kgmplayer/include -D_REENTRANT  -I/home/kulina/BUILD/kgmplayer/include   -DZLIB_CONST -I/home/kulina/BUILD/kgmplayer/include/opus 
-CXXFLAGS = -Wundef   -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -fno-tree-vectorize -fno-asynchronous-unwind-tables -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS  -DPIC -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include   -I/home/kulina/BUILD/kgmplayer/include -D_REENTRANT  -I/home/kulina/BUILD/kgmplayer/include   -DZLIB_CONST -I/home/kulina/BUILD/kgmplayer/include/opus  
+CFLAGS   = -Wundef  -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -std=gnu99  -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -fno-tree-vectorize -fno-asynchronous-unwind-tables -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE  -DPIC -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include   -I/home/kulina/BUILD/kgmplayer/include -D_REENTRANT  -I/home/kulina/BUILD/kgmplayer/include  -I/include/freetype2 -I/include -DZLIB_CONST -I/home/kulina/BUILD/kgmplayer/include/opus 
+CXXFLAGS = -Wundef   -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600 -D_ISOC99_SOURCE -I. -Iffmpeg -fPIC -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -fno-tree-vectorize -fno-asynchronous-unwind-tables -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS  -DPIC -D_REENTRANT -I/home/kulina/BUILD/kgmplayer/include   -I/home/kulina/BUILD/kgmplayer/include -D_REENTRANT  -I/home/kulina/BUILD/kgmplayer/include  -I/include/freetype2 -I/include -DZLIB_CONST -I/home/kulina/BUILD/kgmplayer/include/opus  
 CC_DEPFLAGS = -MMD -MP
 
 CFLAGS_DHAHELPER         = 
@@ -42,7 +42,7 @@ CFLAGS_NO_OMIT_LEAF_FRAME_POINTER = -mno-omit-leaf-frame-pointer
 CFLAGS_STACKREALIGN      = 
 CFLAGS_SVGALIB_HELPER    = 
 
-EXTRALIBS          =  -Wl,--version-script,binary.ver -Wl,-z,noexecstack  -L/home/kulina/BUILD/kgmplayer/lib    -lncurses -lrt -L/home/kulina/BUILD/kgmplayer/lib -lgnutls  -lpng -lz -ljpeg -lasound   -L/home/kulina/BUILD/kgmplayer/lib -ldvdread    -lz -lbz2 -lmad -lvorbisenc -lvorbis -logg -L/home/kulina/BUILD/kgmplayer/lib -lopus    -rdynamic -lm  
+EXTRALIBS          =  -Wl,--version-script,binary.ver -Wl,-z,noexecstack  -L/home/kulina/BUILD/kgmplayer/lib    -lncurses -lrt -L/home/kulina/BUILD/kgmplayer/lib -lgnutls  -lpng -lz -ljpeg -lasound   -L/home/kulina/BUILD/kgmplayer/lib -ldvdread  -L/lib -lfreetype -lz -lbz2  -lass -lvdpau -lfreetype  -lz -lbz2 -lmad -lvorbisenc -lvorbis -logg -L/home/kulina/BUILD/kgmplayer/lib -lopus    -rdynamic -lm  
 EXTRALIBS_MPLAYER  =  -lXv -lXxf86vm
 EXTRALIBS_MENCODER =  -lmp3lame
 
@@ -178,7 +178,7 @@ KVA = auto
 LADSPA = no
 LIBA52 = no
 LIBASS = yes
-LIBASS_INTERNAL = yes
+LIBASS_INTERNAL = no
 LIBBLURAY = no
 LIBBS2B = no
 LIBDCA = no

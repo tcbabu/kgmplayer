@@ -380,7 +380,7 @@
 
 /* font stuff */
 #define CONFIG_ASS 1
-#define CONFIG_ASS_INTERNAL 1
+#undef CONFIG_ASS_INTERNAL
 #define CONFIG_BITMAP_FONT 1
 #undef CONFIG_ENCA
 #define CONFIG_FONTCONFIG 1
