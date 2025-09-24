@@ -119,8 +119,7 @@ rm -rf libvdpau-0.9 >../out;
 tar xf gmp-6.1.0.tar.xz >../out;
 cd gmp-6.1.0 >../out;
 ./configure --prefix=$KULINA --enable-static --disable-shared 
-GFLAGS="$CFLAGS -fPIE"
-CFLAGS=$GFLAGS make -j4 
+make -j4 
 make  install >../out;
 cd ..
 rm -rf gmp-6.1.0 >../out;
