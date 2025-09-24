@@ -2437,7 +2437,7 @@ configure:13595: checking for ncurses/termcap.h
 configure:13595: result: no
 configure:13605: checking for initscr in -ltermcap
 configure:13630: gcc -o conftest -fPIC  -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -I/home/kulina/BUILD/kgmplayer/include   -L/home/kulina/BUILD/kgmplayer/lib  conftest.c -ltermcap   >&5
-/usr/bin/ld: /tmp/cccLB2nu.o: in function `main':
+/usr/bin/ld: /tmp/ccLrLlEc.o: in function `main':
 conftest.c:(.text+0xa): undefined reference to `initscr'
 collect2: error: ld returned 1 exit status
 configure:13630: $? = 1

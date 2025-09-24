@@ -183,7 +183,7 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
     AddAudiobutton1callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(b1.Wid,(char *)"AddButn1");
+  strcpy(b1.Wid,(char *)"AddAudioFile");
   b1.item = -1;
   T_ELMT *e2  ; 
   e2 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
@@ -318,7 +318,7 @@ int AddAudioGroup( DIALOG *D,void **v,void *pt) {
     AddAudiobutton2callback, /*  Callbak */
       NULL  /* any args */
   };
-  strcpy(b7.Wid,(char *)"VideoBwsr");
+  strcpy(b7.Wid,(char *)"AddVideoFile");
   b7.item = -1;
   DIM m8 = { 
     'm',

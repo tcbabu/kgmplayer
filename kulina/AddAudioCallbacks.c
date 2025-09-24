@@ -244,7 +244,7 @@ int  AddAudiosplbutton1callback(int butno,int i,void *Tmp) {
   n=0;
   while(cndata.audiofile[n]==' ') n++;
   if(cndata.audiofile[n]< ' ') return 0;
-  T = (DIT *)kgGetNamedWidget(Tmp,"AddTbox3");
+  T = (DIT *)kgGetNamedWidget(Tmp,"AddTbox2");
   T3 = T;
   strcpy(cndata.infile,kgGetString(T,0));
   n=0;
