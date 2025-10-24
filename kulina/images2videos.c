@@ -242,10 +242,10 @@ int Imgs2Videos( IMGS2VDATA *is2vdata) {
      write(Jpipe[1],options,strlen(options));
      Minfo.TotSec = vid*is2vdata->imagetime;
 #ifdef D_X264
-     sprintf(command,"ffmpegfun -f concat -i %-s -video_track_timescale 90k -y -f mp4 -vcodec libx264 "
+     sprintf(command,"ffmpegfun -f concat -safe 0  -i %-s -video_track_timescale 90k -y -f mp4 -vcodec libx264 "
         " -b:v %-s \"%-s\" ", mylist ,Qstr,is2vdata->Outfile);
 #else
-     sprintf(command,"ffmpegfun -f concat -i %-s -video_track_timescale 90k -y -f mp4 -vcodec libx265 "
+     sprintf(command,"ffmpegfun -f concat -safe 0 -i %-s -video_track_timescale 90k -y -f mp4 -vcodec libx265 "
         "  \"%-s\" ", mylist ,is2vdata->Outfile);
 #endif
      runfunction(command,ProcessToPipe,ffmpegfun);
