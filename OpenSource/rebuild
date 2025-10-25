@@ -348,7 +348,7 @@ tar xf GraphicsMagick-1.3.21.tar.gz >../out
 cd GraphicsMagick-1.3.21 >../out
 #./configure --prefix=$KULINA --enable-static  --without-magick-plus-plus --without-perl   --without-lcms --without-lcms2 --without-trio --without-wmf --without-xml --x-libraries=/usr/X11R76/lib --x-includes=/usr/X11R76/include --disable-openmp --with-threads --without-x
 ./configure --prefix=$KULINA --enable-static  --without-magick-plus-plus \
---without-perl   --without-lcms --without-lcms2 --without-trio \
+--without-perl   --without-lcms --without-lcms2 --without-trio --without-jp2 \
 --without-wmf --without-xml  --disable-openmp --with-threads --without-x --without-webp>../out
 make -j4  >../out;
 make -j4 install >../out;

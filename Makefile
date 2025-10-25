@@ -23,7 +23,7 @@
 # local fallbacks for missing operating system features
 SHELL	:= /bin/bash
 PREFIX=/usr
-export CFLAGS=  -fPIC  -I$(PWD)/include -I$(PWD)/include/freetype2 -I$(PWD)/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration
+export CFLAGS=  -fPIC  -I$(PWD)/include -I$(PWD)/include/freetype2 -I$(PWD)/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -Wno-int-conversion
 export LDFLAGS=-L$(PWD)/lib 
 PKG_CONFIG_PATH_OLD	:=$(PKG_CONFIG_PATH)
 PKG_CONFIG_PATH	:=$(PWD)/lib/pkgconfig:/usr/X11R76/lib/pkgconfig

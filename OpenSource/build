@@ -1,8 +1,8 @@
 #! /bin/bash 
 PREFIX=/home/kulina/BUILD/kgmplayer
 KULINA=/home/kulina/BUILD/kgmplayer
-export CFLAGS="-fPIC -fpic -fPIC  -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration"
-export CPPFLAGS="-fPIC -fpic -fPIC  -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration"
+export CFLAGS="-fPIC -fpic -fPIC  -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -Wno-int-conversion"
+export CPPFLAGS="-fPIC -fpic -fPIC  -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -Wno-int-conversion"
 export LDFLAGS="-L/lib -L/home/kulina/BUILD/kgmplayer/lib "
 export X11_CFLAGS="-I/home/kulina/BUILD/kgmplayer/include "
 export X11_LIBS="-lX11 "
@@ -359,7 +359,7 @@ tar xf GraphicsMagick-1.3.21.tar.gz >../out
 cd GraphicsMagick-1.3.21 >../out
 #./configure --prefix=$KULINA --enable-static  --without-magick-plus-plus --without-perl   --without-lcms --without-lcms2 --without-trio --without-wmf --without-xml --x-libraries=/usr/X11R76/lib --x-includes=/usr/X11R76/include --disable-openmp --with-threads --without-x
 ./configure --prefix=$KULINA --enable-static  --without-magick-plus-plus \
---without-perl   --without-lcms --without-lcms2 --without-trio \
+--without-perl   --without-lcms --without-lcms2 --without-trio --without-jp2 \
 --without-wmf --without-xml  --disable-openmp --with-threads --without-x --without-webp>../out
 make -j4  >../out;
 make -j4 install >../out;
