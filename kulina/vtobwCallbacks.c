@@ -142,7 +142,9 @@ int  vtobwsplbutton1callback(int butno,int i,void *Tmp) {
         kgUpdateOn(D);
         strcpy(infile,kgGetString(kgGetNamedWidget(Dia,(char *)"v2bwInput"),0));
         strcpy(outfile,kgGetString(kgGetNamedWidget(Dia,(char *)"v2bwOutput"),0));
+#if 0
 #ifdef D_X264
+// old code, with new ffmpeg it is not working
         sprintf(buff,"ffmpegfun  -i \"%-s\" -filter_complex "
                   "colorchannelmixer=.3:.4:.3:0:.3:.4:.3:0:.3:.4:.3 "
                   " -f mp4 -b:v 3000K -vcodec libx264 \"%-s\" ",
@@ -153,6 +155,17 @@ int  vtobwsplbutton1callback(int butno,int i,void *Tmp) {
                   " -f mp4 -vcodec libx265 \"%-s\" ",
               infile,outfile);
 #endif
+#else
+#ifdef D_X264
+        sprintf(buff,"ffmpegfun  -i \"%-s\" -vf hue=s=0  "
+                  " -c:a copy -vcodec libx264 \"%-s\" ",
+              infile,outfile);
+#else
+        sprintf(buff,"ffmpegfun  -i \"%-s\" -vf hue=s=0  "
+                  " -c:a copy -vcodec libx265 \"%-s\" ",
+              infile,outfile);
+#endif
+#endif 
 //        printf("%s\n",buff);
         runfunctionbkgr (buff, ProcessToPipe,ffmpegfun);
       }
