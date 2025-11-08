@@ -165,12 +165,17 @@ TOOLGRP ToolList[ ] = {
   },
   { 0, MakeAudioSpeedGroup,"!f23Change Audio Speed",346,0,RunHelper,0,
        "\n\n\nChanging Audio Speed , SpeedFac is the change in speed\n"
+       " factor should be in the range 0.5 to 2.0 \n"
   },
   { 0, MakeEnhanceAudioGroup,"!f23Enhance Audio(vocal)",346,0,RunHelper,0,
        "\n\n\nEnhance the quality of vocal part of Audio\n"
+       " There are many parameters to adjust, so a general solution\n"
+       "may not be satisfactory, but it is worth the try\n"
   },
   { 0, MakeEnhanceSpeechGroup,"!f23Enhance Recorded Speech",346,0,RunHelper,0,
        "\n\n\nEnhance the quality of recorded speech\n"
+       " There are many parameters to adjust, so a general solution\n"
+       "may not be satisfactory, but it is worth the try\n"
   },
   { 0, MakeCaptureAudioGroup,"!f23Capture Audio",346,0,RunHelper,0,
        "\n\n\nTo capture playing audio\noutput should be saved as Wav file\n"
