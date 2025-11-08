@@ -46,6 +46,8 @@ int MakeNormaliseGroup(DIALOG *D,void *arg);
 int MakeLoudnormGroup(DIALOG *D,void *arg);
 int MakeSilenceGroup(DIALOG *D,void *arg);
 int MakeAudioSpeedGroup(DIALOG *D,void *arg);
+int MakeEnhanceAudioGroup(DIALOG *D,void *arg);
+int MakeEnhanceSpeechGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -162,7 +164,13 @@ TOOLGRP ToolList[ ] = {
        "Filter over writes input file; backup input file if needed\n"
   },
   { 0, MakeAudioSpeedGroup,"!f23Change Audio Speed",346,0,RunHelper,0,
-       "\n\n\nChangind Audio Speed , SpeedFac is the change in speed\n"
+       "\n\n\nChanging Audio Speed , SpeedFac is the change in speed\n"
+  },
+  { 0, MakeEnhanceAudioGroup,"!f23Enhance Audio(vocal)",346,0,RunHelper,0,
+       "\n\n\nEnhance the quality of vocal part of Audio\n"
+  },
+  { 0, MakeEnhanceSpeechGroup,"!f23Enhance Recorded Speech",346,0,RunHelper,0,
+       "\n\n\nEnhance the quality of recorded speech\n"
   },
   { 0, MakeCaptureAudioGroup,"!f23Capture Audio",346,0,RunHelper,0,
        "\n\n\nTo capture playing audio\noutput should be saved as Wav file\n"

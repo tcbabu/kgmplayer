@@ -1,0 +1,12 @@
+int EnhanceSpeechtextbox1callback(int cellno,int i,void *Tmp) ;
+int EnhanceSpeechbutton1callback(int butno,int i,void *Tmp) ;
+void  EnhanceSpeechbutton1init(DIN *B,void *pt) ;
+int EnhanceSpeechtextbox2callback(int cellno,int i,void *Tmp) ;
+int EnhanceSpeechsplbutton1callback(int butno,int i,void *Tmp) ;
+void  EnhanceSpeechsplbutton1init(DIL *B,void *pt) ;
+int EnhanceSpeechinit(void *Tmp) ;
+int EnhanceSpeechcleanup(void *Tmp) ;
+int ModifyEnhanceSpeech(void *Tmp,int GrpId) ;
+int EnhanceSpeechCallBack(void *Tmp,void *tmp) ;
+int EnhanceSpeechResizeCallBack(void *Tmp) ;
+int EnhanceSpeechWaitCallBack(void *Tmp) ;

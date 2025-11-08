@@ -40,6 +40,8 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Normalise.o NormaliseCallbacks.o \
 	 Loudnorm.o LoudnormCallbacks.o \
 	 AudioSpeed.o AudioSpeedCallbacks.o \
+	 EnhanceAudio.o EnhanceAudioCallbacks.o \
+	 EnhanceSpeech.o EnhanceSpeechCallbacks.o \
 	 Silence.o SilenceCallbacks.o \
 	 acap.o acapCallbacks.o \
 	 CaptureAudio.o CaptureAudioCallbacks.o \
@@ -94,6 +96,8 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Normalise.o NormaliseCallbacks.o \
 	 Loudnorm.o LoudnormCallbacks.o \
 	 AudioSpeed.o AudioSpeedCallbacks.o \
+	 EnhanceAudio.o EnhanceAudioCallbacks.o \
+	 EnhanceSpeech.o EnhanceSpeechCallbacks.o \
 	 Silence.o SilenceCallbacks.o \
 	 acap.o acapCallbacks.o \
 	 CaptureAudio.o CaptureAudioCallbacks.o \
@@ -238,6 +242,14 @@ AudioSpeed.o		: AudioSpeed.c
 	 	$(CC) -c AudioSpeed.c
 AudioSpeedCallbacks.o		: AudioSpeedCallbacks.c
 		$(CC) -c AudioSpeedCallbacks.c
+EnhanceAudio.o		: EnhanceAudio.c
+	 	$(CC) -c EnhanceAudio.c
+EnhanceAudioCallbacks.o		: EnhanceAudioCallbacks.c
+		$(CC) -c EnhanceAudioCallbacks.c
+EnhanceSpeech.o		: EnhanceSpeech.c
+	 	$(CC) -c EnhanceSpeech.c
+EnhanceSpeechCallbacks.o		: EnhanceSpeechCallbacks.c
+		$(CC) -c EnhanceSpeechCallbacks.c
 Silence.o		: Silence.c
 	 	$(CC) -c Silence.c
 SilenceCallbacks.o		: SilenceCallbacks.c

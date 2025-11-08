@@ -1,1 +1,8 @@
-int kgffmpeg(int,char **);
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATOutput");
+  strcpy(FileName,kgGetString(T,0));
+  sprintf(OutFile,"%-s/Music",getenv("HOME"));
+  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp3");
+  kgSetString(TO,0,OutFile);
+  kgUpdateWidget(T);
+  kgUpdateWidget(TO);
+  kgUpdateOn(Tmp);

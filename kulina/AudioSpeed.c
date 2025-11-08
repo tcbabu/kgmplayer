@@ -258,6 +258,7 @@ int AudioSpeed( void *parent,void **v,void *pt) {
   }    /*  end of fullscreen mode */
   ModifyAudioSpeed(&D,GrpId);    /*  add extras to  gui*/
   ModifyAudioSpeedGc(&D);    /*  set colors for gui if do not like default*/
+//  Print_gui_data(&D,"AudioSpeed.rc");
   ret= kgUi(&D);
   kgCleanUi(&D);
   return ret;

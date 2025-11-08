@@ -1,0 +1,12 @@
+int EnhanceAudiotextbox1callback(int cellno,int i,void *Tmp) ;
+int EnhanceAudiobutton1callback(int butno,int i,void *Tmp) ;
+void  EnhanceAudiobutton1init(DIN *B,void *pt) ;
+int EnhanceAudiotextbox2callback(int cellno,int i,void *Tmp) ;
+int EnhanceAudiosplbutton1callback(int butno,int i,void *Tmp) ;
+void  EnhanceAudiosplbutton1init(DIL *B,void *pt) ;
+int EnhanceAudioinit(void *Tmp) ;
+int EnhanceAudiocleanup(void *Tmp) ;
+int ModifyEnhanceAudio(void *Tmp,int GrpId) ;
+int EnhanceAudioCallBack(void *Tmp,void *tmp) ;
+int EnhanceAudioResizeCallBack(void *Tmp) ;
+int EnhanceAudioWaitCallBack(void *Tmp) ;
