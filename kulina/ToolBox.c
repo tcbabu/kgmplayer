@@ -179,10 +179,14 @@ TOOLGRP ToolList[ ] = {
        " There are many parameters to adjust, so a general solution\n"
        "may not be satisfactory, but it is worth the try\n"
   },
-  { 0, MakeRangeSelectGroup,"!f23Select Audio Frequency Range",346,0,RunHelper,0,
-       "\n\n\nSelects a frequency range audio \n"
-       " Uses lowpass filter and highpass filter\n"
+  { 0, MakeRangeSelectGroup,"!f23Select Audio Frequency band",346,0,RunHelper,0,
+       "\n\n\nSelects a frequency band fot  audio \n"
+       " Uses bandpass filter at mid-frquency\n"
        "Other frequencies are attenuated\n"
+  },
+  { 0, MakeRangeRejectGroup,"!f23Reject Audio Frequency band",346,0,RunHelper,0,
+       "\n\n\nSelects a frequency band fot  audio \n"
+       " Uses bandreject filter at mid frequency\n"
   },
   { 0, MakeCaptureAudioGroup,"!f23Capture Audio",346,0,RunHelper,0,
        "\n\n\nTo capture playing audio\noutput should be saved as Wav file\n"

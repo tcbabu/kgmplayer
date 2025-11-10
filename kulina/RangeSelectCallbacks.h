@@ -1,0 +1,14 @@
+int RangeSelecttextbox1callback(int cellno,int i,void *Tmp) ;
+int RangeSelectbutton1callback(int butno,int i,void *Tmp) ;
+void  RangeSelectbutton1init(DIN *B,void *pt) ;
+int RangeSelecttextbox2callback(int cellno,int i,void *Tmp) ;
+int RangeSelectsplbutton1callback(int butno,int i,void *Tmp) ;
+void  RangeSelectsplbutton1init(DIL *B,void *pt) ;
+int RangeSelecttextbox3callback(int cellno,int i,void *Tmp) ;
+int RangeSelecttextbox4callback(int cellno,int i,void *Tmp) ;
+int RangeSelectinit(void *Tmp) ;
+int RangeSelectcleanup(void *Tmp) ;
+int ModifyRangeSelect(void *Tmp,int GrpId) ;
+int RangeSelectCallBack(void *Tmp,void *tmp) ;
+int RangeSelectResizeCallBack(void *Tmp) ;
+int RangeSelectWaitCallBack(void *Tmp) ;

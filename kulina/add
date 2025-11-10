@@ -1,8 +1,38 @@
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATOutput");
-  strcpy(FileName,kgGetString(T,0));
-  sprintf(OutFile,"%-s/Music",getenv("HOME"));
-  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp3");
-  kgSetString(TO,0,OutFile);
-  kgUpdateWidget(T);
-  kgUpdateWidget(TO);
-  kgUpdateOn(Tmp);
+void *RunSelectRange(void *stmp) {
+	VOLSTR *Istr=(VOLSTR *)stmp;
+	char Infile[200],Outfile[200],buff[500];
+	double corval=0.0;
+        int Min,Max;
+	int meanlevel;
+	int pid;
+	Dlink *L=Dopen();
+	char *tpt;
+	int hr,min,sec,tot;
+        double EnhFac=1.0;
+	strcpy(Infile,Istr->Infile);
+	strcpy(Outfile,Istr->Outfile);
+	corval = Istr->corval;
+        Min = Istr->meanVol;
+        Max = Istr->maxVol;
+	AddMonMessage(L,Outfile);
+	AddMonMessage(L,Infile);
+
+#if 1
+	sprintf(buff,"AudioExtra: Selecting Frequency Range");
+	AddMonMessage(L,buff);
+	sprintf(buff,"Processing file: %s",Infile);
+	AddMonMessage(L,buff);
+	strcpy(buff,"!c08 Press !c03Cancel!c08 to kill");
+	AddMonMessage(L,buff);
+        sprintf(buff,"ffmpegfun -y  -i \"%s\" -filter_complex " 
+            "\"highpass=f=%d,lowpass=f=%d "
+            " \"%s\"\"", 
+                   Infile,Min,Max,Outfile);
+	AddMonMessage(L,buff);
+        Resetlink(L);
+        pid = RunAudioJob(buff,L,MonitorJob);
+	free(stmp);
+	Dempty(L);
+#endif
+	return NULL;
+}

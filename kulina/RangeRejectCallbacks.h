@@ -1,0 +1,14 @@
+int RangeRejecttextbox1callback(int cellno,int i,void *Tmp) ;
+int RangeRejectbutton1callback(int butno,int i,void *Tmp) ;
+void  RangeRejectbutton1init(DIN *B,void *pt) ;
+int RangeRejecttextbox2callback(int cellno,int i,void *Tmp) ;
+int RangeRejectsplbutton1callback(int butno,int i,void *Tmp) ;
+void  RangeRejectsplbutton1init(DIL *B,void *pt) ;
+int RangeRejecttextbox3callback(int cellno,int i,void *Tmp) ;
+int RangeRejecttextbox4callback(int cellno,int i,void *Tmp) ;
+int RangeRejectinit(void *Tmp) ;
+int RangeRejectcleanup(void *Tmp) ;
+int ModifyRangeReject(void *Tmp,int GrpId) ;
+int RangeRejectCallBack(void *Tmp,void *tmp) ;
+int RangeRejectResizeCallBack(void *Tmp) ;
+int RangeRejectWaitCallBack(void *Tmp) ;

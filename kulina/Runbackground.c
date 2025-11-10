@@ -614,7 +614,45 @@ void *RunAudioEnhance(void *stmp) {
 #endif
 	return NULL;
 }
-void *RunSelectRange(void *stmp) {
+void *RunSpeechEnhance(void *stmp) {
+	VOLSTR *Istr=(VOLSTR *)stmp;
+	char Infile[200],Outfile[200],buff[500];
+	double corval=0.0;
+	int meanlevel;
+	int pid;
+	Dlink *L=Dopen();
+	char *tpt;
+	int hr,min,sec,tot;
+        double EnhFac=1.0;
+	strcpy(Infile,Istr->Infile);
+	strcpy(Outfile,Istr->Outfile);
+	corval = Istr->corval;
+	AddMonMessage(L,Outfile);
+	AddMonMessage(L,Infile);
+
+#if 1
+	sprintf(buff,"AudioExtra: Enhancing Speech/Conversation");
+	AddMonMessage(L,buff);
+	sprintf(buff,"Processing file: %s",Infile);
+	AddMonMessage(L,buff);
+	strcpy(buff,"!c08 Press !c03Cancel!c08 to kill");
+	AddMonMessage(L,buff);
+        sprintf(buff,"ffmpegfun -y  -i \"%s\" -b:a 192k -filter_complex  "
+         "\"agate=threshold=0.01:attack=80:release=840:makeup=1:ratio=3:knee=8 ,"
+         " highpass=f=200:width_type=q:width=0.5,lowpass=f=3000,anequalizer=c0 f=250 "
+         "w=100 g=2 t=1|c0 f=700 w=500 g=-5 t=1|c0 f=2000 w=1000 g=2 t=1 ,"
+         " acompressor=level_in=6:threshold=0.025:ratio=20:makeup=6 , volume=1.1 , "
+         "agate=threshold=0.1:attack=50:release=50:ratio=1.5:knee=4[out]\" "
+            "-map \"[out]\" \"%s\"",Infile,Outfile);
+	AddMonMessage(L,buff);
+        Resetlink(L);
+        pid = RunAudioJob(buff,L,MonitorJob);
+	free(stmp);
+	Dempty(L);
+#endif
+	return NULL;
+}
+void *RunSelectRanga_olde(void *stmp) {
 	VOLSTR *Istr=(VOLSTR *)stmp;
 	char Infile[200],Outfile[200],buff[500];
 	double corval=0.0;
@@ -641,9 +679,89 @@ void *RunSelectRange(void *stmp) {
 	strcpy(buff,"!c08 Press !c03Cancel!c08 to kill");
 	AddMonMessage(L,buff);
         sprintf(buff,"ffmpegfun -y  -i \"%s\" -filter_complex " 
-            "\"highpass=f=%d,lowpass=f=%d "
-            " \"%s\"\"", 
+            "\"highpass=f=%d,lowpass=f=%d\""
+            " \"%s\"", 
                    Infile,Min,Max,Outfile);
+	AddMonMessage(L,buff);
+        Resetlink(L);
+        pid = RunAudioJob(buff,L,MonitorJob);
+	free(stmp);
+	Dempty(L);
+#endif
+	return NULL;
+}
+void *RunSelectRange(void *stmp) {
+	VOLSTR *Istr=(VOLSTR *)stmp;
+	char Infile[200],Outfile[200],buff[500];
+	double corval=0.0;
+        int Min,Max;
+	int meanlevel,width;
+	int pid;
+	Dlink *L=Dopen();
+	char *tpt;
+	int hr,min,sec,tot;
+        double EnhFac=1.0;
+	strcpy(Infile,Istr->Infile);
+	strcpy(Outfile,Istr->Outfile);
+	corval = Istr->corval;
+        Min = Istr->meanVol;
+        Max = Istr->maxVol;
+        meanlevel = (Min+Max)/2;
+        width = (Max -Min);
+	AddMonMessage(L,Outfile);
+	AddMonMessage(L,Infile);
+
+#if 1
+	sprintf(buff,"AudioExtra: Selecting Frequency band");
+	AddMonMessage(L,buff);
+	sprintf(buff,"Processing file: %s",Infile);
+	AddMonMessage(L,buff);
+	strcpy(buff,"!c08 Press !c03Cancel!c08 to kill");
+	AddMonMessage(L,buff);
+        sprintf(buff,"ffmpegfun -y  -i \"%s\" -filter_complex " 
+            "\"bandpass=f=%d:width_type=h:width=%d\""
+            " \"%s\"", 
+                   Infile,meanlevel,width,Outfile);
+	AddMonMessage(L,buff);
+        Resetlink(L);
+        pid = RunAudioJob(buff,L,MonitorJob);
+	free(stmp);
+	Dempty(L);
+#endif
+	return NULL;
+}
+void *RunRejectRange(void *stmp) {
+	VOLSTR *Istr=(VOLSTR *)stmp;
+	char Infile[200],Outfile[200],buff[500];
+	double corval=0.0;
+        int Min,Max;
+	int meanlevel,width;
+	int pid;
+	Dlink *L=Dopen();
+	char *tpt;
+	int hr,min,sec,tot;
+        double EnhFac=1.0;
+	strcpy(Infile,Istr->Infile);
+	strcpy(Outfile,Istr->Outfile);
+	corval = Istr->corval;
+        Min = Istr->meanVol;
+        Max = Istr->maxVol;
+        meanlevel = (Min+Max)/2;
+        width = (Max -Min);
+	AddMonMessage(L,Outfile);
+	AddMonMessage(L,Infile);
+
+#if 1
+	sprintf(buff,"AudioExtra: Rejecting Frequency Band");
+	AddMonMessage(L,buff);
+	sprintf(buff,"Processing file: %s",Infile);
+	AddMonMessage(L,buff);
+	strcpy(buff,"!c08 Press !c03Cancel!c08 to kill");
+	AddMonMessage(L,buff);
+        sprintf(buff,"ffmpegfun -y  -i \"%s\" -filter_complex " 
+            "\"bandreject=f=%d:width_type=h:width=%d\""
+            " \"%s\"", 
+                   Infile,meanlevel,width,Outfile);
 	AddMonMessage(L,buff);
         Resetlink(L);
         pid = RunAudioJob(buff,L,MonitorJob);
