@@ -48,6 +48,8 @@ int MakeSilenceGroup(DIALOG *D,void *arg);
 int MakeAudioSpeedGroup(DIALOG *D,void *arg);
 int MakeEnhanceAudioGroup(DIALOG *D,void *arg);
 int MakeEnhanceSpeechGroup(DIALOG *D,void *arg);
+int MakeRangeSelectGroup(DIALOG *D,void *arg);
+int MakeRangeRejectGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -176,6 +178,11 @@ TOOLGRP ToolList[ ] = {
        "\n\n\nEnhance the quality of recorded speech\n"
        " There are many parameters to adjust, so a general solution\n"
        "may not be satisfactory, but it is worth the try\n"
+  },
+  { 0, MakeRangeSelectGroup,"!f23Select Audio Frequency Range",346,0,RunHelper,0,
+       "\n\n\nSelects a frequency range audio \n"
+       " Uses lowpass filter and highpass filter\n"
+       "Other frequencies are attenuated\n"
   },
   { 0, MakeCaptureAudioGroup,"!f23Capture Audio",346,0,RunHelper,0,
        "\n\n\nTo capture playing audio\noutput should be saved as Wav file\n"
