@@ -50,6 +50,8 @@ int MakeEnhanceAudioGroup(DIALOG *D,void *arg);
 int MakeEnhanceSpeechGroup(DIALOG *D,void *arg);
 int MakeRangeSelectGroup(DIALOG *D,void *arg);
 int MakeRangeRejectGroup(DIALOG *D,void *arg);
+int MakeLowPassGroup(DIALOG *D,void *arg);
+int MakeHighPassGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -180,13 +182,21 @@ TOOLGRP ToolList[ ] = {
        "may not be satisfactory, but it is worth the try\n"
   },
   { 0, MakeRangeSelectGroup,"!f23Select Audio Frequency band",346,0,RunHelper,0,
-       "\n\n\nSelects a frequency band fot  audio \n"
+       "\n\n\nSelects a frequency band for  audio \n"
        " Uses bandpass filter at mid-frquency\n"
        "Other frequencies are attenuated\n"
   },
   { 0, MakeRangeRejectGroup,"!f23Reject Audio Frequency band",346,0,RunHelper,0,
-       "\n\n\nSelects a frequency band fot  audio \n"
+       "\n\n\nSelects a frequency band for  audio \n"
        " Uses bandreject filter at mid frequency\n"
+  },
+  { 0, MakeLowPassGroup,"!f23 Audio LowPass Filter",346,0,RunHelper,0,
+       "\n\n\nLowpass filter for  audio \n"
+       " Only frequencies below the given frequency are selected\n"
+  },
+  { 0, MakeHighPassGroup,"!f23 Audio HighPass Filter",346,0,RunHelper,0,
+       "\n\n\nHighpass filter for  audio \n"
+       " Only frequencies above the given frequency are selected\n"
   },
   { 0, MakeCaptureAudioGroup,"!f23Capture Audio",346,0,RunHelper,0,
        "\n\n\nTo capture playing audio\noutput should be saved as Wav file\n"

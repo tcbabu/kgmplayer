@@ -706,8 +706,8 @@ void *RunSelectRange(void *stmp) {
 	corval = Istr->corval;
         Min = Istr->meanVol;
         Max = Istr->maxVol;
-        meanlevel = (Min+Max)/2;
-        width = (Max -Min);
+        meanlevel = Min;
+        width = Max ;
 	AddMonMessage(L,Outfile);
 	AddMonMessage(L,Infile);
 
@@ -746,8 +746,8 @@ void *RunRejectRange(void *stmp) {
 	corval = Istr->corval;
         Min = Istr->meanVol;
         Max = Istr->maxVol;
-        meanlevel = (Min+Max)/2;
-        width = (Max -Min);
+        meanlevel = Min;
+        width = Max;
 	AddMonMessage(L,Outfile);
 	AddMonMessage(L,Infile);
 
@@ -762,6 +762,84 @@ void *RunRejectRange(void *stmp) {
             "\"bandreject=f=%d:width_type=h:width=%d\""
             " \"%s\"", 
                    Infile,meanlevel,width,Outfile);
+	AddMonMessage(L,buff);
+        Resetlink(L);
+        pid = RunAudioJob(buff,L,MonitorJob);
+	free(stmp);
+	Dempty(L);
+#endif
+	return NULL;
+}
+void *RunLowpassFilter(void *stmp) {
+	VOLSTR *Istr=(VOLSTR *)stmp;
+	char Infile[200],Outfile[200],buff[500];
+	double corval=0.0;
+        int Min,Max;
+	int meanlevel,width;
+	int pid;
+	Dlink *L=Dopen();
+	char *tpt;
+	int hr,min,sec,tot;
+        double EnhFac=1.0;
+	strcpy(Infile,Istr->Infile);
+	strcpy(Outfile,Istr->Outfile);
+	corval = Istr->corval;
+        Min = Istr->meanVol;
+        meanlevel = Min;
+        width = Max;
+	AddMonMessage(L,Outfile);
+	AddMonMessage(L,Infile);
+
+#if 1
+	sprintf(buff,"AudioExtra: Lowpass filter");
+	AddMonMessage(L,buff);
+	sprintf(buff,"Processing file: %s",Infile);
+	AddMonMessage(L,buff);
+	strcpy(buff,"!c08 Press !c03Cancel!c08 to kill");
+	AddMonMessage(L,buff);
+        sprintf(buff,"ffmpegfun -y  -i \"%s\" -filter_complex " 
+            "\"lowpass=f=%d\""
+            " \"%s\"", 
+                   Infile,Min,Outfile);
+	AddMonMessage(L,buff);
+        Resetlink(L);
+        pid = RunAudioJob(buff,L,MonitorJob);
+	free(stmp);
+	Dempty(L);
+#endif
+	return NULL;
+}
+void *RunHighpassFilter(void *stmp) {
+	VOLSTR *Istr=(VOLSTR *)stmp;
+	char Infile[200],Outfile[200],buff[500];
+	double corval=0.0;
+        int Min,Max;
+	int meanlevel,width;
+	int pid;
+	Dlink *L=Dopen();
+	char *tpt;
+	int hr,min,sec,tot;
+        double EnhFac=1.0;
+	strcpy(Infile,Istr->Infile);
+	strcpy(Outfile,Istr->Outfile);
+	corval = Istr->corval;
+        Min = Istr->meanVol;
+        meanlevel = Min;
+        width = Max;
+	AddMonMessage(L,Outfile);
+	AddMonMessage(L,Infile);
+
+#if 1
+	sprintf(buff,"AudioExtra: Highpass Filter");
+	AddMonMessage(L,buff);
+	sprintf(buff,"Processing file: %s",Infile);
+	AddMonMessage(L,buff);
+	strcpy(buff,"!c08 Press !c03Cancel!c08 to kill");
+	AddMonMessage(L,buff);
+        sprintf(buff,"ffmpegfun -y  -i \"%s\" -filter_complex " 
+            "\"highpass=f=%d\""
+            " \"%s\"", 
+                   Infile,Min,Outfile);
 	AddMonMessage(L,buff);
         Resetlink(L);
         pid = RunAudioJob(buff,L,MonitorJob);

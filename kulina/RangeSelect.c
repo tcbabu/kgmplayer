@@ -131,8 +131,8 @@ int RangeSelectGroup( DIALOG *D,void **v,void *pt) {
   e5[0].img=NULL;
   DIT t5 = { 
     't',
-    233,208,  
-    332,242,
+    319,208,  
+    418,242,
     20, 
     1,1, 
     e5,
@@ -150,16 +150,16 @@ int RangeSelectGroup( DIALOG *D,void **v,void *pt) {
     109,238,  
     1,0  
   };
-  strncpy(m6.msg,(char *)"Range Min:",499);
+  strncpy(m6.msg,(char *)"MeanFreq:",499);
   strcpy(m6.Wid,(char *)"RangeSelectWidget9");
   m6.item = -1;
   DIM m7 = { 
     'm',
-    334,214,  
-    434,238,  
-    -1,0  
+    214,214,  
+    314,238,  
+    1,0  
   };
-  strncpy(m7.msg,(char *)"Range Max:",499);
+  strncpy(m7.msg,(char *)"Width:",499);
   strcpy(m7.Wid,(char *)"RangeSelectWidget10");
   m7.item = -1;
   DIM m8 = { 
@@ -168,7 +168,7 @@ int RangeSelectGroup( DIALOG *D,void **v,void *pt) {
     320,201,  
     0,0  
   };
-  strncpy(m8.msg,(char *)"Frequency Range",499);
+  strncpy(m8.msg,(char *)"Frequency Band",499);
   strcpy(m8.Wid,(char *)"RangeSelectWidget11");
   m8.item = -1;
   dtmp = D->d;
@@ -235,10 +235,10 @@ int MakeRangeSelectGroup(DIALOG *D,void *arg) {
    v1[0] = '\0';
    int  *v2 ;
    v2 = (int *)malloc(sizeof(int));
-   *v2 = 200;
+   *v2 = 300;
    int  *v3 ;
    v3 = (int *)malloc(sizeof(int));
-   *v3 = 400;
+   *v3 = 100;
    void** v=(void **)malloc(sizeof(void*)*5);
    v[4]=NULL;
    v[0]=(void *)(v0);

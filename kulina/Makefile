@@ -44,6 +44,8 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 EnhanceSpeech.o EnhanceSpeechCallbacks.o \
 	 RangeSelect.o RangeSelectCallbacks.o \
 	 RangeReject.o RangeRejectCallbacks.o \
+	 LowPass.o LowPassCallbacks.o \
+	 HighPass.o HighPassCallbacks.o \
 	 Silence.o SilenceCallbacks.o \
 	 acap.o acapCallbacks.o \
 	 CaptureAudio.o CaptureAudioCallbacks.o \
@@ -102,6 +104,8 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 EnhanceSpeech.o EnhanceSpeechCallbacks.o \
 	 RangeSelect.o RangeSelectCallbacks.o \
 	 RangeReject.o RangeRejectCallbacks.o \
+	 LowPass.o LowPassCallbacks.o \
+	 HighPass.o HighPassCallbacks.o \
 	 Silence.o SilenceCallbacks.o \
 	 acap.o acapCallbacks.o \
 	 CaptureAudio.o CaptureAudioCallbacks.o \
@@ -262,6 +266,14 @@ RangeReject.o		: RangeReject.c
 	 	$(CC) -c RangeReject.c
 RangeRejectCallbacks.o		: RangeRejectCallbacks.c
 		$(CC) -c RangeRejectCallbacks.c
+LowPass.o		: LowPass.c
+	 	$(CC) -c LowPass.c
+LowPassCallbacks.o		: LowPassCallbacks.c
+		$(CC) -c LowPassCallbacks.c
+HighPass.o		: HighPass.c
+	 	$(CC) -c HighPass.c
+HighPassCallbacks.o		: HighPassCallbacks.c
+		$(CC) -c HighPassCallbacks.c
 Silence.o		: Silence.c
 	 	$(CC) -c Silence.c
 SilenceCallbacks.o		: SilenceCallbacks.c

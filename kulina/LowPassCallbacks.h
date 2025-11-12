@@ -1,0 +1,13 @@
+int LowPasstextbox1callback(int cellno,int i,void *Tmp) ;
+int LowPassbutton1callback(int butno,int i,void *Tmp) ;
+void  LowPassbutton1init(DIN *B,void *pt) ;
+int LowPasstextbox2callback(int cellno,int i,void *Tmp) ;
+int LowPasssplbutton1callback(int butno,int i,void *Tmp) ;
+void  LowPasssplbutton1init(DIL *B,void *pt) ;
+int LowPasstextbox3callback(int cellno,int i,void *Tmp) ;
+int LowPassinit(void *Tmp) ;
+int LowPasscleanup(void *Tmp) ;
+int ModifyLowPass(void *Tmp,int GrpId) ;
+int LowPassCallBack(void *Tmp,void *tmp) ;
+int LowPassResizeCallBack(void *Tmp) ;
+int LowPassWaitCallBack(void *Tmp) ;

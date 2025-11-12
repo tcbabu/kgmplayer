@@ -1,7 +1,7 @@
 #include <kulina.h>
-#include "RangeRejectCallbacks.h"
-#include "GclrRangeReject.c"
-int RangeRejectGroup( DIALOG *D,void **v,void *pt) {
+#include "LowPassCallbacks.h"
+#include "GclrLowPass.c"
+int LowPassGroup( DIALOG *D,void **v,void *pt) {
   int GrpId=0,oitems=0,i,j;
   DIA *d=NULL,*dtmp;
   T_ELMT *e0  ; 
@@ -20,10 +20,10 @@ int RangeRejectGroup( DIALOG *D,void **v,void *pt) {
     1,1, 
     e0,
     1,1,
-    NULL,RangeRejecttextbox1callback ,0 ,0,18,9 
+    NULL,LowPasstextbox1callback ,0 ,0,18,9 
   };
     /* *args,Callback,border,hide,font,fontsize */
-  strcpy(t0.Wid,(char *)"RRinput");
+  strcpy(t0.Wid,(char *)"LPinput");
   t0.pt=NULL;
   t0.type = 1;
   t0.item = -1;
@@ -35,7 +35,7 @@ int RangeRejectGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-1;
-  butn1[0].butncode=10;
+  butn1[0].butncode=31;
   DIN b1 = { 
     'n',
     377,16,  
@@ -46,10 +46,10 @@ int RangeRejectGroup( DIALOG *D,void **v,void *pt) {
     1,1, 
     5,0.150000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
     butn1, 
-    RangeRejectbutton1callback , /* *args, Callback */
+    LowPassbutton1callback , /* *args, Callback */
     NULL  /* any args */
   };
-  strcpy(b1.Wid,(char *)"RRbrowse");
+  strcpy(b1.Wid,(char *)"LPbrowse");
   b1.item = -1;
   T_ELMT *e2  ; 
   e2 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
@@ -67,17 +67,17 @@ int RangeRejectGroup( DIALOG *D,void **v,void *pt) {
     1,1, 
     e2,
     1,1,
-    NULL,RangeRejecttextbox2callback ,0 ,0,18,9 
+    NULL,LowPasstextbox2callback ,0 ,0,18,9 
   };
     /* *args,Callback,border,hide,font,fontsize */
-  strcpy(t2.Wid,(char *)"RRoutput");
+  strcpy(t2.Wid,(char *)"LPoutput");
   t2.pt=NULL;
   t2.type = 1;
   t2.item = -1;
   BUT_STR  *butn3=NULL; 
   butn3= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn3[0].sw=1;
-  strcpy(butn3[0].title,(char *)"!c01 Reject");
+  strcpy(butn3[0].title,(char *)"!c01 Select");
   butn3[0].xpmn=NULL;
   butn3[0].xpmp=NULL;
   butn3[0].xpmh=NULL;
@@ -93,10 +93,10 @@ int RangeRejectGroup( DIALOG *D,void **v,void *pt) {
     1,1, 
     4,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
     butn3, 
-    RangeRejectsplbutton1callback ,  /* *args, Callback */
+    LowPasssplbutton1callback ,  /* *args, Callback */
     NULL  /* any args */
   };
-  strcpy(h3.Wid,(char *)"RRdo");
+  strcpy(h3.Wid,(char *)"LPdo");
   h3.item = -1;
   T_ELMT *e4  ; 
   e4 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
@@ -108,105 +108,55 @@ int RangeRejectGroup( DIALOG *D,void **v,void *pt) {
   e4[0].img=NULL;
   DIT t4 = { 
     't',
-    113,208,  
-    212,242,
+    234,207,  
+    333,241,
     20, 
     1,1, 
     e4,
     1,1,
-    NULL,RangeRejecttextbox3callback ,0 ,0,18,9 
+    NULL,LowPasstextbox3callback ,0 ,0,18,9 
   };
     /* *args,Callback,border,hide,font,fontsize */
-  strcpy(t4.Wid,(char *)"RRminimum");
+  strcpy(t4.Wid,(char *)"LPfreq");
   t4.pt=NULL;
   t4.type = 1;
   t4.item = -1;
-  T_ELMT *e5  ; 
-  e5 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e5[0].fmt = (char *)malloc(4);
-  strcpy(e5[0].fmt,(char *)"%6d");
-  e5[0].v=(void *)v[3];
-  e5[0].sw=1;
-  e5[0].noecho=0;
-  e5[0].img=NULL;
-  DIT t5 = { 
-    't',
-    329,208,  
-    428,242,
-    20, 
-    1,1, 
-    e5,
-    1,1,
-    NULL,RangeRejecttextbox4callback ,0 ,0,18,9 
-  };
-    /* *args,Callback,border,hide,font,fontsize */
-  strcpy(t5.Wid,(char *)"RRmaximum");
-  t5.pt=NULL;
-  t5.type = 1;
-  t5.item = -1;
-  DIM m6 = { 
+  DIM m5 = { 
     'm',
-    9,214,  
-    109,238,  
+    65,214,  
+    231,237,  
     1,0  
   };
-  strncpy(m6.msg,(char *)"MeanFreq:",499);
-  strcpy(m6.Wid,(char *)"RangeSelectWidget9");
-  m6.item = -1;
-  DIM m7 = { 
-    'm',
-    223,214,  
-    323,238,  
-    1,0  
-  };
-  strncpy(m7.msg,(char *)"Width:",499);
-  strcpy(m7.Wid,(char *)"RangeSelectWidget10");
-  m7.item = -1;
-  DIM m8 = { 
-    'm',
-    120,177,  
-    320,201,  
-    0,0  
-  };
-  strncpy(m8.msg,(char *)"Frequency Band",499);
-  strcpy(m8.Wid,(char *)"RangeSelectWidget11");
-  m8.item = -1;
+  strncpy(m5.msg,(char *)"Lowpass Freq:",499);
+  strcpy(m5.Wid,(char *)"LowpassRangeSelectWidget9");
+  m5.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+10));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+7));
   d =dtmp+i; 
-  d[9].t=NULL;
+  d[6].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
   d[1].t = (DIT *)malloc(sizeof(DIN));
   *d[1].N = b1;
   d[1].N->item = -1;
-  RangeRejectbutton1init(d[1].N,pt) ;
+  LowPassbutton1init(d[1].N,pt) ;
   d[2].t = (DIT *)malloc(sizeof(DIT));
   *d[2].t = t2;
   d[2].t->item = -1;
   d[3].t = (DIT *)malloc(sizeof(DIL));
   *d[3].h = h3;
   d[3].h->item = -1;
-  RangeRejectsplbutton1init(d[3].h,pt) ;
+  LowPasssplbutton1init(d[3].h,pt) ;
   d[4].t = (DIT *)malloc(sizeof(DIT));
   *d[4].t = t4;
   d[4].t->item = -1;
-  d[5].t = (DIT *)malloc(sizeof(DIT));
-  *d[5].t = t5;
-  d[5].t->item = -1;
-  d[6].t = (DIT *)malloc(sizeof(DIM));
-  *d[6].m = m6;
-  d[6].m->item = -1;
-  d[7].t = (DIT *)malloc(sizeof(DIM));
-  *d[7].m = m7;
-  d[7].m->item = -1;
-  d[8].t = (DIT *)malloc(sizeof(DIM));
-  *d[8].m = m8;
-  d[8].m->item = -1;
-  d[9].t = NULL;
+  d[5].t = (DIT *)malloc(sizeof(DIM));
+  *d[5].m = m5;
+  d[5].m->item = -1;
+  d[6].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -216,7 +166,7 @@ int RangeRejectGroup( DIALOG *D,void **v,void *pt) {
 
 /* One can also use the following code to add Widgets to an existing Dialog */
 
-int MakeRangeRejectGroup(DIALOG *D,void *arg) {
+int MakeLowPassGroup(DIALOG *D,void *arg) {
    int GrpId;
    WIDGETGRP *Gpt;
 /*************************************************
@@ -224,7 +174,6 @@ int MakeRangeRejectGroup(DIALOG *D,void *arg) {
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  1 data values
-    Text_Box4  1 data values
 
 *************************************************/
    char  *v0 ;
@@ -235,25 +184,21 @@ int MakeRangeRejectGroup(DIALOG *D,void *arg) {
    v1[0] = '\0';
    int  *v2 ;
    v2 = (int *)malloc(sizeof(int));
-   *v2 = 300;
-   int  *v3 ;
-   v3 = (int *)malloc(sizeof(int));
-   *v3 = 100;
-   void** v=(void **)malloc(sizeof(void*)*5);
-   v[4]=NULL;
+   *v2 = 3000;
+   void** v=(void **)malloc(sizeof(void*)*4);
+   v[3]=NULL;
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
-   v[3]=(void *)(v3);
    void *pt=NULL; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
-   GrpId = RangeRejectGroup(D,v,pt);
+   GrpId = LowPassGroup(D,v,pt);
    Gpt = kgGetWidgetGrp(D,GrpId);
    Gpt->arg= v; // kulina will double free this; you may modify
    return GrpId;
 }
 
-int RangeReject( void *parent,void **v,void *pt) {
+int LowPass( void *parent,void **v,void *pt) {
   int ret=1,GrpId,k;
   DIALOG D;
   DIA *d=NULL;
@@ -261,15 +206,15 @@ int RangeReject( void *parent,void **v,void *pt) {
   kgInitUi(&D);
   D.d=NULL;
 #if 1
-  GrpId = RangeRejectGroup(&D,v,pt);
+  GrpId = LowPassGroup(&D,v,pt);
 #else 
-  GrpId = MakeRangeRejectGroup(&D,pt); // can try this also
+  GrpId = MakeLowPassGroup(&D,pt); // can try this also
 #endif 
   d = D.d;
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 5;
+  D.df = 4;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
@@ -278,8 +223,8 @@ int RangeReject( void *parent,void **v,void *pt) {
   D.yo = 148;
   D.xl = 463;    /*  Length of Dialog */
   D.yl = 363;    /*  Width  of Dialog */
-  D.Initfun = RangeRejectinit;    /*   init fuction for Dialog */
-  D.Cleanupfun = RangeRejectcleanup;    /*   init fuction for Dialog */
+  D.Initfun = LowPassinit;    /*   init fuction for Dialog */
+  D.Cleanupfun = LowPasscleanup;    /*   init fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
   D.butattn = 0;    /*  1 for drawing button attention */
   D.fullscreen = 0;    /*  1 for for fullscreen mode */
@@ -294,15 +239,15 @@ int RangeReject( void *parent,void **v,void *pt) {
   D.MinWidth = 100;    /*   for Resize option */
   D.MinHeight = 100;    /*   for Resize option */
 #if 1 
-  D.Callback = RangeRejectCallBack;    /*  default Callback  */
+  D.Callback = LowPassCallBack;    /*  default Callback  */
 #else 
   D.Callback = NULL;    
 #endif
-  D.ResizeCallback = RangeRejectResizeCallBack;  /*  Resize callback */
+  D.ResizeCallback = LowPassResizeCallBack;  /*  Resize callback */
 #if 0 
   D.WaitCallback = NULL;  /*  Wait callback */
 #else 
-  D.WaitCallback = RangeRejectWaitCallBack;  /*  Wait callback */
+  D.WaitCallback = LowPassWaitCallBack;  /*  Wait callback */
 #endif
   D.Fixpos = 1;    /*  1 for Fixing Position */
   D.NoTaskBar = 0;    /*  1 for not showing in task bar*/
@@ -323,33 +268,30 @@ int RangeReject( void *parent,void **v,void *pt) {
      D.xo=D.yo=0; D.xl = xres; D.yl=yres;
 //     D.StackPos = 1; // you may need it
   }    /*  end of fullscreen mode */
-  ModifyRangeReject(&D,GrpId);    /*  add extras to  gui*/
-  ModifyRangeRejectGc(&D);    /*  set colors for gui if do not like default*/
+  ModifyLowPass(&D,GrpId);    /*  add extras to  gui*/
+  ModifyLowPassGc(&D);    /*  set colors for gui if do not like default*/
   ret= kgUi(&D);
   kgCleanUi(&D);
   return ret;
 }
-void *RunRangeReject(void *parent ,void *args) {
+void *RunLowPass(void *parent ,void *args) {
 /*************************************************
 
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  1 data values
-    Text_Box4  1 data values
 
 *************************************************/
    char  v0[500]="" ;
    char  v1[500]="" ;
    int   v2 = 1;
-   int   v3 = 1;
-   void* v[4];
+   void* v[3];
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(&v2);
-   v[3]=(void *)(&v3);
    void *pt[2]={NULL,NULL}; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    pt[0]=args;
-   RangeReject(parent,v,(void *)pt );
+   LowPass(parent,v,(void *)pt );
    return pt[1];
 }

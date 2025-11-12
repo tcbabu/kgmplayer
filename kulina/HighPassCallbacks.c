@@ -14,7 +14,7 @@ typedef struct _volstr {
 	double maxVol;
 	double duration;
 } VOLSTR;
-void *RunRejectRange(void *);
+void *RunHighpassFilter(void *);
 static int FolderBrowser(char *FileName) {
 	char *Str=NULL;
 	int ret=0,ln;
@@ -28,9 +28,9 @@ static int FolderBrowser(char *FileName) {
 	}
 	return ret;
 }
- /* Callback for  RRinput   */ 
+ /* Callback for  HPinput   */ 
 
-int RangeRejecttextbox1callback(int cellno,int i,void *Tmp) {
+int HighPasstextbox1callback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -45,7 +45,7 @@ int RangeRejecttextbox1callback(int cellno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   T = (DIT *)kgGetWidget(Tmp,i);
   e = T->elmt;
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"RRoutput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"HPoutput");
   strcpy(FileName,kgGetString(T,0));
   sprintf(OutFile,"%-s/Music",getenv("HOME"));
   MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp3");
@@ -56,9 +56,9 @@ int RangeRejecttextbox1callback(int cellno,int i,void *Tmp) {
   return ret;
 }
 
- /* Callback for  RRbrowse   */ 
+ /* Callback for  HPbrowse   */ 
 
-int RangeRejectbutton1callback(int butno,int i,void *Tmp) {
+int HighPassbutton1callback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -73,8 +73,8 @@ int RangeRejectbutton1callback(int butno,int i,void *Tmp) {
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
   DIT *T,*TO;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"RRinput");
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"RRoutput");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"HPinput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"HPoutput");
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
@@ -98,16 +98,16 @@ int RangeRejectbutton1callback(int butno,int i,void *Tmp) {
   }
   return ret;
 }
-void  RangeRejectbutton1init(DIN *B,void *ptmp) {
+void  HighPassbutton1init(DIN *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
 
- /* Callback for  RRoutput   */ 
+ /* Callback for  HPoutput   */ 
 
-int RangeRejecttextbox2callback(int cellno,int i,void *Tmp) {
+int HighPasstextbox2callback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -124,9 +124,9 @@ int RangeRejecttextbox2callback(int cellno,int i,void *Tmp) {
   return ret;
 }
 
- /* Callback for  RRdo   */ 
+ /* Callback for  HPdo   */ 
 
-int RangeRejectsplbutton1callback( int butno,int i,void *Tmp) {
+int HighPasssplbutton1callback( int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -149,19 +149,16 @@ int RangeRejectsplbutton1callback( int butno,int i,void *Tmp) {
   ToolsBox = (DIRA *)kgGetNamedWidget(Tmp,"ToolsBox");
   Busyid = kgOpenBusy(Tmp,400,400);
   vstr = (VOLSTR *)malloc(sizeof(VOLSTR));
-  TI = (DIT *)kgGetNamedWidget(Tmp,(char *)"RRinput");
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"RRoutput");
+  TI = (DIT *)kgGetNamedWidget(Tmp,(char *)"HPinput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"HPoutput");
   
   DIT *Rmin,*Rmax;
-  Rmin = (DIT *)kgGetNamedWidget(Tmp,(char *)"RRminimum");
-  Rmax = (DIT *)kgGetNamedWidget(Tmp,(char *)"RRmaximum");
+  Rmin = (DIT *)kgGetNamedWidget(Tmp,(char *)"HPfreq");
   RangeMin= kgGetInt(Rmin,0);
-  RangeMax= kgGetInt(Rmax,0);
   strcpy(vstr->Infile,kgGetString(TI,0));
   strcpy(vstr->Outfile,kgGetString(TO,0));
   vstr->meanVol = RangeMin;
-  vstr->maxVol  = RangeMax;
-  RunRejectRange(vstr);
+  RunHighpassFilter(vstr);
   kgCloseBusy(Busyid);
   switch(butno) {
     case 1: //  !c01Enhance 
@@ -169,13 +166,13 @@ int RangeRejectsplbutton1callback( int butno,int i,void *Tmp) {
   }
   return ret;
 }
-void  RangeRejectsplbutton1init(DIL *B,void *ptmp) {
+void  HighPasssplbutton1init(DIL *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
-int RangeRejecttextbox3callback(int cellno,int i,void *Tmp) {
+int HighPasstextbox3callback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -191,7 +188,7 @@ int RangeRejecttextbox3callback(int cellno,int i,void *Tmp) {
   e = T->elmt;
   return ret;
 }
-int RangeRejecttextbox4callback(int cellno,int i,void *Tmp) {
+int HighPasstextbox4callback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -207,7 +204,7 @@ int RangeRejecttextbox4callback(int cellno,int i,void *Tmp) {
   e = T->elmt;
   return ret;
 }
-int RangeRejectinit(void *Tmp) {
+int HighPassinit(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
@@ -218,17 +215,9 @@ int RangeRejectinit(void *Tmp) {
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
  /* pt[0] is inputs, given by caller */
-  DIT *Rmin,*Rmax;
-  Rmin = (DIT *)kgGetNamedWidget(Tmp,(char *)"RRminimum");
-  Rmax = (DIT *)kgGetNamedWidget(Tmp,(char *)"RRmaximun");
-  kgSetInt(Rmin,0,RangeMin);
-  kgSetInt(Rmax,0,RangeMax);
-  kgUpdateWidget(Rmin);
-  kgUpdateWidget(Rmax);
-  kgUpdateOn(Tmp);
   return ret;
 }
-int RangeRejectcleanup(void *Tmp) {
+int HighPasscleanup(void *Tmp) {
   /* you add any cleanup/mem free here */
   /*********************************** 
     Tmp :  Pointer to DIALOG  
@@ -242,7 +231,7 @@ int RangeRejectcleanup(void *Tmp) {
  /* pt[0] is inputs, given by caller */
   return ret;
 }
-int ModifyRangeReject(void *Tmp,int GrpId) {
+int ModifyHighPass(void *Tmp,int GrpId) {
   DIALOG *D;
   D = (DIALOG *)Tmp;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
@@ -272,7 +261,7 @@ int ModifyRangeReject(void *Tmp,int GrpId) {
   return GrpId;
 }
 
-int RangeRejectCallBack(void *Tmp,void *tmp) {
+int HighPassCallBack(void *Tmp,void *tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
     tmp :  Pointer to KBEVENT  
@@ -290,7 +279,7 @@ int RangeRejectCallBack(void *Tmp,void *tmp) {
   }
   return ret;
 }
-int RangeRejectResizeCallBack(void *Tmp) {
+int HighPassResizeCallBack(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
@@ -309,7 +298,7 @@ int RangeRejectResizeCallBack(void *Tmp) {
   kgRedrawDialog(D);
   return ret;
 }
-int RangeRejectWaitCallBack(void *Tmp) {
+int HighPassWaitCallBack(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
     Called while waiting for event  

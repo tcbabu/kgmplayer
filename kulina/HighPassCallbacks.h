@@ -1,0 +1,13 @@
+int HighPasstextbox1callback(int cellno,int i,void *Tmp) ;
+int HighPassbutton1callback(int butno,int i,void *Tmp) ;
+void  HighPassbutton1init(DIN *B,void *pt) ;
+int HighPasstextbox2callback(int cellno,int i,void *Tmp) ;
+int HighPasssplbutton1callback(int butno,int i,void *Tmp) ;
+void  HighPasssplbutton1init(DIL *B,void *pt) ;
+int HighPasstextbox3callback(int cellno,int i,void *Tmp) ;
+int HighPassinit(void *Tmp) ;
+int HighPasscleanup(void *Tmp) ;
+int ModifyHighPass(void *Tmp,int GrpId) ;
+int HighPassCallBack(void *Tmp,void *tmp) ;
+int HighPassResizeCallBack(void *Tmp) ;
+int HighPassWaitCallBack(void *Tmp) ;
