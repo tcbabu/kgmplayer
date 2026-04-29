@@ -1,7 +1,7 @@
 #include <kulina.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
+#include "mediainfo.h"
 static char infile[500]="",outfile[500]="";
 
 int ResetGrpVis(void *);
@@ -18,9 +18,11 @@ int kgffmpeg(int,char **);
 int ffmpegfun(int,char **);
 int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessToPipe(int pip0,int pip1,int Pid);
+int GetVideoInfo(char *);
 
 static void *InfoBox=NULL,*Dia=NULL;
 
+extern MEDIAINFO Minfo;
 static int FolderBrowser(char *FileName) {
 	char *Str=NULL;
 	int ret=0,ln;

@@ -3683,3 +3683,58 @@ void *logo(int l,int w){
   kgCloseImage(fid);
   return logoimg;
 }
+  int ProcessVinfo (  int pip0,int pip1,int Pid ) {
+      char ch ;
+      char line [ 1024 ] ;
+      Minfo.TotSec = 0;
+      Minfo.Axres = -1;
+      Minfo.Ayres = -1;
+      while((ch=GetLine(pip0,line)) ) {
+         if(ch< 0) continue;
+          char *video = strstr ( line , "Video:" ) ;
+          if ( video ) {
+              int width=-1 , height=-1;
+              char *fld1 = strstr ( video , ", " ) ;
+              char *fld2 = strstr ( fld1+2 , ", " ) ;
+//              printf ( "FLD2: %s\n" , fld2+1 ) ;
+            /* Search for pattern like 1920x1080 */
+              if ( sscanf ( fld2+1 , "%*[^0-9]%dx%d" , & width , & height ) == 2 ) {
+//                  printf ( "Resolution: xres: %d yres: %d\n" , width , height ) ;
+              }
+              else {
+            /* Backup scan anywhere in line */
+                  char *fld3 = strstr ( fld2+2 , ", " ) ;
+                  char *p = fld3+1;;
+                  while ( *p ) {
+                      if ( sscanf ( p , "%dx%d" , & width , & height ) == 2 ) {
+//                          printf ( "Resolution: %dx%d\n" , width , height ) ;
+                      }
+                      p++;
+                  }
+              }
+              Minfo.Axres = width;
+              Minfo.Ayres = height;
+          }
+          video = strstr ( line , "Duration:" ) ;
+          if ( video ) {
+              int hour , minute;
+              float secs = 0;
+              char *fld1 = strstr ( video , ": " ) ;
+//              printf("%s\n",fld1+1);
+              if ( sscanf ( fld1+1 , "%d:%d:%f" , & hour , & minute , & secs ) == 3 ) {
+                  secs = hour*3600+minute*60+secs;
+//                  printf ( "Duration: %.2f \n" , secs ) ;
+              }
+              Minfo.TotSec = secs;
+          }
+      }
+//    printf("Could not determine resolution.\n");
+      return 0;
+  }
+  int GetVideoInfo(char *Vfile) {
+      char command [ 512 ] ;
+      snprintf ( command , sizeof ( command ) , "ffmpegfun -i \"%s\" " , \
+           Vfile ) ;
+      runfunction(command,ProcessVinfo,ffmpegfun);
+      return 1;
+  }

@@ -36,6 +36,7 @@ int MixAudioToAudio( CONVDATA *cn);
 int InsertSilences( CONVDATA *cn);
 int MakeAudioCuts( CONVDATA *cn);
 int SearchString(char *s1,char *s2);
+int GetVideoInfo(char *);
 MEDIAINFO * GetMediaInfo(char *flname);
 
 char HomeDir[200],bname[200];

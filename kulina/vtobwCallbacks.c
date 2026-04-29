@@ -1,9 +1,10 @@
 #include <kulina.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include "mediainfo.h"
 
 static char infile[500]="",outfile[500]="";
-
+int GetVideoInfo(char *);
 int ResetGrpVis(void *);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
@@ -20,6 +21,7 @@ int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessToPipe(int pip0,int pip1,int Pid);
 
 static void *InfoBox=NULL,*Dia=NULL;
+extern MEDIAINFO Minfo;
 
 static int FolderBrowser(char *FileName) {
 	char *Str =NULL;
