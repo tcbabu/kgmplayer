@@ -30,6 +30,7 @@ static char infile[500]="",outfile[500]="";
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
 int GetBaseIndex(char *s);
+int GetFolderName(char *infile,char *Folder);
 int GetLine(int pip0,char *buff);
 int SearchString(char *s1,char *s2);
 int runjob(char *job,int (*ProcessOut)(int,int,int));
@@ -209,7 +210,11 @@ int  slicetextbox1callback(int cellno,int i,void *Tmp) {
   T = (DIT *)kgGetNamedWidget(Tmp,(char *)"sliceInput");
   TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"sliceOutput");
   strcpy(FileName,kgGetString(T,0));
+#if 0
   sprintf(OutFile,"%-s/Video",getenv("HOME"));
+#else
+  GetFolderName(FileName,OutFile);
+#endif
   MakeFolder(FileName,OutFile,OutFile);
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(T);
@@ -260,7 +265,11 @@ int  slicebutton1callback(int butno,int i,void *Tmp) {
 //  kgFolderBrowser(NULL,100,100,FileName,(char *)"*");
   if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
+#if 0
   sprintf(OutFile,"%-s/Video",getenv("HOME"));
+#else
+  GetFolderName(FileName,OutFile);
+#endif
   MakeFolder(FileName,OutFile,OutFile);
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(T);

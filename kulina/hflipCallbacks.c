@@ -6,6 +6,7 @@ static char infile[500]="",outfile[500]="";
 int ResetGrpVis(void *);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
+int MakeNewFileName(char *infile,char *outfile);
 int GetBaseIndex(char *s);
 int GetLine(int pip0,char *buff);
 int SearchString(char *s1,char *s2);
@@ -49,8 +50,12 @@ int  hfliptextbox1callback(int cellno,int i,void *Tmp) {
   T = (DIT *)kgGetNamedWidget(Tmp,"hflipInput");
   TO = (DIT *)kgGetNamedWidget(Tmp,"hflipOutput");
   strcpy(FileName,kgGetString(T,0));
+#if 0
   sprintf(OutFile,"%-s/Video",getenv("HOME"));
   MakeFileInFolder(FileName,OutFile,OutFile,"mp4");
+#else
+  MakeNewFileName(FileName,OutFile);
+#endif
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(T);
   kgUpdateWidget(TO);
@@ -100,8 +105,12 @@ int  hflipbutton1callback(int butno,int i,void *Tmp) {
 //  kgFolderBrowser(NULL,100,100,FileName,"*");
   if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
+#if 0
   sprintf(OutFile,"%-s/Video",getenv("HOME"));
   MakeFileInFolder(FileName,OutFile,OutFile,"mp4");
+#else
+  MakeNewFileName(FileName,OutFile);
+#endif
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(T);
   kgUpdateWidget(TO);
