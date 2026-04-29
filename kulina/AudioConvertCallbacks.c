@@ -31,6 +31,7 @@ int ProcessPrint(int pip0,int pip1,int Pid) ;
 void *RunMonitorJoin(void *arg);
 void *Runmonitor(void *arg);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
+int GetFolderName(char *infile,char *folder);
 int GetBaseIndex(char *s);
 int FileStat(char *flname);
 /* For External Use only */
@@ -192,8 +193,9 @@ int  AudioConverttextbox1callback(int cellno,int i,void *Tmp) {
   sprintf(OutFile,"%-s/Music/",getenv("HOME"));
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp3");
 #else
-  sprintf(OutFile,"%-s/Music",getenv("HOME"));
-  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp3");
+//  sprintf(OutFile,"%-s/Music",getenv("HOME"));
+  GetFolderName(FileName,OutFile);
+  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"wav");
 #endif
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(T);
@@ -224,11 +226,13 @@ int  AudioConvertbutton1callback(int butno,int i,void *Tmp) {
   if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
 #if 0
-  sprintf(OutFile,"%-s/Music/",getenv("HOME"));
+//  sprintf(OutFile,"%-s/Music/",getenv("HOME"));
+  GetFolderName(FileName,OutFile);
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp3");
 #else
-  sprintf(OutFile,"%-s/Music",getenv("HOME"));
-  MakeFileInFolder(FileName,OutFile,OutFile,"mp3");
+//  sprintf(OutFile,"%-s/Music",getenv("HOME"));
+  GetFolderName(FileName,OutFile);
+  MakeFileInFolder(FileName,OutFile,OutFile,"wav");
 #endif
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(T);

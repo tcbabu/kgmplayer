@@ -14,8 +14,8 @@ int MakeCutsGroup( DIALOG *D,void **v,void *pt) {
   e0[0].img=NULL;
   DIT t0 = { 
     't',
-    72,30,  
-    398,64,
+    82,30,  
+    408,64,
     20, 
     1,1, 
     e0,
@@ -143,8 +143,8 @@ int MakeCutsGroup( DIALOG *D,void **v,void *pt) {
   e7[0].img=NULL;
   DIT t7 = { 
     't',
-    90,229,  
-    421,260,
+    110,229,  
+    441,260,
     20, 
     1,1, 
     e7,
@@ -157,7 +157,7 @@ int MakeCutsGroup( DIALOG *D,void **v,void *pt) {
   t7.item = -1;
   DIM m8 = { 
     'm',
-    9,234,  
+    0,234,  
     109,258,  
     1,0  
   };

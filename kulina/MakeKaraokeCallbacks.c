@@ -30,6 +30,9 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
 int ProcessPrint(int pip0,int pip1,int Pid);
 int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessToPipe(int pip0,int pip1,int Pid);
+int MakeNewFileName(char *Infile,char *OutFile);
+int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
+int GetFolderName(char *infile,char *folder);
 
 static int FolderBrowser(char *FileName) {
 	char *Str=NULL;
@@ -46,7 +49,9 @@ static int FolderBrowser(char *FileName) {
 }
 char * MakeKaraokeFile(void) {
   char buff[500],*pt;
-  int id=0,ln;
+  int id=0,ln=2;
+  buff[0]='\0';
+#if 0
   sprintf(buff,"%-s/Music/",getenv("HOME"));
   ln = strlen(buff);
   pt = buff+ln;
@@ -57,6 +62,7 @@ char * MakeKaraokeFile(void) {
     id++;
   }
   ln = strlen(buff);
+#endif
   pt = (char *)malloc(ln+1);
   strcpy(pt,buff);
   return pt;
@@ -152,12 +158,14 @@ int  MakeKaraokebutton1callback(int butno,int i,void *Tmp) {
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
   DIALOG *D;DIN *B; 
-  char FileName[500];
+  char FileName[500],OutFile[500];
   int n,ret =0;
-  DIT *T;
+  DIT *T,*TO;
   D = (DIALOG *)Tmp;
+  OutFile[0]='\0';
   B = (DIN *)kgGetWidget(Tmp,i);
   T = (DIT *)kgGetNamedWidget(Tmp,"KaraokeTextBox1");
+  TO = (DIT *)kgGetNamedWidget(Tmp,"KaraokeTextBox2");
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
 //  kgFolderBrowser(NULL,100,100,FileName,"*");
@@ -166,6 +174,12 @@ int  MakeKaraokebutton1callback(int butno,int i,void *Tmp) {
   CheckMedia(FileName);
   if(Minfo.Audio !=0 ) {
     kgSetString(T,0,FileName);
+    if(OutFile[0]== '\0'){
+      GetFolderName(FileName,OutFile);
+      MakeFileInFolder(FileName,OutFile,OutFile,"wav");
+      kgSetString(TO,0,OutFile);
+      kgUpdateWidget(TO);
+    }
     kgUpdateWidget(T);
     kgUpdateOn(Tmp);
   }

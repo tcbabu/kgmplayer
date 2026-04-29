@@ -45,6 +45,9 @@ int joinwav(char *Folder,int count);
 int GetWavHeaderLength(char *flname);
 void *RunGetSinfo(void *arg);
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
+int MakeNewFileName(char *Infile,char *OutFile);
+int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
+int GetFolderName(char *infile,char *folder);
 
 static int FolderBrowser(char *FileName) {
 	char *Str=NULL;
@@ -163,7 +166,9 @@ int InsertSilences( CONVDATA *cn) {
  
 char * MakeSilFile(void) {
   char buff[500],*pt;
-  int id=0,ln;
+  int id=0,ln=2;
+  buff[0]='\0';
+#if 0
   sprintf(buff,"%-s/Music/",getenv("HOME"));
   ln = strlen(buff);
   pt = buff+ln;
@@ -174,6 +179,7 @@ char * MakeSilFile(void) {
     id++;
   }
   ln = strlen(buff);
+#endif
   pt = (char *)malloc(ln+1);
   strcpy(pt,buff);
   return pt;
@@ -466,20 +472,30 @@ int  AddSilencebutton2callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   DIT *T,*TO;
+  OutFile[0]='\0';
   T = (DIT *)kgGetNamedWidget(Tmp,(char *)"SilInput");
   TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"SilOutput");
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
+  strcpy(OutFile,kgGetString(TO,0));
 //  kgFolderBrowser(NULL,100,100,FileName,(char *)"*");
   FolderBrowser(FileName);
   kgSetString(T,0,FileName);
+#if 0
   sprintf(OutFile,"%-s/Music",getenv("HOME"));
 //  MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp3");
   MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp3");
   kgSetString(TO,0,OutFile);
+#endif
+    if(OutFile[0]== '\0'){
+      GetFolderName(FileName,OutFile);
+//      MakeNewFileName(FileName,OutFile);
+      MakeFileInFolder(FileName,OutFile,OutFile,"wav");
+      kgSetString(TO,0,OutFile);
+      kgUpdateWidget(TO);
+    }
   kgUpdateWidget(T);
-  kgUpdateWidget(TO);
   kgUpdateOn(Tmp);
   strcpy(cndata.infile,FileName);
   strcpy(cndata.outfile,OutFile);

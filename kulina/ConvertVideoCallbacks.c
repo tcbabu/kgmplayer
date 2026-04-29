@@ -27,6 +27,8 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
 
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
+int GetFolderName(char *file,char *folder);
+int MakeNewFileName(char *infile,char *outfile);
 static int FolderBrowser(char *FileName) {
 	char *Str=NULL;
 	int ret=0,ln;
@@ -92,7 +94,8 @@ int  ConvertVideotextbox1callback(int cellno,int i,void *Tmp) {
   sprintf(OutFile,"%-s/Video/",getenv("HOME"));
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp4");
 #else
-  sprintf(OutFile,"%-s/Video",getenv("HOME"));
+//  sprintf(OutFile,"%-s/Video",getenv("HOME"));
+  GetFolderName(FileName,OutFile);
   MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp4");
 #endif
   id =1;
@@ -151,7 +154,8 @@ int  ConvertVideobutton1callback(int butno,int i,void *Tmp) {
   sprintf(OutFile,"%-s/Video/",getenv("HOME"));
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp4");
 #else
-  sprintf(OutFile,"%-s/Video",getenv("HOME"));
+//  sprintf(OutFile,"%-s/Video",getenv("HOME"));
+  GetFolderName(FileName,OutFile);
   MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp4");
 #endif
   id =1;

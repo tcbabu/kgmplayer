@@ -174,7 +174,7 @@ int MakeKaraokeGroup( DIALOG *D,void **v,void *pt) {
     103,260,  
     1,0  
   };
-  strncpy(m7.msg,(char *)"!f21Output File",499);
+  strncpy(m7.msg,(char *)"Output File",499);
   strcpy(m7.Wid,(char *)"KaraokeAudioWidget11");
   m7.item = -1;
   DIM m8 = { 

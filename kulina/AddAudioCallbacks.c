@@ -32,10 +32,13 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
 int ProcessPrint(int pip0,int pip1,int Pid);
 int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessToPipe(int pip0,int pip1,int Pid);
+int MakeNewFileName(char *in,char *ofile);
 
 char * MakeAddFile(void) {
-  char buff[500],*pt;
-  int id=0,ln;
+  char buff[500],*pt=NULL;
+  int id=0,ln=2;
+  buff[0]='\0';
+#if 0
   sprintf(buff,"%-s/Video/",getenv("HOME"));
   ln = strlen(buff);
   pt = buff+ln;
@@ -46,6 +49,9 @@ char * MakeAddFile(void) {
     id++;
   }
   ln = strlen(buff);
+#else
+  buff[0]='\0';
+#endif
   pt = (char *)malloc(ln+1);
   strcpy(pt,buff);
   return pt;
@@ -297,20 +303,27 @@ int  AddAudiobutton2callback(int butno,int i,void *Tmp) {
    ***********************************/ 
   DIALOG *D;DIN *B; 
   int n,ret =0; 
-  char FileName[500];
+  char FileName[500],Ofile[500];
   D = (DIALOG *)Tmp;
-  DIT *T;
+  DIT *T,*TO;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
   T = (DIT *)kgGetNamedWidget(Tmp,"AddTbox2");
+  TO = (DIT *)kgGetNamedWidget(Tmp,"AddTbox3");
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
+  strcpy(Ofile,kgGetString(TO,0));
 //  kgFolderBrowser(NULL,100,100,FileName,"*");
   VideoBrowser(FileName);
   CheckMedia(FileName);
   if(Minfo.Video !=0 ) {
     kgSetString(T,0,FileName);
+    if(Ofile[0]=='\0') {
+      MakeNewFileName(FileName,Ofile);
+      kgSetString(TO,0,Ofile);
+    }
     kgUpdateWidget(T);
+    kgUpdateWidget(TO);
     kgUpdateOn(Tmp);
   }
   return ret;
