@@ -47,11 +47,12 @@ int  AudioSpeedtextbox1callback(int cellno,int i,void *Tmp) {
   e = T->elmt;
   TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATOutput");
   strcpy(FileName,kgGetString(T,0));
-  sprintf(OutFile,"%-s/Music",getenv("HOME"));
-  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp3");
+  strcpy(OutFile,kgGetString(TO,0));
+  GetFolderName(FileName,OutFile);
+  MakeFileInFolder(FileName,OutFile,OutFile,"wav");
   kgSetString(TO,0,OutFile);
-  kgUpdateWidget(T);
   kgUpdateWidget(TO);
+  kgUpdateWidget(T);
   kgUpdateOn(Tmp);
   return ret;
 }
@@ -83,13 +84,10 @@ int  AudioSpeedbutton1callback(int butno,int i,void *Tmp) {
   sprintf(OutFile,"%-s/Music/",getenv("HOME"));
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp3");
 #else
-    if(OutFile[0]== '\0'){
-      GetFolderName(FileName,OutFile);
-//      MakeNewFileName(FileName,OutFile);
-      MakeFileInFolder(FileName,OutFile,OutFile,"wav");
-      kgSetString(TO,0,OutFile);
-      kgUpdateWidget(TO);
-    }
+  GetFolderName(FileName,OutFile);
+  MakeFileInFolder(FileName,OutFile,OutFile,"wav");
+  kgSetString(TO,0,OutFile);
+  kgUpdateWidget(TO);
 #endif
 //  kgSetString(TO,0,OutFile);
   kgUpdateWidget(T);
