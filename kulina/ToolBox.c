@@ -53,6 +53,7 @@ int MakeRangeRejectGroup(DIALOG *D,void *arg);
 int MakeLowPassGroup(DIALOG *D,void *arg);
 int MakeHighPassGroup(DIALOG *D,void *arg);
 int MakeVideoInfoGroup(DIALOG *D,void *arg);
+int MakeChangeSizeGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -230,6 +231,9 @@ TOOLGRP ToolList[ ] = {
        "Though it keeps the audio also, it may be better\n"
        "to keep the audio separate and add later, since it\n"
        "is better to keep it in a lossless format like wav or flac\n"
+  },
+  { 0, MakeChangeSizeGroup,"!f23ChangeVideo Size", 346,40,RunHelper,0,
+       "Resize Video\n"
   },
 #if 0
 #endif

@@ -654,7 +654,7 @@ int main(int argc ,char **argv) {
   fclose(fp);
   mkdir((char *)"Music",0700);
   mkdir((char *)"Video",0700);
-  chdir("Video");
+//  chdir("Video");
   kgExtractBaseName(argv[0],bname);
 //  printf("%s\n",bname);
   if(strcmp("kgMplayer",bname)==0) WMErr=1;
