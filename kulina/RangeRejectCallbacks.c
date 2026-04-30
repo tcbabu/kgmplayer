@@ -3,6 +3,8 @@
 #include "ConvertData.h"
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
+int MakeNewFileName(char *Infile,char *OutFile);
+int GetFolderName(char *infile,char *folder);
 static int RangeMin=300,RangeMax=300;
 typedef struct _volstr {
 	char Infile[200];
@@ -47,11 +49,11 @@ int RangeRejecttextbox1callback(int cellno,int i,void *Tmp) {
   e = T->elmt;
   TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"RRoutput");
   strcpy(FileName,kgGetString(T,0));
-  sprintf(OutFile,"%-s/Music",getenv("HOME"));
-  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp3");
+  GetFolderName(FileName,OutFile);
+  MakeFileInFolder(FileName,OutFile,OutFile,"wav");
   kgSetString(TO,0,OutFile);
-  kgUpdateWidget(T);
   kgUpdateWidget(TO);
+  kgUpdateWidget(T);
   kgUpdateOn(Tmp);
   return ret;
 }
@@ -78,19 +80,19 @@ int RangeRejectbutton1callback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
-//  kgFolderBrowser(NULL,100,100,FileName,"*");
+  strcpy(OutFile,kgGetString(TO,0));
   if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
 #if 0
   sprintf(OutFile,"%-s/Music/",getenv("HOME"));
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp3");
 #else
-  sprintf(OutFile,"%-s/Music",getenv("HOME"));
-  MakeFileInFolder(FileName,OutFile,OutFile,"mp3");
-#endif
+  GetFolderName(FileName,OutFile);
+  MakeFileInFolder(FileName,OutFile,OutFile,"wav");
   kgSetString(TO,0,OutFile);
-  kgUpdateWidget(T);
   kgUpdateWidget(TO);
+#endif
+  kgUpdateWidget(T);
   kgUpdateOn(Tmp);
   switch(butno) {
     case 1: //  Browse 
