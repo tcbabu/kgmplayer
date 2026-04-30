@@ -89,7 +89,7 @@
 #include "font52.h"
 */
   static Dlink *MonoList = NULL;
-  static Dlink *FontList = NULL;
+  Dlink *FontList = NULL;
 #define D_NOCLEANCC
  static char *MonoFonts [ ] = {
   "Anonymous.ttf" ,
@@ -129,10 +129,10 @@ static char *OthFonts []= {
 "NimbusSanL-BolIta.otf",
 "Ubuntu-R.ttf",
 "Ubuntu-RI.ttf",
-"ZapfChanceryMediumItalic.otf",
+"VeraMono.ttf",
+"VeraMono-Bold.ttf",
+"DroidSansMono.ttf" ,
 "s050000l.pfb"
-"Symbols.ttf",
-"geek.ttf",
 "Madina.ttf",
 "Wasichu.ttf",
 "stewartsans.ttf",
@@ -142,13 +142,16 @@ static char *OthFonts []= {
 "Ubuntu-C.ttf",
 "Ubuntu-M.tt",
 "FreeSerif.ttf",
+"ZapfChanceryMediumItalic.otf",
+"Symbols.ttf",
+"geek.ttf",
 "MathSymbolsNormal.ttf",
 "LucidaMathSymbolRegular.otf",
   NULL
 };
 #define D_CLEANCC      
   static IMG_STR **Imgs = NULL , **Bimgs , **Mimgs = NULL , \
-       **Nimgs , **Pimgs , **Taimgs = NULL;
+       **Nimgs , **Pimgs , **Taimgs = NULL,***Grimgs=NULL;
 /*#include "fontps.h"*/
 #define far 
 #define SSF 0.6
@@ -580,6 +583,7 @@ static char *OthFonts []= {
   int uiAddFonts ( ) {
       int i = 0;
       char *Fn = NULL;
+      if(FontList != NULL ) return 0;
       while ( MonoFonts [ i ] != NULL ) {
           kgAddFont ( MonoFonts [ i ] ) ;
           i++;
@@ -741,6 +745,101 @@ static char *OthFonts []= {
       Nimgs = ( IMG_STR ** ) kgFontChars ( FontFile , FontSize ) ;
       return 1;
   }
+
+  void * uiInitGraphicFontLists ( int font,int size ) {
+      char FontFile [ 500 ] ;
+      char *pt;
+      int Font , FontSize;
+      int count = 0,i=0;
+      if ( FontList == NULL ) uiAddFonts ( ) ;
+      count = Dcount ( FontList ) ;
+      if ( ( FontList == NULL ) || ( count == 0 ) ) {
+          return NULL;
+      }
+      if(Grimgs== NULL){
+         Grimgs=(IMG_STR ***) malloc(sizeof(IMG_STR **)*(count+1));
+         for(i=0;i<count;i++) Grimgs[i]=NULL;
+      }
+      FontSize = size;
+      Font = font%count;
+      strcpy ( FontFile , ( char * ) Drecord ( FontList , Font ) ) ;
+//      printf ("Font : %d  %s\n",Font,FontFile);
+      if(Grimgs[font]==NULL){
+//        printf("New GRfont list\n");
+         Grimgs[font] = ( IMG_STR ** ) kgGrFontChars ( FontFile , FontSize ) ;
+      }
+      return Grimgs[font];
+  }
+  void * uiGraphicsString (  char *str , int width , \
+  int height , int font , int color ,int angle, int FontSize  )   {
+/*
+   Write a string image for Graphics use
+*/
+      char Buf [ 1000 ] ;
+      char *Str;
+      int ln , i , maxchar , temp;
+      int x1 , ln1 , old = 0;
+      void *img = NULL;
+      float length;
+      FONT_STR F;
+      IMG_STR *IMG;
+      void *imgbk , *fid;
+      GMIMG *gimg;
+      int w , h;
+      int rd , gr , bl;
+      int fval , cval;
+      float wfac , zfac;
+      int Fz = font;
+      ln = width;
+      if ( str == NULL ) return NULL;
+      if ( str [ 0 ] == '\0' ) return NULL;
+      wfac = 1.0;
+      cval = color;
+      fval = font;
+      old = 0;
+      F.Imgs =(IMG_STR **) uiInitGraphicFontLists(font,16);
+      if ( FontSize <= 0 ) F.Size = ( height-4 ) /2;
+      else F.Size = FontSize;
+      IMG = ( IMG_STR * ) uiComplexGrString ( str , F.Imgs , \
+      font , cval , F.Size , height-1 ) ;
+      imgbk = NULL;
+      img =( IMG->img ) ; 
+        int top=0,bottom=0,left=0,right=0;
+        kgGetImageTopBottom(img,&top,&bottom);
+        if((bottom -top )< height) top = bottom-height;
+        if(top<0) top=0;
+        if( (top >2)||(bottom >2) ){
+           int xsize,ysize;
+           kgGetImageSize(img,&xsize,&ysize);
+           void *rzimg= kgCropImage(img,0,top,xsize,ysize-bottom);
+           kgFreeGmImage(img);
+           img = rzimg;
+           kgGetImageSize(img,&xsize,&ysize);
+        }
+        if( (left >2)||(right >2) ){
+           int xsize,ysize;
+           kgGetImageSize(img,&xsize,&ysize);
+           void *rzimg= kgCropImage(img,left,0,xsize-right,ysize);
+           kgFreeGmImage(img);
+           img = rzimg;
+           kgGetImageSize(img,&xsize,&ysize);
+        }
+      IMG->img=img;
+      gimg = ( GMIMG * ) ( IMG->img ) ;
+      w = gimg->image_width;
+      h = gimg->image_height;
+      if(h < height){
+            img = kgChangeSizeImage ( IMG->img , width , height ) ;
+            kgFreeGmImage ( IMG->img ) ;
+            IMG->img = img;
+      }
+      IMG->xln = width;
+      x1 = 0;
+      ln1 = IMG->xln+1;
+      img = IMG->img;
+      free ( IMG ) ;
+      return img;
+  }
   int uiFreeFontLists ( ) {
     /* Should npot be called */
       return 0;
@@ -866,7 +965,8 @@ static char *OthFonts []= {
       if ( Fontlist == NULL ) Fontlist = ( Dlink * ) Loadfontstruct ( ) ;
       return Dcopy ( Fontlist ) ;
 #else
-      return ( Dlink * ) Loadfontstruct ( ) ;
+ //     return ( Dlink * ) Loadfontstruct ( ) ;
+        return NULL;
 #endif
   }
   void ui_initialise ( DIG *G ) {
@@ -907,8 +1007,9 @@ static char *OthFonts []= {
       dc->bod_width = 11;
       dc->bod_color = 1;
       dc->DOUBLE = 0;
-//  if(Fontlist == NULL ) Fontlist = (Dlink *)Loadfontstruct();
-//  dc->Fontlist=uiGetFontlist(); // need further modification
+      if(FontList == NULL ) uiAddFonts();
+      font =0;
+#if 0
       dc->Fontlist = ( Dlink * ) Loadfontstruct ( ) ;
       count = Dcount ( dc->Fontlist ) ;
       font = 0;
@@ -920,6 +1021,8 @@ static char *OthFonts []= {
       dc->m_f = pt->m_f;
       dc->icposf0 = dc->icpos; dc->icxvf0 = dc->icxv;
       dc->icyvf0 = dc->icyv; dc->m_f0 = dc->m_f;
+#endif
+      dc->font = font;
       dc->ln_width = 1;
       dc->pr_txt = 1;
       dc->cost = 1.0;
@@ -2971,7 +3074,7 @@ static char *OthFonts []= {
       uiset_clr ( G->D , dc->ln_color ) ;
       _uidraw ( G , x1 , y1 ) ;
   }
-  void ui_drawimage_org ( DIG *G , void *imgfile , \
+  void ui_drawimage_old ( DIG *G , void *imgfile , \
   float x1 , float y1 , float x2 , float y2 ) \
   {
       float fac;
@@ -3105,8 +3208,10 @@ static char *OthFonts []= {
       X2 = xu;
       w = X2-X1+1;
       h = Y2 -Y1+1;
-      kgImage ( D , img , X1 , Y1 , img->image_width , \
-      img->image_height , 0.0 , 1.0 ) ;
+//      printf("Channels= %d\n",img->image_channels);
+//      kgImage ( D , img , X1 , Y1 , img->image_width , \
+//      img->image_height , 0.0 , 1.0 ) ;
+      ui_Image ( D , img , X1 , Y1 , img->image_width ,img->image_height ); 
       if ( ! IMG ) uiFreeImage ( img ) ;
   }
   void ui_ln_style ( DIG *G , int istl ) {
@@ -3176,235 +3281,41 @@ static char *OthFonts []= {
       dc->txt_h42 = dc->txt_ht/CFact;
   }
   void ui_txt_wr ( DIG *G , int n , char *txt ) {
-      short i = 0 , bold , tempc , ishft , trot , Nu , De , gap , lnwidth_o , j;
       int font_o;
-      float fact , val , xl1 , xl2 , hfact = 1.0 , slant;
-      int txt_bold_o;
-      L_N *FO_L = NULL , *pt = NULL;
-      B_K *FB_P = NULL;
-      char ch , cntl;
-      unsigned char *tx;
-      float Slnt [ 2 ] = {0.0 , 0.25} , Slant_o; ;
+      float t_angle;
       kgDC *dc;
       kgWC *wc;
+      IMG_STR *IMG;
+      DIALOG *D = (DIALOG *)G->D;
+
+      float x1,y1,x2,y2,lng,h,w,g;
+      float vx1,vy1,vx2,vy2,wx1,wy1,wx2,wy2;
+      float X1,Y1,X2,Y2;
+
       dc = G->dc;
       wc = G->wc;
-      tx = ( unsigned char * ) txt;
-      j = strlen ( tx ) ;
-      dc->O_L = NULL;
-      bold = dc->txt_bold;
-      slant = 0;
       font_o = dc->t_font;
-      dc->trot = ( dc->cost < 0.99 ) ;
-      tempc = wc->c_color;
-      wcset_clr ( wc , dc->t_color ) ;
-      dc->cx = ( int ) ( dc->cur_x+0.5 ) ;
-      dc->cy = ( int ) ( dc->cur_y+0.5 ) ;
-      dc->xp = 0.0;
-      dc->yp = 0.0;
-      fact = 1.0;
-      hfact = 1.0;
-      ishft = 0;
-      dc->greek = 0;
-      lnwidth_o = dc->ln_width;
-      dc->ln_width = 1;
-      while ( txt [ i ] != '\0' ) {
-          {
-              if ( txt [ i ] != '!' ) { if ( dc->trot ) uidrawgch ( G , txt [ i ] ) ;
-                  else uidrawg0ch ( G , txt [ i ] ) ;
-                  dc->greek = 0;
-              }
-              else {
-                  i++;
-                  if ( txt [ i ] == '\0' ) break;
-                  cntl = txt [ i ] ;
-                  if ( ( cntl == 'S' ) || ( cntl == 's' ) ) uisetsubsup \
-                   ( G , & fact , & ishft , cntl ) ;
-                  else {
-                      switch ( cntl ) {
-                          case 'e':
-                          uiresetsubsup ( G , & fact , & ishft ) ;
-                          break;
-                          case '!':
-                          dc->greek = 0;
-                          if ( dc->trot ) uidrawgch ( G , txt [ i ] ) ;
-                          else uidrawg0ch ( G , txt [ i ] ) ;
-                          break;
-                          case 'b':
-                          dc->xp = dc->xp -dc->txt_wt -dc->txt_sp;
-                          break;
-                          case 'B':
-                          dc->txt_bold = 2;
-                          break;
-                          case 'I':
-                          dc->Slant = Slnt [ 1 ] ;
-                          break;
-                          case 'N':
-                          dc->Slant = Slant_o; dc->txt_bold = txt_bold_o;
-                          if ( pt != NULL ) {
-                              while ( ( pt->x2 ) >= 0. ) pt = pt->Pr;
-                               ( pt->x2 ) = dc->xp-dc->txt_sp;
-                              pt = pt->Pr;
-                          }
-                          break;
-                          case 'g':
-                          dc->greek = 128;
-                          break;
-                          case 'r':
-                          if ( dc->O_P != NULL ) {
-                              dc->xp = dc->O_P->x;
-                              dc->yp = dc->O_P->y;
-                              dc->D_P = dc->O_P;
-                              dc->O_P = dc->O_P->Pr;
-                              free ( dc->D_P ) ;
-                              if ( dc->O_P == NULL ) FB_P = NULL;
-                          }
-                          break;
-                          case 'k':
-                          if ( FB_P == NULL ) {
-                              FB_P = ( B_K * ) Malloc ( ( int ) sizeof ( B_K ) ) ;
-                              dc->O_P = FB_P;
-                              dc->O_P->Nx = NULL; dc->O_P->Pr = NULL;
-                          }
-                          else {
-                              dc->O_P->Nx = ( B_K * ) Malloc ( ( int ) sizeof ( B_K ) ) ;
-                              dc->O_P->Nx->Pr = dc->O_P;
-                              dc->O_P = dc->O_P->Nx;
-                              dc->O_P->Nx = NULL;
-                          }
-                           ( dc->O_P->x ) = dc->xp;
-                           ( dc->O_P->y ) = dc->yp;
-                          break;
-                          case 'x':
-                          dc->yp += 0.2*dc->txt_ht;
-                          break;
-                          case 'y':
-                          dc->yp -= 0.2*dc->txt_ht;
-                          break;
-                          case 'u':
-                          dc->yp += 0.9*dc->txt_ht;
-                          break;
-                          case 'd':
-                          dc->yp -= 0.9*dc->txt_ht;
-                          break;
-                          case 'O':
-                          case 'U':
-                          if ( FO_L == NULL ) {
-                              FO_L = ( L_N * ) Malloc ( ( int ) sizeof ( L_N ) ) ;
-                              dc->O_L = FO_L;
-                              dc->O_L->Nx = NULL; dc->O_L->Pr = NULL;
-                          }
-                          else {
-                              dc->O_L->Nx = ( L_N * ) Malloc ( ( int ) sizeof ( L_N ) ) ;
-                              dc->O_L->Nx->Pr = dc->O_L;
-                              dc->O_L = dc->O_L->Nx;
-                              dc->O_L->Nx = NULL;
-                          }
-                           ( dc->O_L->x1 ) = dc->xp;
-                           ( dc->O_L->x2 ) = -1.0;
-                          dc->O_L->ymax = dc->yp+1.4*dc->txt_ht;
-                          dc->O_L->ymin = dc->yp-0.4*dc->txt_ht;
-                          dc->O_L->p = cntl;
-                          pt = dc->O_L;
-                          break;
-                          case '%':
-                          if ( i+2 >= j ) break;
-                          ch = txt [ i+1 ] ; txt [ i+1 ] = '\0';
-                          gap = uistrlngth ( G , txt , & xl2 ) ;
-                          txt [ i+1 ] = ch;
-                          dc->xp = ( gap+1 ) * ( dc->txt_wt+dc->txt_sp ) ;
-                          break;
-                          case 'z':
-                          if ( i+2 >= j ) break;
-                          Nu = ( txt [ i+1 ] -'0' ) ;
-                          De = ( txt [ i+2 ] -'0' ) ;
-                          if ( De == 0 ) De = 1;
-                          val = ( float ) Nu/ ( float ) De;
-                          fact = fact*val;
-                          hfact = hfact*val;
-                          i += 2;
-                          dc->txt_w42 = dc->txt_w42*val;
-                          dc->txt_h42 = dc->txt_h42*val;
-                          dc->txt_wt = dc->txt_wt*val;
-                          dc->txt_ht = dc->txt_ht*val;
-                          break;
-                          case 'f':
-                          if ( i+2 >= j ) break;
-                          Nu = ( txt [ i+1 ] -'0' ) *10+ ( txt [ i+2 ] -'0' ) ;
-                          ui_txt_font ( G , ( int ) Nu ) ;
-                          i+= 2;
-                          break;
-                          case 'c':
-                          if ( i+2 >= j ) break;
-                          Nu = ( txt [ i+1 ] -'0' ) *10+ ( txt [ i+2 ] -'0' ) ;
-//                            wcset_clr(wc,Nu);
-                          ui_txt_clr ( G , ( int ) Nu ) ;
-                          i+= 2;
-                          break;
-                          case 'h':
-                          if ( i+2 >= j ) break;
-                          Nu = ( txt [ i+1 ] -'0' ) ;
-                          De = ( txt [ i+2 ] -'0' ) ;
-                          if ( De == 0 ) De = 1;
-                          val = ( float ) Nu/ ( float ) De;
-                          hfact = hfact*val;
-                          i += 2;
-                          dc->txt_h42 = dc->txt_h42*val;
-                          dc->txt_ht = dc->txt_ht*val;
-                          break;
-                          case 'w':
-                          if ( i+2 >= j ) break;
-                          Nu = ( txt [ i+1 ] -'0' ) ;
-                          De = ( txt [ i+2 ] -'0' ) ;
-                          if ( De == 0 ) De = 1;
-                          val = ( float ) Nu/ ( float ) De;
-                          fact = fact*val;
-                          i += 2;
-                          dc->txt_w42 = dc->txt_w42*val;
-                          dc->txt_wt = dc->txt_wt*val;
-                          break;
-                          default :
-                          break;
-                      }
-                  }
-              }
-              i++;
-          }
+      t_angle = dc->trot;
+#if 1
+      {
+        kgGetWindow (G,&wx1,&wy1,&wx2,&wy2);
+        wx1 = dc->w_x1, wx2 = dc->w_x2;
+        wy1 = dc->w_y1, wy2 = dc->w_y2;
+        w = (float)(dc->txt_wt)/((dc->v_x2 -dc->v_x1))*(wx2 - wx1);
+        g = (float)(dc->txt_spx)/((dc->v_x2 -dc->v_x1))*(wx2 - wx1);
+        h = (float)(dc->txt_ht)/((dc->v_y2 -dc->v_y1))*(wy2 - wy1);
+        x1 = uiusr_x (dc->cur_x);
+        y1 = uiusr_y(dc->cur_y);
+        float cfx = (dc->v_x2 -dc->v_x1)/(wx2 - wx1);
+        float cfy = (dc->v_y2 -dc->v_y1)/(wy2 - wy1);
+        IMG = (IMG_STR *)ftGrStringImage ( dc->t_font , dc->t_color ,t_angle, txt ,w,h,g,cfx,cfy);
+        uiUserImageBox(IMG, t_angle,x1,y1, cfx,cfy,&X1,&Y1,&X2,&Y2);
+        ui_drawimage(G,IMG->img,X1,Y1,X2,Y2); 
+        kgFreeGmImage(IMG->img);
+        free(IMG);
+        return;
       }
-      dc->txt_w42 = dc->txt_w42/fact;
-      dc->txt_h42 = dc->txt_h42/hfact;
-      dc->txt_wt = dc->txt_wt/fact;
-      dc->txt_ht = dc->txt_ht/hfact;
-/*    txt_bold=bold;*/
-      dc->ln_width = 2;
-      wcset_clr ( wc , tempc ) ;
-      pt = FO_L;
-      while ( pt != NULL ) {
-          if ( pt->x2 < 0. ) pt->x2 = dc->xp;
-          if ( pt->p == 'U' ) {
-              _uimove ( G , uiTX ( ( pt->x1 ) , pt->ymin ) , uiTY \
-               ( ( pt->x1 ) , pt->ymin ) ) ;
-              _uidraw ( G , uiTX ( ( pt->x2 ) , pt->ymin ) , uiTY \
-               ( ( pt->x2 ) , pt->ymin ) ) ;
-          }
-          else{
-              _uimove ( G , uiTX ( ( pt->x1 ) , pt->ymax ) , uiTY \
-               ( ( pt->x1 ) , pt->ymax ) ) ;
-              _uidraw ( G , uiTX ( ( pt->x2 ) , pt->ymax ) , uiTY \
-               ( ( pt->x2 ) , pt->ymax ) ) ;
-          }
-          dc->O_L = pt;
-          pt = pt->Nx;
-          free ( dc->O_L ) ;
-      }
-      dc->O_P = FB_P;
-      while ( dc->O_P != NULL ) {
-          dc->D_P = dc->O_P;
-          dc->O_P = dc->O_P->Pr;
-          free ( dc->D_P ) ;
-      }
-      dc->ln_width = lnwidth_o;
-      if ( dc->t_font != font_o ) ui_txt_font ( G , font_o ) ;
+#endif
   }
   void ui_clr_vu ( DIG *G ) {
       kgDC *dc;
@@ -3821,6 +3732,7 @@ void transch(int c) {
       char **fnames;
       int count , i = 0 , ln;
       Dlink *Fontlist = NULL;
+#if 0
       if ( Fontlist == NULL ) Fontlist = Loadfontstruct ( ) ;
       count = Dcount ( Fontlist ) ;
       fnames = ( char ** ) Malloc ( sizeof ( char * ) * ( count+1 ) ) ;
@@ -3835,7 +3747,8 @@ void transch(int c) {
       }
       Dempty ( Fontlist ) ;
       Fontlist = NULL;
-      return fnames;
+#endif
+      return kgGetFontList() ;
   }
   void ui_txt_font ( DIG *G , int font ) {
       FONT *pt;
@@ -3844,10 +3757,15 @@ void transch(int c) {
       kgWC *wc;
       dc = G->dc;
       wc = G->wc;
-//  if(Fontlist == NULL ) Fontlist = Loadfontstruct();
-      if ( dc->Fontlist == NULL ) dc->Fontlist = Loadfontstruct ( ) ;
+      if ( FontList == NULL )uiAddFonts ( ) ;
+      count = Dcount ( FontList ) ;
+      if ( font >= count ) font = font%count;;
+      dc->t_font = font;
+#if 0
+//    if(Fontlist == NULL ) Fontlist = Loadfontstruct();
+      if ( dc->Fontlist == NULL ) dc->Fontlist = FontList ;
       count = Dcount ( dc->Fontlist ) ;
-      if ( font >= count ) font = 0;
+      if ( font >= count ) font = font%count;;
       Dposition ( dc->Fontlist , font+1 ) ;
       pt = ( FONT * ) Getrecord ( dc->Fontlist ) ;
       dc->icpos = pt->icpos;
@@ -3855,6 +3773,7 @@ void transch(int c) {
       dc->icyv = pt->icyv;
       dc->m_f = pt->m_f;
       dc->t_font = font;
+#endif
   }
   void ui_circle ( DIG *G , float x , float y , float r ) {
       int xa , ya , rd;
@@ -3868,6 +3787,113 @@ void transch(int c) {
       rd = uiscr_x ( ( x+r ) ) ;
       rd -= xa;
       _uicircle ( wc , xa , ya , rd ) ;
+  }
+  static int _uiGetSubString(char *str,char *sub){
+      int i=0;
+      sub[0]='\0';
+      if(str[0]=='\0') return -1;
+      while(str[i]!= '!') {
+        if(str[i]=='\0') {sub[i]='\0'; return i;}
+        sub[i]=str[i];
+        i++;
+      }
+      sub[i]='\0';
+      return i;
+  }
+  
+  float  ffuistrlngth ( int font , char *title ) {
+      float wd , gp , fj , fjl , gj , val , fact , fact1 = 1.0 , hfact = 1.0;
+      short ngp , n , i , j , k , greek = 0;
+      int font_o , Nu , De;
+      char Sub[500];
+      float lng=0;
+      IMG_STR **IMG= (IMG_STR **)uiInitGraphicFontLists (font,16); 
+      B_K *FB_P = NULL;
+      font_o = font;
+      ngp = 1;
+      i = 0;
+      while ( 1 ) {
+          if ( title [ i ] != '!' ) {
+              fact = 1.0;
+              j = _uiGetSubString(title+i,Sub);
+              if(j<0) break;
+              i +=j;
+              lng +=ffStringLength(Sub,IMG)*fact;              
+          }
+          else {
+              i = i+1;
+              switch ( title [ i ] ) {
+                  case 's':
+                  case 'S':
+                  fact = fact*0.6;
+                  i=i+1;
+                  break;
+                  case 'e':
+                  fact = fact/0.6;
+                  i=i+1;
+                  break;
+                  case 'b':
+                  fj = fj-fact1; fjl-= 1.; gj = gj-1;
+                  i=i+1;
+                  break;
+                  case 'g':
+                  i=i+1;
+                  break;
+                  case 'r':
+                  i=i+1;
+                  break;
+                  case 'k':
+                  i=i+1;
+                  break;
+                  case '!':
+                  lng += ffStringLength((char *)"!",IMG)*fact;
+                  i=i+1;
+                  break;
+                  case '%':
+                  i=i+1;
+                  break;
+                  case 'f':
+                  i=i+1;
+                  font=(title[i+1]-'0')*10+title[i+2]-'0';
+                  i+= 2;
+                  break;
+                  case 'c':
+                  i+= 3;
+                  break;
+                  case 'z':
+                  Nu = ( title [ i+1 ] -'0' ) ;
+                  De = ( title [ i+2 ] -'0' ) ;
+                  if ( De == 0 ) De = 1;
+                  val = ( float ) Nu/ ( float ) De;
+                  if ( val == 0.0 ) val = 1.0;
+                  fact = fact*val;
+                  i = i+3;
+                  break;
+                  case 'h':
+                  Nu = ( title [ i+1 ] -'0' ) ;
+                  De = ( title [ i+2 ] -'0' ) ;
+                  if ( De == 0 ) De = 1;
+                  val = ( float ) Nu/ ( float ) De;
+                  if ( val == 0.0 ) val = 1.0;
+                  fact = fact*val;
+                  i = i+3;
+                  break;
+                  case 'w':
+                  Nu = ( title [ i+1 ] -'0' ) ;
+                  De = ( title [ i+2 ] -'0' ) ;
+                  if ( De == 0 ) De = 1;
+                  val = ( float ) Nu/ ( float ) De;
+                  if ( val == 0.0 ) val = 1.0;
+                  fact = fact*val;
+                  i = i+3;
+                  break;
+                  default :
+                  i=i+1;
+                  break;
+              }
+          }
+      }
+      return ( lng/16.0 ) ;
   }
   int uistrlngth ( void *Gtmp , char *title , float *xdsp ) {
       float wd , gp , fj , fjl , gj , val , fact , fact1 = 1.0 , hfact = 1.0;
@@ -3999,6 +4025,296 @@ void transch(int c) {
       }
       if ( dc->t_font != font_o ) ui_txt_font ( G , ( int ) font_o ) ;
       return ( ngp ) ;
+  }
+  int ftuistrlngth ( void *Gtmp , char *title , float *xdsp ) {
+      float wd , gp , fj , fjl , gj , val , fact , fact1 = 1.0 , hfact = 1.0;
+      short ngp , n , i , j , k , greek = 0;
+      int font_o , Nu , De;
+      B_K *FB_P = NULL;
+      DIG *G;
+      kgDC *dc;
+      G = ( DIG * ) Gtmp;
+      dc = G->dc;
+      dc->O_L = NULL;
+      dc->greek = 0;
+      font_o = dc->t_font;
+      wd = dc->txt_wtx;
+      gp = dc->txt_spx;
+      ngp = 1;
+      *xdsp = 0;
+      j = 0; while ( title [ j ] != '\0' ) j++;
+      if ( j == 0 ) { *xdsp = 0.; return ( 0 ) ; }
+      fj = 0.0; gj = -1; fact = 1.0;
+      fjl = 0.;
+      i = 0;
+      ftGetWarray(font_o,dc->m_f );
+      while ( i < j ) {
+          if ( title [ i ] != '!' ) {
+              fact1 = dc->m_f [ title [ i ] -32 ] *fact;
+//              else fact1 = 1.0;
+              gj += 1.;
+              fjl += 1.0;
+              fj += fact1; dc->greek = 0;
+          }
+          else {
+              i = i+1;
+              switch ( title [ i ] ) {
+                  case 's':
+                  case 'S':
+                  fact = fact*0.6;
+                  break;
+                  case 'e':
+                  fact = fact/0.6;
+                  break;
+                  case 'b':
+                  fj = fj-fact1; fjl-= 1.; gj = gj-1;
+                  break;
+                  case 'g':
+                  dc->greek = 128;
+                  break;
+                  case 'r':
+                  if ( dc->O_P != NULL ) {
+                      fj = dc->O_P->x;
+                      fjl = dc->O_P->xl;
+                      gj = dc->O_P->y;
+                      dc->D_P = dc->O_P;
+                      dc->O_P = dc->O_P->Pr;
+                      free ( dc->D_P ) ;
+                      if ( dc->O_P == NULL ) FB_P = NULL;
+                  }
+                  break;
+                  case 'k':
+                  if ( FB_P == NULL ) {
+                      FB_P = ( B_K * ) Malloc ( ( int ) sizeof ( B_K ) ) ;
+                      dc->O_P = FB_P;
+                      dc->O_P->Nx = NULL; dc->O_P->Pr = NULL;
+                  }
+                  else {
+                      dc->O_P->Nx = ( B_K * ) Malloc ( ( int ) sizeof ( B_K ) ) ;
+                      dc->O_P->Nx->Pr = dc->O_P;
+                      dc->O_P = dc->O_P->Nx;
+                      dc->O_P->Nx = NULL;
+                  }
+                   ( dc->O_P->x ) = fj;
+                   ( dc->O_P->xl ) = fjl;
+                   ( dc->O_P->y ) = gj;
+                  break;
+                  case '!':
+                  fj = fj+fact1; fjl+= 1.; gj = gj+1;
+                  break;
+                  case '%':
+                  fj = fjl;
+                  break;
+                  case 'f':
+                  Nu = ( title [ i+1 ] -'0' ) ;
+                  Nu = Nu*10+ ( title [ i+2 ] -'0' ) ;
+//                  ui_txt_font ( G , ( int ) Nu ) ;
+                  ftGetWarray(Nu,dc->m_f );
+                  i+= 2;
+                  break;
+                  case 'c':
+                  i+= 2;
+                  break;
+                  case 'z':
+                  Nu = ( title [ i+1 ] -'0' ) ;
+                  De = ( title [ i+2 ] -'0' ) ;
+                  if ( De == 0 ) De = 1;
+                  val = ( float ) Nu/ ( float ) De;
+                  if ( val == 0.0 ) val = 1.0;
+                  fact = fact*val;
+                  i = i+2;
+                  break;
+                  case 'h':
+                  Nu = ( title [ i+1 ] -'0' ) ;
+                  De = ( title [ i+2 ] -'0' ) ;
+                  if ( De == 0 ) De = 1;
+                  val = ( float ) Nu/ ( float ) De;
+                  if ( val == 0.0 ) val = 1.0;
+                  hfact = hfact*val;
+                  i = i+2;
+                  break;
+                  case 'w':
+                  Nu = ( title [ i+1 ] -'0' ) ;
+                  De = ( title [ i+2 ] -'0' ) ;
+                  if ( De == 0 ) De = 1;
+                  val = ( float ) Nu/ ( float ) De;
+                  if ( val == 0.0 ) val = 1.0;
+                  fact = fact*val;
+                  i = i+2;
+                  break;
+                  default :
+                  break;
+              }
+          }
+          i = i+1;
+      }
+      *xdsp = ( fj*wd+gj*gp );
+      ngp = gj+0.1;
+      dc->O_P = FB_P;
+      while ( dc->O_P != NULL ) {
+          dc->D_P = dc->O_P;
+          dc->O_P = dc->O_P->Pr;
+          free ( dc->D_P ) ;
+      }
+      if ( dc->t_font != font_o ) ui_txt_font ( G , ( int ) font_o ) ;
+      return ( ngp ) ;
+  }
+  float  ftStringLength_old ( int font, char *title , float wdth ) {
+      float wd , gp , fj , fjl , gj , val , fact , fact1 = 1.0 , hfact = 1.0;
+      short ngp , n , i , j , k , greek = 0;
+      int font_o , Nu , De;
+      float xdsp=0;
+      float m_f[128];
+      B_K *FB_P = NULL;
+      L_N *O_L=NULL;
+      B_K *O_P=NULL,*D_P=NULL;
+      L_N *FO_L=NULL;
+      typedef struct _record {
+         float x,xl,y;
+      } RECORD;
+      RECORD *pt=NULL;
+      Dlink *L=Dopen();
+      font_o = font;
+      wd = wdth;
+      gp = 0;
+      ngp = 1;
+      xdsp = 0;
+      j = 0; while ( title [ j ] != '\0' ) j++;
+      if ( j == 0 ) { xdsp = 0.; return ( 0.0 ) ; }
+      fj = 0.0; gj = -1; fact = 1.0;
+      fjl = 0.;
+      i = 0;
+      ftGetWarray(font_o,m_f );
+      while ( i < j ) {
+          if ( title [ i ] != '!' ) {
+              fact1 = m_f [ title [ i ]  ] *fact;
+//              else fact1 = 1.0;
+              gj += 1.;
+              fjl += 1.0;
+              fj += fact1; greek = 0;
+          }
+          else {
+              i = i+1;
+              switch ( title [ i ] ) {
+                  case 's':
+                  case 'S':
+                  fact = fact*0.6;
+                  break;
+                  case 'e':
+                  fact = fact/0.6;
+                  break;
+                  case 'b':
+                  fj = fj-fact1; fjl-= 1.; gj = gj-1;
+                  break;
+                  case 'g':
+                  greek = 128;
+                  break;
+                  case 'r':
+#if 0
+                  if ( O_P != NULL ) {
+                      fj = O_P->x;
+                      fjl = O_P->xl;
+                      gj = O_P->y;
+                      D_P = O_P;
+                      O_P = O_P->Pr;
+                      free ( D_P ) ;
+                      if ( O_P == NULL ) FB_P = NULL;
+                  }
+#else
+                  pt =(RECORD *)Dpop(L);
+                  if(pt != NULL) {
+                      fj = pt->x;
+                      fjl=pt->y;
+                      gj = pt->y;
+                      free(pt);
+                  }
+#endif
+                  break;
+                  case 'k':
+#if 0
+                  if ( FB_P == NULL ) {
+                      FB_P = ( B_K * ) Malloc ( ( int ) sizeof ( B_K ) ) ;
+                      O_P = FB_P;
+                      O_P->Nx = NULL; O_P->Pr = NULL;
+                  }
+                  else {
+                      O_P->Nx = ( B_K * ) Malloc ( ( int ) sizeof ( B_K ) ) ;
+                      O_P->Nx->Pr = O_P;
+                      O_P = O_P->Nx;
+                      O_P->Nx = NULL;
+                  }
+                   ( O_P->x ) = fj;
+                   ( O_P->xl ) = fjl;
+                   ( O_P->y ) = gj;
+#else
+                  pt = (RECORD *)malloc(sizeof(RECORD));
+                  pt->x = fj;
+                  pt->xl = fjl;
+                  pt->y  =gj;
+                  Dpush(L,pt);
+#endif
+                  break;
+                  case '!':
+                  fj = fj+fact1; fjl+= 1.; gj = gj+1;
+                  break;
+                  case '%':
+                  fj = fjl;
+                  break;
+                  case 'f':
+                  Nu = ( title [ i+1 ] -'0' ) ;
+                  Nu = Nu*10+ ( title [ i+2 ] -'0' ) ;
+//                  ui_txt_font ( G , ( int ) Nu ) ;
+                  ftGetWarray(Nu,m_f );
+                  i+= 2;
+                  break;
+                  case 'c':
+                  i+= 2;
+                  break;
+                  case 'z':
+                  Nu = ( title [ i+1 ] -'0' ) ;
+                  De = ( title [ i+2 ] -'0' ) ;
+                  if ( De == 0 ) De = 1;
+                  val = ( float ) Nu/ ( float ) De;
+                  if ( val == 0.0 ) val = 1.0;
+                  fact = fact*val;
+                  i = i+2;
+                  break;
+                  case 'h':
+                  Nu = ( title [ i+1 ] -'0' ) ;
+                  De = ( title [ i+2 ] -'0' ) ;
+                  if ( De == 0 ) De = 1;
+                  val = ( float ) Nu/ ( float ) De;
+                  if ( val == 0.0 ) val = 1.0;
+                  hfact = hfact*val;
+                  i = i+2;
+                  break;
+                  case 'w':
+                  Nu = ( title [ i+1 ] -'0' ) ;
+                  De = ( title [ i+2 ] -'0' ) ;
+                  if ( De == 0 ) De = 1;
+                  val = ( float ) Nu/ ( float ) De;
+                  if ( val == 0.0 ) val = 1.0;
+                  fact = fact*val;
+                  i = i+2;
+                  break;
+                  default :
+                  break;
+              }
+          }
+          i = i+1;
+      }
+      xdsp = ( fj*wd+gj*gp );
+      ngp = gj+0.1;
+#if 0
+      O_P = FB_P;
+      while ( O_P != NULL ) {
+          D_P = O_P;
+          O_P = O_P->Pr;
+          free ( D_P ) ;
+      }
+#endif
+      Dempty(L);
+      return ( xdsp ) ;
   }
   int uistrlngth_o ( kgDC *dc , char *title , float *xdsp ) {
       float wd , gp , fj , fjl , gj , val , fact , fact1 = 1.0 , hfact = 1.0;
@@ -4780,10 +5096,10 @@ void transch(int c) {
       Position_Pointer ( gcur_x , gcur_y ) ;
 #endif
   }
-  void draw_po_cursor ( DIG *G ) {
+  void draw_po_cursor_o ( DIG *G ) {
       unsigned int tempc;
       int i , l;
-      char nbuf [ 50 ] ;
+      char nbuf [ 200 ] ;
       float x , y;
       DIALOG *D;
       int EVGAY;
@@ -4802,15 +5118,73 @@ void transch(int c) {
       if ( dc->gcur_y < vy1 ) {dc->gcur_y = vy1; }
       x = uiusr_x ( dc->gcur_x ) ;
       y = uiusr_y ( EVGAY-dc->gcur_y ) ;
-      sprintf ( nbuf , dc->Posfmt , x , y ) ;
+//      sprintf ( nbuf , dc->Posfmt , x , y ) ;
+      sprintf ( nbuf ,"x=%.3f y=%.3f "  , x , y ) ;
       l = strlen ( nbuf ) ;
-      for ( i = l; i < 49; i++ ) nbuf [ i ] = ' ';
-      nbuf [ 34 ] = '\0';
-//  printf("%s %d %d\n",nbuf,dc->msg_x,dc->msg_y);
-      uimsg_menu ( G , dc->msg_x , dc->msg_y , 34 , nbuf ) ;
+      for ( i = l; i < 99; i++ ) nbuf [ i ] = ' ';
+      uimsg_menu ( G , dc->msg_x , dc->msg_y , 40 , nbuf ) ;
       uiUpdateOn ( D ) ;
- /* XWarpPointer(Dsp,Win,Win,0,0,EVGAX+1,EVGAY+1,gcur_x,gcur_y);
-*/
+  }
+  void draw_po_cursor ( DIG *G ) {
+
+      unsigned int tempc;
+      int i , l;
+      char nbuf [ 100 ] ;
+      float x , y,dist;
+      DIALOG *D;
+      int EVGAY;
+      int vx1 , vy1 , vx2 , vy2;
+      kgWC *wc;
+      kgDC *dc;
+      D = G->D;
+      wc = G->wc;
+      dc = G->dc;
+      EVGAY = D->evgay;
+      vx1 = dc->v_x1+dc->D_x; vy1 = EVGAY- ( dc->v_y2+dc->D_y ) ;
+      vx2 = ( dc->v_x2+dc->D_x ) ; vy2 = EVGAY- ( dc->v_y1+dc->D_y ) ;
+      if ( dc->gcur_x >= vx2 ) {dc->gcur_x = vx2-1; }
+      if ( dc->gcur_y > vy2-1 ) {dc->gcur_y = vy2-1; }
+      if ( dc->gcur_x < vx1 ) {dc->gcur_x = vx1; }
+      if ( dc->gcur_y < vy1 ) {dc->gcur_y = vy1; }
+      x = uiusr_x ( dc->gcur_x )  ;
+      y = uiusr_y ( EVGAY-dc->gcur_y ) ;
+      sprintf ( nbuf ,"xl=%.3f yl=%.3f"  , x , y ) ;
+      l = strlen ( nbuf ) ;
+      for ( i = l; i < 99; i++ ) nbuf [ i ] = '\0';
+      uimsg_menu ( G , dc->msg_x , dc->msg_y , 40 , nbuf ) ;
+      uiUpdateOn ( D ) ;
+  }
+  void write_po_cursor ( DIG *G ,int xo,int yo) {
+
+      unsigned int tempc;
+      int i , l;
+      char nbuf [ 100 ] ;
+      float x , y,dist;
+      DIALOG *D;
+      int EVGAY;
+      int vx1 , vy1 , vx2 , vy2;
+      kgWC *wc;
+      kgDC *dc;
+      D = G->D;
+      wc = G->wc;
+      dc = G->dc;
+      EVGAY = D->evgay;
+      vx1 = dc->v_x1+dc->D_x; vy1 = EVGAY- ( dc->v_y2+dc->D_y ) ;
+      vx2 = ( dc->v_x2+dc->D_x ) ; vy2 = EVGAY- ( dc->v_y1+dc->D_y ) ;
+      if ( dc->gcur_x >= vx2 ) {dc->gcur_x = vx2-1; }
+      if ( dc->gcur_y > vy2-1 ) {dc->gcur_y = vy2-1; }
+      if ( dc->gcur_x < vx1 ) {dc->gcur_x = vx1; }
+      if ( dc->gcur_y < vy1 ) {dc->gcur_y = vy1; }
+      x = uiusr_x ( dc->gcur_x )-xo  ;
+      y = uiusr_y ( EVGAY-dc->gcur_y )-yo ;
+      y = fabsf(y);
+      x = fabsf(x);
+      dist = sqrtf(x*x+y*y);
+      sprintf ( nbuf ,"xl=%.3f yl=%.3f:dist= %.3f"  , x , y,dist ) ;
+      l = strlen ( nbuf ) ;
+      for ( i = l; i < 99; i++ ) nbuf [ i ] = '\0';
+      uimsg_menu ( G , dc->msg_x , dc->msg_y , 40 , nbuf ) ;
+      uiUpdateOn ( D ) ;
   }
   int kgCheckEscapeOld ( DIALOG *D ) {
       KBEVENT kb , kbo;
@@ -5136,7 +5510,7 @@ void transch(int c) {
       dc->gcur_y = yorg1;
       xorg -= xorg1;
       yorg = yorg1-yorg;
-      uiScrn_back ( wc , dc->msg_x , dc->msg_y , 34 ) ;
+      uiScrn_back ( wc , dc->msg_x , dc->msg_y , 40 ) ;
       xpo = dc->gcur_x , ypo = dc->gcur_y;
 //  gbell();
 //  ChangeCursor(35);
@@ -5235,7 +5609,7 @@ void transch(int c) {
       dc->gcur_y = D->evgay-uiscr_y ( *yy ) ;
       xorg = uiscr_x ( *xbgn ) ;
       yorg = D->evgay-uiscr_y ( *ybgn ) ;
-      uiScrn_back ( wc , dc->msg_x , dc->msg_y , 34 ) ;
+      uiScrn_back ( wc , dc->msg_x , dc->msg_y , 40 ) ;
       xpo = xorg , ypo = yorg;
 //  gbell();
 //  ChangeCursor(35);
@@ -5362,10 +5736,8 @@ void transch(int c) {
       dc->entry = 0;
       dc->gcur_x = uiscr_x ( *xx ) ;
       dc->gcur_y = D->evgay-uiscr_y ( *yy ) ;
-      uiScrn_back ( wc , dc->msg_x , dc->msg_y , 34 ) ;
+      uiScrn_back ( wc , dc->msg_x , dc->msg_y , 40 ) ;
       xpo = xorg , ypo = yorg;
-//  gbell();
-//  ChangeCursor(35);
       draw_cursor ( G ) ;
       draw_cross_cursor ( G , dc->gcur_x , dc->gcur_y ) ;
       while ( ! OK ) {
@@ -5376,23 +5748,19 @@ void transch(int c) {
           kb = kbevent.key;
           xpo = kbevent.x;
           ypo = kbevent.y;
-//    printf("event=%d\n",event);
           switch ( event ) {
               case 0: // pointer movement
 //     case 2:  // button release
               case 3: // button press and movement
-//       printf("Mouse Move %d\n",event);
               if ( ( xpo != dc->gcur_x ) || ( ypo != dc->gcur_y ) ) {
                   dc->gcur_x = xpo , dc->gcur_y = ypo;
                   draw_cross_cursor ( G , dc->gcur_x , dc->gcur_y ) ;
-                  draw_po_cursor ( G ) ;
               }
               break;
               case 1: // button press
               if ( ( xpo != dc->gcur_x ) || ( ypo != dc->gcur_y ) ) {
                   dc->gcur_x = xpo , dc->gcur_y = ypo;
                   draw_cross_cursor ( G , dc->gcur_x , dc->gcur_y ) ;
-                  draw_po_cursor ( G ) ;
               }
               if ( button == 1 ) key = '\r';
               if ( button == 3 ) key = '.';
@@ -5402,7 +5770,6 @@ void transch(int c) {
               key = kb;
               if ( ui_Linefeed ( kb ) ) { key = '\r'; OK = 1; continue; }
               if ( ui_Return ( kb ) ) {key = '\r'; OK = 1; continue; }
-//       if(isdigit(kb)) {jmp = kb-'0';continue;}
               if ( ( kb >= '0' ) && ( kb <= '9' ) ) {dc->jmp = kb-'0'; continue; }
               if ( ( kb == '.' ) || ( kb == 'u' ) || ( kb == 'U' ) ) {
                   OK = 1; continue;
@@ -5419,6 +5786,8 @@ void transch(int c) {
               default:
               break;
           }
+          draw_po_cursor ( G ) ;
+//          write_po_cursor(G,0.,0.);
       }
       jump:
       if ( dc->entry ) {
@@ -5426,7 +5795,6 @@ void transch(int c) {
           kg_scr_recover ( wc ) ;
       };
       uiScrn_recover ( wc ) ;
-//  ChangeCursor(59);
       *xx = uiusr_x ( dc->gcur_x ) ;
       *yy = uiusr_y ( ( D->evgay-dc->gcur_y ) ) ;
       uiset_clr ( D , temp ) ;
@@ -5679,7 +6047,7 @@ void transch(int c) {
       dc->gcur_y = ( D->evgay ) -uiscr_y ( *yy ) ;
       xorg = uiscr_x ( *xbgn ) ;
       yorg = ( D->evgay ) -uiscr_y ( *ybgn ) ;
-      uiScrn_back ( wc , dc->msg_x , dc->msg_y , 34 ) ;
+      uiScrn_back ( wc , dc->msg_x , dc->msg_y , 45 ) ;
       kg_scr_back ( wc , 0 , yorg , ( D->evgax+1 ) , yorg ) ;
       kg_scr_back ( wc , xorg , 0 , xorg , ( D->evgay ) ) ;
       _uiLINE ( wc , 0 , yorg , ( D->evgax+1 ) , yorg ) ;
@@ -5687,8 +6055,6 @@ void transch(int c) {
       c_color = 14;
       uiset_clr ( D , c_color ) ;
       xpo = xorg , ypo = yorg;
-//  gbell();
-//  ChangeCursor(35);
       draw_cursor ( G ) ;
       draw_rbr_cursor ( G , xorg , yorg , dc->gcur_x , dc->gcur_y ) ;
       while ( ! OK ) {
@@ -5706,14 +6072,16 @@ void transch(int c) {
               if ( ( xpo != dc->gcur_x ) || ( ypo != dc->gcur_y ) ) {
                   dc->gcur_x = xpo , dc->gcur_y = ypo;
                   draw_rbr_cursor ( G , xorg , yorg , dc->gcur_x , dc->gcur_y ) ;
-                  draw_po_cursor ( G ) ;
+//                  draw_po_cursor ( G ) ;
+//                  write_po_cursor (G,*xbgn,*ybgn);
               }
               break;
               case 1: // button press
               if ( ( xpo != dc->gcur_x ) || ( ypo != dc->gcur_y ) ) {
                   dc->gcur_x = xpo , dc->gcur_y = ypo;
                   draw_rbr_cursor ( G , xorg , yorg , dc->gcur_x , dc->gcur_y ) ;
-                  draw_po_cursor ( G ) ;
+//                  draw_po_cursor ( G ) ;
+//                  write_po_cursor (G,*xbgn,*ybgn);
               }
               if ( button == 1 ) key = '\r';
               if ( button == 3 ) key = '.';
@@ -5740,6 +6108,7 @@ void transch(int c) {
               default:
               break;
           }
+          write_po_cursor (G,*xbgn,*ybgn);
       }
       jump:
       c_color = temp;
@@ -5793,7 +6162,7 @@ void transch(int c) {
       yorg = ( D->evgay ) -uiscr_y ( *ybgn ) ;
       dc->gcur_r = sqrt ( ( double ) ( ( dc->gcur_x-xorg ) * ( dc->gcur_x-xorg ) + \
        ( dc->gcur_y-yorg ) * ( dc->gcur_y-yorg ) ) ) ;
-      uiScrn_back ( wc , dc->msg_x , dc->msg_y , 34 ) ;
+      uiScrn_back ( wc , dc->msg_x , dc->msg_y , 40 ) ;
       kg_scr_back ( wc , 0 , yorg , ( D->evgax+1 ) , yorg ) ;
       kg_scr_back ( wc , xorg , 0 , xorg , ( D->evgay ) ) ;
       _uiLINE ( wc , 0 , yorg , ( D->evgax+1 ) , yorg ) ;
@@ -15390,14 +15759,22 @@ void transch(int c) {
 	  /* Not Useful as of 19th Aug 24 */
       DIT *T = ( DIT * ) Tmp;
       if ( T->code != 'T' ) return 0;
-      void *img = NULL;
+      void *img = NULL,*bkgr=NULL;;
       int i , j , k , cell , cell1;
       T_ELMT *elmt;
       DIALOG *D = T->D;
       TX_STR *tx = T->tstr;
       elmt = tx->elmt;
       int x1 , y1 , x2 , y2;
-      _ui_cleantablecursor ( tx ) ;
+      int xmin,xmax,ymin,ymax;
+       _ui_cleantablecursor ( tx ) ;
+      cell = (row -1)*T->nx;
+      xmin= elmt [ cell ] .x1;
+      ymax = elmt [ cell ] .y2+1;
+      cell = T->nx-1;
+      xmax= elmt [ cell ] .x2;
+      ymin = elmt [ cell ] .y1;
+      bkgr = kgGetBackground ( D , xmin , ymin , xmax , ymax ) ;
       k =row;
       for ( i = 0;i < T->nx;i++ ) {
               cell = ( k ) *T->nx+i;
@@ -15420,11 +15797,21 @@ void transch(int c) {
               strcpy ( elmt [ cell1 ] .df , elmt [ cell ] .df ) ;
               elmt [ cell1 ] .startchar = elmt [ cell ] . startchar;
               elmt [ cell1 ] . img =  elmt [ cell ] .img;
+#if 0
               kgRestoreImage ( D , img , x1 , y1 , x2-x1+1 , y2-y1+1 ) ;
               kgFreeImage ( img ) ;
+#endif
           }
       }
 //       kgUpdateWidget(T);
+      cell =row* T->nx;
+      xmin= elmt [ cell ] .x1;
+      ymax = elmt [ cell ] .y2+1;
+      cell = 2*T->nx-1;
+      xmax= elmt [ cell ] .x2;
+      ymin = elmt [ cell ] .y1;
+      kgRestoreImage ( D , bkgr, xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
+      kgFreeImage(bkgr);
       kgUpdateOn(D);
       return 1;
   }
@@ -15432,14 +15819,22 @@ void transch(int c) {
 	  /* Not Useful as of 19th Aug 24 */
       DIT *T = ( DIT * ) Tmp;
       if ( T->code != 'T' ) return 0;
-      void *img = NULL;
+      void *img = NULL,*bkgr=NULL;
       int i , j , k , cell , cell1;
       T_ELMT *elmt;
       DIALOG *D = T->D;
       TX_STR *tx = T->tstr;
       elmt = tx->elmt;
       int x1 , y1 , x2 , y2;
+      int xmin,xmax,ymin,ymax;
        _ui_cleantablecursor ( tx ) ;
+      cell = T->nx;
+      xmin= elmt [ cell ] .x1;
+      ymin = elmt [ cell ] .y1;
+      cell = row*T->nx+T->nx-1;
+      xmax= elmt [ cell ] .x2;
+      ymax = elmt [ cell ] .y2+1;
+      bkgr = kgGetBackground ( D , xmin , ymin , xmax , ymax ) ;
       for ( i = 0;i < T->nx;i++ ) kgFreeImage(elmt[i].img);
       for ( k = 1;k <= row;k++ ) {
           for ( i = 0;i < T->nx;i++ ) {
@@ -15456,13 +15851,24 @@ void transch(int c) {
               y2 = elmt [ cell1 ] .y2+1;
               strcpy ( elmt [ cell1 ] .df , elmt [ cell ] .df ) ;
               elmt [ cell1 ] . img =  elmt [ cell ] .img;
+#if 0
               if ( img != NULL ) {
+//TCB
                   kgRestoreImage ( D , img , x1 , y1 , x2-x1+1 , y2-y1+1 ) ;
                   kgFreeImage ( img ) ;
               }
               else fprintf ( stderr , "Failed to copy screen\n" ) ;
+#endif
           }
       }
+      cell = 0;
+      xmin= elmt [ cell ] .x1;
+      ymin = elmt [ cell ] .y1;
+      cell = row*T->nx-1;
+      xmax= elmt [ cell ] .x2;
+      ymax = elmt [ cell ] .y2+1;
+      kgRestoreImage ( D , bkgr, xmin , ymin , xmax-xmin+1 , ymax-ymin+1 ) ;
+      kgFreeImage(bkgr);
       kgUpdateOn(D);
       return 1;
   }

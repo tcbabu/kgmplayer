@@ -56,6 +56,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 ToolHelp.o ToolHelpCallbacks.o \
 	 HelpButn.o HelpButnCallbacks.o \
 	 ImageBox.o ImageBoxCallbacks.o \
+	 VideoInfo.o VideoInfoCallbacks.o \
 	 Runbackground.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
 	 ReorderImages.o ReorderImagesCallbacks.o
@@ -119,6 +120,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Runbackground.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
 	 ReorderImages.o ReorderImagesCallbacks.o \
+	 VideoInfo.o VideoInfoCallbacks.o \
 	 $(FFMPEGOBJS)
 	 echo $(FFMPEGOBJS)
 	 mv ../ffmpeg/ffmain.o ../ffmpeg/fftools/
@@ -324,6 +326,8 @@ ReorderImages.o	: ReorderImages.c
 		$(CC) -c ReorderImages.c
 ReorderImagesCallbacks.o	: ReorderImagesCallbacks.c
 		$(CC) -c ReorderImagesCallbacks.c
+VideoInfo.o		: VideoInfo.c
+		 $(CC) -c VideoInfo.c
 
 
 

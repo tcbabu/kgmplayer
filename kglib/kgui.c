@@ -27,6 +27,7 @@
 #define LN_WIDTH 20
 #define far 
 #include <malloc.h>
+#include <dlfcn.h>
 #define RESIZE 5
 //#include "images.c"
   extern int TextSize , Ht , Wd , Gap , Bt; // It is Okay For Thread;
@@ -2161,7 +2162,7 @@
                       kgDC *dc;
                       dc = ( kgDC * ) ( g->dc ) ;
 //            Dfree(dc->Fontlist);
-                      Dempty ( dc->Fontlist ) ;
+//                      Dempty ( dc->Fontlist ) ;
                       Free ( g->dc ) ;
                   }
                   if ( g->wc != NULL ) Free ( g->wc ) ;
@@ -10143,3 +10144,133 @@
       kgUpdateWidget(V);
       return 1;
   }
+  void *kgGetArgs(void *Tmp) {
+     DIAINTR  *T=(DIAINTR  *)Tmp;
+     if(Tmp == NULL ) return NULL;
+     return T->args;;
+  }
+  void *kgGetRets(void *Tmp) {
+     DIAINTR  *T=(DIAINTR  *)Tmp;
+     if(Tmp == NULL ) return NULL;
+     return T->rets;
+  }
+  void *kgTakeAction(void *Tmp,void *arg) {
+     DIAINTR  *T=(DIAINTR  *)Tmp;
+     if(Tmp == NULL ) return NULL;
+     return T->Action(arg,T->rets);
+  }
+  int kgCheckTitle(void *Tmp,char *str) {
+      DIAINTR  *T = (DIAINTR  *)Tmp;
+      if(Tmp == NULL) return 0;
+      if(str == NULL) return 0;
+      if (strcmp(T->Title,str)== 0) return 1;
+      return 0;      
+  }      
+
+ void *kgGetModuleList(void *Mtmp) {
+   int count,i=0;
+   Dlink *ToolList=Dopen();
+   DIAINTR  *DI=NULL;
+   MODINTERFACE *ModFuns=(MODINTERFACE *)Mtmp;
+   i=0;
+   while(ModFuns[i] != NULL )i++;
+
+   count = i;
+   for(i=0;i<count;i++) {
+       MODINTERFACE fun = (MODINTERFACE )(ModFuns[i]); 
+       DI = (DIAINTR  *)fun(NULL,NULL);
+       if(DI==NULL) printf("DI is NULL!!!\n");
+//       printf("Title: %s\n",DI->Title);
+       Dadd(ToolList,DI);
+   }
+   return ToolList;
+}
+void *kgLoadModule(char *Name) {
+   MODINTERFACE fun;
+   char solib[200];
+   char interface[200];
+   void *handle;
+   char *error;
+   sprintf(interface,"%-sInterface",Name);
+   sprintf(solib,"%-s/lib%-s.so",getenv("PWD"),Name);
+   handle = dlopen(solib,RTLD_LAZY);
+   if(!handle) {
+     sprintf(solib,"/usr/share/kulina/lib/lib%-s.so",Name);
+     handle = dlopen(solib,RTLD_LAZY);
+     if(!handle) {
+       sprintf(solib,"/usr/lib/lib%-s.so",Name);
+       handle = dlopen(solib,RTLD_LAZY);
+       if(!handle) {
+          fprintf(stderr,"%s\n",dlerror());
+          return NULL;
+       }
+     }
+  }
+  fun = (MODINTERFACE )dlsym(handle,interface);
+  return (void *)fun;
+}
+
+void *kgGetModulde(void *Tmp,void *Ftmp,void *args,int xsh,int ysh) {
+     MODINTERFACE Fun =(MODINTERFACE) Ftmp;
+     DIAINTR *Dt=NULL;
+     if( (Tmp != NULL) && (Ftmp!= NULL) ) {
+         Dt = (DIAINTR *)Fun(args,NULL);
+         Dt->GrpId = ((int (*)(DIALOG *,void *))(Dt->MakeGroup))(Tmp,NULL);
+         Dt->Dtmp = Tmp;
+         Dt->xsh = xsh;
+         Dt->ysh = ysh;         
+         kgShiftGrp(Tmp,Dt->GrpId,xsh,ysh);
+     }
+     return Dt;
+}
+int kgModuleOn(void *Mtmp) {
+    DIAINTR *Dt = (DIAINTR *)Mtmp;
+    if(Mtmp== NULL) return 0;
+    if( Dt->Dtmp== NULL) return 0;
+    kgSetGrpVisibility(Dt->Dtmp,Dt->GrpId,1);
+    kgUpdateOn(Dt->Dtmp);
+    return 1;
+}
+int kgModuleOff(void *Mtmp) {
+    DIAINTR *Dt = (DIAINTR *)Mtmp;
+    if(Mtmp== NULL) return 0;
+    if( Dt->Dtmp== NULL) return 0;
+    kgSetGrpVisibility(Dt->Dtmp,Dt->GrpId,0);
+    kgUpdateOn(Dt->Dtmp);
+    return 1;
+}
+int kgCheckParentPosition(void *Dtmp) {
+    DIALOG *D=(DIALOG *)Dtmp;
+    DIALOG *P=NULL;
+    int xo,yo,xl,yl;
+    if(Dtmp == NULL) return 0;
+    P = (DIALOG *)(D->parent);
+    if(P == NULL ) return 0;
+    if((P->xl <= D->xl ) || (P->yl <= D->yl)) {
+        xo = P->xl/2+P->xo;
+        yo = P->yl/2+P->yo;
+        xo = xo-D->xl/2;
+        yo = yo - D->yl/2;
+        if(xo< 0) xo=0;
+        if(yo< 0) yo =0;
+        D->xo = xo;
+        D->yo = yo;                       
+        D->parent = NULL;
+        return 0;
+    }
+    int OK=1;
+    while(OK) {
+      if( ((D->xo+D->xl) > P->xl)){
+        xo = (P->xl-D->xl)/2;
+        D->xo = xo;
+        continue;
+      }
+      if(  ((D->yo+D->yl) > P->yl)){
+        yo = (P->yl-D->yl);
+        D->yo = yo;
+        continue;
+      }
+      OK=0;
+    }
+    return 1;
+}

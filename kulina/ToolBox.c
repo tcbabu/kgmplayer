@@ -52,6 +52,7 @@ int MakeRangeSelectGroup(DIALOG *D,void *arg);
 int MakeRangeRejectGroup(DIALOG *D,void *arg);
 int MakeLowPassGroup(DIALOG *D,void *arg);
 int MakeHighPassGroup(DIALOG *D,void *arg);
+int MakeVideoInfoGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -201,6 +202,9 @@ TOOLGRP ToolList[ ] = {
   { 0, MakeCaptureAudioGroup,"!f23Capture Audio",346,0,RunHelper,0,
        "\n\n\nTo capture playing audio\noutput should be saved as Wav file\n"
        "May change it as required.\nTo copy the output press the Save button\n"
+  },
+  { 0, MakeVideoInfoGroup,"!f23Show Video Information",346,40,RunHelper,0,
+       "Displays information about Video file.\n"
   },
   { 0, Makeimgs2vGroup,"!f23Images to Video",346,40,RunHelper,0,
        "Useful in creating a video from a set of photographs or images\n"

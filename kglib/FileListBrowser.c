@@ -418,7 +418,7 @@ char **kgGetFiles(void *arg) {
    v[3]=(void *)(&v3);
    uiSetFileType(0);
    void *pt=NULL; /* pointer to send any extra information */
-   FileListBrowser(NULL,v,(void *)&Strs);
+   FileListBrowser(arg,v,(void *)&Strs);
 #if 0
    i=0;
    while(Strs[i] != NULL) {
@@ -450,7 +450,7 @@ char **kgGetMediaFiles(void *arg) {
    v[3]=(void *)(&v3);
    uiSetFileType(1);
    void *pt=NULL; /* pointer to send any extra information */
-   FileListBrowser(NULL,v,(void *)&Strs);
+   FileListBrowser(arg,v,(void *)&Strs);
 #if 0
    i=0;
    while(Strs[i] != NULL) {
@@ -482,7 +482,7 @@ char **kgGetAudioFiles(void *arg) {
    v[3]=(void *)(&v3);
    uiSetFileType(2);
    void *pt=NULL; /* pointer to send any extra information */
-   FileListBrowser(NULL,v,(void *)&Strs);
+   FileListBrowser(arg,v,(void *)&Strs);
 #if 0
    i=0;
    while(Strs[i] != NULL) {
@@ -514,7 +514,7 @@ char **kgGetVideoFiles(void *arg) {
    v[3]=(void *)(&v3);
    uiSetFileType(3);
    void *pt=NULL; /* pointer to send any extra information */
-   FileListBrowser(NULL,v,(void *)&Strs);
+   FileListBrowser(arg,v,(void *)&Strs);
 #if 0
    i=0;
    while(Strs[i] != NULL) {
@@ -546,7 +546,7 @@ char **kgGetImageFiles(void *arg) {
    v[3]=(void *)(&v3);
    uiSetFileType(4);
    void *pt=NULL; /* pointer to send any extra information */
-   FileListBrowser(NULL,v,(void *)&Strs);
+   FileListBrowser(arg,v,(void *)&Strs);
 #if 0
    i=0;
    while(Strs[i] != NULL) {

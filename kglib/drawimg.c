@@ -20,6 +20,7 @@
   static int POINTSIZE = 1;
   static int MFAC = 2;
   char * ui_mktmpdir ( void ) ;
+extern Dlink *FontList;
 #define SSF 0.6
 #define MAXZ 65000
 #define uireset_greek {\
@@ -104,6 +105,8 @@
 #define FREE(a) if(a!=NULL){free(a);a=NULL;}
   extern short kgIcode [ 1024 ] [ 3 ] ;
 //static kgIcodeLoc[1024][3];
+  void * uiGraphicsString (  char *str , int width , \
+  int height , int font , int color ,int angle, int FontSize  ) ;
 #if 0
   static unsigned long _uiPlotPixel ( DIG *G , int x , int y , float v ) {
       unsigned long color = 1 , no , loc;
@@ -174,6 +177,7 @@
       PixelPacket *pixels , *spixels;
       int w , h , iw , ih , i , j , ii , jj , sloc , dloc , cx0 , cx1 , cy0 , cy1;
       int channels;
+      float fs,fd;
       dc = G->dc;
       wc = G->wc;
       Simg = ( GMIMG * ) img;
@@ -191,6 +195,7 @@
       spixels = GetImagePixels ( ( Image * ) ( Simg->image ) , 0 , 0 , ( ( Image * )  \
           ( Simg->image ) )->columns , ( ( Image * ) ( Simg->image ) )->rows ) ;
       pixels = G->pixels;
+//      printf("Channels = %d\n",channels);
       for ( j = 0;j < ( h ) ;j++ ) {
           jj = j+y0;
           if ( jj < cy0 ) continue;
@@ -203,12 +208,36 @@
               if ( ii >= iw ) continue;
               sloc = j*w+i;
               dloc = jj*iw+ii;
-              if ( ( channels != 4 ) || ( spixels [ sloc ] .opacity != 255 ) ) {
+              if ( ( channels != 4 )  ) {
+                  pixels [ dloc ] = spixels [ sloc ] ;
+                  pixels [ dloc ] .blue = spixels [ sloc ] .blue;
+                  pixels [ dloc ] .green = spixels [ sloc ] .green;
+                  pixels [ dloc ] .red = spixels [ sloc ] .red;
+                  pixels [ dloc ] .opacity = 255;
+              }
+              else {
+                if( spixels [ sloc ] .opacity == 255 ) continue;
+                if( spixels [ sloc ] .opacity == 0 ) {
                   pixels [ dloc ] = spixels [ sloc ] ;
                   pixels [ dloc ] .blue = spixels [ sloc ] .blue;
                   pixels [ dloc ] .green = spixels [ sloc ] .green;
                   pixels [ dloc ] .red = spixels [ sloc ] .red;
                   pixels [ dloc ] .opacity = spixels [ sloc ] .opacity;
+                }
+                else {
+                  fd = 1;
+                  fs = 1. - spixels [ sloc ] .opacity/255.0;
+                  fd = 1 - fs;
+                  pixels [ dloc ] = spixels [ sloc ] ;
+                  pixels [ dloc ] .blue = fd*pixels [ dloc ] .blue+fs* spixels [ sloc ] .blue;
+                  if ( pixels [ dloc ] .blue >255 ) pixels [ dloc ] .blue =255;
+                  pixels [ dloc ] .green = fd*pixels [ dloc ] .green+fs* spixels [ sloc ] .green;
+                  if ( pixels [ dloc ] .green>255 ) pixels [ dloc ] .green=255;
+                  pixels [ dloc ] .red = fd*pixels [ dloc ] .red+fs* spixels [ sloc ] .red;
+                  if ( pixels [ dloc ] .red>255 ) pixels [ dloc ] .red=255;
+                  pixels [ dloc ] .opacity += spixels [ sloc ] .opacity;
+                  if(pixels [ dloc ] .opacity > 255 ) pixels [ dloc ] .opacity =255;
+                }
               }
 //TCB
 //      printf("%x %x %x %x\n",pixels[dloc].blue,pixels[dloc].green,pixels[dloc].red,pixels[dloc].opacity);
@@ -218,7 +247,7 @@
       return;
   }
 //function plot(x, y, c) is
-//     plot the pixel at (x, y) with brightness c (where 0 ≤ c ≤ 1)
+//     plot the pixel at (x, y) with brightness c (where 0 
 #define Ipart(x) ((int)(x))
 #define Round(x) ((int)(x+0.5))
 #define Fpart(x) ((x)-Ipart(x))
@@ -387,6 +416,8 @@
 #define scr_x(x) (int)((x-dc->w_x1)*dc->u_x+0.5)
 #define fscr_y(y) (float)((y-dc->w_y1)*dc->u_y)
 #define fscr_x(x) (float)((x-dc->w_x1)*dc->u_x)
+#define uiusr_x(x) ((float)x/dc->u_x+dc->w_x1);
+#define uiusr_y(y) ((float)y/dc->u_y+dc->w_y1);
 #define scr_y(y) (int)((y-dc->w_y1)*dc->u_y+0.5)
 #define scr_z(z) (int)((z-dc->clip_min)*dc->CPCONS+0.5);
 #define fscr_z(z) (float)((z-dc->clip_min)*dc->CPCONS);
@@ -2706,6 +2737,10 @@
       float Slnt [ 2 ] = {0.0 , 0.25} , Slant_o;;
       kgDC *dc;
       kgWC *wc;
+      GMIMG *img=NULL;
+      int tsize =16,strln =16;
+      float t_angle;
+   
       dc = G->dc;
       wc = G->wc;
       tx = ( unsigned char * ) txt;
@@ -2714,7 +2749,11 @@
       bold = dc->txt_bold;
       slant = 0;
       font_o = dc->t_font;
-      dc->trot = ( dc->cost < 0.99 ) ;
+//      dc->trot = ( dc->cost < 0.99 ) ;
+      t_angle = -acosf( dc->cost)/rad;
+      if(dc->sint*dc->cost<0) t_angle = -t_angle;
+//      printf("Img trot = %d\n",dc->trot);
+      t_angle = dc->trot;
       dc->c_color = dc->t_color;
       dc->cx = ( int ) ( dc->cur_x+0.5 ) ;
       dc->cy = ( int ) ( dc->cur_y+0.5 ) ;
@@ -2726,6 +2765,31 @@
       dc->greek = 0;
       lnwidth_o = dc->ln_width;
       dc->ln_width = 1;
+#if 1
+        {
+        IMG_STR *IMG=NULL;
+        float x1,y1,x2,y2,lng,h,w,g;
+        float vx1,vy1,vx2,vy2,wx1,wy1,wx2,wy2;
+        float X1,Y1,X2,Y2;
+        kgGetWindow (G,&wx1,&wy1,&wx2,&wy2);
+        wx1 = dc->w_x1, wx2 = dc->w_x2;
+        wy1 = dc->w_y1, wy2 = dc->w_y2;
+        w = (float)(dc->txt_wtx);
+        g = (float)(dc->txt_spx);
+        h = (float)(dc->txt_hty);
+        x1 = uiusr_x (dc->cur_x);
+        y1 = uiusr_y(dc->cur_y);
+        int base =0;
+        float cfx = (dc->v_x2 -dc->v_x1)/(wx2 - wx1);
+        float cfy = (dc->v_y2 -dc->v_y1)/(wy2 - wy1);
+        IMG = (IMG_STR *)ftGrStringImage ( dc->t_font , dc->t_color ,(float)t_angle, txt ,w,h,g,cfx,cfy);
+        uiUserImageBox(IMG, t_angle,x1,y1, cfx,cfy,&X1,&Y1,&X2,&Y2);
+        img_drawimage(G,IMG->img,X1,Y1,X2,Y2); 
+        kgFreeGmImage(IMG->img);
+        free(IMG);
+        return;
+      }
+#endif
       while ( txt [ i ] != '\0' ) {
           {
               if ( txt [ i ] != '!' ) { if ( dc->trot ) uidrawgch ( G , txt [ i ] ) ;
@@ -3350,6 +3414,7 @@
       if ( G->D == NULL ) wc = G->wc;
       else wc = WC ( G->D ) ;
       setpal ( wc , ( int ) ir , ( int ) ig , ( int ) ib , ( int ) no ) ;
+      kgDefineColor(no,( int ) ir , ( int ) ig , ( int ) ib );
   }
   static void put_pixl ( DIG *G , short col , short row ) {
       int addr , MAXB , row1;
@@ -3608,6 +3673,9 @@
       dc->bluebuf = NULL;
       dc->clrbuf = NULL;
       dc->DOUBLE = 0;
+      if(FontList == NULL) uiAddFonts();
+      count = Dcount ( FontList ) ;
+#if 0
 // the Change is for thread safety 07/21
 //  dc->Fontlist= uiGetFontlist();
       dc->Fontlist = ( Dlink * ) Loadfontstruct ( ) ;
@@ -3622,7 +3690,9 @@
       dc->m_f = pt->m_f;
       dc->icposf0 = dc->icpos;dc->icxvf0 = dc->icxv;
       dc->icyvf0 = dc->icyv;dc->m_f0 = dc->m_f;
-      dc->t_font = font;
+#endif
+      dc->t_font = font%count;
+      dc->trot =0;
       dc->t_bkgr = 0;
       dc->t_bodr = 0;
       dc->fil_color = 0;
@@ -3736,7 +3806,7 @@
       Dempty ( ( Dlink * ) ( wc->SBlist ) ) ;
 // the change is for thread safety
 //  Dfree((Dlink *)(dc->Fontlist));
-      Dempty ( ( Dlink * ) ( dc->Fontlist ) ) ;
+//      Dempty ( ( Dlink * ) ( dc->Fontlist ) ) ;
       free ( wc->kgcolors ) ;
       free ( G->dc ) ;
       free ( G->wc ) ;
@@ -3821,7 +3891,7 @@
       kgCleanDir ( dc->objdir ) ;
       Dempty ( ( Dlink * ) ( wc->Clip ) ) ;
       Dempty ( ( Dlink * ) ( wc->SBlist ) ) ;
-      Dfree ( ( Dlink * ) ( dc->Fontlist ) ) ;
+ //     Dfree ( ( Dlink * ) ( dc->Fontlist ) ) ;
       free ( wc->kgcolors ) ;
       free ( G->dc ) ;
       free ( G->wc ) ;
@@ -3859,11 +3929,14 @@
           img = ( GMIMG * ) kgGetInlineImage ( fmg->image_data , fmg->size ) ;
       }
       if ( strcmp ( img->Sign , "IMG" ) != 0 ) return;
-      w = X2-X1+1;
-      h = Y2 -Y1+1;
+      w = X2-X1;
+      h = Y2 -Y1;
       iw = img->image_width;
       ih = img->image_height;
+//      printf("iw: %d %d : %d %d\n",iw,ih,w,h);
       rzimg = ( GMIMG * ) uiChangeSizegmImage ( img , w , h , 1 ) ;
+//      rzimg = (GMIMG *)kgChangeSizeImage(img,w,h);
+//       rzimg = kgCopyImage(img);
       if ( rzimg != NULL ) {
 //    printf(" Calling imgCopyImage\n");
           imgCopyImage ( G , X1 , Y1 , rzimg ) ;

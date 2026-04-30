@@ -37,6 +37,10 @@
   int ret; ret=fread(c,1,n,pf); \
   if(ret != n) {fprintf(stderr,"fread failed \n"); exit(0);} \
 }
+#define uiscr_x(x) (int)((x-dc->w_x1)*dc->u_x+dc->D_x+dc->v_x1+0.5)
+#define uiscr_y(y) (int)(((y-dc->w_y1)*dc->u_y+dc->D_y+dc->v_y1)+0.5)
+#define uiusr_x(x) (float)((x-dc->D_x-dc->v_x1)/dc->u_x+dc->w_x1)
+#define uiusr_y(y) (float)((y-dc->D_y-dc->v_y1)/dc->u_y+dc->w_y1)
 #ifdef UNIX
 #include <unistd.h>
 #include <dirent.h>
@@ -49,7 +53,8 @@
 static int SLASH=92;
 static char SLASHS[2]="\\";
 #endif
-#define GAP 0.05
+//#define GAP 0.05
+#define GAP 0.0
 #define HFAC 1.30
 #define RESIZE 5
 static pthread_mutex_t _Initlock=PTHREAD_MUTEX_INITIALIZER;
@@ -163,17 +168,17 @@ void kgDefaultGuiTheme(Gclr *Gc) {
   Gc->ProgBodrColor=6;
   Gc->ProgColor=8;
   Gc->ItemHighColor=6;
-  Gc->InputFontSize=9;
+  Gc->InputFontSize=10;
   Gc->scroll_fill= Gc->fill_clr;
   Gc->scroll_dim= Gc->dim;
   Gc->scroll_bright= Gc->bright;
   Gc->scroll_vbright= Gc->vbright;
-  Gc->MenuFont = 40;
-  Gc->PromptFont = 40;
-  Gc->ButtonFont = 40;
-  Gc->MsgFont = 40;
-  Gc->Font=40;
-  Gc->SplashFont=23;
+  Gc->MenuFont = 20;
+  Gc->PromptFont = 20;
+  Gc->ButtonFont = 20;
+  Gc->MsgFont = 21;
+  Gc->Font=20;
+  Gc->SplashFont=20;
   return ;
 }
 void kgColorTheme2(DIALOG *D,unsigned char red,unsigned char green, unsigned char blue) {
@@ -263,23 +268,24 @@ void kgColorTheme2(DIALOG *D,unsigned char red,unsigned char green, unsigned cha
   Gc->GuiFontSize =9;
   Gc->FontSize =9;
   Gc->Font=23;
-  Gc->SplashFont=4;
+  Gc->SplashFont=20;
   Gc->SplashFillColor=40;
   Gc->SplashBodrColor=46;
   Gc->SplashCharColor=26;
   Gc->ItemHighColor=6;
-  Gc->InputFontSize=9;
+  Gc->InputFontSize=10;
   Gc->scroll_fill= Gc->fill_clr;
   Gc->scroll_dim= Gc->dim;
   Gc->scroll_bright= Gc->bright;
   Gc->scroll_vbright= Gc->vbright;
   Gc->GuiFontSize =9;
-  Gc->MenuFont = 40;
-  Gc->PromptFont = 40;
-  Gc->ButtonFont = 40;
-  Gc->MsgFont = 40;
-  Gc->Font=40;
-  Gc->SplashFont=23;
+  Gc->SplashFont=20;
+  Gc->MenuFont = 20;
+  Gc->PromptFont = 20;
+  Gc->ButtonFont = 20;
+  Gc->MsgFont = 21;
+  Gc->Font=20;
+  Gc->SplashFont=20;
   return ;
 }
 void kgColorTheme(DIALOG *D,unsigned char red,unsigned char green, unsigned char blue) {
@@ -389,18 +395,18 @@ void kgColorTheme(DIALOG *D,unsigned char red,unsigned char green, unsigned char
   Gc->ProgFillColor=55;
   Gc->ProgBodrColor=58;
   Gc->ProgColor=56;
-  Gc->InputFontSize=9;
+  Gc->InputFontSize=10;
   Gc->scroll_fill= Gc->fill_clr;
   Gc->scroll_dim= Gc->dim;
   Gc->scroll_bright= Gc->bright;
   Gc->scroll_vbright= Gc->vbright;
   Gc->GuiFontSize =9;
-  Gc->MenuFont = 40;
-  Gc->PromptFont = 40;
-  Gc->ButtonFont = 40;
-  Gc->MsgFont = 40;
-  Gc->Font=40;
-  Gc->SplashFont=23;
+  Gc->MenuFont = 20;
+  Gc->PromptFont = 20;
+  Gc->ButtonFont = 20;
+  Gc->MsgFont = 21;
+  Gc->Font=20;
+  Gc->SplashFont=20;
   return ;
 }
 void kgColorTheme1(DIALOG *D,unsigned char red,unsigned char green, unsigned char blue) {
@@ -501,25 +507,25 @@ void kgColorTheme1(DIALOG *D,unsigned char red,unsigned char green, unsigned cha
   Gc->ButtonFont = 16;
   Gc->FontSize =9;
   Gc->Font=16;
-  Gc->SplashFont=24;
+  Gc->SplashFont=20;
   Gc->SplashFillColor=55;
   Gc->SplashBodrColor=58;
   Gc->SplashCharColor=56;
   Gc->ProgFillColor=55;
   Gc->ProgBodrColor=58;
   Gc->ProgColor=56;
-  Gc->InputFontSize=9;
+  Gc->InputFontSize=10;
   Gc->scroll_fill= Gc->fill_clr;
   Gc->scroll_dim= Gc->dim;
   Gc->scroll_bright= Gc->bright;
   Gc->scroll_vbright= Gc->vbright;
   Gc->GuiFontSize =9;
-  Gc->MenuFont = 40;
-  Gc->PromptFont = 40;
-  Gc->ButtonFont = 40;
-  Gc->MsgFont = 40;
-  Gc->Font=40;
-  Gc->SplashFont=23;
+  Gc->MenuFont = 20;
+  Gc->PromptFont = 20;
+  Gc->ButtonFont = 20;
+  Gc->MsgFont = 21;
+  Gc->Font=20;
+  Gc->SplashFont=20;
   return ;
 }
 void kgGrayGuiTheme(Gclr *Gc) {
@@ -558,7 +564,7 @@ void kgGrayGuiTheme(Gclr *Gc) {
   Gc->MsgFont = 23;
   Gc->FontSize =8;
   Gc->Font=23;
-  Gc->SplashFont=4;
+  Gc->SplashFont=20;
   Gc->SplashFillColor=40;
   Gc->SplashBodrColor=46;
   Gc->SplashCharColor=26;
@@ -566,18 +572,19 @@ void kgGrayGuiTheme(Gclr *Gc) {
   Gc->ProgBodrColor=6;
   Gc->ProgColor=8;
   Gc->ItemHighColor=6;
-  Gc->InputFontSize=8;
+  Gc->InputFontSize=10;
   Gc->scroll_fill= Gc->fill_clr;
   Gc->scroll_dim= Gc->dim;
   Gc->scroll_bright= Gc->bright;
   Gc->scroll_vbright= Gc->vbright;
   Gc->GuiFontSize =9;
-  Gc->MenuFont = 40;
-  Gc->PromptFont = 40;
-  Gc->ButtonFont = 40;
-  Gc->MsgFont = 40;
-  Gc->Font=40;
-  Gc->SplashFont=23;
+  Gc->SplashFont=20;
+  Gc->MenuFont = 20;
+  Gc->PromptFont = 20;
+  Gc->ButtonFont = 20;
+  Gc->MsgFont = 21;
+  Gc->Font=20;
+  Gc->SplashFont=20;
   return ;
 }
 #if 0
@@ -1449,13 +1456,105 @@ void gphLineWidth( int fid,int dw)
     kgDraw2f(G,x,y);
     return((n+1)*10);
   }
+float  ui_fix_radius(DIG *G,float *xx,float *yy){
+    float x1=0,y1=0,x2=0,y2=0;
+    kgCrossCursor(G,&x1,&y1);
+    *xx = x1,
+    *yy = y1;
+    x2 = x1+m_radius;
+    y2 = y1;
+    kgRbrCursor(G,&x2,&y2,&x1,&y1);
+    m_radius = sqrtf( (x1-x2)*(x1-x2) + (y1 -y2)*(y1-y2));
+    return m_radius;
+}
+int ui_process_arc (DIG *G,float *xo,float *yo)
+ {
+    float ang1,ang2,r;
+    float x1,y1,x2,y2;
+#if 1
+    gscanf(G->D,"Give Arc Radius=%10f",&m_radius);
+    y1=*yo;
+    x1= *xo+m_radius;
+#else
+    y1=*yo;
+    x1= *xo;;
+    kgRbrCursor(G,&x1,&y1,xo,yo);
+    m_radius = sqrtf( (x1-*xo)*(x1-*xo) + (y1 -*yo)*(y1-*yo));
+#endif
+    
+//    put_message(100,50,(char *)"Fix First Point on Arc:");  
+//    gbell(); 
+    kgArcCursor(G,&x1,&y1,xo,yo);
+//    clear_message();  
+//    put_message(100,50,(char *)"Fix Second Point on Arc:");  
+//    gbell(); 
+    y2=*yo;
+    x2= *xo+m_radius;
+    kgArcCursor(G,&x2,&y2,xo,yo);
+//    clear_message();  
+/*
+    ang2= (float)Get_intv("Give Arc angle : "); 
+    ang1= atan2( (double)(y1-*yo),(double)(x1-*xo))/3.14159265*180.0; 
+    ang2 +=ang1; 
+    r = sqrt((*xo-x1)*(*xo-x1)+(*yo-y1)*(*yo-y1)); 
+*/
+    r= m_radius;
+    ang1= atan2( (double)(y1-*yo),(double)(x1-*xo))/3.14159265*180.0; 
+    ang2= atan2( (double)(y2-*yo),(double)(x2-*xo))/3.14159265*180.0; 
+    if(ang1<0.) ang1+=360.;
+    if(ang2<0.) ang2+=360.;
+    if(ang1==ang2) ang2=ang1+360;
+    if( ang2<ang1) ang2+=360;
+    return(uiDraw_arc( G,*xo,*yo,r,ang1,ang2)); 
+ }
+int ui_process_arc_fill (DIG *G,float *xo,float *yo,int fil_col)
+ {
+    float ang1,ang2,r;
+    float x1,y1,x2,y2;
+#if 0
+    gscanf(G->D,"Give Arc Radius=%10f",&m_radius);
+    y1=*yo;
+    x1= *xo+m_radius;
+#else
+    y1=*yo;
+    x1= *xo;;
+    kgRbrCursor(G,&x1,&y1,xo,yo);
+    m_radius = sqrtf( (x1-*xo)*(x1-*xo) + (y1 -*yo)*(y1-*yo));
+#endif
+//    put_message(150,50,(char *)"Fix First Point on Arc:");  
+//    gbell(); 
+    kgArcCursor(G,&x1,&y1,xo,yo);
+//    clear_message();  
+//    put_message(150,50,(char *)"Fix Second Point on Arc:");  
+//    gbell(); 
+    y2=*yo;
+    x2= *xo+m_radius;
+    kgArcCursor(G,&x2,&y2,xo,yo);
+//    clear_message();  
+    r= m_radius;
+    ang1= atan2( (double)(y1-*yo),(double)(x1-*xo))/3.14159265*180.0; 
+    ang2= atan2( (double)(y2-*yo),(double)(x2-*xo))/3.14159265*180.0; 
+    if(ang1<0.) ang1+=360.;
+    if(ang2<0.) ang2+=360.;
+    if(ang1==ang2) ang2=ang1+360;
+    if( ang2<ang1) ang2+=360;
+    return(uiArc_fill(G, *xo,*yo,r,ang1,ang2,1L,fil_col)); 
+ }
 int uiProcess_arc (DIG *G,float *xo,float *yo)
  {
     float ang1,ang2,r;
     float x1,y1,x2,y2;
+#if 1
     gscanf(G->D,"Give Arc Radius=%10f",&m_radius);
     y1=*yo;
     x1= *xo+m_radius;
+#else
+    y1=*yo;
+    x1= *xo;;
+    kgRbrCursor(G,&x1,&y1,xo,yo);
+    m_radius = sqrtf( (x1-*xo)*(x1-*xo) + (y1 -*yo)*(y1-*yo));
+#endif
+    
 //    put_message(100,50,(char *)"Fix First Point on Arc:");  
 //    gbell(); 
     kgArcCursor(G,&x1,&y1,xo,yo);
@@ -8474,12 +8573,138 @@ void  gphStringToImagefile(char *Imgfile,char *Str,int xsize,int ysize,int font,
    free(tmpdir);
    return ;
 }
-float  kgStringLength(void *G,char *title) {
-       float length=0;
-       uistrlngth(G,title,&length);
+float  kgStringLength(void *Gtmp,char *title) {
+       float length=0,wd,gp,w;
+      int font;
+      DIG *G;
+      kgDC *dc;
+      G = ( DIG * ) Gtmp;
+      float vx1,vy1,vx2,vy2,wx1,wy1,wx2,wy2;
+      kgGetViewport(G,&vx1,&vy1,&vx2,&vy2);
+      kgGetWindow (G,&wx1,&wy1,&wx2,&wy2);
+      int Vx,Vy;
+      dc = G->dc;
+      dc->O_L = NULL;
+      dc->greek = 0;
+      font= dc->t_font;
+      wd = dc->txt_wt;
+      gp = dc->txt_sp;
+      w = (float)(dc->txt_wt+dc->txt_sp)/((dc->v_x2 -dc->v_x1))*(wx2 - wx1);
+//      w = uiusr_x(wd+gp);
+#if 0
+      
+//       w = uiusr_x(wd+gp);
+       length=ffuistrlngth(font,title)*w;
+       fprintf(stderr,"Length = %f Vx1:Vx2 : %d %d\n",length,dc->v_x1,dc->v_x2);
+#else
+//       ftuistrlngth(Gtmp,title,&length);
+       length = ftStringLength(font,title,w);
+#endif
        return length;
 }
+
 float  uiStringLength(char *title,int width) {
+      float length=0,*xdsp;
+      float wd,gp,fj,fjl,gj,val,fact,fact1=1.0,hfact=1.0;
+      short ngp,n,i,j,k,greek=0;
+      int font_o,Nu,De;
+      wd= width;
+      xdsp = &length;
+#if 0
+      gp = 0.0;
+      ngp =1;
+      j =0; while( title[j] != '\0')j++;
+      if(j==0){ *xdsp=0.;return(0.0);}
+      fj =0.0; gj = -1; fact = 1.0;
+      fjl=0.;
+      i=0;
+      while(i<j) 
+      {
+       if( title[i] != '!') {
+            fact1=1.0*fact;
+            gj +=1.;
+            fjl +=1.0;
+            fj +=(fact1);greek=0;
+       }
+       else { 
+             i=i+1; 
+             if(i>=j)break;
+             switch( title[i])
+              {
+               case 's':
+               case 'S':
+                         fact = fact*0.6;
+                         break;
+                           
+               case 'e':
+                         fact =fact/0.6;
+                         break;
+               case 'b':
+                         fj = fj-fact1;fjl-=1.; gj=gj-1;
+                         break;
+               case 'g':
+                         greek=128;
+                         break;
+               case 'r':
+                        break;
+               case 'k':
+                        break;
+               case '!':
+                         fj = fj+fact1;fjl+=1.; gj = gj+1;
+                         break;
+               case '%':
+                         fj = fjl;
+                         break;
+               case 'f':
+                         i+=2;
+                         break;
+               case 'c':
+                         i+=2;
+                         break;
+               case 'z':
+                         if(i+2 >= j) break;
+                         Nu= (title[i+1] -'0');
+                         De= (title[i+2] -'0');
+                         if( De == 0) De=1;
+                         val = (float)Nu/(float) De;
+                         if(val == 0.0) val=1.0;
+                         fact = fact*val;
+                         i = i+2;
+                         break;
+               case 'h':
+                         if(i+2 >= j) break;
+                         Nu= (title[i+1] -'0');
+                         De= (title[i+2] -'0');
+                         if( De == 0) De=1;
+                         val = (float)Nu/(float) De;
+                         if(val == 0.0) val=1.0;
+                         hfact = hfact*val;
+                         i = i+2;
+                         break;
+               case 'w':
+                         if(i+2 >= j) break;
+                         Nu= (title[i+1] -'0');
+                         De= (title[i+2] -'0');
+                         if( De == 0) De=1;
+                         val = (float)Nu/(float) De;
+                         if(val == 0.0) val=1.0;
+                         fact = fact*val;
+                         i = i+2;
+                         break;
+               default :
+                         break;
+              }
+            }
+       i = i+1;
+      }
+      *xdsp =(fj*wd);
+      ngp = gj+0.1;
+#else
+      length = ftStringLength(16,title,width);
+#endif
+      return length;
+  }
+float  uiStringLength_new(char *title,int width) {
       float length=0,*xdsp;
       float wd,gp,fj,fjl,gj,val,fact,fact1=1.0,hfact=1.0;
       short ngp,n,i,j,k,greek=0;
@@ -12221,12 +12446,14 @@ void * kgStringToImage(char *Str,void *image,int xsize,int ysize,int font,int tx
    float length=0.0,fac,th,tw;
 #if 1
    {
-      fid = kgInitImage((int)(xsize),ysize,RESIZE);
+//      fid = kgInitImage((int)(xsize),ysize,RESIZE);
+      fid = kgInitImage((int)(xsize),ysize,3);
       kgUserFrame(fid,0.,0.,(float)xsize,(float)ysize);
       th = (float)ysize*.5;
+      th = (float)ysize;
       tw = (float)width;
       th = HFAC*tw;
-      if(th> 0.6*ysize) th = 0.6*ysize;
+      if(th> ysize) th = ysize;
       kgTextFont(fid,font);
       kgTextSize(fid,th,tw,GAP*tw);
       if(bkgr>=0) kgBoxFill(fid,0.,0.,(float)xsize,(float)ysize,bkgr,0);
@@ -12958,7 +13185,7 @@ void * kgSplashStringToImage(char *Str,int xsize,int ysize,int font,int fillcolo
    int r,g,b;
    aspc=1;
    size = xsize;
-   if(ysize > size) {size=ysize;aspc=0;}
+//   if(ysize > size) {size=ysize;aspc=0;}
    fid = kgInitImage(xsize,ysize,RESIZE);
    if(fid != NULL ) {
 //      kgUserFrame(fid,-0.,-0.,(float)xsize+0.,(float)ysize+0.);
@@ -13019,15 +13246,15 @@ void * kgSplashStringToImage(char *Str,int xsize,int ysize,int font,int fillcolo
         kgTextSize(fid,th,tw,GAP*tw);
 //        length = kgStringLength(Str,(int)tw);
 //        uistrlngth(fid,Str,&length);
-        length = kgStringLength(fid,Str);
+//        length = kgStringLength(fid,Str);
+        length = ftStringLength(font,Str,tw);
         if(length>size*0.9) {
           fac = size*0.9/length;
           kgTextSize(fid,th,tw*fac,GAP*tw);
-//          length = kgStringLength(Str,(int)(tw*fac));
-//          uistrlngth(fid,Str,&length);
-          length = kgStringLength(fid,Str);
+//          length = kgStringLength(fid,Str);
+          length = ftStringLength(font,Str,tw);
         }
-        if(!aspc) kgTextAngle(fid,90.);
+//        if(!aspc) kgTextAngle(fid,90.);
         kgTextColor(fid,color);
         switch(justification) {
           case -1:

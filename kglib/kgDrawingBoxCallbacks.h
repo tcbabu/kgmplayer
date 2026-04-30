@@ -1,0 +1,13 @@
+int kgDrawingBoxDTscrollcallback(int item,int i,void *Tmp) ;
+void * kgDrawingBoxDTscrollinit (DIE *E,void *pt) ;
+int kgDrawingBoxDTexitcallback(int butno,int i,void *Tmp) ;
+void  kgDrawingBoxDTexitinit (DIL *B,void *pt) ;
+int kgDrawingBoxinit(void *Tmp) ;
+int kgDrawingBoxcleanup(void *Tmp) ;
+void *RunkgDrawingBox(void *,void *) ;
+int MakekgDrawingBoxGroup(DIALOG *,void *) ;
+void * kgDrawingBoxAction(void *,void *) ;
+int ModifykgDrawingBox(void *Tmp,int GrpId) ;
+int kgDrawingBoxCallBack(void *Tmp,void *tmp) ;
+int kgDrawingBoxResizeCallBack(void *Tmp) ;
+int kgDrawingBoxWaitCallBack(void *Tmp) ;

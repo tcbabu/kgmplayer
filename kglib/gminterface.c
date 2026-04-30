@@ -1259,8 +1259,10 @@ static ExceptionInfo exception;
       png->yoffset = 0;
       png->bkgrclr = bkgrclr;
       png->rzfac = 1.0;
-      png->info = NULL;
-      png->exce = NULL;
+     // png->info = NULL;
+     // png->exce = NULL;
+      png->info = Image_info;
+      png->exce = Exception;
       png->image_width = resize_image->columns;
       png->image_height = resize_image->rows;
       png->image_channels = 4;
@@ -1271,6 +1273,9 @@ static ExceptionInfo exception;
   }
   void *kgRotateImage ( void *img , float angle ) {
       return uiRotategmImage ( ( GMIMG * ) img , angle ) ;
+  }
+  void * kgAppendImage(void *img1,void *img2) {
+   return uiAppendgmImage ((GMIMG *)img1,(GMIMG *) img2);
   }
   void *uiAppendgmImage ( GMIMG *png1 , GMIMG *png2 ) {
       int bkgrclr , w , h;
@@ -1722,8 +1727,21 @@ static ExceptionInfo exception;
       WriteImage ( Image_info , ( Image * ) ( png->image ) ) ;
       return ;
   }
-  void kgWriteImage ( void *img , char *flname ) { uiWritegmImage  \
-      ( ( GMIMG * ) img , flname ) ;}
+  void kgWriteImage ( void *img , char *flname ) {
+       DIG *G= (DIG *)img;
+       if(G->code=='g') {  // New code as on 13th Nov 2025
+         int pid;
+         void *png=NULL;
+         char  tempfile[300];
+         sprintf(tempfile,"/tmp/%-d.gph",getpid());
+         kgBackupGph(G,tempfile);
+         png = kgGphtoAntialiasedImage(tempfile,1024,1024,0,2);
+         uiWriteImage ( ( GMIMG * ) png , (char *)flname ) ;
+         kgFreeImage(png);
+         remove(tempfile);
+       }
+       else uiWritegmImage ( ( GMIMG * ) img , flname ) ;
+  }
   void uiFreeGmImage ( void *png ) {
       GMIMG *img;
       img = ( GMIMG * ) png;
@@ -2508,7 +2526,7 @@ int  kgSetImageColor ( void *Img , int r,int g,int b ) {
               dest->green = g;
               dest->blue = b;
             }
-              dest++;
+            dest++;
           }
       }
       SyncImagePixels ( img ) ;
@@ -2530,6 +2548,10 @@ int  kgSetImageColor ( void *Img , int r,int g,int b ) {
       img = png->image;
       w = img->columns;
       h = img->rows;
+      if(row >= h) return 0;
+      if(col >= w ) return 0;
+      if(row < 0) return 0;
+      if(col < 0) return 0;
       img->matte = 1;
       img->background_color.opacity = 255;
       pixels = ( PixelPacket * ) uiPixelsgmImage ( Img ) ;
@@ -3127,4 +3149,195 @@ int  kgSetImageColor ( void *Img , int r,int g,int b ) {
       *ysize = image->rows;
       return 1;
   }
+
+int   kgGetImageTopBottom ( void * img ,int *top,int *bottom ) {
+      int k,i,j,count=0,Topskip=0,Bottomskip=0;
+      unsigned long v , xsize , ysize;
+      Image *image , *tmpimg;
+      PixelPacket *pixels;
+      GMIMG *png = NULL;
+      png = ( GMIMG * ) img;
+      *top=0;
+      *bottom =0;
+      if(img==NULL) return 0;
+      uiInitGm ( ) ;
+      image = png->image;
+      pixels = GetImagePixels ( image , 0 , 0 , image->columns , image->rows ) ;
+      xsize = image->columns;
+      ysize = image->rows;
+      
+      k = 0;
+      Topskip =0;
+      Bottomskip =0;
+      for ( j = 0;j < ysize;j++ ) {
+          count =0;
+          for ( i = 0;i < xsize;i++ ) {
+              if(pixels [ k ] .blue != 0) break;
+              if(pixels [ k ] .green != 0) break;
+              if(pixels [ k ] .red != 0) break;
+              k++;
+              count++;
+          }
+          if(count!=xsize) break;
+          Topskip++;
+      }
+      if( Topskip != ysize) {
+        k = xsize*ysize -1;
+        for ( j = ysize -1;j >=0;j-- ) {
+          count = xsize;
+          for ( i =xsize-1;i >= 0;i-- ) {
+              if(pixels [ k ] .blue != 0) break;
+              if(pixels [ k ] .green != 0) break;
+              if(pixels [ k ] .red != 0) break;
+              k--;
+          }
+          if(count!=0) break;
+          Bottomskip++;
+        }
+      }
+      *top=Topskip;
+      *bottom=Bottomskip;
+      return 1;      
+}
+int   kgGetAlphaTopBottom ( void * img ,int *top,int *bottom ) {
+      int k,i,j,count=0,Topskip=0,Bottomskip=0;
+      unsigned long v , xsize , ysize;
+      Image *image , *tmpimg;
+      PixelPacket *pixels;
+      GMIMG *png = NULL;
+      png = ( GMIMG * ) img;
+      *top=0;
+      *bottom =0;
+      if(img==NULL) return 0;
+      uiInitGm ( ) ;
+      image = png->image;
+      pixels = GetImagePixels ( image , 0 , 0 , image->columns , image->rows ) ;
+      xsize = image->columns;
+      ysize = image->rows;
+      
+      k = 0;
+      Topskip =0;
+      Bottomskip =0;
+      for ( j = 0;j < ysize;j++ ) {
+          count =0;
+          for ( i = 0;i < xsize;i++ ) {
+              if(pixels [ k ] .opacity != 255 ) break;
+              k++;
+              count++;
+          }
+          if(count!=xsize) break;
+          Topskip++;
+      }
+      if( Topskip != ysize) {
+        k = xsize*ysize -1;
+        for ( j = ysize -1;j >=0;j-- ) {
+          count = xsize;
+          for ( i =xsize-1;i >= 0;i-- ) {
+              if(pixels [ k ] .opacity != 255 ) break;
+              k--;
+          }
+          if(count!=0) break;
+          Bottomskip++;
+        }
+      }
+      *top=Topskip;
+      *bottom=Bottomskip;
+      return 1;      
+}
+int   kgGetImageLeftRight( void * img ,int *left,int *right ) {
+      int k,i,j,count=0,Leftskip=0,Rightskip=0;
+      unsigned long v , xsize , ysize;
+      Image *image , *tmpimg;
+      PixelPacket *pixels;
+      GMIMG *png = NULL;
+      png = ( GMIMG * ) img;
+      *left=0;
+      *right =0;
+      if(img==NULL) return 0;
+      uiInitGm ( ) ;
+      image = png->image;
+      pixels = GetImagePixels ( image , 0 , 0 , image->columns , image->rows ) ;
+      xsize = image->columns;
+      ysize = image->rows;
+      
+      k = 0;
+      Leftskip =0;
+      Rightskip =0;
+      for ( i = 0;i < xsize;i++ ) {
+          count =0;
+          for ( j = 0;j < ysize;j++ ) {
+              k = j*xsize+i;
+              if(pixels [ k ] .blue != 0) break;
+              if(pixels [ k ] .green != 0) break;
+              if(pixels [ k ] .red != 0) break;
+              count++;
+          }
+          if(count!=ysize) break;
+          Leftskip++;
+      }
+      if( Leftskip != xsize) {
+        for ( i = xsize -1;i >=0;i-- ) {
+          count =0;
+          for ( j = 0;j < ysize;j++ ) {
+              k = j*xsize+i;
+              if(pixels [ k ] .blue != 0) break;
+              if(pixels [ k ] .green != 0) break;
+              if(pixels [ k ] .red != 0) break;
+              count++;
+          }
+          if(count!=ysize) break;
+          Rightskip++;
+        }
+      }
+//      else Leftskip=xsize -1 - (xsize/5.0 +0.5);
+      *left=Leftskip;
+      *right=Rightskip;
+      return 1;      
+}
+int   kgGetAlphaLeftRight( void * img ,int *left,int *right ) {
+      int k,i,j,count=0,Leftskip=0,Rightskip=0;
+      unsigned long v , xsize , ysize;
+      Image *image , *tmpimg;
+      PixelPacket *pixels;
+      GMIMG *png = NULL;
+      png = ( GMIMG * ) img;
+      *left=0;
+      *right =0;
+      if(img==NULL) return 0;
+      uiInitGm ( ) ;
+      image = png->image;
+      pixels = GetImagePixels ( image , 0 , 0 , image->columns , image->rows ) ;
+      xsize = image->columns;
+      ysize = image->rows;
+      
+      k = 0;
+      Leftskip =0;
+      Rightskip =0;
+      for ( i = 0;i < xsize;i++ ) {
+          count =0;
+          for ( j = 0;j < ysize;j++ ) {
+              k = j*xsize+i;
+              if(pixels [ k ] .opacity != 255 ) break;
+              count++;
+          }
+          if(count!=ysize) break;
+          Leftskip++;
+      }
+      if( Leftskip != (xsize)) {
+        for ( i = xsize -1;i >=0;i-- ) {
+          count = 0;
+          for ( j = 0;j < ysize;j++ ) {
+              k = j*xsize+i;
+              if(pixels [ k ] .opacity != 255 ) break;
+              count++;
+          }
+          if(count!=ysize) break;
+          Rightskip++;
+        }
+      }
+//      else Leftskip=xsize -1 - (xsize/5.0 +0.5);
+      *left=Leftskip;
+      *right=Rightskip;
+      return 1;      
+}
 #endif

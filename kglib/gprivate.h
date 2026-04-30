@@ -204,6 +204,7 @@ void set_menu_position(int xmenu,int ymenu);
       int xln;
       int yln;
       void *img;
+      int Size;
   } IMG_STR;
   typedef struct _font_str {
       char code; //i internal , t char table f fontnane
@@ -1398,7 +1399,11 @@ int _ui_scroll_item_hilight(BRW_STR *br,KBEVENT kbe);
 // void arrange(char **m,int n);
 int _filter_string(char *s, char *fltr);
 int uipolygon_fill(DIG *G,float *x,float *y,int fil_color);
+ int uiArc_fill(DIG *G,float xo,float yo,float r,float ang1,float ang2,int flag ,int color);
+int ui_process_arc_fill (DIG *G,float *xo,float *yo,int fil_col);
+int ui_process_arc (DIG *G,float *xo,float *yo);
 int uiProcess_arc_fill (DIG *G,float *xo,float *yo,int fil_col);
+float  ui_fix_radius(DIG *G,float *xx,float *yy);
 void uipa_gram( DIG *G,float x1,float y1,float x2,float y2);
 void uirectgl(DIG *G, float xx,float yy,float x,float y);
 int uiProcess_arc_fill (DIG *G,float *xo,float *yo,int fil_col);
@@ -1412,10 +1417,13 @@ int uiSearchClr(kgColor *kgcolors,XColor C) ;
 int SearchClr(XColor C);
 int RefreshWindowThread(void *junk);
 void uiwrite_buf(DIG *G,unsigned char *ch, int n );
+void ui_Image ( void *Dtmp , void *tmp , int x0 , int y0 , int width , int height  );
 /* New Code for FT interface */
   void * kgMakeFixedFontImg ( char *filename , char *text , int Size ,int Gap);
   void * kgMakeFontImg ( char *filename , char *text , int Size ,int Gap);
+  void * kgMakeGrFontImg( char *filename , char *text , int Htt,int Wdd ,int Gap);
   void **kgFontChars ( char *Font , int Size );
+  void **kgGrFontChars ( char *Font , int Size );
   void **kgFixedFontChars ( char *Font , int Size );
   void *uiMakeString ( void *Fstr , char *str , int Ht , int Gap );
   void *uiMakeFixedString ( void *Fstr , char *str , int Ht , int Gap );
@@ -1424,5 +1432,16 @@ void uiwrite_buf(DIG *G,unsigned char *ch, int n );
   int uiInitFontLists(void *);
   int uiFreeFontLists();
   void *uiComplexString ( char *str ,void *Imgtmp, int font , int color , int FontSize ,int height ) ;
+  void *uiComplexGrString ( char *str ,void *Imgtmp, int font , int color , int FontSize ,int height ) ;
+  void * ftGrStringImage ( int font , int color ,int angle, char *txt , float wdth , \
+                          float height , float gp , float cfx,float cfy );
+  int uiUserImageBox(IMG_STR *IMG,float t_angle,float x1,float y1,\
+               float cfx,float cfy,float *XX1,float *YY1,float *XX2,float *YY2);
+  int kgCheckComplexString(char * str);
   void *uiComplexFixedString ( char *str ,void *Imgtmp, int font , int color , int FontSize ,int height ) ;
+  int ffStringLength(char *str,void *tmp);
+  float  ffuistrlngth ( int font , char *title );
+  int ftGetWarray(int font,float *wd);
+  int ftuistrlngth ( void *Gtmp , char *title , float *xdsp );
+  float ftStringLength(int font,char *str,float width);
 #endif

@@ -14,14 +14,14 @@ int GetFileGroup( DIALOG *D,void **v,void *pt) {
   butn0[0].xpmp=NULL;
   butn0[0].xpmh=NULL;
   butn0[0].bkgr=-1;
-  butn0[0].butncode='';
+  butn0[0].butncode='\0';
   butn0[1].sw=1;
   strcpy(butn0[1].title,(char *)"");
   butn0[1].xpmn=NULL;
   butn0[1].xpmp=NULL;
   butn0[1].xpmh=NULL;
   butn0[1].bkgr=-1;
-  butn0[1].butncode='';
+  butn0[1].butncode='\0';
   DIN b0 = { 
     'n',
     11,6,  
@@ -92,14 +92,14 @@ int GetFileGroup( DIALOG *D,void **v,void *pt) {
   butn3[0].xpmp=NULL;
   butn3[0].xpmh=NULL;
   butn3[0].bkgr=-155155155;
-  butn3[0].butncode='';
+  butn3[0].butncode='\0';
   butn3[1].sw=1;
   strcpy(butn3[1].title,(char *)"!c36!f23!w21Done");
   butn3[1].xpmn=NULL;
   butn3[1].xpmp=NULL;
   butn3[1].xpmh=NULL;
   butn3[1].bkgr=-255255255;
-  butn3[1].butncode='';
+  butn3[1].butncode='\0';
   DIL h3 = { 
     'h',
     363,478,  
@@ -302,7 +302,7 @@ char *kgGetFile(void *arg) {
    v[1]=(void *)(&v1);
    void *pt=(void *)(&Str);
    uiSetGetFileType(0);
-   GetFile(NULL,v,pt );
+   GetFile(arg,v,pt );
    return Str;
 }
 char *kgGetMediaFile(void *arg) {
@@ -320,7 +320,7 @@ char *kgGetMediaFile(void *arg) {
    v[1]=(void *)(&v1);
    void *pt=(void *)(&Str);
    uiSetGetFileType(1);
-   GetFile(NULL,v,pt );
+   GetFile(arg,v,pt );
    return Str;
 }
 char *kgGetAudioFile(void *arg) {
@@ -338,7 +338,7 @@ char *kgGetAudioFile(void *arg) {
    v[1]=(void *)(&v1);
    void *pt=(void *)(&Str);
    uiSetGetFileType(2);
-   GetFile(NULL,v,pt );
+   GetFile(arg,v,pt );
    return Str;
 }
 char *kgGetVideoFile(void *arg) {
@@ -356,7 +356,7 @@ char *kgGetVideoFile(void *arg) {
    v[1]=(void *)(&v1);
    void *pt=(void *)(&Str);
    uiSetGetFileType(3);
-   GetFile(NULL,v,pt );
+   GetFile(arg,v,pt );
    return Str;
 }
 char *kgGetImageFile(void *arg) {
@@ -374,6 +374,6 @@ char *kgGetImageFile(void *arg) {
    v[1]=(void *)(&v1);
    void *pt=(void *)(&Str);
    uiSetGetFileType(4);
-   GetFile(NULL,v,pt );
+   GetFile(arg,v,pt );
    return Str;
 }

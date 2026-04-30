@@ -35,7 +35,10 @@ static void *IEEEtoPCs(void *val);
 static float illm_fac = 1.0;
 static int No_of_lights=0,St_sh_clr,No_sh_clrs=0;
 static float Hue =0.,Satu=0.;
+static float t_angle=0.0;
 
+  void * uiGraphicsString (  char *str , int width , \
+  int height , int font , int color ,int angle, int FontSize  );
 #define DSCALE 1
 #define C1 0.25
 #define C2 0.25
@@ -271,7 +274,8 @@ typedef struct {
 static unsigned long imgGetColor(int no,int loc);
 static unsigned short *zbuf=NULL;
 static int Z_max=193600L;
-static Dlink *Fontlist=NULL;
+extern Dlink *FontList;
+static Dlink* Fontlist=NULL;
 static char FontName[30]={"Times-Roman"};
 static const float CFact=300000.0;
 static Dlink *Pnlist = NULL;
@@ -761,7 +765,9 @@ static void gphCopyImage(int x0,int y0,GMIMG *img) {
   GMIMG *Dimg,*Simg;
   PixelPacket *spixels;
   int w,h,iw,ih,i,j,ii,jj,sloc,dloc,cx0,cx1,cy0,cy1;
+  int fs,fd;
   Simg = (GMIMG *)img;
+  int channels;
   iw = EVGAX;
   ih = EVGAY;
   w  = Simg->image_width;
@@ -772,6 +778,7 @@ static void gphCopyImage(int x0,int y0,GMIMG *img) {
   cy1=EVGAY-c_v_y1;
 //  printf("%d %d %d %d\n",cx0,cy0,cx1,cy1);
   spixels = GetImagePixels((Image *)(Simg->image),0,0,((Image *)(Simg->image))->columns,((Image *)(Simg->image))->rows);
+  channels = Simg->image_channels;
   for(j=0;j<(h);j++) {
     jj = j+y0;
     if(jj<cy0)continue;
@@ -785,7 +792,39 @@ static void gphCopyImage(int x0,int y0,GMIMG *img) {
       if(ii >= iw) continue;
       sloc = j*w+i;
       dloc= jj*iw+ii;
-      pixels[dloc]=spixels[sloc];
+              if ( ( channels != 4 )  ) {
+                  pixels [ dloc ] = spixels [ sloc ] ;
+                  pixels [ dloc ] .blue = spixels [ sloc ] .blue;
+                  pixels [ dloc ] .green = spixels [ sloc ] .green;
+
+                  pixels [ dloc ] .red = spixels [ sloc ] .red;
+              }
+              else {
+                if( spixels [ sloc ] .opacity == 255 ) continue;
+                if( spixels [ sloc ] .opacity < 0  ) {
+                  pixels [ dloc ] = spixels [ sloc ] ;
+                  pixels [ dloc ] .blue = spixels [ sloc ] .blue;
+                  pixels [ dloc ] .green = spixels [ sloc ] .green;
+                  pixels [ dloc ] .red = spixels [ sloc ] .red;
+                  pixels [ dloc ] .opacity = spixels [ sloc ] .opacity;
+                }
+                else {
+#if 1
+                  fd = 1;
+                  fs = 1. - spixels [ sloc ] .opacity/255.0;
+                  fd = 1 - fs;
+                  pixels [ dloc ] = spixels [ sloc ] ;
+                  pixels [ dloc ] .blue = fd*pixels [ dloc ] .blue+fs* spixels [ sloc ] .blue;
+                  if ( pixels [ dloc ] .blue >255 ) pixels [ dloc ] .blue =255;
+                  pixels [ dloc ] .green = fd*pixels [ dloc ] .green+fs* spixels [ sloc ] .green;
+                  if ( pixels [ dloc ] .green>255 ) pixels [ dloc ] .green=255;
+                  pixels [ dloc ] .red = fd*pixels [ dloc ] .red+fs* spixels [ sloc ] .red;
+                  if ( pixels [ dloc ] .red>255 ) pixels [ dloc ] .red=255;
+                  pixels [ dloc ] .opacity += spixels [ sloc ] .opacity;
+                  if(pixels [ dloc ] .opacity > 255 ) pixels [ dloc ] .opacity =255;
+#endif
+                }
+       }
     }
   }
   return;
@@ -795,7 +834,7 @@ static void gphCopyImage(int x0,int y0,GMIMG *img) {
 static  void gph_drawimage(void *imgfile,float x1,float y1,float x2,float y2)
   {
   float fac;
-  GMIMG *img,*rzimg;
+  GMIMG *img,*rzimg,*timg=NULL;;
   char *pt;
   int IMG =1,iw,ih,w,h,temp;
   int X1,Y1,X2,Y2;
@@ -815,6 +854,7 @@ static  void gph_drawimage(void *imgfile,float x1,float y1,float x2,float y2)
   iw = img->image_width;
   ih = img->image_height;
   rzimg= (GMIMG *)kgChangeSizeImage(img,w,h);
+//  rzimg= (GMIMG *)kgFilterImage(img,w,h,7);
   gphCopyImage(X1,Y1,rzimg);
   uiFreeImage(rzimg);
   if(!IMG) uiFreeImage(img);
@@ -1011,9 +1051,10 @@ static void initialise()
   R_Byte=0;
   dp = far_ptr;
 //  icpos = icposf0;icxv=icxvf0;icyv=icyvf0;m_f=m_f0;
-  if(Fontlist == NULL ) Fontlist = (Dlink *)Loadfontstruct();
-  count = Dcount(Fontlist);
+  if(FontList == NULL )uiAddFonts();;
+  count = Dcount(FontList);
   font =0;
+#if 0
   Dposition(Fontlist,font+1);
   pt = (FONT *)Getrecord(Fontlist);
   icpos = pt->icpos;
@@ -1022,6 +1063,7 @@ static void initialise()
   m_f =  pt->m_f;
   icposf0 = icpos;icxvf0=icxv;
   icyvf0=icyv;m_f0=m_f;
+#endif
   ln_width=POINTSIZE;
   pr_txt=1;
   cost = 1.0;
@@ -3291,6 +3333,7 @@ static void win_set_angle(void)
   float t;
   float fact,xfact,yfact;
   read_buf(&t,4);
+  t_angle =t;
   theta=-t*rad;
   cost = cos(theta);
   sint = sin(theta);
@@ -4040,9 +4083,12 @@ static void win_txt_font( void)
   FONT *pt;
   int count;
   read_buf(&font,4);
-  if(Fontlist == NULL ) Fontlist =Loadfontstruct();
-  count = Dcount(Fontlist);
-  if(font >= count ) font =0;
+//  if(Fontlist == NULL ) Fontlist =Loadfontstruct();
+  if(Fontlist == NULL) uiAddFonts();
+  count = Dcount(FontList);
+  font = font%count;
+  t_font =font;
+#if 0
   Dposition(Fontlist,font+1);
   pt = (FONT *)Getrecord(Fontlist);
   icpos = pt->icpos;
@@ -4051,6 +4097,7 @@ static void win_txt_font( void)
   m_f =  pt->m_f;
   t_font =font;
   strcpy(FontName,pt->fontname);
+#endif
 }
 static void set_txt_font( int font)
  {
@@ -4058,8 +4105,10 @@ static void set_txt_font( int font)
   FONT *pt;
   int count;
   if(Fontlist == NULL ) Fontlist=Loadfontstruct();
-  count = Dcount(Fontlist);
+  count = Dcount(FontList);
   if(font >= count ) font =0;
+  t_font =font;
+#if 0
   Dposition(Fontlist,font+1);
   pt = (FONT *)Getrecord(Fontlist);
   icpos = pt->icpos;
@@ -4068,13 +4117,16 @@ static void set_txt_font( int font)
   m_f =  pt->m_f;
   t_font =font;
   strcpy(FontName,pt->fontname);
+#endif
  }
 static void t_txt_font( int font)
  {
   FONT *pt;
   int count;
-  if(Fontlist == NULL ) Loadfontstruct();
-  count = Dcount(Fontlist);
+//  if(Fontlist == NULL ) Loadfontstruct();
+  count = Dcount(FontList);
+  t_font = font%count;
+#if 0
   if(font >= count ) font =0;
   Dposition(Fontlist,font+1);
   pt = (FONT *)Getrecord(Fontlist);
@@ -4084,6 +4136,7 @@ static void t_txt_font( int font)
   m_f =  pt->m_f;
   t_font =font;
   strcpy(FontName,pt->fontname);
+#endif
  }
 
 static void drawg0ch(c)
@@ -4469,6 +4522,9 @@ static void  win_txtwrt(void)
   char ch,cntl;
   int nchr,j;
   unsigned char *txt;
+  GMIMG *img=NULL;
+  int tsize,strln;
+  float angle;
   font_o=t_font;
   read_buf(&nchr,4);
   txt= (unsigned char *) malloc((nchr+1)*sizeof(unsigned char));
@@ -4479,7 +4535,10 @@ static void  win_txtwrt(void)
   O_L=NULL;
   bold = txt_bold;
   slant=Slant;
-  trot = (cost<0.999999);
+//  trot = (cost<0.999999);
+//  angle = acosf(cost)/rad;
+ //     t_angle = -acosf( cost)/rad;
+//      if(sint*cost<0) t_angle = -t_angle;
   tempc=c_color;
   c_color = t_color;
   t_color_o=t_color;
@@ -4491,6 +4550,29 @@ static void  win_txtwrt(void)
   hfact =1.0;
   ishft =0;
   greek=0;
+#if 1
+        {
+        IMG_STR *IMG;
+        float x1,y1,x2,y2,lng,h,w,g;
+        float vx1,vy1,vx2,vy2,wx1,wy1,wx2,wy2;
+        float X1,Y1,X2,Y2;
+        wx1 = w_x1, wx2 = w_x2;
+        wy1 = w_y1, wy2 = w_y2;
+        w = (float)(txt_wt)/((v_x2 -v_x1))*(wx2 - wx1);
+        g = (float)(txt_sp)/((v_x2 -v_x1))*(wx2 - wx1);
+        h = (float)(txt_ht)/((v_y2 -v_y1))*(wy2 - wy1);
+        x1 = usr_x (cur_x);
+        y1 = usr_y(cur_y);
+        float cfx = (v_x2 -v_x1)/(wx2 - wx1);
+        float cfy = (v_y2 -v_y1)/(wy2 - wy1);
+        IMG = (IMG_STR *)ftGrStringImage ( t_font , t_color ,t_angle, txt ,w,h,g,cfx,cfy);
+        uiUserImageBox(IMG, t_angle,x1,y1, cfx,cfy,&X1,&Y1,&X2,&Y2);
+        gph_drawimage(IMG->img,X1,Y1,X2,Y2); 
+        kgFreeGmImage(IMG->img);
+        free(IMG);
+        return;
+      }
+#endif
   while (txt[i]!='\0')
   {
         {
@@ -5358,7 +5440,8 @@ int gphStringLength(char *str,float *lngth,int font,float width,float gap) {
    txt_spx=gap;
    pr_txt=1;
 
-   ret= strlngth(str,lngth);
+ //  ret= strlngth(str,lngth);
+   *lngth = ftStringLength(font,str,width);
    return ret;
 }
 static void win_set_lnwidth(void)

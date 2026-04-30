@@ -96,6 +96,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       return ( v0-1 ) ;
   }
@@ -133,7 +134,7 @@
           kgUserFrame ( fid , w_x1 , w_y1 , w_x2 , w_y2 ) ;
           kgTextColor ( fid , msg->fontcolor ) ;
           kgTextFont ( fid , msg->font ) ;
-          kgTextSize ( fid , 30. , 20. , 0. ) ;
+          kgTextSize ( fid , 20. , 10. , 0. ) ;
           strcpy ( buf , ( char * ) msg->message ) ;
           pt = buf;
           j = 1;
@@ -161,9 +162,10 @@
           }
           if ( k > 0 ) {
               dyl = yl/k;
-              fac = xl/ ( length ) ;
-              dxl = fac*20;
-              kgTextSize ( fid , dyl*0.55 , dxl , 0. ) ;
+              fac = xl*10/ ( length) ;
+              dxl = fac;
+
+             kgTextSize ( fid , dyl*0.55 , dxl , 0. ) ;
               yy = yl - dyl*0.7;
               for ( i = 0;i < k;i++ ) {
                   length = kgStringLength ( fid , str [ i ] ) ;
@@ -311,6 +313,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
 //  printf("Splashdia over\n");
       return ret;
@@ -318,7 +321,7 @@
   int kgSplashMessageinit ( void *Tmp ) {
       int ret = 0 , i , j , OK , xl , yl , count = 0 , \
       k , color , r , g , b , fcolor;
-      float ln , length = 0 , fac = 1.0;
+      float ln , length = 0 , fac = 1.0,lng,kglng;
       float w_x1 = 0.0 , w_y1 = 0.0 , w_x2 = 686 , w_y2 = 226 , dyl , dxl , yy;
       float h , s , v , Vb , rf , gf , bf;
       void *fid , *Img;
@@ -376,7 +379,7 @@
           kgChangeColor ( fid , 151 , ( int ) r , ( int ) g , ( int ) b ) ;
           kgTextColor ( fid , fcolor ) ;
           kgTextFont ( fid , msg->font ) ;
-          kgTextSize ( fid , 30. , 20. , 0. ) ;
+          kgTextSize ( fid , 15. , 15. , 0. ) ;
           xo = ( w_x1+w_x2 ) *.5;
           yo = ( w_y1+w_y2 ) *.5;
           kgRoundedRectangleFill ( fid , xo , yo , ( float ) l+2 , \
@@ -406,7 +409,8 @@
                   OK = 1;
               }
               str [ k++ ] = pt;
-              ln = kgStringLength ( fid , pt ) ;
+//              ln = kgStringLength ( fid , pt ) ;
+              ln = ftStringLength ( msg->font , pt,15.0 ) ;
               if ( length < ln ) length = ln;
 //      gphWriteText(fid,pt);
               if ( OK ) break;
@@ -414,14 +418,17 @@
           }
           if ( k > 0 ) {
               dyl = ( float ) ( yl-6 ) /k;
-              dxl = 0.75*dyl;
-              fac = ( float ) ( xl-10 ) / ( length ) ;
-              if ( dxl > fac*20 ) dxl = fac*20;
+              dxl = 0.5*dyl;
+              kgTextSize ( fid , 0.6*dyl , dxl , 0. ) ;
+//              ln = kgStringLength ( fid , pt ) ;
+              ln = ftStringLength ( msg->font , pt ,dxl) ;
+              fac = ( float ) ( xl-20) / ( ln ) ;
+              if ( dxl > fac*dxl ) dxl = fac*dxl;
               kgTextSize ( fid , 0.6*dyl , dxl , 0. ) ;
               yy = yl - dyl*0.7-3;
               for ( i = 0;i < k;i++ ) {
-                  length = kgStringLength ( fid , str [ i ] ) ;
-                  kgMove2f ( fid , ( xl-length ) *0.5 , yy ) ;
+                  lng  = ftStringLength ( msg->font , str [ i ],dxl ) ;
+                  kgMove2f ( fid , ( xl-ln ) *0.5 , yy ) ;
                   kgWriteText ( fid , str [ i ] ) ;
                   yy -= dyl;
               }
@@ -430,12 +437,15 @@
           if ( Img == NULL ) printf ( "Img==NULL\n" ) ;
           else {
 #if 1
-//      uiWriteImage(Img,"Junk.png");
+//          uiWriteImage(Img,"Junk.png");
               kgCloseImage ( fid ) ;
               if ( msg->message != NULL ) {
+                  void *rzimg;
+                  int Xsize,Ysize;
+                  kgGetImageSize(Img,&Xsize,&Ysize);
                   if ( p0->xpm != NULL ) kgImage ( D , p0->xpm , \
                   D->xo , D->yo , xl , yl , 0.0 , 1.0 ) ;
-                  kgImage ( D , Img , D->xo , D->yo , xl , yl , 0.0 , 1.0 ) ;
+                  kgImage ( D , Img , D->xo , D->yo , (xl) , yl , 0.0 , 1.0 ) ;
                   uiFreeImage ( Img ) ;
               }
 #endif
@@ -542,6 +552,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       return ret;
   }
@@ -770,6 +781,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       kgFreeFontNames ( e0.menu ) ;
       return ret;
@@ -894,6 +906,7 @@
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
       D.SearchList = NULL;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       return ret;
   }
@@ -1326,6 +1339,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       uiFreeImage ( p4.xpm ) ;
       uiFreeImage ( p5.xpm ) ;
@@ -1939,6 +1953,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       m = Dir.dir;
       kgFreeDouble ( ( void ** ) m ) ;
@@ -2158,6 +2173,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
 //  m =Dgetmenu(&D,2);
       m = ( char ** ) D.pt;
@@ -2248,6 +2264,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       return ret;
   }
@@ -2275,9 +2292,10 @@
       n = B->nx*B->ny;
       LnColor = kgGetint ( Tmp , 0 , 0 ) ;
       kgGetRGB ( Gbox , LnColor , & r , & g , & b ) ;
-      if ( kgGetColor ( NULL , 100 , 200 , & r , & g , & b ) ) {
+      if ( kgGetColor ( Tmp , 100 , 200 , & r , & g , & b ) ) {
           LnColor = 901;
           kgChangeColor ( Gbox , LnColor , r , g , b ) ;
+          kgDefineColor (LnColor ,r,g,b); 
           *count = *count+18;
           kgSetint ( Tmp , 0 , 0 , LnColor ) ;
           kgUpdateWidget ( kgGetWidget ( Tmp , 0 ) ) ;
@@ -2312,9 +2330,10 @@
       n = B->nx*B->ny;
       FillColor = kgGetint ( Tmp , 2 , 0 ) ;
       kgGetRGB ( Gbox , FillColor , & r , & g , & b ) ;
-      if ( kgGetColor ( NULL , 100 , 200 , & r , & g , & b ) ) {
+      if ( kgGetColor ( Tmp , 100 , 200 , & r , & g , & b ) ) {
           FillColor = 902;
           kgChangeColor ( Gbox , FillColor , r , g , b ) ;
+          kgDefineColor (FillColor ,r,g,b); 
           *count = *count+18;
           kgSetint ( Tmp , 2 , 0 , FillColor ) ;
           kgUpdateWidget ( kgGetWidget ( Tmp , 2 ) ) ;
@@ -2357,9 +2376,10 @@
       n = B->nx*B->ny;
       TextColor = kgGetint ( Tmp , 4 , 0 ) ;
       kgGetRGB ( Gbox , TextColor , & r , & g , & b ) ;
-      if ( kgGetColor ( NULL , 100 , 200 , & r , & g , & b ) ) {
+      if ( kgGetColor ( Tmp , 100 , 200 , & r , & g , & b ) ) {
           TextColor = 903;
           kgChangeColor ( Gbox , TextColor , r , g , b ) ;
+          kgDefineColor (TextColor ,r,g,b); 
           *count = *count+18;
           kgSetint ( Tmp , 4 , 0 , TextColor ) ;
           kgUpdateWidget ( kgGetWidget ( Tmp , 4 ) ) ;
@@ -2386,9 +2406,10 @@
       n = B->nx*B->ny;
       BorColor = kgGetint ( Tmp , 5 , 0 ) ;
       kgGetRGB ( Gbox , BorColor , & r , & g , & b ) ;
-      if ( kgGetColor ( NULL , 100 , 200 , & r , & g , & b ) ) {
+      if ( kgGetColor ( Tmp , 100 , 200 , & r , & g , & b ) ) {
           BorColor = 904;
           kgChangeColor ( Gbox , BorColor , r , g , b ) ;
+          kgDefineColor (BorColor ,r,g,b); 
           *count = *count+18;
           kgSetint ( Tmp , 5 , 0 , BorColor ) ;
           kgUpdateWidget ( kgGetWidget ( Tmp , 5 ) ) ;
@@ -2757,6 +2778,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       return ret;
   }
@@ -2781,22 +2803,22 @@
 *************************************************/
       int count = 0;
       void *pt [ 2 ] ;
-      int LnColor , FillColor , TextColor , BorColor , Font;
-      int LnStyle , LnWidth , MarkType , TextAngle;
-      int v0 = 1;
-      int v1 = 1;
-      int v2 = 1;
-      int v3 = 1;
-      int v4 = 1;
-      int v5 = 1;
-      int v6 = 1;
-      int v7 = 1;
-      int v8 = 1;
-      int v9 = 1;
-      int v10 = 1;
-      int v11 = 1;
-      int v12 = 1;
-      int v13 = 1;
+      static int LnColor , FillColor , TextColor , BorColor , Font;
+      static int LnStyle , LnWidth , MarkType , TextAngle;
+      static int v0 = 1;
+      static int v1 = 1;
+      static int v2 = 1;
+      static int v3 = 1;
+      static int v4 = 1;
+      static int v5 = 1;
+      static int v6 = 1;
+      static int v7 = 1;
+      static int v8 = 1;
+      static int v9 = 1;
+      static int v10 = 1;
+      static int v11 = 1;
+      static int v12 = 1;
+      static int v13 = 1;
       kgDC *dc;
       dc = G->dc;
       v0 = dc->ln_color;
@@ -2810,7 +2832,7 @@
       v5 = dc->bod_color;
       pt [ 0 ] = G;
       pt [ 1 ] = & count;
-      kgAttibDia ( NULL , & v0 , & v1 , & v2 , & v3 , & v4 , & v5 , & v6 , \
+      kgAttibDia ( G->D , & v0 , & v1 , & v2 , & v3 , & v4 , & v5 , & v6 , \
        & v7 , & v8 , & v9 , & v10 , & v11 , & v12 , & v13 , \
        ( void * ) pt ) ;
       LnStyle = v10-1;
@@ -2827,7 +2849,7 @@
       dc->ln_width = LnWidth;
       dc->bod_color = v5;
       kgLineColor ( G , dc->ln_color ) ;
-      kgTextAngle ( G , dc->trot ) ;
+      kgTextAngle ( G ,(float) dc->trot ) ;
       kgTextFont ( G , dc->t_font ) ;
       kgMarkerType ( G , dc->m_style ) ;
       kgLineWidth ( G , dc->ln_width ) ;
@@ -2872,8 +2894,8 @@
       D.NoTaskBar = 0;
       D.Initfun = NULL; /* Width of Dialog */
       D.Newwin = 0;
-//  D.parent=parent;
-      D.parent = NULL;
+      D.parent=parent;
+//      D.parent = NULL;
       D.StackPos = 1;
       D.Shapexpm = NULL;
       if ( parent == NULL ) D.Newwin = 1;
@@ -2884,6 +2906,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       return ret;
   }
@@ -2957,6 +2980,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       return ret;
   }
@@ -2985,6 +3009,305 @@
       dc->A_size = size;
   }
   void kgDrawingTool ( DIG *G ) {
+      float tww , thh , tgg;
+      unsigned int *loc , *loco;
+      char nbuf [ 30 ] ;
+      char key , cr , bsp , last = 'd';
+      char *cmenu [ ] = { "Move" , "Draw" , "Arrow" , \
+           "Rectgl" , "Text" , "txtSize" , \
+          "Undo" , "Wipe" , "polyfiL" , "atrIbts" , "arC" , "rhomBus" , \
+      "marK" , "rePeat" , "bOrder" , "arc_Fill" , "Quit" , NULL};
+      int ihori = 1 , item = 1 , ch;
+      int nch , ncr , MAG = 0;
+      int itxclr_o , i , count , k , counto;
+      static float x , y , xx , yy , ytwtg , xtxt , ytxt;
+      static char bf [ 2000 ] , bf1 [ 2000 ] ;
+      float tw , th , tg;
+      float xo , yo , radi;
+      float xpoly [ 300 ] , ypoly [ 300 ] ;
+      float hfac = 1.0 , wfac = 1.0 , gfac = 1.0 , A_fac = 1.0;
+      int npoly = 0;
+      DIALOG *parent;
+      kgDC *dc;
+      dc = G->dc;
+      dc->cmds = ( unsigned int * ) Malloc ( sizeof ( int ) *1000L ) ;
+      if ( dc->cmds == NULL ) {
+          printf ( "Error: In mem alloc. in m_int..\n" ) ;
+          exit ( 0 ) ;
+      }
+      parent = G->D;
+      if ( dc->A_size > 10 ) A_fac = ( float ) \
+       ( dc->A_size/10 ) / ( dc->A_size%10 ) ;
+      tgg = 0;
+      tww = ( dc->w_x2-dc->w_x1 ) /30.0;
+      thh = ( dc->w_y2-dc->w_y1 ) /25.0;
+      tw = tww , tg = tgg , th = thh;
+      cr = 13;
+      bsp = 8;
+      x = dc->w_x1+ ( dc->w_x2-dc->w_x1 ) *0.5;
+      y = dc->w_y1+ ( dc->w_y2-dc->w_y1 ) *0.5;
+      xpoly [ 0 ] = x;ypoly [ 0 ] = y;
+      xtxt = x;ytxt = y;
+      xx = x;yy = y;
+      xo = 0.;yo = 0.;
+      /*start_intr();*/
+#if 1
+      kgLineStyle ( G , dc->ln_style ) ;
+      kgLineColor ( G , dc->ln_color) ;
+      kgTextAngle ( G , dc->theta ) ;
+      kgTextColor ( G , dc->t_color ) ;
+      kgMove2f ( G , x , y ) ;
+      kgTextSize ( G , th ,tw , tg ) ;
+#endif    
+      uiwrite_file ( G , & ( G->rbuf ) , dc->reviewfile ) ;
+      count = 0;
+      loc = dc->cmds;
+//      set_state();
+      if ( G->D_ON == 0 ) {
+          MAG = G->MAG;
+          kgAntialiasingOff ( G ) ;
+      }
+      x = dc->cur_x;
+      y = dc->cur_y;
+#if 0
+      kgLineStyle ( G , dc->ln_style ) ;
+      kgLineColor ( G , dc->ln_color) ;
+      kgTextAngle ( G , dc->theta ) ;
+      kgTextColor ( G , dc->t_color ) ;
+      kgMove2f ( G , x , y ) ;
+      kgTextSize ( G , th ,tw , tg ) ;
+#endif    
+//      * ( loc++ ) = 60;count++;
+      ytwtg = ( tw+tg ) / ( dc->w_x2-dc->w_x1 ) * ( dc->w_y2-dc->w_y1 ) /0.75;
+//      while((item=uiMenu(G->D,G->x1,G->y1,1,1,cmenu,17))!=17)
+//      while ( ( item = kgMenu ( G->D , parent->xo+G->x2-100 , 
+//     while ( ( item = kgMenu ( G->D , parent->xo+G->x1+5 , 
+//      parent->yo+G->y1 , 1 , 1 , cmenu , 17 ) ) != 17 ) 
+     while ( ( item = kgMenu ( G->D , parent->xo+5 , \
+      parent->yo+5 , 1 , 1 , cmenu , 17 ) ) != 17 ) \
+      {
+          if ( G->Byte > ( B_min-100 ) ) {
+              uiwrite_file ( G , & ( G->rbuf ) , dc->reviewfile ) ;
+              count = 0;
+              loc = dc->cmds;
+          }
+//          item = menu(5,20,17,8,(char *)cmenu,item);
+          switch ( ( int ) item ) {
+              case 6:
+              get_size_factors ( parent , & hfac , & wfac , & gfac ) ;
+              kgTextSize ( G , th*hfac , tw*wfac , tg*gfac ) ;
+              count++;
+              * ( loc++ ) = 26;
+              ytwtg = ( tw+tg ) / ( dc->w_x2-dc->w_x1 ) * ( dc->w_y2-dc->w_y1 ) /0.75;
+              item = 5;
+              break;
+              case 1:
+              x = xx , y = yy;
+              key = kgCrossCursor ( G , & x , & y ) ;
+              kgMove2f ( G , x , y ) ;
+              count++;
+              * ( loc++ ) = 10;
+              xx = x;yy = y;
+              xo = 0;yo = 0;
+              item = 2;
+              break;
+              case 2:
+              kgMove2f ( G , xx , yy ) ;
+              count++; * ( loc++ ) = 10;
+              while ( ( key = kgRbrCursor ( G , & x , & y , & xx , & yy ) ) != '\r' ) {
+                  if ( key == 'u' ) {
+                      if ( count > 1 ) { loc--;count--;
+                          uiupdate_intr ( G , count , dc->cmds ) ;
+                  uiupdate_view ( G ) ;}}
+                  else {kgDraw2f ( G , x , y ) ; xx = x;yy = y;
+                  count++; * ( loc++ ) = 10;}
+              }
+              kgDraw2f ( G , x , y ) ;
+              xo = xx-x;yo = yy-y;
+              last = 'd';
+              xx = x;yy = y;
+              count++; * ( loc++ ) = 10;
+              break;
+              case 3:
+              kgMove2f ( G , xx , yy ) ;
+              count++; * ( loc++ ) = 10;
+              while ( ( key = kgRbrCursor ( G , & x , & y , & xx , & yy ) ) != '\r' ) {
+                  if ( key == 'u' ) {
+                      if ( count > 1 ) { loc--;count--;
+                          uiupdate_intr ( G , count , dc->cmds ) ;
+                  uiupdate_view ( G ) ;}}
+                  else {kgDraw2f ( G , x , y ) ; xx = x;yy = y;
+                  count++; * ( loc++ ) = 10;}
+              }
+              uidrarrow ( G , xx , yy , x , y , A_fac ) ;
+              xo = xx-x;yo = yy-y;
+              last = 'a';
+              xx = x;yy = y;
+              count++; * ( loc++ ) = 56;
+              break;
+              case 8:
+              key = kgRectCursor ( G , & x , & y , & xx , & yy ) ;
+              kgBoxFill ( G , xx , yy , x , y , dc->fil_color , 0 ) ;
+              xo = xx-x;yo = yy-y;
+              last = 'w';
+              count++;
+              * ( loc++ ) = 26;
+              item = 4;
+              break;
+              case 4:
+              while ( ( key = kgRectCursor ( G , & x , & y , & xx , & yy ) ) != '\r' ) {
+                  if ( key == 'u' ) {
+                      if ( count > 1 ) { loc--;count--;
+                          uiupdate_intr ( G , count , dc->cmds ) ;
+                  uiupdate_view ( G ) ;} }
+                  else { kgMove2f ( G , xx , yy ) ;kgDraw2f \
+                       ( G , xx , y ) , kgDraw2f ( G , x , y ) ;
+                      kgDraw2f ( G , x , yy ) , kgDraw2f ( G , xx , yy ) ;
+                  * ( loc++ ) = 50;count++;}
+              }
+              kgMove2f ( G , xx , yy ) ;kgDraw2f ( G , xx , \
+              y ) , kgDraw2f ( G , x , y ) , kgDraw2f \
+               ( G , x , yy ) , kgDraw2f ( G , xx , yy ) ;
+              xo = xx-x;yo = yy-y;
+              last = 'r';
+              * ( loc++ ) = 50;count++;
+              break;
+              case 7:
+              if ( count > 1 ) {
+                  loc--;count--;
+                  uiupdate_intr ( G , count , dc->cmds ) ;
+                  uiupdate_view ( G ) ;
+                  xx+= xo;yy+= yo;
+              }
+              break;
+              case 5:
+              ncr = i;
+              key = kgCrossCursor ( G , & xtxt , & ytxt ) ;
+              nch = get_intr_text ( parent , bf ) ;
+              nch = strlen ( bf ) ;
+              * ( bf+nch ) = '\0';
+              kgMove2f ( G , xtxt , ytxt ) ;
+              kgWriteText ( G , bf ) ;
+              i = nch+1;
+              * ( loc++ ) = 16+nch+1;count++;
+              break;
+              case 9:
+              npoly = uipolygon_fill ( G , xpoly , ypoly , dc->fil_color ) ;
+              {* ( loc++ ) = npoly;count++;};
+              last = 'f';
+              break;
+              case 10:
+//               *(loc++)=72;count++;  
+              * ( loc++ ) = uiset_atribs ( G ) ;
+              count++;
+              if ( dc->A_size > 10 ) A_fac = ( float ) \
+               ( dc->A_size/10 ) / ( dc->A_size%10 ) ;
+              break;
+              case 11:
+              count++;
+              * ( loc ) = uiProcess_arc ( G , & xx , & yy ) ;
+              loc++;
+              break;
+              case 12:
+              key = kgRbrCursor ( G , & x , & y , & xx , & yy ) ;
+              uipa_gram ( G , xx , yy , x , y ) ;
+              xo = xx-x;yo = yy-y;
+              last = 'p';
+              * ( loc++ ) = 50;count++;
+              break;
+              case 13:
+              key = kgCrossCursor ( G , & x , & y ) ;
+              kgMarker2f ( G , x , y ) ;
+              * ( loc++ ) = 10;count++;
+              break;
+              case 14:
+              key = kgCrossCursor ( G , & x , & y ) ;
+              xx = xo+x;yy = yo+y;
+              switch ( ( int ) last ) {
+                  case 'd':
+                  kgMove2f ( G , xx , yy ) ;kgDraw2f ( G , x , y ) ;
+                  count++; * ( loc++ ) = 20;
+                  break;
+                  case 'a':
+                  kgMove2f ( G , xx , yy ) ;
+                  uidrarrow ( G , xx , yy , x , y , A_fac ) ;
+                  count++; * ( loc++ ) = 66;
+                  break;
+                  case 'c':
+                       /*move2f(xx,yy);circle(x,y,radi);   
+                       count++; *(loc++) = 24;*/
+                  break;
+                  case 'w':
+                  kgBoxFill ( G , xx , yy , x , y , dc->fil_color , 0 ) ;
+                  count++; * ( loc++ ) = 26;
+                  break;
+                  case 'f':{
+                      if ( npoly != 0 ) {
+                          float dx , dy;
+                          int np;
+//                           np = (npoly-26)/8;
+                          np = ( npoly-14 ) /8;
+                          dx = x-xpoly [ 0 ] ;
+                          dy = y-ypoly [ 0 ] ;
+                          for ( i = 0;i < np;i++ ) {xpoly [ i ] += dx;ypoly [ i ] += dy;}
+                          kgPolyFill ( G , np , xpoly , ypoly , 1L , dc->fil_color ) ;
+//                           *(loc++) = npoly-12; count++;
+                          * ( loc++ ) = npoly; count++;
+                      }
+                  }
+                  break;
+                  case 'r':
+                  uirectgl ( G , xx , yy , x , y ) ;
+                  count++; * ( loc++ ) = 50;
+                  break;
+                  case 'p':
+                  uipa_gram ( G , xx , yy , x , y ) ;
+                  count++; * ( loc++ ) = 50;
+                  break;
+                  case 'o':
+                  uiborder ( G , xx , yy , x , y , dc->bod_width , dc->bod_color ) ;
+                  count++; * ( loc++ ) = 104;
+                  break;
+              }
+              xx = x;yy = y;
+              break;
+              case 15:
+              while ( ( key = kgRectCursor ( G , & x , & y , & xx , & yy ) ) != '\r' ) {
+                  if ( key == 'u' ) {
+                      if ( count != 0 ) { loc--;count--;
+                          uiupdate_intr ( G , count , dc->cmds ) ;
+                  uiupdate_view ( G ) ;} }
+                  else {
+                      uiborder ( G , xx , yy , x , y , dc->bod_width , dc->bod_color ) ;
+                  * ( loc++ ) = 104;count++;}
+              }
+              uiborder ( G , xx , yy , x , y , dc->bod_width , dc->bod_color ) ;
+              xo = xx-x;yo = yy-y;
+              last = 'o';
+              * ( loc++ ) = 104;count++;
+              break;
+              case 16:
+              * ( loc ) = uiProcess_arc_fill ( G , & xx , & yy , dc->fil_color ) ;
+              loc++;
+              count++;
+              break;
+              case 17:
+              if ( MAG ) {
+                  kgAntialiasingOn ( G , MAG-1 ) ;
+                  kgReview ( G ) ;
+              }
+              free ( dc->cmds ) ;
+              return;
+          }
+      }
+      if ( MAG ) {
+          kgAntialiasingOn ( G , MAG-1 ) ;
+          kgReview ( G ) ;
+      }
+      free ( dc->cmds ) ;
+      return;
+  }
+  void kgDrawingTool_o ( DIG *G ) {
       float tww , thh , tgg;
       unsigned int *loc , *loco;
       char nbuf [ 30 ] ;
@@ -3044,7 +3367,8 @@
       * ( loc++ ) = 60;count++;
       ytwtg = ( tw+tg ) / ( dc->w_x2-dc->w_x1 ) * ( dc->w_y2-dc->w_y1 ) /0.75;
 //      while((item=uiMenu(G->D,G->x1,G->y1,1,1,cmenu,17))!=17)
-      while ( ( item = kgMenu ( G->D , parent->xo+G->x2-100 , \
+//      while ( ( item = kgMenu ( G->D , parent->xo+G->x2-100 , 
+     while ( ( item = kgMenu ( G->D , parent->xo+G->x1+5 , \
       parent->yo+G->y1 , 1 , 1 , cmenu , 17 ) ) != 17 ) \
       {
           if ( G->Byte > ( B_min-100 ) ) {
@@ -3323,6 +3647,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       return ret;
   }
@@ -3410,6 +3735,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       free ( e0 ) ;
       return ret;
@@ -3546,6 +3872,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       free ( m ) ;
       return ret;
@@ -3664,6 +3991,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
 //  printf("Spos: %d %d\n",Spos.xp,Spos.yp);
       *xp = Spos.xp;
@@ -3789,6 +4117,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
 //  printf("Spos: %d %d\n",Spos.xp,Spos.yp);
       *x1 = Srect.x1;
@@ -4710,6 +5039,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       return NULL;
   }
@@ -4795,6 +5125,7 @@
           }
           str [ k++ ] = pt;
           ln = kgStringLength ( fid , pt ) ;
+//          ftStringLength(
           if ( length < ln ) length = ln;
           if ( OK ) break;
           pt = pt+i+1;
@@ -4802,6 +5133,7 @@
       if ( k > 0 ) {
           dyl = yl/k;
           fac = 0.85*xl/length;
+          fac = 1;
           xoff = 0.07*xl;
           if ( fac > 1.0 ) fac = 1.0;
           if ( ht > 0.7*dyl ) ht = 0.7*dyl;
@@ -4970,6 +5302,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
 //  printf("ret:%d %d\n",ret,v1);
       return v1;
@@ -5324,6 +5657,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
 //  Dempty((Dlink *)D.SearchList);
       D.SearchList = NULL;
@@ -5483,6 +5817,7 @@
       D.ResizeCallback = NULL;
       D.WaitCallback = NULL;
       D.MinWidth = D.MinHeight = 200;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
 //  Dempty((Dlink *)D.SearchList);
       D.SearchList = NULL;
@@ -5708,6 +6043,7 @@
       D.pt = NULL;
       D.Cleanupfun = NULL;
       d [ 0 ] .t = T;
+      kgCheckParentPosition(&D);
       ret = kgUi ( & D ) ;
       k = 0;
       while ( d [ k ] .t != NULL ) {
@@ -5883,6 +6219,7 @@
       D = ( DIALOG * ) Dtmp;
       if ( D == NULL ) return 0;
       d = D->d;
+      kgCheckParentPosition(&D);
       ret = kgUi ( D ) ;
       k = 0;
       while ( d [ k ] .t != NULL ) {
@@ -6443,6 +6780,7 @@
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
  /* pt[0] is inputs given by caller */
       DIA *d;
+      kgCheckParentPosition(Tmp);
       int i , n , k = 0;
       int *ipt = ( int * ) pt [ 0 ] ;
       int Font = *ipt;
@@ -6776,3 +7114,302 @@
       return pt [ 1 ] ;
   }
 /* END OF kgGetFreeTypeFont */
+  void kgDrawingBoxProcess ( DIG *G ,int item) {
+      static float tww , thh , tgg;
+      static unsigned int *loc , *loco;
+      static char nbuf [ 30 ] ;
+      static char key , cr , bsp , last = 'd';
+      static int ihori = 1 ,  ch;
+      static int nch , ncr , MAG = 0;
+      static int itxclr_o , i , count , k , counto;
+      static float x , y , xx , yy , ytwtg , xtxt , ytxt;
+      static char bf [ 2000 ] , bf1 [ 2000 ] ;
+      static float tw , th , tg;
+      static float xo , yo , radi;
+      static float xpoly [ 300 ] , ypoly [ 300 ] ;
+      static float hfac = 1.0 , wfac = 1.0 , gfac = 1.0 , A_fac = 1.0;
+      static int npoly = 0;
+      static int entry =0;
+      static DIALOG *parent;
+      static float Radius=0;
+      kgDC *dc;
+      dc = G->dc;
+      if( (entry == 0) ||(dc->cmds == NULL)) {
+        entry = 1;
+        x = dc->cur_x;
+        y = dc->cur_y;
+        kgLineStyle ( G , dc->ln_style ) ;
+        kgLineColor ( G , dc->ln_color) ;
+        kgTextAngle ( G , dc->theta ) ;
+        kgTextColor ( G,15);
+        if(dc->t_color != 0) kgTextColor ( G , dc->t_color ) ;
+        kgMove2f ( G , x , y ) ;
+        tgg = 0;
+        tww = ( dc->w_x2-dc->w_x1 ) /30.0;
+        thh = ( dc->w_y2-dc->w_y1 ) /25.0;
+        tw = tww , tg = tgg , th = thh;
+//        kgTextSize ( G , dc->txt_htx ,dc->txt_hty , tg ) ;
+        dc->cmds = ( unsigned int * ) Malloc ( sizeof ( int ) *10000L ) ;
+        if ( dc->cmds == NULL ) {
+          printf ( "Error: In mem alloc. in m_int..\n" ) ;
+          exit ( 0 ) ;
+        }
+        last='d';
+      if ( dc->A_size > 10 ) A_fac = ( float ) \
+       ( dc->A_size/10 ) / ( dc->A_size%10 ) ;
+      xtxt = x;ytxt = y;
+      xx = x;yy = y;
+      xo = 0.;yo = 0.;
+      if ( G->D_ON == 0 ) {
+          MAG = G->MAG;
+          kgAntialiasingOff ( G ) ;
+      }
+      uiwrite_file ( G , & ( G->rbuf ) , dc->reviewfile ) ;
+      count = 0;
+      loc = dc->cmds;
+      *loc =0;
+    
+      xpoly [ 0 ] = x;ypoly [ 0 ] = y;
+//      * ( loc++ ) = 60;count++;
+      }
+      if(G->Byte == 0) {loc = dc->cmds;count=0;}
+      parent = G->D;
+      cr = 13;
+      bsp = 8;
+      ytwtg = ( tw+tg ) / ( dc->w_x2-dc->w_x1 ) * ( dc->w_y2-dc->w_y1 ) /0.75;
+      {
+          if ( G->Byte > ( B_min-100 ) ) {
+              uiwrite_file ( G , & ( G->rbuf ) , dc->reviewfile ) ;
+              count = 0;
+              loc = dc->cmds;
+          }
+          switch ( ( int ) item ) {
+              case 20:
+              get_size_factors ( parent , & hfac , & wfac , & gfac ) ;
+              kgTextSize ( G , th*hfac , tw*wfac , tg*gfac ) ;
+              count++;
+              * ( loc++ ) = 26;
+              ytwtg = ( tw+tg ) / ( dc->w_x2-dc->w_x1 ) * ( dc->w_y2-dc->w_y1 ) /0.75;
+              item = 5;
+              kgUpdateOn(G->D);
+              break;
+              case 1:
+              x = xx , y = yy;
+              key = kgCrossCursor ( G , & x , & y ) ;
+              kgMove2f ( G , x , y ) ;
+              count++;
+              * ( loc++ ) = 10;
+              xx = x;yy = y;
+              xo = 0;yo = 0;
+              kgUpdateOn(G->D);
+              item = 2;
+              break;
+              case 2:
+              kgMove2f ( G , xx , yy ) ;
+              count++; * ( loc++ ) = 10;
+              while ( ( key = kgRbrCursor ( G , & x , & y , & xx , & yy ) ) != '\r' ) {
+                  if ( key == 'u' ) {
+                      if ( count > 1 ) { loc--;count--;
+                          uiupdate_intr ( G , count , dc->cmds ) ;
+                  uiupdate_view ( G ) ;}}
+                  else {kgDraw2f ( G , x , y ) ; xx = x;yy = y;
+                  count++; * ( loc++ ) = 10;}
+              }
+              kgDraw2f ( G , x , y ) ;
+              xo = xx-x;yo = yy-y;
+              last = 'd';
+              xx = x;yy = y;
+              count++; * ( loc++ ) = 10;
+//              kgUpdateOn(G->D);
+              kgUpdateOn(G->D);
+              break;
+              case 3:
+              kgMove2f ( G , xx , yy ) ;
+              count++; * ( loc++ ) = 10;
+              while ( ( key = kgRbrCursor ( G , & x , & y , & xx , & yy ) ) != '\r' ) {
+                  if ( key == 'u' ) {
+                      if ( count > 1 ) { loc--;count--;
+                          uiupdate_intr ( G , count , dc->cmds ) ;
+                  uiupdate_view ( G ) ;}}
+                  else {kgDraw2f ( G , x , y ) ; xx = x;yy = y;
+                  count++; * ( loc++ ) = 10;}
+              }
+              uidrarrow ( G , xx , yy , x , y , A_fac ) ;
+              xo = xx-x;yo = yy-y;
+              last = 'a';
+              xx = x;yy = y;
+              count++; * ( loc++ ) = 56;
+              kgUpdateOn(G->D);
+              break;
+              case 5:
+              key = kgRectCursor ( G , & x , & y , & xx , & yy ) ;
+              kgBoxFill ( G , xx , yy , x , y , dc->fil_color , 0 ) ;
+              xo = xx-x;yo = yy-y;
+              last = 'w';
+              count++;
+              * ( loc++ ) = 26;
+              item = 4;
+              kgUpdateOn(G->D);
+              break;
+              case 4:
+              while ( ( key = kgRectCursor ( G , & x , & y , & xx , & yy ) ) != '\r' ) {
+                  if ( key == 'u' ) {
+                      if ( count > 1 ) { loc--;count--;
+                          uiupdate_intr ( G , count , dc->cmds ) ;
+                  uiupdate_view ( G ) ;} }
+                  else { kgMove2f ( G , xx , yy ) ;kgDraw2f \
+                       ( G , xx , y ) , kgDraw2f ( G , x , y ) ;
+                      kgDraw2f ( G , x , yy ) , kgDraw2f ( G , xx , yy ) ;
+                  * ( loc++ ) = 50;count++;}
+              }
+              kgMove2f ( G , xx , yy ) ;kgDraw2f ( G , xx , \
+              y ) , kgDraw2f ( G , x , y ) , kgDraw2f \
+               ( G , x , yy ) , kgDraw2f ( G , xx , yy ) ;
+              xo = xx-x;yo = yy-y;
+              last = 'r';
+              * ( loc++ ) = 50;count++;
+              kgUpdateOn(G->D);
+              break;
+              case 14:
+              if ( count > 1 ) {
+                  loc--;count--;
+                  uiupdate_intr ( G , count , dc->cmds ) ;
+                  uiupdate_view ( G ) ;
+                  xx+= xo;yy+= yo;
+              }
+              kgUpdateOn(G->D);
+              break;
+              case 11:
+              ncr = i;
+              key = kgCrossCursor ( G , & xtxt , & ytxt ) ;
+              nch = get_intr_text ( parent , bf ) ;
+              nch = strlen ( bf ) ;
+              * ( bf+nch ) = '\0';
+              kgMove2f ( G , xtxt , ytxt ) ;
+              kgWriteText ( G , bf ) ;
+              i = nch+1;
+              * ( loc++ ) = 16+nch+1;count++;
+              kgUpdateOn(G->D);
+              break;
+              case 6:
+              npoly = uipolygon_fill ( G , xpoly , ypoly , dc->fil_color ) ;
+              {* ( loc++ ) = npoly;count++;};
+              last = 'f';
+              kgUpdateOn(G->D);
+              break;
+              case 16:
+//               *(loc++)=72;count++;  
+              * ( loc++ ) = uiset_atribs ( G ) ;
+              count++;
+              if ( dc->A_size > 10 ) A_fac = ( float ) \
+               ( dc->A_size/10 ) / ( dc->A_size%10 ) ;
+              kgUpdateOn(G->D);
+              break;
+              case 8:
+              Radius = ui_fix_radius(G,&xx,&yy);
+              break;
+              case 9:
+              count++;
+              * ( loc ) = ui_process_arc ( G , & xx , & yy ) ;
+              loc++;
+              kgUpdateOn(G->D);
+              break;
+              case 7:
+              key = kgRbrCursor ( G , & x , & y , & xx , & yy ) ;
+              uipa_gram ( G , xx , yy , x , y ) ;
+              xo = xx-x;yo = yy-y;
+              last = 'p';
+              * ( loc++ ) = 50;count++;
+              kgUpdateOn(G->D);
+              break;
+              case 12:
+              key = kgCrossCursor ( G , & x , & y ) ;
+              kgMarker2f ( G , x , y ) ;
+              * ( loc++ ) = 10;count++;
+              kgUpdateOn(G->D);
+              break;
+              case 15:
+              key = kgCrossCursor ( G , & x , & y ) ;
+              xx = xo+x;yy = yo+y;
+              switch ( ( int ) last ) {
+                  case 'd':
+                  kgMove2f ( G , xx , yy ) ;kgDraw2f ( G , x , y ) ;
+                  count++; * ( loc++ ) = 20;
+                  break;
+                  case 'a':
+                  kgMove2f ( G , xx , yy ) ;
+                  uidrarrow ( G , xx , yy , x , y , A_fac ) ;
+                  count++; * ( loc++ ) = 66;
+                  break;
+                  case 'c':
+                       /*move2f(xx,yy);circle(x,y,radi);   
+                       count++; *(loc++) = 24;*/
+                  break;
+                  case 'w':
+                  kgBoxFill ( G , xx , yy , x , y , dc->fil_color , 0 ) ;
+                  count++; * ( loc++ ) = 26;
+                  break;
+                  case 'f':{
+                      if ( npoly != 0 ) {
+                          float dx , dy;
+                          int np;
+//                           np = (npoly-26)/8;
+                          np = ( npoly-14 ) /8;
+                          dx = x-xpoly [ 0 ] ;
+                          dy = y-ypoly [ 0 ] ;
+                          for ( i = 0;i < np;i++ ) {xpoly [ i ] += dx;ypoly [ i ] += dy;}
+                          kgPolyFill ( G , np , xpoly , ypoly , 1L , dc->fil_color ) ;
+//                           *(loc++) = npoly-12; count++;
+                          * ( loc++ ) = npoly; count++;
+                      }
+                  }
+                  break;
+                  case 'r':
+                  uirectgl ( G , xx , yy , x , y ) ;
+                  count++; * ( loc++ ) = 50;
+                  break;
+                  case 'p':
+                  uipa_gram ( G , xx , yy , x , y ) ;
+                  count++; * ( loc++ ) = 50;
+                  break;
+                  case 'o':
+                  uiborder ( G , xx , yy , x , y , dc->bod_width , dc->bod_color ) ;
+                  count++; * ( loc++ ) = 104;
+                  break;
+              }
+              kgUpdateOn(G->D);
+              xx = x;yy = y;
+              break;
+              case 13:
+              while ( ( key = kgRectCursor ( G , & x , & y , & xx , & yy ) ) != '\r' ) {
+                  if ( key == 'u' ) {
+                      if ( count != 0 ) { loc--;count--;
+                          uiupdate_intr ( G , count , dc->cmds ) ;
+                  uiupdate_view ( G ) ;} }
+                  else {
+                      uiborder ( G , xx , yy , x , y , dc->bod_width , dc->bod_color ) ;
+                  * ( loc++ ) = 104;count++;}
+              }
+              uiborder ( G , xx , yy , x , y , dc->bod_width , dc->bod_color ) ;
+              xo = xx-x;yo = yy-y;
+              last = 'o';
+              * ( loc++ ) = 104;count++;
+              kgUpdateOn(G->D);
+              break;
+              case 10:
+              * ( loc ) = ui_process_arc_fill ( G , & xx , & yy , dc->fil_color ) ;
+              loc++;
+              count++;
+              kgUpdateOn(G->D);
+              break;
+              case 18:
+              if ( MAG ) {
+                  kgAntialiasingOn ( G , MAG-1 ) ;
+                  kgReview ( G ) ;
+              }
+              free ( dc->cmds ) ;
+              return;
+          }
+      }
+      return;
+  }

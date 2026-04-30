@@ -1255,6 +1255,7 @@ static   char *kgCheckAudioFile ( char *name ) {
       D = ( DIALOG * ) Tmp;
       DIA *d;
       int i , n;
+      kgCheckParentPosition(Tmp);
       d = D-> d;
       i = 0;while ( d [ i ] .t != NULL ) {;
           i++;

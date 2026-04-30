@@ -1,0 +1,14 @@
+int VideoInfoVIinputcallback(int cellno,int i,void *Tmp) ;
+int VideoInfoVIbrowsecallback(int butno,int i,void *Tmp) ;
+void  VideoInfoVIbrowseinit (DIN *B,void *pt) ;
+int VideoInfoVIgetcallback(int butno,int i,void *Tmp) ;
+void  VideoInfoVIgetinit (DIL *B,void *pt) ;
+int VideoInfoinit(void *Tmp) ;
+int VideoInfocleanup(void *Tmp) ;
+void *RunVideoInfo(void *,void *) ;
+int MakeVideoInfoGroup(DIALOG *,void *) ;
+void * VideoInfoAction(void *,void *) ;
+int ModifyVideoInfo(void *Tmp,int GrpId) ;
+int VideoInfoCallBack(void *Tmp,void *tmp) ;
+int VideoInfoResizeCallBack(void *Tmp) ;
+int VideoInfoWaitCallBack(void *Tmp) ;
