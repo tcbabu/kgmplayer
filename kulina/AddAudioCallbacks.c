@@ -318,10 +318,8 @@ int  AddAudiobutton2callback(int butno,int i,void *Tmp) {
   CheckMedia(FileName);
   if(Minfo.Video !=0 ) {
     kgSetString(T,0,FileName);
-    if(Ofile[0]=='\0') {
       MakeNewFileName(FileName,Ofile);
       kgSetString(TO,0,Ofile);
-    }
     kgUpdateWidget(T);
     kgUpdateWidget(TO);
     kgUpdateOn(Tmp);

@@ -458,13 +458,11 @@ int  MakeCutsbutton1callback(int butno,int i,void *Tmp) {
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(TO);
 #endif
-    if(OutFile[0]== '\0'){
       GetFolderName(FileName,OutFile);
 //      MakeNewFileName(FileName,OutFile);
       MakeFileInFolder(FileName,OutFile,OutFile,"wav");
       kgSetString(TO,0,OutFile);
       kgUpdateWidget(TO);
-    }
   kgUpdateWidget(T);
   kgUpdateOn(Tmp);
   strcpy(cndata.infile,FileName);

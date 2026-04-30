@@ -49,13 +49,11 @@ int EnhanceAudiotextbox1callback(int cellno,int i,void *Tmp) {
   TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"EVoutput");
   strcpy(FileName,kgGetString(T,0));
   strcpy(OutFile,kgGetString(TO,0));
-    if(OutFile[0]== '\0'){
       GetFolderName(FileName,OutFile);
 //      MakeNewFileName(FileName,OutFile);
       MakeFileInFolder(FileName,OutFile,OutFile,"wav");
       kgSetString(TO,0,OutFile);
       kgUpdateWidget(TO);
-    }
  // sprintf(OutFile,"%-s/Music",getenv("HOME"));
 //  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp3");
 //  kgSetString(TO,0,OutFile);
@@ -95,15 +93,10 @@ int EnhanceAudiobutton1callback(int butno,int i,void *Tmp) {
   sprintf(OutFile,"%-s/Music/",getenv("HOME"));
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp3");
 #else
-//  sprintf(OutFile,"%-s/Music",getenv("HOME"));
-//  MakeFileInFolder(FileName,OutFile,OutFile,"mp3");
-    if(OutFile[0]== '\0'){
       GetFolderName(FileName,OutFile);
-//      MakeNewFileName(FileName,OutFile);
       MakeFileInFolder(FileName,OutFile,OutFile,"wav");
       kgSetString(TO,0,OutFile);
       kgUpdateWidget(TO);
-    }
 #endif
 //  kgSetString(TO,0,OutFile);
   kgUpdateWidget(T);

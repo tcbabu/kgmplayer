@@ -174,12 +174,10 @@ int  MakeKaraokebutton1callback(int butno,int i,void *Tmp) {
   CheckMedia(FileName);
   if(Minfo.Audio !=0 ) {
     kgSetString(T,0,FileName);
-    if(OutFile[0]== '\0'){
       GetFolderName(FileName,OutFile);
       MakeFileInFolder(FileName,OutFile,OutFile,"wav");
       kgSetString(TO,0,OutFile);
       kgUpdateWidget(TO);
-    }
     kgUpdateWidget(T);
     kgUpdateOn(Tmp);
   }

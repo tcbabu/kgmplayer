@@ -488,13 +488,11 @@ int  AddSilencebutton2callback(int butno,int i,void *Tmp) {
   MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp3");
   kgSetString(TO,0,OutFile);
 #endif
-    if(OutFile[0]== '\0'){
       GetFolderName(FileName,OutFile);
 //      MakeNewFileName(FileName,OutFile);
       MakeFileInFolder(FileName,OutFile,OutFile,"wav");
       kgSetString(TO,0,OutFile);
       kgUpdateWidget(TO);
-    }
   kgUpdateWidget(T);
   kgUpdateOn(Tmp);
   strcpy(cndata.infile,FileName);
