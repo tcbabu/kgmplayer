@@ -3,6 +3,8 @@
 #include "ConvertData.h"
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
+int MakeNewFileName(char *Infile,char *OutFile);
+int GetFolderName(char *infile,char *folder);
 typedef struct _volstr {
 	char Infile[200];
 	char Outfile[200];
@@ -46,11 +48,12 @@ int EnhanceSpeechtextbox1callback(int cellno,int i,void *Tmp) {
   e = T->elmt;
   TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"ESoutput");
   strcpy(FileName,kgGetString(T,0));
-  sprintf(OutFile,"%-s/Music",getenv("HOME"));
-  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"mp3");
+  strcpy(OutFile,kgGetString(TO,0));
+  GetFolderName(FileName,OutFile);
+  MakeFileInFolder(FileName,OutFile,OutFile,"wav");
   kgSetString(TO,0,OutFile);
-  kgUpdateWidget(T);
   kgUpdateWidget(TO);
+  kgUpdateWidget(T);
   kgUpdateOn(Tmp);
   return ret;
 }
@@ -77,6 +80,7 @@ int EnhanceSpeechbutton1callback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
+  strcpy(OutFile,kgGetString(TO,0));
 //  kgFolderBrowser(NULL,100,100,FileName,"*");
   if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
@@ -84,12 +88,12 @@ int EnhanceSpeechbutton1callback(int butno,int i,void *Tmp) {
   sprintf(OutFile,"%-s/Music/",getenv("HOME"));
   MakeOutputFile(FileName,OutFile+strlen(OutFile),"mp3");
 #else
-  sprintf(OutFile,"%-s/Music",getenv("HOME"));
-  MakeFileInFolder(FileName,OutFile,OutFile,"mp3");
-#endif
+  GetFolderName(FileName,OutFile);
+  MakeFileInFolder(FileName,OutFile,OutFile,"wav");
   kgSetString(TO,0,OutFile);
-  kgUpdateWidget(T);
   kgUpdateWidget(TO);
+#endif
+  kgUpdateWidget(T);
   kgUpdateOn(Tmp);
   switch(butno) {
     case 1: //  Browse 
