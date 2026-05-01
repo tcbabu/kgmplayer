@@ -1,0 +1,18 @@
+int VRVRinputcallback(int cellno,int i,void *Tmp) ;
+int VRVRinputbrowsecallback(int butno,int i,void *Tmp) ;
+void  VRVRinputbrowseinit (DIN *B,void *pt) ;
+int VRVRgocallback(int butno,int i,void *Tmp) ;
+void  VRVRgoinit (DIL *B,void *pt) ;
+int VRVRoutcallback(int cellno,int i,void *Tmp) ;
+int VRVROutbrowsecallback(int butno,int i,void *Tmp) ;
+void  VRVROutbrowseinit (DIN *B,void *pt) ;
+int VRVRanglecallback(int cellno,int i,void *Tmp) ;
+int VRinit(void *Tmp) ;
+int VRcleanup(void *Tmp) ;
+void *RunVR(void *,void *) ;
+int MakeVRGroup(DIALOG *,void *) ;
+void * VRAction(void *,void *) ;
+int ModifyVR(void *Tmp,int GrpId) ;
+int VRCallBack(void *Tmp,void *tmp) ;
+int VRResizeCallBack(void *Tmp) ;
+int VRWaitCallBack(void *Tmp) ;

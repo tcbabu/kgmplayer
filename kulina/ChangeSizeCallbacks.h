@@ -1,0 +1,18 @@
+int ChangeSizeCSinputcallback(int cellno,int i,void *Tmp) ;
+int ChangeSizeCSinputbrowsecallback(int butno,int i,void *Tmp) ;
+void  ChangeSizeCSinputbrowseinit (DIN *B,void *pt) ;
+int ChangeSizeCSgocallback(int butno,int i,void *Tmp) ;
+void  ChangeSizeCSgoinit (DIL *B,void *pt) ;
+int ChangeSizeCSoutcallback(int cellno,int i,void *Tmp) ;
+int ChangeSizeCSOutbrowsecallback(int butno,int i,void *Tmp) ;
+void  ChangeSizeCSOutbrowseinit (DIN *B,void *pt) ;
+int ChangeSizeCSRescallback(int cellno,int i,void *Tmp) ;
+int ChangeSizeinit(void *Tmp) ;
+int ChangeSizecleanup(void *Tmp) ;
+void *RunChangeSize(void *,void *) ;
+int MakeChangeSizeGroup(DIALOG *,void *) ;
+void * ChangeSizeAction(void *,void *) ;
+int ModifyChangeSize(void *Tmp,int GrpId) ;
+int ChangeSizeCallBack(void *Tmp,void *tmp) ;
+int ChangeSizeResizeCallBack(void *Tmp) ;
+int ChangeSizeWaitCallBack(void *Tmp) ;
