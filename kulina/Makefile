@@ -58,6 +58,8 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 ImageBox.o ImageBoxCallbacks.o \
 	 VideoInfo.o VideoInfoCallbacks.o \
 	 ChangeSize.o ChangeSizeCallbacks.o \
+	 Rotate90.o Rotate90Callbacks.o \
+	 VR.o VRCallbacks.o \
 	 Runbackground.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
 	 ReorderImages.o ReorderImagesCallbacks.o
@@ -123,6 +125,8 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 ReorderImages.o ReorderImagesCallbacks.o \
 	 VideoInfo.o VideoInfoCallbacks.o \
 	 ChangeSize.o ChangeSizeCallbacks.o \
+	 Rotate90.o Rotate90Callbacks.o \
+	 VR.o VRCallbacks.o \
 	 $(FFMPEGOBJS)
 	 echo $(FFMPEGOBJS)
 	 mv ../ffmpeg/ffmain.o ../ffmpeg/fftools/
@@ -332,11 +336,10 @@ VideoInfo.o		: VideoInfo.c
 		 $(CC) -c VideoInfo.c
 ChangeSize.o		: ChangeSize.c
 		 $(CC) -c ChangeSize.c
-
-
-
-
-
+Rotate90.o		: Rotate90.c
+		 $(CC) -c Rotate90.c
+VR.o		: VR.c
+		 $(CC) -c VR.c
 
 clean	:  
 	   rm -f *.o kgMplayer.a

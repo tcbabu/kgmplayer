@@ -54,6 +54,8 @@ int MakeLowPassGroup(DIALOG *D,void *arg);
 int MakeHighPassGroup(DIALOG *D,void *arg);
 int MakeVideoInfoGroup(DIALOG *D,void *arg);
 int MakeChangeSizeGroup(DIALOG *D,void *arg);
+int MakeRotate90Group(DIALOG *D,void *arg);
+int MakeVRGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -232,8 +234,17 @@ TOOLGRP ToolList[ ] = {
        "to keep the audio separate and add later, since it\n"
        "is better to keep it in a lossless format like wav or flac\n"
   },
-  { 0, MakeChangeSizeGroup,"!f23ChangeVideo Size", 346,40,RunHelper,0,
+  { 0, MakeChangeSizeGroup,"!f23Change Video Size", 346,40,RunHelper,0,
        "Resize Video\n"
+  },
+  { 0, MakeRotate90Group,"!f23Rotate Video 90 degree", 346,40,RunHelper,0,
+       "Rotates Video 90 degree clockewise or counter clockwise\n"
+       "For other angles use different tool\n"
+       " use repeatedly for multiples of 90 degree\n"      
+  },
+  { 0, MakeVRGroup,"!f23Rotate Video in angle", 346,40,RunHelper,0,
+       "Rotates Video in specific angle\n"
+       "For 90 degree angles use different tool\n"
   },
 #if 0
 #endif
