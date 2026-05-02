@@ -56,6 +56,8 @@ int MakeVideoInfoGroup(DIALOG *D,void *arg);
 int MakeChangeSizeGroup(DIALOG *D,void *arg);
 int MakeRotate90Group(DIALOG *D,void *arg);
 int MakeVRGroup(DIALOG *D,void *arg);
+int MakeSidebySideGroup(DIALOG *D,void *arg);
+int MaketopandbottomGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -245,6 +247,20 @@ TOOLGRP ToolList[ ] = {
   { 0, MakeVRGroup,"!f23Rotate Video in angle", 346,40,RunHelper,0,
        "Rotates Video in specific angle\n"
        "For 90 degree angles use different tool\n"
+  },
+  { 0, MakeSidebySideGroup,"!f23Two Videos side by side", 346,40,RunHelper,0,
+       "bring two videos side by side\n"
+       "Height of videos must be same\n"
+       "Adjust video and audio timings using other tools\n"
+       "It is better to extract and process audios and\n"
+       "  add to the procssed video later\n"
+  },
+  { 0, MaketopandbottomGroup,"!f23Two Videos top and bottom", 346,40,RunHelper,0,
+       "bring two videos top and bottom\n"
+       "Width of videos must be same\n"
+       "Adjust video and audio timings using other tools\n"
+       "It is better to extract and process audios and\n"
+       "  add to the procssed video later\n"
   },
 #if 0
 #endif

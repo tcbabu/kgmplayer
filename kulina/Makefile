@@ -59,6 +59,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 VideoInfo.o VideoInfoCallbacks.o \
 	 ChangeSize.o ChangeSizeCallbacks.o \
 	 Rotate90.o Rotate90Callbacks.o \
+	 topandbottom.o topandbottomCallbacks.o \
 	 VR.o VRCallbacks.o \
 	 Runbackground.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
@@ -126,6 +127,8 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 VideoInfo.o VideoInfoCallbacks.o \
 	 ChangeSize.o ChangeSizeCallbacks.o \
 	 Rotate90.o Rotate90Callbacks.o \
+	 SidebySide.o SidebySideCallbacks.o \
+	 topandbottom.o topandbottomCallbacks.o \
 	 VR.o VRCallbacks.o \
 	 $(FFMPEGOBJS)
 	 echo $(FFMPEGOBJS)
@@ -338,6 +341,10 @@ ChangeSize.o		: ChangeSize.c
 		 $(CC) -c ChangeSize.c
 Rotate90.o		: Rotate90.c
 		 $(CC) -c Rotate90.c
+SidebySide.o		: SidebySide.c
+		 $(CC) -c SidebySide.c
+topandbottom.o		: topandbottom.c
+		 $(CC) -c topandbottom.c
 VR.o		: VR.c
 		 $(CC) -c VR.c
 
