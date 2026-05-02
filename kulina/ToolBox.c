@@ -58,6 +58,7 @@ int MakeRotate90Group(DIALOG *D,void *arg);
 int MakeVRGroup(DIALOG *D,void *arg);
 int MakeSidebySideGroup(DIALOG *D,void *arg);
 int MaketopandbottomGroup(DIALOG *D,void *arg);
+int MakeOverlayGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -259,6 +260,12 @@ TOOLGRP ToolList[ ] = {
        "bring two videos top and bottom\n"
        "Width of videos must be same\n"
        "Adjust video and audio timings using other tools\n"
+       "It is better to extract and process audios and\n"
+       "  add to the procssed video later\n"
+  },
+  { 0, MakeOverlayGroup,"!f23Overlay Video over first", 346,40,RunHelper,0,
+       "Overlays second video over first\n"
+       "Adjust videos  using other tools\n"
        "It is better to extract and process audios and\n"
        "  add to the procssed video later\n"
   },
