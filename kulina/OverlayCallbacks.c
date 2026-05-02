@@ -11,6 +11,7 @@ int MakeNewFileName(char *Infile,char *OutFile);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int GetFolderName(char *infile,char *folder);
 int RunAndMonitor(char *);
+int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
 
 
 static void *Args=NULL,*Rets=NULL;
@@ -170,7 +171,7 @@ int OverlayOLYgocallback( int butno,int i,void *Tmp) {
   xloc = kgGetInt(TL,0);
   yloc = kgGetInt(TL,1);
   ret =0;
-  sprintf(buff,"ffmpegfun -i %s  -i %s -filter_complex \"[0:v][1:v]overlay=%-d:%-d\" %s",
+  sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"[0:v][1:v]overlay=%-d:%-d\" %s",
        kgGetString(T,0),kgGetString(TI,0),xloc,yloc,kgGetString(TO,0));
   kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);

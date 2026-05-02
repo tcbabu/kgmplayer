@@ -1,7 +1,1 @@
-int FileStat(char *flname) {
-  int ret;
-  struct stat buff;
-  ret = stat(flname,&buff);
-  if(ret < 0) return 0;
-  else return 1;
-}
+int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);

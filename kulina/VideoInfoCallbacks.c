@@ -328,3 +328,10 @@ int VideoInfoWaitCallBack(void *Tmp) {
 // pt[0] is args passed as inputs; pt[1] is output pointer
   return ret;
 }
+int ExtractVideoInfo(char *FileName,int *xres,int *yres,float *duration) {
+      GetVideoInfo(FileName);      
+      *xres = Minfo.Axres;
+      *yres = Minfo.Ayres;
+      *duration = Minfo.TotSec;
+      return 1;
+}

@@ -1,10 +1,5 @@
 #include <kulina.h>
-#include "Rotate90Callbacks.h"
-
-static void *Args=NULL,*Rets=NULL;
-
-static DIAINTR *It = NULL;
-
+#include "CropCallbacks.h"
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int FileStat(char *flname);
 int kgffmpeg(int,char **);
@@ -18,11 +13,17 @@ int GetFolderName(char *infile,char *folder);
 int RunAndMonitor(char *);
 int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
 
-static int transpose=1;
+
+static void *Args=NULL,*Rets=NULL;
+
+static DIAINTR *It = NULL;
+
+
 static MODINTERFACE ModFuns[] = { 
     (MODINTERFACE) NULL 
 };
 static Dlink *ModuleList=NULL;
+
 
 static int FolderBrowser(char *FileName) {
 	char *Str=NULL;
@@ -37,9 +38,9 @@ static int FolderBrowser(char *FileName) {
 	}
 	return ret;
 }
- /* Callback for  RV90input   */ 
+ /* Callback for  CRPinput1   */ 
 
-int Rotate90RV90inputcallback(int cellno,int i,void *Tmp) {
+int CropCRPinput1callback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -56,9 +57,9 @@ int Rotate90RV90inputcallback(int cellno,int i,void *Tmp) {
   return ret;
 }
 
- /* Callback for  RV90inputbrowse   */ 
+ /* Callback for  CRPinput1browse   */ 
 
-int Rotate90RV90inputbrowsecallback(int butno,int i,void *Tmp) {
+int CropCRPinput1browsecallback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -73,28 +74,41 @@ int Rotate90RV90inputbrowsecallback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   DIT *T,*TO;
   char FileName[500],OutFile[500];;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"RV90input");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"CRPinput1");
   FileName[0]='\0';
   if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
   kgUpdateWidget(T);
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"RV90out");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"CRPout");
   MakeNewFileName(FileName,OutFile);
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(TO);
+  DIT *TL=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPloc");
+  DIT *TR=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPres");
+  int xo,yo,xres,yres;
+  float duration;
+  ExtractVideoInfo(FileName,&xres,&yres,&duration);
+  kgSetInt(TR,0,xres);
+  kgSetInt(TR,1,yres);
+  kgUpdateWidget(TR);
+  
+  char buff[500];
+  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"CRPIbox");
+  sprintf (buff,"xres %d yres %d duration %f\n",xres,yres,duration);
+  kgWrite(I,buff);
   kgUpdateOn(Tmp);
   return ret;
 }
-void  Rotate90RV90inputbrowseinit (DIN *B,void *ptmp) {
+void  CropCRPinput1browseinit (DIN *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
 
- /* Callback for  RV90go   */ 
+ /* Callback for  CRPgo   */ 
 
-int Rotate90RV90gocallback( int butno,int i,void *Tmp) {
+int CropCRPgocallback( int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -107,31 +121,38 @@ int Rotate90RV90gocallback( int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
-  DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"RV90input");
-  DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"RV90out");
+  DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPinput1");
+  DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPout");
+  DIT *TL=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPloc");
+  DIT *TR=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPres");
+  int xo,yo,xres,yres;
+  xo = kgGetInt(TL,0);
+  yo = kgGetInt(TL,1);
+  xres = kgGetInt(TR,0);
+  yres = kgGetInt(TR,1);
+  
   char buff[500];
-  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"RV90Ibox");
-  sprintf (buff,"Processing...\n");
+  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"CRPIbox");
+  sprintf (buff,"Processing Side by Side..\n");
   kgWrite(I,buff);
   ret =0;
-  sprintf(buff,"ffmpegfun -y -i %s -vf \"transpose=%-d\" %s",
-       kgGetString(TI,0),transpose,kgGetString(TO,0));
+  sprintf(buff,"ffmpegfun -y -i %s   -vf \"crop=%-d:%-d:%-d:%-d\" %s",
+       kgGetString(T,0),xres,yres,xo,yo,kgGetString(TO,0));
   kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);
   RunAndMonitor(buff);
-  ret =0;
   return ret;
 }
-void  Rotate90RV90goinit (DIL *B,void *ptmp) {
+void  CropCRPgoinit (DIL *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
 
- /* Callback for  RV90out   */ 
+ /* Callback for  CRPout   */ 
 
-int Rotate90RV90outcallback(int cellno,int i,void *Tmp) {
+int CropCRPoutcallback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -148,9 +169,9 @@ int Rotate90RV90outcallback(int cellno,int i,void *Tmp) {
   return ret;
 }
 
- /* Callback for  RV90Outbrowse   */ 
+ /* Callback for  CRPOutbrowse   */ 
 
-int Rotate90RV90Outbrowsecallback(int butno,int i,void *Tmp) {
+int CropCRPOutbrowsecallback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -163,46 +184,85 @@ int Rotate90RV90Outbrowsecallback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
-  char FileName[500];
-  FileName[0]='\0';
-  if(!kgFolderBrowser(Tmp,10,10,FileName,"*"))return 0;
-  DIT *TO;
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"RV90out");
-  kgSetString(TO,0,FileName);
-  kgUpdateWidget(TO);
-  kgUpdateOn(Tmp);
+  switch(butno) {
+    case 1: //  Browse 
+      break;
+  }
   return ret;
 }
-void  Rotate90RV90Outbrowseinit (DIN *B,void *ptmp) {
+void  CropCRPOutbrowseinit (DIN *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
 
- /* Callback for  RV90angle   */ 
+ /* Callback for  CRPloc   */ 
 
-int Rotate90RV90anglecallback(int item,int i,void *Tmp) {
+int CropCRPloccallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  return ret;
+}
+
+ /* Callback for  CRPres   */ 
+
+int CropCRPrescallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  return ret;
+}
+
+ /* Callback for  CRPselect   */ 
+
+int CropCRPselectcallback(int butno,int i,void *Tmp) {
   /*********************************** 
-    item : selected item (1 to max_item)  not any specific relevence
+    butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
-  DIRA *R;DIALOG *D; 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
-  ThumbNail **th; 
-  int ret=1; 
   D = (DIALOG *)Tmp;
-  R = (DIRA *)kgGetWidget(Tmp,i);
-  th = (ThumbNail **) R->list;
-  transpose=item;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  switch(butno) {
+    case 1: //  Select TOP POSITION 
+      break;
+  }
   return ret;
 }
-void  Rotate90RV90angleinit (DIRA *R,void *ptmp) {
+void  CropCRPselectinit (DIN *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
 }
-int Rotate90Setup(void *Tmp,void *args) {
+int CropSetup(void *Tmp,void *args) {
   /*********************************** 
     args :  Pointer to args  
    ***********************************/ 
@@ -211,7 +271,7 @@ int Rotate90Setup(void *Tmp,void *args) {
   return 1;
 }
  
-void * Rotate90CleanDia(void *args) {
+void * CropCleanDia(void *args) {
   /*********************************** 
     args :  Pointer to args  
    ***********************************/ 
@@ -222,12 +282,12 @@ void * Rotate90CleanDia(void *args) {
 }
  
  
-void *  Rotate90Action(void *Tmp,void *Args) {
+void *  CropAction(void *Tmp,void *Args) {
   return NULL;
 } 
  
  
-int   Rotate90On(void *itmp) {
+int   CropOn(void *itmp) {
   DIAINTR * Dt = (DIAINTR *) itmp;
   if(Dt == NULL ) Dt = (DIAINTR *)It;
   if(Dt != NULL) {
@@ -238,7 +298,7 @@ int   Rotate90On(void *itmp) {
   return 0;
 } 
  
-int   Rotate90Off(void *itmp) {
+int   CropOff(void *itmp) {
   DIAINTR * Dt = (DIAINTR *) itmp;
   if(Dt == NULL ) Dt = (DIAINTR *)It;
   if(Dt != NULL) {
@@ -257,33 +317,33 @@ static char *GetPointer(char *str) {
 } 
  
  
-void * Rotate90Interface(void *args,void *rets) {
+void * CropInterface(void *args,void *rets) {
   /*********************************** 
    ***********************************/ 
   DIAINTR *it= (DIAINTR *)malloc(sizeof(DIAINTR));
   it->GrpId=0;
   // filled by MakeGroup  it->xsh=0;
   it->ysh=0;
-  it->RunDia = RunRotate90;
-  it->MakeGroup = MakeRotate90Group;
-  it->Title = GetPointer((char *)"Rotate90");
+  it->RunDia = RunCrop;
+  it->MakeGroup = MakeCropGroup;
+  it->Title = GetPointer((char *)"Crop");
   it->Help = GetPointer( (char *)"No help yet, request");
-  it->Action = Rotate90Action;
-  it->Settings = Rotate90Setup;
-  it->Cleanup  = Rotate90CleanDia;
+  it->Action = CropAction;
+  it->Settings = CropSetup;
+  it->Cleanup  = CropCleanDia;
   if(args != NULL) Args=args;
   if(rets != NULL) Rets=rets;
   it->args = Args;
   it->rets = Rets;
-  it->SwitchOn = Rotate90On;
-  it->SwitchOff = Rotate90Off;
+  it->SwitchOn = CropOn;
+  it->SwitchOff = CropOff;
   it->Dtmp = NULL; // fiiled by MakeGroup 
   It = it;
   return it;
 }
  
  
-int Rotate90init(void *Tmp) {
+int Cropinit(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
@@ -296,7 +356,7 @@ int Rotate90init(void *Tmp) {
  /* pt[0] is inputs, given by caller */
   return ret;
 }
-int Rotate90cleanup(void *Tmp) {
+int Cropcleanup(void *Tmp) {
   /* you add any cleanup/mem free here */
   /*********************************** 
     Tmp :  Pointer to DIALOG  
@@ -310,7 +370,7 @@ int Rotate90cleanup(void *Tmp) {
  /* pt[0] is inputs, given by caller */
   return ret;
 }
-int ModifyRotate90(void *Tmp,int GrpId) {
+int ModifyCrop(void *Tmp,int GrpId) {
   DIALOG *D;
   D = (DIALOG *)Tmp;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
@@ -354,7 +414,7 @@ int ModifyRotate90(void *Tmp,int GrpId) {
   return GrpId;
 }
 
-int Rotate90CallBack(void *Tmp,void *tmp) {
+int CropCallBack(void *Tmp,void *tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
     tmp :  Pointer to KBEVENT  
@@ -372,7 +432,7 @@ int Rotate90CallBack(void *Tmp,void *tmp) {
   }
   return ret;
 }
-int Rotate90ResizeCallBack(void *Tmp) {
+int CropResizeCallBack(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
@@ -391,7 +451,7 @@ int Rotate90ResizeCallBack(void *Tmp) {
   kgRedrawDialog(D);
   return ret;
 }
-int Rotate90WaitCallBack(void *Tmp) {
+int CropWaitCallBack(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
     Called while waiting for event  

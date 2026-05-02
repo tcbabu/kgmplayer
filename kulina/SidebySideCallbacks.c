@@ -11,6 +11,7 @@ int MakeNewFileName(char *Infile,char *OutFile);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int GetFolderName(char *infile,char *folder);
 int RunAndMonitor(char *);
+int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
 
 static void *Args=NULL,*Rets=NULL;
 
@@ -166,7 +167,7 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
   sprintf (buff,"Processing Side by Side..\n");
   kgWrite(I,buff);
   ret =0;
-  sprintf(buff,"ffmpegfun -i %s  -i %s -filter_complex \"hstack\" %s",
+  sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
        kgGetString(T,0),kgGetString(TI,0),kgGetString(TO,0));
   kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);

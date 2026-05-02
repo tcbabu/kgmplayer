@@ -12,6 +12,7 @@ int MakeNewFileName(char *Infile,char *OutFile);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int GetFolderName(char *infile,char *folder);
 int RunAndMonitor(char *);
+int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
 
 static void *Args=NULL,*Rets=NULL;
 
@@ -116,7 +117,7 @@ int VRVRgocallback( int butno,int i,void *Tmp) {
   Angle = (float)kgGetDouble(T,0);
   kgWrite(I,buff);
   ret =0;
-  sprintf(buff,"ffmpegfun -i %s -vf \"rotate=%-.2f*PI/180\" %s",
+  sprintf(buff,"ffmpegfun -y  -i %s -vf \"rotate=%-.2f*PI/180\" %s",
        kgGetString(TI,0),Angle,kgGetString(TO,0));
   kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);
