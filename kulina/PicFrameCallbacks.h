@@ -1,0 +1,18 @@
+int PicFramePICinput1callback(int cellno,int i,void *Tmp) ;
+int PicFramePICinput1browsecallback(int butno,int i,void *Tmp) ;
+void  PicFramePICinput1browseinit (DIN *B,void *pt) ;
+int PicFramePICgocallback(int butno,int i,void *Tmp) ;
+void  PicFramePICgoinit (DIL *B,void *pt) ;
+int PicFramePICoutcallback(int cellno,int i,void *Tmp) ;
+int PicFramePICOutbrowsecallback(int butno,int i,void *Tmp) ;
+void  PicFramePICOutbrowseinit (DIN *B,void *pt) ;
+int PicFramePICloccallback(int cellno,int i,void *Tmp) ;
+int PicFrameinit(void *Tmp) ;
+int PicFramecleanup(void *Tmp) ;
+void *RunPicFrame(void *,void *) ;
+int MakePicFrameGroup(DIALOG *,void *) ;
+void * PicFrameAction(void *,void *) ;
+int ModifyPicFrame(void *Tmp,int GrpId) ;
+int PicFrameCallBack(void *Tmp,void *tmp) ;
+int PicFrameResizeCallBack(void *Tmp) ;
+int PicFrameWaitCallBack(void *Tmp) ;

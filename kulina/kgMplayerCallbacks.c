@@ -42,6 +42,7 @@ int DirPlayinit(void *Tmp);
 int subtitleinit(void *Tmp);
 int imgs2vinit(void *Tmp);
 int cd_info(int,char **);
+int ProcessSkip(int pip0,int pip1,int Pid);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int RunFunction(char *job,int (*ProcessOut)(void *,int,int,int),int
 (*function)(int,char **),void *);
@@ -3709,6 +3710,7 @@ void *logo(int l,int w){
                   while ( *p ) {
                       if ( sscanf ( p , "%dx%d" , & width , & height ) == 2 ) {
 //                          printf ( "Resolution: %dx%d\n" , width , height ) ;
+                            break;
                       }
                       p++;
                   }
@@ -3869,4 +3871,8 @@ int RunAndMonitor(char * job)  {
      waitpid(pid,&status,0);
      exit(0);
   }
+}
+int RunAndWait(char * job)  {
+   runfunction(job,NULL,ffmpegfun);
+   return 1;
 }

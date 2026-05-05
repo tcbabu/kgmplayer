@@ -1,5 +1,5 @@
 #include <kulina.h>
-#include "CropCallbacks.h"
+#include "PicFrameCallbacks.h"
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int FileStat(char *flname);
 int kgffmpeg(int,char **);
@@ -11,9 +11,7 @@ int MakeNewFileName(char *Infile,char *OutFile);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int GetFolderName(char *infile,char *folder);
 int RunAndMonitor(char *);
-int RunAndWait(char *);
 int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
-void *RunGetCropArea(void *,void *);
 
 
 static void *Args=NULL,*Rets=NULL;
@@ -40,9 +38,9 @@ static int FolderBrowser(char *FileName) {
 	}
 	return ret;
 }
- /* Callback for  CRPinput1   */ 
+ /* Callback for  PICinput1   */ 
 
-int CropCRPinput1callback(int cellno,int i,void *Tmp) {
+int PicFramePICinput1callback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -59,9 +57,9 @@ int CropCRPinput1callback(int cellno,int i,void *Tmp) {
   return ret;
 }
 
- /* Callback for  CRPinput1browse   */ 
+ /* Callback for  PICinput1browse   */ 
 
-int CropCRPinput1browsecallback(int butno,int i,void *Tmp) {
+int PicFramePICinput1browsecallback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -76,41 +74,36 @@ int CropCRPinput1browsecallback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   DIT *T,*TO;
   char FileName[500],OutFile[500];;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"CRPinput1");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"PICinput1");
   FileName[0]='\0';
   if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
   kgUpdateWidget(T);
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"CRPout");
-  MakeNewFileName(FileName,OutFile);
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"PICout");
+  GetFolderName(FileName,OutFile);
+  MakeFileInFolder(FileName,OutFile,OutFile,(char *)"png");
   kgSetString(TO,0,OutFile);
-  kgUpdateWidget(TO);
-  DIT *TL=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPloc");
-  DIT *TR=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPres");
-  int xo,yo,xres,yres;
+  char buff[500];
+  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"PICIbox");
+  int xres,yres;
   float duration;
   ExtractVideoInfo(FileName,&xres,&yres,&duration);
-  kgSetInt(TR,0,xres);
-  kgSetInt(TR,1,yres);
-  kgUpdateWidget(TR);
-  
-  char buff[500];
-  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"CRPIbox");
-  sprintf (buff,"xres %d yres %d duration %f\n",xres,yres,duration);
+  sprintf (buff,"Xres: %d Yres: %d Duration: %f \n",xres,yres,duration);
   kgWrite(I,buff);
+  kgUpdateWidget(TO);
   kgUpdateOn(Tmp);
   return ret;
 }
-void  CropCRPinput1browseinit (DIN *B,void *ptmp) {
+void  PicFramePICinput1browseinit (DIN *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
 
- /* Callback for  CRPgo   */ 
+ /* Callback for  PICgo   */ 
 
-int CropCRPgocallback( int butno,int i,void *Tmp) {
+int PicFramePICgocallback( int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -123,38 +116,40 @@ int CropCRPgocallback( int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
-  DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPinput1");
-  DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPout");
-  DIT *TL=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPloc");
-  DIT *TR=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPres");
-  int xo,yo,xres,yres;
-  xo = kgGetInt(TL,0);
-  yo = kgGetInt(TL,1);
-  xres = kgGetInt(TR,0);
-  yres = kgGetInt(TR,1);
-  
+  DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"PICinput1");
+  DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"PICout");
+  DIT *TL=(DIT *)kgGetNamedWidget(Tmp,(char *)"PICloc");
   char buff[500];
-  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"CRPIbox");
+  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"PICIbox");
   sprintf (buff,"Processing Side by Side..\n");
   kgWrite(I,buff);
+  float secs;
+  int hr,mt,isec;
+  secs = (float)kgGetDouble(TL,0);
+  sprintf(buff,"secs : %f\n",secs);
+  kgWrite(I,buff);
+  isec = secs;
+  hr = isec/3600;
+  mt = (isec -hr*3600)/60;
+  secs = secs - hr*3600 -mt*60;
   ret =0;
-  sprintf(buff,"ffmpegfun -y -i %s   -vf \"crop=%-d:%-d:%-d:%-d\" %s",
-       kgGetString(T,0),xres,yres,xo,yo,kgGetString(TO,0));
+  sprintf(buff,"ffmpegfun -y -ss %-d:%-d:%-.2f -i %s  -frames:v 1  %s",
+       hr,mt,secs,kgGetString(T,0),kgGetString(TO,0));
   kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);
   RunAndMonitor(buff);
   return ret;
 }
-void  CropCRPgoinit (DIL *B,void *ptmp) {
+void  PicFramePICgoinit (DIL *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
 
- /* Callback for  CRPout   */ 
+ /* Callback for  PICout   */ 
 
-int CropCRPoutcallback(int cellno,int i,void *Tmp) {
+int PicFramePICoutcallback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -171,9 +166,9 @@ int CropCRPoutcallback(int cellno,int i,void *Tmp) {
   return ret;
 }
 
- /* Callback for  CRPOutbrowse   */ 
+ /* Callback for  PICOutbrowse   */ 
 
-int CropCRPOutbrowsecallback(int butno,int i,void *Tmp) {
+int PicFramePICOutbrowsecallback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -192,16 +187,16 @@ int CropCRPOutbrowsecallback(int butno,int i,void *Tmp) {
   }
   return ret;
 }
-void  CropCRPOutbrowseinit (DIN *B,void *ptmp) {
+void  PicFramePICOutbrowseinit (DIN *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
 
- /* Callback for  CRPloc   */ 
+ /* Callback for  PICloc   */ 
 
-int CropCRPloccallback(int cellno,int i,void *Tmp) {
+int PicFramePICloccallback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -217,75 +212,7 @@ int CropCRPloccallback(int cellno,int i,void *Tmp) {
   e = T->elmt;
   return ret;
 }
-
- /* Callback for  CRPres   */ 
-
-int CropCRPrescallback(int cellno,int i,void *Tmp) {
-  /************************************************* 
-   cellno: current cell counted along column strting with 0 
-           ie 0 to (nx*ny-1) 
-   i     : widget id starting from 0 
-   Tmp   : Pointer to DIALOG 
-   *************************************************/ 
-  DIALOG *D;DIT *T;T_ELMT *e; 
-  int ret=1;
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-// pt[0] is args passed as inputs; pt[1] is output pointer
-  D = (DIALOG *)Tmp;
-  T = (DIT *)kgGetWidget(Tmp,i);
-  e = T->elmt;
-  return ret;
-}
-
- /* Callback for  CRPselect   */ 
-
-int CropCRPselectcallback(int butno,int i,void *Tmp) {
-  /*********************************** 
-    butno : selected item (1 to max_item) 
-    i :  Index of Widget  (0 to max_widgets-1) 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
-  DIALOG *D;DIN *B; 
-  int n,ret =0; 
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-  int *Vals=NULL;
-// pt[0] is args passed as inputs; pt[1] is output pointer
-  DIT *TL = (DIT *)kgGetNamedWidget(Tmp,(char *)"CRPloc");
-  DIT *TR = (DIT *)kgGetNamedWidget(Tmp,(char *)"CRPres");
-  D = (DIALOG *)Tmp;
-  B = (DIN *)kgGetWidget(Tmp,i);
-  n = B->nx*B->ny;
-  switch(butno) {
-    case 1: //  Select TOP POSITION 
-    DIT *TI = (DIT *)kgGetNamedWidget(Tmp,(char *)"CRPinput1");
-    char buff[500],infile[300],frame1[200];
-    strcpy(infile,(char *)kgGetString(TI,0));
-    if(infile[0]=='\0') return 0;
-    sprintf(frame1,"/tmp/%-d.png",getpid());
-    sprintf(buff,"kgffmpeg -y  -ss 00:00:0.1 -i %s -frames:v 1 %s" ,infile,frame1);
-//    runfunction(buff,ProcessPrint,ffmpegfun);
-    RunAndWait(buff);
-//    system(buff);
-    Vals = (int *)RunGetCropArea(Tmp,(char *)frame1);
-    kgSetInt(TL,0,Vals[0]);
-    kgSetInt(TL,1,Vals[1]);
-    kgSetInt(TR,0,Vals[2]);
-    kgSetInt(TR,1,Vals[3]);
-    kgUpdateWidget(TL);
-    kgUpdateWidget(TR);
-    kgUpdateOn(Tmp);
-    free(Vals);
-      break;
-  }
-  return ret;
-}
-void  CropCRPselectinit (DIN *B,void *ptmp) {
- void **pt=(void **)ptmp; //pt[0] is arg 
-// may use kgChangeButtonNormalImage etc...
- BUT_STR *buts;
- buts = (BUT_STR *) (B->buts);
-}
-int CropSetup(void *Tmp,void *args) {
+int PicFrameSetup(void *Tmp,void *args) {
   /*********************************** 
     args :  Pointer to args  
    ***********************************/ 
@@ -294,7 +221,7 @@ int CropSetup(void *Tmp,void *args) {
   return 1;
 }
  
-void * CropCleanDia(void *args) {
+void * PicFrameCleanDia(void *args) {
   /*********************************** 
     args :  Pointer to args  
    ***********************************/ 
@@ -305,12 +232,12 @@ void * CropCleanDia(void *args) {
 }
  
  
-void *  CropAction(void *Tmp,void *Args) {
+void *  PicFrameAction(void *Tmp,void *Args) {
   return NULL;
 } 
  
  
-int   CropOn(void *itmp) {
+int   PicFrameOn(void *itmp) {
   DIAINTR * Dt = (DIAINTR *) itmp;
   if(Dt == NULL ) Dt = (DIAINTR *)It;
   if(Dt != NULL) {
@@ -321,7 +248,7 @@ int   CropOn(void *itmp) {
   return 0;
 } 
  
-int   CropOff(void *itmp) {
+int   PicFrameOff(void *itmp) {
   DIAINTR * Dt = (DIAINTR *) itmp;
   if(Dt == NULL ) Dt = (DIAINTR *)It;
   if(Dt != NULL) {
@@ -340,33 +267,33 @@ static char *GetPointer(char *str) {
 } 
  
  
-void * CropInterface(void *args,void *rets) {
+void * PicFrameInterface(void *args,void *rets) {
   /*********************************** 
    ***********************************/ 
   DIAINTR *it= (DIAINTR *)malloc(sizeof(DIAINTR));
   it->GrpId=0;
   // filled by MakeGroup  it->xsh=0;
   it->ysh=0;
-  it->RunDia = RunCrop;
-  it->MakeGroup = MakeCropGroup;
-  it->Title = GetPointer((char *)"Crop");
+  it->RunDia = RunPicFrame;
+  it->MakeGroup = MakePicFrameGroup;
+  it->Title = GetPointer((char *)"PicFrame");
   it->Help = GetPointer( (char *)"No help yet, request");
-  it->Action = CropAction;
-  it->Settings = CropSetup;
-  it->Cleanup  = CropCleanDia;
+  it->Action = PicFrameAction;
+  it->Settings = PicFrameSetup;
+  it->Cleanup  = PicFrameCleanDia;
   if(args != NULL) Args=args;
   if(rets != NULL) Rets=rets;
   it->args = Args;
   it->rets = Rets;
-  it->SwitchOn = CropOn;
-  it->SwitchOff = CropOff;
+  it->SwitchOn = PicFrameOn;
+  it->SwitchOff = PicFrameOff;
   it->Dtmp = NULL; // fiiled by MakeGroup 
   It = it;
   return it;
 }
  
  
-int Cropinit(void *Tmp) {
+int PicFrameinit(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
@@ -379,7 +306,7 @@ int Cropinit(void *Tmp) {
  /* pt[0] is inputs, given by caller */
   return ret;
 }
-int Cropcleanup(void *Tmp) {
+int PicFramecleanup(void *Tmp) {
   /* you add any cleanup/mem free here */
   /*********************************** 
     Tmp :  Pointer to DIALOG  
@@ -393,7 +320,7 @@ int Cropcleanup(void *Tmp) {
  /* pt[0] is inputs, given by caller */
   return ret;
 }
-int ModifyCrop(void *Tmp,int GrpId) {
+int ModifyPicFrame(void *Tmp,int GrpId) {
   DIALOG *D;
   D = (DIALOG *)Tmp;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
@@ -437,7 +364,7 @@ int ModifyCrop(void *Tmp,int GrpId) {
   return GrpId;
 }
 
-int CropCallBack(void *Tmp,void *tmp) {
+int PicFrameCallBack(void *Tmp,void *tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
     tmp :  Pointer to KBEVENT  
@@ -455,7 +382,7 @@ int CropCallBack(void *Tmp,void *tmp) {
   }
   return ret;
 }
-int CropResizeCallBack(void *Tmp) {
+int PicFrameResizeCallBack(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
@@ -474,7 +401,7 @@ int CropResizeCallBack(void *Tmp) {
   kgRedrawDialog(D);
   return ret;
 }
-int CropWaitCallBack(void *Tmp) {
+int PicFrameWaitCallBack(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
     Called while waiting for event  

@@ -62,7 +62,9 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 topandbottom.o topandbottomCallbacks.o \
 	 Overlay.o OverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \
+	 PicFrame.o PicFrameCallbacks.o \
 	 VR.o VRCallbacks.o \
+	 GetCropArea.o GetCropAreaCallbacks.o \
 	 Runbackground.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
 	 ReorderImages.o ReorderImagesCallbacks.o
@@ -133,7 +135,9 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 topandbottom.o topandbottomCallbacks.o \
 	 Overlay.o OverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \
+	 PicFrame.o PicFrameCallbacks.o \
 	 VR.o VRCallbacks.o \
+	 GetCropArea.o GetCropAreaCallbacks.o \
 	 $(FFMPEGOBJS)
 	 echo $(FFMPEGOBJS)
 	 mv ../ffmpeg/ffmain.o ../ffmpeg/fftools/
@@ -353,8 +357,12 @@ Overlay.o		: Overlay.c
 		 $(CC) -c Overlay.c
 Crop.o		: Crop.c
 		 $(CC) -c Crop.c
+PicFrame.o		: PicFrame.c
+		 $(CC) -c PicFrame.c
 VR.o		: VR.c
 		 $(CC) -c VR.c
+GetCropArea.o		: GetCropArea.c
+		 $(CC) -c GetCropArea.c
 
 clean	:  
 	   rm -f *.o kgMplayer.a

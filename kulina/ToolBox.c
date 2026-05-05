@@ -60,6 +60,7 @@ int MakeSidebySideGroup(DIALOG *D,void *arg);
 int MaketopandbottomGroup(DIALOG *D,void *arg);
 int MakeOverlayGroup(DIALOG *D,void *arg);
 int MakeCropGroup(DIALOG *D,void *arg);
+int MakePicFrameGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -274,6 +275,9 @@ TOOLGRP ToolList[ ] = {
        "Selected area is cropped\n"
        "It is better to extract and process audios and\n"
        "  add to the procssed video later\n"
+  },
+  { 0, MakePicFrameGroup,"!f23Pic one Frame Video ", 346,40,RunHelper,0,
+       "Pic a frome from the time position(float)\n"
   },
 #if 0
 #endif

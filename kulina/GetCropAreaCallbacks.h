@@ -1,0 +1,12 @@
+void GetCropAreaGCAgboxinit (int i,void *Tmp) ;
+int GetCropAreaGCAbutncallback(int butno,int i,void *Tmp) ;
+void  GetCropAreaGCAbutninit (DIL *B,void *pt) ;
+int GetCropAreainit(void *Tmp) ;
+int GetCropAreacleanup(void *Tmp) ;
+void *RunGetCropArea(void *,void *) ;
+int MakeGetCropAreaGroup(DIALOG *,void *) ;
+void * GetCropAreaAction(void *,void *) ;
+int ModifyGetCropArea(void *Tmp,int GrpId) ;
+int GetCropAreaCallBack(void *Tmp,void *tmp) ;
+int GetCropAreaResizeCallBack(void *Tmp) ;
+int GetCropAreaWaitCallBack(void *Tmp) ;
