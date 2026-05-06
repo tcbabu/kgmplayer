@@ -169,6 +169,7 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
   ret =0;
   sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
        kgGetString(T,0),kgGetString(TI,0),kgGetString(TO,0));
+  remove(kgGetString(TO,0));
   kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);
   RunAndMonitor(buff);

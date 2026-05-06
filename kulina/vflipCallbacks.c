@@ -154,11 +154,11 @@ int  vflipsplbutton1callback(int butno,int i,void *Tmp) {
         strcpy(infile,kgGetString(kgGetNamedWidget(Dia,(char *)"vflipInput"),0));
         strcpy(outfile,kgGetString(kgGetNamedWidget(Dia,(char *)"vflipOutput"),0));
 #ifdef D_X264
-        sprintf(buff,"ffmpegfun -noautorotate -i \"%-s\" -vf vflip "
+        sprintf(buff,"ffmpegfun -y -noautorotate -i \"%-s\" -vf vflip "
                   " -f mp4 -b:v 3000K -vcodec libx264 \"%-s\" ",
               infile,outfile);
 #else
-        sprintf(buff,"ffmpegfun -noautorotate -i \"%-s\" -vf vflip "
+        sprintf(buff,"ffmpegfun -y -noautorotate -i \"%-s\" -vf vflip "
                   " -f mp4 -vcodec libx265 \"%-s\" ",
               infile,outfile);
 #endif

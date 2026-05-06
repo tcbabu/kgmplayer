@@ -245,7 +245,10 @@ TOOLGRP ToolList[ ] = {
   },
   { 0, MakeRotate90Group,"!f23Rotate Video 90 degree", 346,40,RunHelper,0,
        "Rotates Video 90 degree clockewise or counter clockwise\n"
-       "For other angles use different tool\n"
+       "Some cases one may not get the desired result.\n"
+       "In such cases case apply the rotation once again on the ouput\n"
+       " or can use the specific angle tool.\n"
+       "For specific  angles use different tool\n"
        " use repeatedly for multiples of 90 degree\n"      
   },
   { 0, MakeVRGroup,"!f23Rotate Video in angle", 346,40,RunHelper,0,

@@ -59,6 +59,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 VideoInfo.o VideoInfoCallbacks.o \
 	 ChangeSize.o ChangeSizeCallbacks.o \
 	 Rotate90.o Rotate90Callbacks.o \
+	 SidebySide.o SidebySideCallbacks.o \
 	 topandbottom.o topandbottomCallbacks.o \
 	 Overlay.o OverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \

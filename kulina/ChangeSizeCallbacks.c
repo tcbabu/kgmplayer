@@ -120,8 +120,8 @@ int ChangeSizeCSgocallback( int butno,int i,void *Tmp) {
   sprintf (buff,"Xres : %d Yres :%d\n",Xres,Yres);
   kgWrite(I,buff);
   ret =0;
-  sprintf(buff,"ffmpegfun -i %s -vf \"scale=%d:%d:flags=lanczos\" %s",
-       kgGetString(TI,0),Xres,Yres,kgGetString(TO,0));
+  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos\" %s",
+       kgGetString(TI,0),(Xres/2)*2,(Yres/2)*2,kgGetString(TO,0));
   kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);
   RunAndMonitor(buff);
