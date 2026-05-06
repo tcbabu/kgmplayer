@@ -75,7 +75,7 @@ int AddStillASVinputbrowsecallback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   DIT *T,*TO;
   char FileName[500],OutFile[500];;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"ASVinput1");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"ASVinput");
   FileName[0]='\0';
   if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
@@ -109,7 +109,7 @@ int AddStillASVgocallback( int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
-  DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"ASVinput1");
+  DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"ASVinput");
   DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"ASVout");
   DIT *TD=(DIT *)kgGetNamedWidget(Tmp,(char *)"ASVdur");
   char buff[500];
