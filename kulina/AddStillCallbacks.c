@@ -12,6 +12,7 @@ int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int GetFolderName(char *infile,char *folder);
 int RunAndMonitor(char *);
 int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
+int AddStillAtStart(char * infile,int duration,char *outfile);
 
 
 static void *Args=NULL,*Rets=NULL;
@@ -110,13 +111,13 @@ int AddStillASVgocallback( int butno,int i,void *Tmp) {
   n = B->nx;
   DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"ASVinput1");
   DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"ASVout");
-  DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"ASVdur");
+  DIT *TD=(DIT *)kgGetNamedWidget(Tmp,(char *)"ASVdur");
   char buff[500];
   DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"ASVIbox");
   sprintf (buff,"Adding Still Video..\n");
   kgWrite(I,buff);
   ret =0;
-  AddStillToVideo(kgGetString(T,0),kgGetInt(TD,0),,kgGetString(TO,0));
+  AddStillAtStart(kgGetString(T,0),kgGetInt(TD,0),kgGetString(TO,0));
   return ret;
 }
 void  AddStillASVgoinit (DIL *B,void *ptmp) {

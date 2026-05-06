@@ -65,6 +65,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 PicFrame.o PicFrameCallbacks.o \
 	 VR.o VRCallbacks.o \
 	 GetCropArea.o GetCropAreaCallbacks.o \
+	 AddStill.o AddStillCallbacks.o \
 	 Runbackground.o \
 	 utilfunctions.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
@@ -140,6 +141,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 PicFrame.o PicFrameCallbacks.o \
 	 VR.o VRCallbacks.o \
 	 GetCropArea.o GetCropAreaCallbacks.o \
+	 AddStill.o AddStillCallbacks.o \
 	 $(FFMPEGOBJS)
 	 echo $(FFMPEGOBJS)
 	 mv ../ffmpeg/ffmain.o ../ffmpeg/fftools/
@@ -367,6 +369,8 @@ VR.o		: VR.c
 		 $(CC) -c VR.c
 GetCropArea.o		: GetCropArea.c
 		 $(CC) -c GetCropArea.c
+AddStill.o		: AddStill.c
+		 $(CC) -c AddStill.c
 
 clean	:  
 	   rm -f *.o kgMplayer.a

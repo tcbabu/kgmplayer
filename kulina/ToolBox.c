@@ -61,6 +61,7 @@ int MaketopandbottomGroup(DIALOG *D,void *arg);
 int MakeOverlayGroup(DIALOG *D,void *arg);
 int MakeCropGroup(DIALOG *D,void *arg);
 int MakePicFrameGroup(DIALOG *D,void *arg);
+int MakeAddStillGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -278,6 +279,9 @@ TOOLGRP ToolList[ ] = {
   },
   { 0, MakePicFrameGroup,"!f23Pic one Frame Video ", 346,40,RunHelper,0,
        "Pic a frome from the time position(float)\n"
+  },
+  { 0, MakeAddStillGroup,"!f23Add Still to Video at start ", 346,40,RunHelper,0,
+       "Adds a still in video for a given time in seconds\n"
   },
 #if 0
 #endif
