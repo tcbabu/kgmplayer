@@ -1,0 +1,18 @@
+int AddStillASVinputcallback(int cellno,int i,void *Tmp) ;
+int AddStillASVinputbrowsecallback(int butno,int i,void *Tmp) ;
+void  AddStillASVinputbrowseinit (DIN *B,void *pt) ;
+int AddStillASVgocallback(int butno,int i,void *Tmp) ;
+void  AddStillASVgoinit (DIL *B,void *pt) ;
+int AddStillASVoutcallback(int cellno,int i,void *Tmp) ;
+int AddStillASVOutbrowsecallback(int butno,int i,void *Tmp) ;
+void  AddStillASVOutbrowseinit (DIN *B,void *pt) ;
+int AddStillASVdurcallback(int cellno,int i,void *Tmp) ;
+int AddStillinit(void *Tmp) ;
+int AddStillcleanup(void *Tmp) ;
+void *RunAddStill(void *,void *) ;
+int MakeAddStillGroup(DIALOG *,void *) ;
+void * AddStillAction(void *,void *) ;
+int ModifyAddStill(void *Tmp,int GrpId) ;
+int AddStillCallBack(void *Tmp,void *tmp) ;
+int AddStillResizeCallBack(void *Tmp) ;
+int AddStillWaitCallBack(void *Tmp) ;

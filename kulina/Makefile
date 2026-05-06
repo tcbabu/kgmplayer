@@ -66,6 +66,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 VR.o VRCallbacks.o \
 	 GetCropArea.o GetCropAreaCallbacks.o \
 	 Runbackground.o \
+	 utilfunctions.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
 	 ReorderImages.o ReorderImagesCallbacks.o
 	 mv ../ffmpeg/fftools/ffmain.o ../ffmpeg/
@@ -126,6 +127,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 HelpButn.o HelpButnCallbacks.o \
 	 ImageBox.o ImageBoxCallbacks.o \
 	 Runbackground.o \
+	 utilfunctions.o \
 	 Helper.o HelperCallbacks.o createhelpimage.o \
 	 ReorderImages.o ReorderImagesCallbacks.o \
 	 VideoInfo.o VideoInfoCallbacks.o \
@@ -221,6 +223,8 @@ ToolBoxCallbacks.o	: ToolBoxCallbacks.c ConvertData.h ToolGroup.h
 	 $(CC) -c ToolBoxCallbacks.c
 Runbackground.o	: Runbackground.c 
 	 $(CC) -c Runbackground.c
+utilfunctions.o	: utilfunctions.c 
+	 $(CC) -c utilfunctions.c
 HelperMag.o	: HelperMag.c
 	 $(CC) -c HelperMag.c
 Vasp.o	: Vasp.c ConvertData.h
