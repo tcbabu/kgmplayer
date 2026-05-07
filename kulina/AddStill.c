@@ -35,7 +35,7 @@ int AddStillGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-1;
-  butn1[0].butncode=10;
+  butn1[0].butncode=31;
   DIN b1 = { 
     'n',
     385,24,  
@@ -59,14 +59,14 @@ int AddStillGroup( DIALOG *D,void **v,void *pt) {
   butn2[0].xpmp=NULL;
   butn2[0].xpmh=NULL;
   butn2[0].bkgr=-1;
-  butn2[0].butncode=6316158;
+  butn2[0].butncode=-1077952642;
   butn2[1].sw=0;
   strcpy(butn2[1].title,(char *)"Okay");
   butn2[1].xpmn=NULL;
   butn2[1].xpmp=NULL;
   butn2[1].xpmh=NULL;
   butn2[1].bkgr=-1;
-  butn2[1].butncode=16053374;
+  butn2[1].butncode=-2302850;
   DIL h2 = { 
     'h',
     151,325,  
@@ -121,7 +121,7 @@ int AddStillGroup( DIALOG *D,void **v,void *pt) {
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
   butn5[0].bkgr=-1;
-  butn5[0].butncode=10;
+  butn5[0].butncode=31;
   DIN b5 = { 
     'n',
     385,62,  
@@ -139,8 +139,8 @@ int AddStillGroup( DIALOG *D,void **v,void *pt) {
   b5.item = -1;
   T_ELMT *e6  ; 
   e6 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e6[0].fmt = (char *)malloc(18);
-  strcpy(e6[0].fmt,(char *)"Duration(secs)%6d");
+  e6[0].fmt = (char *)malloc(19);
+  strcpy(e6[0].fmt,(char *)"Duration(secs)%12F");
   e6[0].v=(void *)v[2];
   e6[0].sw=1;
   e6[0].noecho=0;
@@ -148,7 +148,7 @@ int AddStillGroup( DIALOG *D,void **v,void *pt) {
   DIT t6 = { 
     't',
     92,119,  
-    324,153,
+    379,153,
     20, 
     1,1, 
     e6,
@@ -216,9 +216,9 @@ int MakeAddStillGroup(DIALOG *D,void *arg) {
    char  *v1 ;
    v1 = (char *)malloc(sizeof(char)*500);
    v1[0] = '\0';
-   int  *v2 ;
-   v2 = (int *)malloc(sizeof(int));
-   *v2 = 1;
+   double *v2 ;
+   v2 = (double *)malloc(sizeof(double));
+   *v2 = 0.0;
    void** v=(void **)malloc(sizeof(void*)*4);
    v[3]=NULL;
    v[0]=(void *)(v0);
@@ -318,7 +318,7 @@ void *RunAddStill(void *parent ,void *args) {
 *************************************************/
    char  v0[500]="" ;
    char  v1[500]="" ;
-   int   v2 = 1;
+   double v2 = 0.0;
    void* v[3];
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);

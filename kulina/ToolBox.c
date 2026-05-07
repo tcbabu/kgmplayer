@@ -215,13 +215,6 @@ TOOLGRP ToolList[ ] = {
   { 0, MakeVideoInfoGroup,"!f23Show Video Information",346,40,RunHelper,0,
        "Displays information about Video file.\n"
   },
-  { 0, Makeimgs2vGroup,"!f23Images to Video",346,40,RunHelper,0,
-       "Useful in creating a video from a set of photographs or images\n"
-       "May not be the one for creating video from frames, though one\n"
-       "can attempt by reducing time for each image, probably for low\n"
-       "quality video for cartoons\n"
-       "Another tool is there for making video from frames.\n"
-  },
   { 0, MakevtobwGroup,"!f23Convert Video to Black&White", 346,40 ,RunHelper,0,
        "\n\n\nConverts a video to gray scale or Balck&White\n"
   },
@@ -282,6 +275,13 @@ TOOLGRP ToolList[ ] = {
   },
   { 0, MakePicFrameGroup,"!f23Pic one Frame Video ", 346,40,RunHelper,0,
        "Pic a frome from the time position(float)\n"
+  },
+  { 0, Makeimgs2vGroup,"!f23Images to Video",346,40,RunHelper,0,
+       "Useful in creating a video from a set of photographs or images\n"
+       "May not be the one for creating video from frames, though one\n"
+       "can attempt by reducing time for each image, probably for low\n"
+       "quality video for cartoons\n"
+       "Another tool is there for making video from frames.\n"
   },
   { 0, MakeAddStillGroup,"!f23Add Still to Video at start ", 346,40,RunHelper,0,
        "Adds a still in video for a given time in seconds\n"

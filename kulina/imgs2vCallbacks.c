@@ -1,12 +1,13 @@
 #include <kulina.h>
 #include <sys/stat.h>
+#include "imgs2vCallbacks.h"
 #include "mediainfo.h"
 #include "images2videos.h"
 IMGS2VDATA is2vdata;
 extern MEDIAINFO Minfo;
 static DIX *IX2=NULL;
 static DIT *TOUT=NULL;
-extern int ScrFit;
+int ScrFit=1;
 
 int ResetGrpVis(void *);
 int FileStat(char *flname);
@@ -15,6 +16,15 @@ int GetBaseIndex(char *s);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 void *RunkgGetFiles(void *arg,char *Filter);
 void *RunReorderImages(void *arg);
+static void *Args=NULL,*Rets=NULL;
+
+static DIAINTR *It = NULL;
+
+
+static MODINTERFACE ModFuns[] = { 
+    (MODINTERFACE) NULL 
+};
+static Dlink *ModuleList=NULL;
 
 ThumbNail **AddItemtoIlist(char *newitem) {
   char buff[500];
@@ -86,7 +96,7 @@ ThumbNail **DeleteItemsfromIlist(void) {
   return kgStringToThumbNails(menu);
 }
 
-int  imgs2vbutton1callback(int butno,int i,void *Tmp) {
+int imgs2vimgs2vWidget2callback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -173,9 +183,15 @@ int  imgs2vbutton1callback(int butno,int i,void *Tmp) {
   }
   return ret;
 }
-void  imgs2vbutton1init(DIN *B,void *pt) {
+void  imgs2vimgs2vWidget2init (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
 }
-int  imgs2vbrowser1callback(int item,int i,void *Tmp) {
+ /* Callback for  imgs2vBrowser   */ 
+
+int imgs2vimgs2vBrowsercallback(int item,int i,void *Tmp) {
   /*********************************** 
     item : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -193,11 +209,14 @@ int  imgs2vbrowser1callback(int item,int i,void *Tmp) {
   }
   return ret;
 }
-void  imgs2vbrowser1init(DIX *X,void *pt) {
+void  imgs2vimgs2vBrowserinit (DIX *X,void *ptmp) {
  // One may setup browser list here by setting X->list
  // if it need to be freed set it as X->pt also
+ void **pt=(void **)ptmp; //pt[0] is arg 
 }
-int  imgs2vtextbox1callback(int cellno,int i,void *Tmp) {
+ /* Callback for  imgs2vVideo   */ 
+
+int imgs2vimgs2vVideocallback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -209,20 +228,6 @@ int  imgs2vtextbox1callback(int cellno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   T = (DIT *)kgGetWidget(Tmp,i);
   strcpy(is2vdata.Outfile,kgGetString(T,0));
-  e = T->elmt;
-  return ret;
-}
-int  imgs2vtextbox2callback(int cellno,int i,void *Tmp) {
-  /************************************************* 
-   cellno: current cell counted along column strting with 0 
-           ie 0 to (nx*ny-1) 
-   i     : widget id starting from 0 
-   Tmp   : Pointer to DIALOG 
-   *************************************************/ 
-  DIALOG *D;DIT *T;T_ELMT *e; 
-  int ret=1;
-  D = (DIALOG *)Tmp;
-  T = (DIT *)kgGetWidget(Tmp,i);
   e = T->elmt;
   return ret;
 }
@@ -240,7 +245,28 @@ int GetRadioValue(void *Tmp) {
   
   return ScrFit;
 }
-int  imgs2vbrowser2callback(int item,int i,void *Tmp) {
+
+ /* Callback for  Options   */ 
+
+int imgs2vOptionscallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  return ret;
+}
+ /* Callback for  FitWidget   */ 
+
+int imgs2vFitWidgetcallback(int item,int i,void *Tmp) {
   /*********************************** 
     item : selected item (1 to max_item)  not any specific relevence
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -256,9 +282,13 @@ int  imgs2vbrowser2callback(int item,int i,void *Tmp) {
   ScrFit=item;
   return ret;
 }
-void  imgs2vbrowser2init(DIRA *R,void *pt) {
+void  imgs2vFitWidgetinit (DIRA *R,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
 }
-int  imgs2vsplbutton1callback(int butno,int i,void *Tmp) {
+
+ /* Callback for  imgs2vWidget9   */ 
+
+int imgs2vimgs2vWidget9callback( int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -270,7 +300,7 @@ int  imgs2vsplbutton1callback(int butno,int i,void *Tmp) {
   void *id;
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"OptionsWidget");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"Options");
   n = B->nx;
   IX2 = (DIX *)kgGetNamedWidget(D,(char *)"imgs2vBrowser");
   TOUT = (DIT *)kgGetNamedWidget(D,(char *)"imgs2vVideo");
@@ -302,8 +332,127 @@ int  imgs2vsplbutton1callback(int butno,int i,void *Tmp) {
   }
   return ret;
 }
-void  imgs2vsplbutton1init(DIL *B,void *pt) {
+void  imgs2vimgs2vWidget9init (DIL *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
 }
+ 
+int imgs2vObrowsecallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  switch(butno) {
+    case 1: //  Browse 
+       char Flname[300];
+       Flname[0]='\0';
+       if(kgFolderBrowser(Tmp,2,2,Flname,"*") ) {
+         DIT *TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"imgs2vVideo");
+         kgSetString (TO,0,Flname);
+         kgUpdateWidget(TO);
+         kgUpdateOn(Tmp);
+       }
+      break;
+  }
+  return ret;
+}
+void  imgs2vObrowseinit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
+}
+int imgs2vSetup(void *Tmp,void *args) {
+  /*********************************** 
+    args :  Pointer to args  
+   ***********************************/ 
+  /* you add any initialisation here */
+  /* useful for setting is used as MakeGroup */
+  return 1;
+}
+ 
+void * imgs2vCleanDia(void *args) {
+  /*********************************** 
+    args :  Pointer to args  
+   ***********************************/ 
+  
+/* you add any cleaning  here */
+
+  return NULL;
+}
+ 
+ 
+void *  imgs2vAction(void *Tmp,void *Args) {
+  return NULL;
+} 
+ 
+ 
+int   imgs2vOn(void *itmp) {
+  DIAINTR * Dt = (DIAINTR *) itmp;
+  if(Dt == NULL ) Dt = (DIAINTR *)It;
+  if(Dt != NULL) {
+    if(Dt->Dtmp != NULL)kgSetGrpVisibility(Dt->Dtmp,Dt->GrpId,1);
+    else return 0;
+    return 1;
+  } 
+  return 0;
+} 
+ 
+int   imgs2vOff(void *itmp) {
+  DIAINTR * Dt = (DIAINTR *) itmp;
+  if(Dt == NULL ) Dt = (DIAINTR *)It;
+  if(Dt != NULL) {
+    if(Dt->Dtmp != NULL)kgSetGrpVisibility(Dt->Dtmp,Dt->GrpId,0);
+    else return 0;
+    return 1;
+  } 
+  return 0;
+} 
+ 
+static char *GetPointer(char *str) { 
+  char *pt; 
+  pt = (char *)malloc(strlen(str)+1); 
+  strcpy(pt,str); 
+  return pt; 
+} 
+ 
+ 
+void * imgs2vInterface(void *args,void *rets) {
+  /*********************************** 
+   ***********************************/ 
+  DIAINTR *it= (DIAINTR *)malloc(sizeof(DIAINTR));
+  it->GrpId=0;
+  // filled by MakeGroup  it->xsh=0;
+  it->ysh=0;
+  it->RunDia = Runimgs2v;
+  it->MakeGroup = Makeimgs2vGroup;
+  it->Title = GetPointer((char *)"imgs2v");
+  it->Help = GetPointer( (char *)"No help yet, request");
+  it->Action = imgs2vAction;
+  it->Settings = imgs2vSetup;
+  it->Cleanup  = imgs2vCleanDia;
+  if(args != NULL) Args=args;
+  if(rets != NULL) Rets=rets;
+  it->args = Args;
+  it->rets = Rets;
+  it->SwitchOn = imgs2vOn;
+  it->SwitchOff = imgs2vOff;
+  it->Dtmp = NULL; // fiiled by MakeGroup 
+  It = it;
+  return it;
+}
+ 
+ 
 int imgs2vinit(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
@@ -311,20 +460,20 @@ int imgs2vinit(void *Tmp) {
   /* you add any initialisation here */
   int ret = 1;
   DIALOG *D;void *pt;
-  char Output[500],Folder[500];
+  char Folder[500],Infile[200];
   D = (DIALOG *)Tmp;
   pt = D->pt;
-  is2vdata.List = NULL;
   IX2 = (DIX *)kgGetNamedWidget(D,(char *)"imgs2vBrowser");
-  TOUT = (DIT *)kgGetNamedWidget(D,(char *)"imgs2vVideo");
-  sprintf(Output,"%-s/ ",getenv("HOME"));
-  sprintf(Folder,"%-s/Video",getenv("HOME"));
-  MakeFileInFolder(Output,Folder,Output,(char *)"mp4");
+  DIT *TO = (DIT *)kgGetNamedWidget(D,(char *)"imgs2vVideo");
+  sprintf(Infile,"%-s/Images.mp4",getenv("HOME"));
+  sprintf(Folder,"%-s",getenv("HOME"));
+  MakeFileInFolder(Infile,Folder,Folder,(char *)"mp4");
 #if 0
-  kgSetString(TOUT,0,Output);
-  kgUpdateWidget(TOUT);
+  kgSetString(TO,0,Folder);
+  kgUpdateWidget(TO);
 #endif
 //  kgSetDefaultWidget(D,3);
+  is2vdata.List = NULL;
   return ret;
 }
 int imgs2vcleanup(void *Tmp) {
@@ -337,6 +486,58 @@ int imgs2vcleanup(void *Tmp) {
   D = (DIALOG *)Tmp;
   pt = D->pt;
   return ret;
+}
+int Modifyimgs2v(void *Tmp,int GrpId) {
+  DIALOG *D;
+  D = (DIALOG *)Tmp;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+ /* pt[0] is inputs given by caller */
+  DIA *d;
+  int i,n;
+  kgCheckParentPosition(Tmp);
+  d = D->d;
+
+  if( ModuleList == NULL) ModuleList = kgGetModuleList((void **)ModFuns);
+  char Infile[500],Folder[500];
+  DIT *TO = (DIT *)kgGetNamedWidget(D,(char *)"imgs2vVideo");
+  sprintf(Infile,"%-s/Images.mp4",getenv("HOME"));
+  sprintf(Folder,"%-s",getenv("HOME"));
+  MakeFileInFolder(Infile,Folder,Folder,(char *)"mp4");
+#if 1
+  kgSetString(TO,0,Folder);
+  kgUpdateWidget(TO);
+#endif
+  i=0;
+  void *args=NULL;
+  DIAINTR *Dt;
+  Resetlink(ModuleList);
+  while ( (Dt=(DIAINTR *)Getrecord(ModuleList)) != NULL) {
+    Dt->GrpId = Dt->MakeGroup(Tmp,NULL);
+    kgShiftGrp(Tmp,Dt->GrpId,Dt->xsh,Dt->ysh);
+    Dt->Settings(Tmp,args);
+    i++;
+  };
+
+  i=0;while(d[i].t!= NULL) {;
+     i++;
+  };
+  n=1;
+//  strcpy(D->name,"Kulina Designer ver 3.0");    /*  Dialog name you may change */
+#if 0
+  if(D->fullscreen!=1) {    /*  if not fullscreen mode */
+     int xres,yres; 
+     kgDisplaySize(&xres,&yres); 
+      // D->xo=D->yo=0; D->xl = xres-10; D->yl=yres-80;
+  }
+  else {    // for fullscreen
+     int xres,yres; 
+     kgDisplaySize(&xres,&yres); 
+     D->xo=D->yo=0; D->xl = xres; D->yl=yres;
+//     D->StackPos = 1; // you may need it
+  }    /*  end of fullscreen mode */
+#endif
+  return GrpId;
 }
 int imgs2vCallBack(void *Tmp,void *tmp) {
   /*********************************** 

@@ -13,9 +13,9 @@ int RunAndWait(char *);
 int RunAndMonitor(char *);
 int RunMonitorAndWait(char *);
 int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
-int CreateStillVideo(char *infile,int duration,char *outfile) {
+int CreateStillVideo(char *infile,float duration,char *outfile) {
     char buff[500];
-    sprintf(buff,"ffmpegfun  -y  -loop 1 -i %s  -t %d -f mp4  %s",
+    sprintf(buff,"ffmpegfun  -y  -loop 1 -i %s  -t %.2f -f mp4  %s",
       infile,duration,outfile);
     RunMonitorAndWait(buff);
     return 1;
@@ -29,13 +29,13 @@ int GetFirstFrame(char *infile,char *outfile) {
 int JoinTwoVideos(char *infile1,char *infile2,char *outfile){
    char buff[500],Tmp[100],Txt[100];
    strcpy(Tmp,(char *)"/tmp");
-   sprintf (buff,"ffmpegfun -i %s -i %s -filter_complex "
+   sprintf (buff,"ffmpegfun -y -i %s -i %s -filter_complex "
       "\"[0:v][1:v]concat=n=2:v=1[outv]\" -map \"[outv]\" %s",
       infile1,infile2,outfile);
    RunMonitorAndWait(buff);
    return 1;
 }
-int AddStillAtStart(char *infile,int duration,char *outfile) {
+int AddStillAtStart(char *infile,float  duration,char *outfile) {
    char buff[500],Tmp[100],Ffile[200],Sfile[500];
    strcpy(Tmp,(char *)"/tmp");
    MakeFileInFolder(infile,Tmp,Ffile,(char *)"png");

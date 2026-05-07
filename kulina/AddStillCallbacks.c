@@ -12,7 +12,7 @@ int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int GetFolderName(char *infile,char *folder);
 int RunAndMonitor(char *);
 int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
-int AddStillAtStart(char * infile,int duration,char *outfile);
+int AddStillAtStart(char * infile,float duration,char *outfile);
 
 
 static void *Args=NULL,*Rets=NULL;
@@ -117,7 +117,7 @@ int AddStillASVgocallback( int butno,int i,void *Tmp) {
   sprintf (buff,"Adding Still Video..\n");
   kgWrite(I,buff);
   ret =0;
-  AddStillAtStart(kgGetString(T,0),kgGetInt(TD,0),kgGetString(TO,0));
+  AddStillAtStart(kgGetString(T,0),(float)kgGetDouble(TD,0),kgGetString(TO,0));
   return ret;
 }
 void  AddStillASVgoinit (DIL *B,void *ptmp) {
