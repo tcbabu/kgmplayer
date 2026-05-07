@@ -51,6 +51,20 @@ static MODINTERFACE ModFuns[] = {
 };
 static Dlink *ModuleList=NULL;
 
+
+static int FolderBrowser(char *FileName) {
+	char *Str=NULL;
+	int ret=0,ln;
+	if( (Str=kgGetVideoFile(NULL)) != NULL) {
+		ln = strlen(Str);
+		if(ln>1) {
+			ret =1;
+			strcpy(FileName,Str);
+			free(Str);
+		}
+	}
+	return ret;
+}
 int ProcessPrint(int pip0,int pip1,int Pid) {
      char buff[1000],connection[500],Formats[500],Selected[500];
      int ret =0;
@@ -584,7 +598,8 @@ int VideoJoinVideoJoinWidget2callback(int butno,int i,void *Tmp) {
   switch(butno) {
     case 1: 
 #if 0
-      if(kgFolderBrowser(NULL,100,100,filename,(char *)"*")) {
+//      if(kgFolderBrowser(NULL,100,100,filename,(char *)"*")) {
+      if(FolderBrowser(filename) {
         CheckMedia(filename);
         if(Minfo.Video !=0 ) {
           th = AddItemtoVlist(filename);
