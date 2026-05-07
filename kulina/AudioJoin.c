@@ -16,7 +16,7 @@ int AudioJoinGroup( DIALOG *D,void **v,void *pt) {
     (int *)v[0], 
     NULL, 
     NULL, 
-    NULL,AudioJoinVideoListcallback , /* *args, Callback  */
+    NULL,AudioJoinMediaListcallback , /* *args, Callback  */
     6,  /* Border Offset  */
      22,  /* Scroll width  */
      0,  /* Type  */
@@ -25,7 +25,7 @@ int AudioJoinGroup( DIALOG *D,void **v,void *pt) {
     1, /* bkgr */
     0  /*=1 hide  */
    };
-  strcpy(x0.Wid,(char *)"VideoList");
+  strcpy(x0.Wid,(char *)"MediaList");
   x0.item = -1;
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
@@ -35,14 +35,14 @@ int AudioJoinGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-1;
-  butn1[0].butncode=2079;
+  butn1[0].butncode=9922686;
   butn1[1].sw=1;
   strcpy(butn1[1].title,(char *)"!w32!f23Delete");
   butn1[1].xpmn=NULL;
   butn1[1].xpmp=NULL;
   butn1[1].xpmh=NULL;
   butn1[1].bkgr=-1;
-  butn1[1].butncode=31;
+  butn1[1].butncode=10119967;
   DIN b1 = { 
     'n',
     301,31,  
@@ -147,7 +147,7 @@ int AudioJoinGroup( DIALOG *D,void **v,void *pt) {
   d[0].t = (DIT *)malloc(sizeof(DIX));
   *d[0].x = x0;
   d[0].x->item = -1;
-  AudioJoinVideoListinit(d[0].x,pt) ;
+  AudioJoinMediaListinit(d[0].x,pt) ;
   d[1].t = (DIT *)malloc(sizeof(DIN));
   *d[1].N = b1;
   d[1].N->item = -1;

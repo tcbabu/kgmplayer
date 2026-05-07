@@ -1,5 +1,5 @@
-int AudioJoinVideoListcallback(int item,int i,void *Tmp) ;
-void  AudioJoinVideoListinit (DIX *X,void *pt) ;
+int AudioJoinMediaListcallback(int item,int i,void *Tmp) ;
+void  AudioJoinMediaListinit (DIX *X,void *pt) ;
 int AudioJoinAudioJoinWidget2callback(int butno,int i,void *Tmp) ;
 void  AudioJoinAudioJoinWidget2init (DIN *B,void *pt) ;
 int AudioJoinAjoinOutcallback(int cellno,int i,void *Tmp) ;

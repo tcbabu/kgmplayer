@@ -391,9 +391,9 @@ ThumbNail **DeleteItemsfromAlist(void) {
   return kgStringToThumbNails(menu);
 }
 
- /* Callback for  VideoList   */ 
+ /* Callback for  MediaList   */ 
 
-int AudioJoinVideoListcallback(int item,int i,void *Tmp) {
+int AudioJoinMediaListcallback(int item,int i,void *Tmp) {
   /*********************************** 
     item : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -411,7 +411,7 @@ int AudioJoinVideoListcallback(int item,int i,void *Tmp) {
   }
   return ret;
 }
-void  AudioJoinVideoListinit (DIX *X,void *ptmp) {
+void  AudioJoinMediaListinit (DIX *X,void *ptmp) {
  // One may setup browser list here by setting X->list
  // if it need to be freed set it as X->pt also
   AX2 = X;
@@ -431,7 +431,7 @@ int AudioJoinAudioJoinWidget2callback(int butno,int i,void *Tmp) {
 
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
-  AX2 = (DIX *)kgGetNamedWidget(Tmp,(char *)"AudioList");
+  AX2 = (DIX *)kgGetNamedWidget(Tmp,(char *)"MediaList");
   n = B->nx*B->ny;
   filename[0]='\0';
   switch(butno) {
