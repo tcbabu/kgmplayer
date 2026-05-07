@@ -1,6 +1,8 @@
 #include <kulina.h>
 #include "imgs2vCallbacks.h"
 #include "Gclrimgs2v.c"
+
+int imgs2vSetup(void *,void *);
 int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   int GrpId=0,oitems=0,i,j;
   DIA *d=NULL,*dtmp;
@@ -21,7 +23,7 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-240245255;
-  butn1[0].butncode=15198078;
+  butn1[0].butncode=6316158;
   butn1[1].sw=1;
   strcpy(butn1[1].title,(char *)"!w32!f23Delete");
   butn1[1].xpmn=NULL;
@@ -35,7 +37,7 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   butn1[2].xpmp=NULL;
   butn1[2].xpmh=NULL;
   butn1[2].bkgr=-240245255;
-  butn1[2].butncode=15198078;
+  butn1[2].butncode=126;
   DIN b1 = { 
     'n',
     227,10,  
@@ -84,8 +86,8 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   e3[0].img=NULL;
   DIT t3 = { 
     't',
-    142,211,  
-    385,245,
+    142,203,  
+    385,237,
     20, 
     1,1, 
     e3,
@@ -99,8 +101,8 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   t3.item = -1;
   DIM m4 = { 
     'm',
-    8,218,  
-    142,241,  
+    8,210,  
+    142,233,  
     1,0  
   };
   strncpy(m4.msg,(char *)"!w32!f21Video Output File",499);
@@ -128,8 +130,8 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   e5[2].img=NULL;
   DIT t5 = { 
     't',
-    6,261,  
-    463,296,
+    6,269,  
+    463,304,
     20, 
     3,1, 
     e5,
@@ -189,7 +191,7 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   butn8[0].xpmp=NULL;
   butn8[0].xpmh=NULL;
   butn8[0].bkgr=-235255250;
-  butn8[0].butncode=126;
+  butn8[0].butncode=11709054;
   butn8[1].sw=1;
   strcpy(butn8[1].title,(char *)"!c12!w32!f23Clear");
   butn8[1].xpmn=NULL;
@@ -223,8 +225,8 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   butn9[0].butncode=31;
   DIN b9 = { 
     'n',
-    384,211,  
-    458,243,
+    384,203,  
+    458,235,
     2,2,  
     64, 
     22, 
@@ -236,12 +238,20 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   };
   strcpy(b9.Wid,(char *)"Obrowse");
   b9.item = -1;
+  DII i10 = { 
+    'i',
+    3,236,  
+    457,266,  
+    49,1,0   
+  };
+  strcpy(i10.Wid,(char *)"imgs2vIbox");
+  i10.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+11));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+12));
   d =dtmp+i; 
-  d[10].t=NULL;
+  d[11].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIM));
   *d[0].m = m0;
   d[0].m->item = -1;
@@ -277,7 +287,10 @@ int imgs2vGroup( DIALOG *D,void **v,void *pt) {
   *d[9].N = b9;
   d[9].N->item = -1;
   imgs2vObrowseinit(d[9].N,pt) ;
-  d[10].t = NULL;
+  d[10].t = (DIT *)malloc(sizeof(DII));
+  *d[10].i = i10;
+  d[10].i->item = -1;
+  d[11].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -329,6 +342,7 @@ int Makeimgs2vGroup(DIALOG *D,void *arg) {
    GrpId = imgs2vGroup(D,v,pt);
    Gpt = kgGetWidgetGrp(D,GrpId);
    Gpt->arg= v; // kulina will double free this; you may modify
+   imgs2vSetup(D,v);
    return GrpId;
 }
 

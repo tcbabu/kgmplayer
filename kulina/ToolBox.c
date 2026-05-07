@@ -276,7 +276,7 @@ TOOLGRP ToolList[ ] = {
   { 0, MakePicFrameGroup,"!f23Pic one Frame Video ", 346,40,RunHelper,0,
        "Pic a frome from the time position(float)\n"
   },
-  { 0, Makeimgs2vGroup,"!f23Images to Video",346,40,RunHelper,0,
+  { 0, Makeimgs2vGroup,"!f23Images to Video",346,10,RunHelper,0,
        "Useful in creating a video from a set of photographs or images\n"
        "May not be the one for creating video from frames, though one\n"
        "can attempt by reducing time for each image, probably for low\n"

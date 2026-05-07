@@ -96,6 +96,15 @@ ThumbNail **DeleteItemsfromIlist(void) {
   return kgStringToThumbNails(menu);
 }
 
+static int Message(void *Tmp,char *msg){
+  DII *I = (DII*) kgGetNamedWidget(Tmp,(char *)"imgs2vIbox");
+  if(I==NULL) return 0;
+  kgWrite(I,msg);
+  kgUpdateWidget(I);
+  kgUpdateOn(Tmp);
+  return 1;
+}
+  
 int imgs2vimgs2vWidget2callback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
@@ -378,6 +387,19 @@ int imgs2vSetup(void *Tmp,void *args) {
    ***********************************/ 
   /* you add any initialisation here */
   /* useful for setting is used as MakeGroup */
+  char **pt= (char **)args;
+  char *v1 = pt[1];
+   char Infile[500],Folder[500];
+   sprintf(Infile,"%-s/Images.mp4",getenv("HOME"));
+   sprintf(Folder,"%-s",getenv("HOME"));
+   MakeFileInFolder(Infile,Folder,Folder,(char *)"mp4");
+   strcpy(v1,Folder);
+   int *v2 = (int *)pt[2];
+   int *v3 = (int *)pt[3];
+   double *v4 = (double *)pt[4];
+   *v2 = 960;
+   *v3 = 540;
+   *v4 =  10.0;
   return 1;
 }
  
@@ -464,13 +486,15 @@ int imgs2vinit(void *Tmp) {
   D = (DIALOG *)Tmp;
   pt = D->pt;
   IX2 = (DIX *)kgGetNamedWidget(D,(char *)"imgs2vBrowser");
-  DIT *TO = (DIT *)kgGetNamedWidget(D,(char *)"imgs2vVideo");
+#if 1
+  DIT *TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"imgs2vVideo");
   sprintf(Infile,"%-s/Images.mp4",getenv("HOME"));
   sprintf(Folder,"%-s",getenv("HOME"));
   MakeFileInFolder(Infile,Folder,Folder,(char *)"mp4");
-#if 0
-  kgSetString(TO,0,Folder);
-  kgUpdateWidget(TO);
+  if (TO != NULL){
+    kgSetString(TO,0,Infile);
+    kgUpdateWidget(TO);
+  }
 #endif
 //  kgSetDefaultWidget(D,3);
   is2vdata.List = NULL;
@@ -499,15 +523,6 @@ int Modifyimgs2v(void *Tmp,int GrpId) {
   d = D->d;
 
   if( ModuleList == NULL) ModuleList = kgGetModuleList((void **)ModFuns);
-  char Infile[500],Folder[500];
-  DIT *TO = (DIT *)kgGetNamedWidget(D,(char *)"imgs2vVideo");
-  sprintf(Infile,"%-s/Images.mp4",getenv("HOME"));
-  sprintf(Folder,"%-s",getenv("HOME"));
-  MakeFileInFolder(Infile,Folder,Folder,(char *)"mp4");
-#if 1
-  kgSetString(TO,0,Folder);
-  kgUpdateWidget(TO);
-#endif
   i=0;
   void *args=NULL;
   DIAINTR *Dt;
