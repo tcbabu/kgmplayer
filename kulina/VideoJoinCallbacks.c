@@ -39,6 +39,18 @@ int WriteInfo(char *);
 MEDIAINFO * GetMediaInfo(char *flname);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int runjob(char *job,int (*ProcessOut)(int,int,int));
+   
+
+static void *Args=NULL,*Rets=NULL;
+
+static DIAINTR *It = NULL;
+
+
+static MODINTERFACE ModFuns[] = { 
+    (MODINTERFACE) NULL 
+};
+static Dlink *ModuleList=NULL;
+
 int ProcessPrint(int pip0,int pip1,int Pid) {
      char buff[1000],connection[500],Formats[500],Selected[500];
      int ret =0;
@@ -525,7 +537,9 @@ ThumbNail **DeleteItemsfromVlist(void) {
 }
 
 
-int  VideoJoinbrowser1callback(int item,int i,void *Tmp) {
+ /* Callback for  VideoList   */ 
+
+int VideoJoinVideoListcallback(int item,int i,void *Tmp) {
   /*********************************** 
     item : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -543,12 +557,15 @@ int  VideoJoinbrowser1callback(int item,int i,void *Tmp) {
   }
   return ret;
 }
-void  VideoJoinbrowser1init(DIX *X,void *pt) {
+void  VideoJoinVideoListinit (DIX *X,void *ptmp) {
  // One may setup browser list here by setting X->list
  // if it need to be freed set it as X->pt also
+ void **pt=(void **)ptmp; //pt[0] is arg 
  VX2 = X;
 }
-int  VideoJoinbutton1callback(int butno,int i,void *Tmp) {
+ /* Callback for  VideoJoinWidget2   */ 
+
+int VideoJoinVideoJoinWidget2callback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -603,9 +620,16 @@ int  VideoJoinbutton1callback(int butno,int i,void *Tmp) {
   }
   return ret;
 }
-void  VideoJoinbutton1init(DIN *B,void *pt) {
+void  VideoJoinVideoJoinWidget2init (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
 }
-int  VideoJointextbox1callback(int cellno,int i,void *Tmp) {
+
+ /* Callback for  VjoinOut   */ 
+
+int VideoJoinVjoinOutcallback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -619,7 +643,9 @@ int  VideoJointextbox1callback(int cellno,int i,void *Tmp) {
   e = T->elmt;
   return ret;
 }
-int  VideoJoinsplbutton1callback(int butno,int i,void *Tmp) {
+ /* Callback for  JoinVideos   */ 
+
+int VideoJoinJoinVideoscallback( int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -733,7 +759,11 @@ int  VideoJoinsplbutton1callback(int butno,int i,void *Tmp) {
   ResetGrpVis(Tmp);
   return ret;
 }
-void  VideoJoinsplbutton1init(DIL *B,void *pt) {
+void  VideoJoinJoinVideosinit (DIL *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
 }
 int VideoJoininit(void *Tmp) {
   /*********************************** 
@@ -799,9 +829,9 @@ int VideoJoinWaitCallBack(void *Tmp) {
   int ret = 0;
   return ret;
 }
-void  VideoJoinbrowser2init(DIRA *R,void *pt) {
-}
-int  VideoJoinbrowser2callback(int item,int i,void *Tmp) {
+ /* Callback for  VJQuality   */ 
+
+int VideoJoinVJQualitycallback(int item,int i,void *Tmp) {
   /*********************************** 
     item : selected item (1 to max_item)  not any specific relevence
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -815,4 +845,85 @@ int  VideoJoinbrowser2callback(int item,int i,void *Tmp) {
   R = (DIRA *)kgGetWidget(Tmp,i);
   th = (ThumbNail **) R->list;
   return ret;
+}
+void  VideoJoinVJQualityinit (DIRA *R,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+}
+ /* Callback for  VJObrowse   */ 
+
+int VideoJoinVJObrowsecallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  switch(butno) {
+    case 1: //  Browse 
+       char Flname[300];
+       Flname[0]='\0';
+       if(kgFolderBrowser(Tmp,2,2,Flname,"*") ) {
+         DIT *TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VjoinOut");
+         kgSetString (TO,0,Flname);
+         kgUpdateWidget(TO);
+         kgUpdateOn(Tmp);
+       }
+      break;
+  }
+  return ret;
+}
+void  VideoJoinVJObrowseinit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
+}
+int ModifyVideoJoin(void *Tmp,int GrpId) {
+  DIALOG *D;
+  D = (DIALOG *)Tmp;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+ /* pt[0] is inputs given by caller */
+  DIA *d;
+  int i,n;
+  kgCheckParentPosition(Tmp);
+  d = D->d;
+
+  if( ModuleList == NULL) ModuleList = kgGetModuleList((void **)ModFuns);
+  i=0;
+  void *args=NULL;
+  DIAINTR *Dt;
+  Resetlink(ModuleList);
+  while ( (Dt=(DIAINTR *)Getrecord(ModuleList)) != NULL) {
+    Dt->GrpId = Dt->MakeGroup(Tmp,NULL);
+    kgShiftGrp(Tmp,Dt->GrpId,Dt->xsh,Dt->ysh);
+    Dt->Settings(Tmp,args);
+    i++;
+  };
+
+  i=0;while(d[i].t!= NULL) {;
+     i++;
+  };
+  n=1;
+//  strcpy(D->name,"Kulina Designer ver 3.0");    /*  Dialog name you may change */
+#if 0
+  if(D->fullscreen!=1) {    /*  if not fullscreen mode */
+     int xres,yres; 
+     kgDisplaySize(&xres,&yres); 
+      // D->xo=D->yo=0; D->xl = xres-10; D->yl=yres-80;
+  }
+  else {    // for fullscreen
+     int xres,yres; 
+     kgDisplaySize(&xres,&yres); 
+     D->xo=D->yo=0; D->xl = xres; D->yl=yres;
+//     D->StackPos = 1; // you may need it
+  }    /*  end of fullscreen mode */
+#endif
+  return GrpId;
 }
