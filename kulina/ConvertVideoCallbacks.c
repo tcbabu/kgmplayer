@@ -84,15 +84,25 @@ int MakeMp4File(char *Infile,char *Outfile,int id) {
    return 1;
 }
 int SetExtraVisibility(void *Tmp) {
+#if 0
+    if(cndata.ChngAsp) kgSetGrpVisibility(D,VaspGrp,1);
+    if(cndata.Scale) kgSetGrpVisibility(D,VsizeGrp,1);
+    if(cndata.VFullRange!=1) {
+      kgSetGrpVisibility(D,VrangeGrp,1);
+    }
+#endif
    DIT *TA = (DIT *) kgGetNamedWidget(Tmp,(char *)"CVasp");
    DIT *TX = (DIT *) kgGetNamedWidget(Tmp,(char *)"CVxres");
    DIT *TR = (DIT *) kgGetNamedWidget(Tmp,(char *)"CVrange");
-   kgSetWidgetVisibility(TA,0);
-   kgUpdateWidget (TA);
-   kgSetWidgetVisibility(TX,0);
-   kgUpdateWidget (TX);
-   kgSetWidgetVisibility(TR,0);
-   kgUpdateWidget (TR);
+   if(cndata.ChngAsp) kgSetWidgetVisibility(TA,1);
+   else kgSetWidgetVisibility(TA,0);
+//   kgUpdateWidget (TA);
+   if(cndata.Scale)kgSetWidgetVisibility(TX,1);
+   else kgSetWidgetVisibility(TX,0);
+//   kgUpdateWidget (TX);
+   if(cndata.VFullRange!=1)kgSetWidgetVisibility(TR,1);
+   else kgSetWidgetVisibility(TR,0);
+//   kgUpdateWidget (TR);
    kgUpdateOn(Tmp);
    return 1;
 }
