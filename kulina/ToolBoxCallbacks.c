@@ -16,6 +16,7 @@ extern int AConGrp,RangeGrp,EnVoGrp,VConGrp,
 extern int ToolHelpGrp,HelpButnGrp,ImageBoxGrp;
 
 extern TOOLGRP ToolList[];
+int SetExtraVisibility(void *); // for Convert Video only
 
 int SetGrpVis(DIALOG *Tmp,TOOLGRP *T,int item) {
   int k,id;
@@ -96,11 +97,14 @@ int  ToolBoxbrowser1callback(int item,int i,void *Tmp) {
     break;
     case 3:
     SetGrpVis(D,ToolList,item);
+#if 0
     if(cndata.ChngAsp) kgSetGrpVisibility(D,VaspGrp,1);
     if(cndata.Scale) kgSetGrpVisibility(D,VsizeGrp,1);
     if(cndata.VFullRange!=1) {
       kgSetGrpVisibility(D,VrangeGrp,1);
     }
+#endif
+    SetExtraVisibility(D);
     break;
     case 1:
     SetGrpVis(D, ToolList,-1);
