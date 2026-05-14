@@ -5070,6 +5070,7 @@ void transch(int c) {
       if ( dc->gcur_y > vy2-1 ) {dc->gcur_y = vy2-1; }
       if ( dc->gcur_x < vx1 ) {dc->gcur_x = vx1; }
       if ( dc->gcur_y < vy1 ) {dc->gcur_y = vy1; }
+      uiPositionPointer(wc,dc->gcur_x ,dc->gcur_y );
       x = uiusr_x ( dc->gcur_x ) ;
       y = uiusr_y ( EVGAY-dc->gcur_y ) ;
       sprintf ( nbuf , dc->Posfmt , x , y ) ;
@@ -5077,7 +5078,6 @@ void transch(int c) {
       for ( i = l; i < 49; i++ ) nbuf [ i ] = ' ';
       nbuf [ 34 ] = '\0';
       uimsg_menu ( G , dc->msg_x , dc->msg_y , 34 , nbuf ) ;
-//  Position_Pointer(dc->gcur_x,dc->gcur_y);
       uiUpdateOn ( D ) ;
 #endif
   }
@@ -5481,7 +5481,14 @@ void transch(int c) {
   }
   char kgBoxCursor ( DIG *G , float *xx , float *yy , \
   float *xbgn , float *ybgn ) \
+  /*   (xbgn,ybgn) initial upper left corner
+       (xx,yy) is upper right corner
+       (xbgn,ybgn) not updated
+       New position to lower left corner is send 
+       through (xx,yy)
+  ***************************************************/
   {
+      
       KBEVENT kbevent;
       DIALOG *D;
       int kb , button , event , OK = 0 , c_color; ;
@@ -5506,11 +5513,13 @@ void transch(int c) {
       yorg1 = D->evgay-uiscr_y ( *yy ) ;
       xorg = uiscr_x ( *xbgn ) ;
       yorg = D->evgay-uiscr_y ( *ybgn ) ;
-      dc->gcur_x = xorg1;
-      dc->gcur_y = yorg1;
-      xorg -= xorg1;
-      yorg = yorg1-yorg;
+      dc->gcur_x = xorg;
+      dc->gcur_y = yorg;
+      xorg = (xorg1- xorg);
+      yorg = -(yorg1-yorg);
       uiScrn_back ( wc , dc->msg_x , dc->msg_y , 40 ) ;
+//      dc->gcur_x = xorg1;
+//      dc->gcur_y = yorg1;
       xpo = dc->gcur_x , ypo = dc->gcur_y;
 //  gbell();
 //  ChangeCursor(35);

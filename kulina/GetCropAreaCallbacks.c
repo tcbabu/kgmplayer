@@ -6,11 +6,14 @@ static void *Args=NULL,*Rets=NULL;
 
 static DIAINTR *It = NULL;
 
-static int Xi,Yi;
+
 static MODINTERFACE ModFuns[] = { 
     (MODINTERFACE) NULL 
 };
 static Dlink *ModuleList=NULL;
+
+static int Xi,Yi;
+static int *Vals;
 
  /* InitFunction for  GCAgbox   */ 
 
@@ -22,28 +25,36 @@ void GetCropAreaGCAgboxinit (int i,void *Tmp) {
   DIG *G;
   D = (DIALOG *)Tmp;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-// pt[0] is args passed as inputs; pt[1] is output pointer
+  // pt[0] is args passed as inputs; pt[1] is output pointer
   G = D->d[i].g;
   G->D = (void *)(Tmp);
-  char flname[500],buff[500];;
+  char flname[500];
   void *img=NULL;
   char *imgfile = (char *)(pt[0]);
-  float Vx=0.0,Vy=0.0;
   printf("File: %s\n",imgfile);
   strcpy(flname,"##");
   strcat(flname,imgfile);
   img = kgGetImage(imgfile);
   kgGetImageSize(img,&Xi,&Yi);
   printf("Res: %d %d\n",Xi,Yi);
-  if(Xi > Yi) Vy = ((float)Yi/(float)Xi)*0.5;
-  if(Xi < Yi) Vx = ((float)Xi/(float)Yi)*0.5;
   kgFreeImage(img);
-  kgViewport(G,0.0+Vx,0.0+Vy,1.0-Vx,1.0-Vy);
+  if(pt[1]==NULL) {
+     Vals = (int *)malloc(sizeof(int)*4);
+     pt[1]= Vals;     
+     Vals[0] = 1;
+     Vals[1] = 2;
+     Vals[2] = Xi-2;
+     Vals[3] = Yi-2;
+  }
+  else Vals= (int *)pt[1];
+  DIT *T = (DIT *) kgGetNamedWidget(Tmp,(char *)"GCAtbox");
+  kgSetInt(T,0,Vals[0]);
+  kgSetInt(T,1,Vals[1]);
+  kgSetInt(T,2,Vals[2]);
+  kgSetInt(T,3,Vals[3]);
+  kgUpdateWidget(T);
   kgUserFrame(G,0.,0.,(float)Xi,(float) Yi);
   kgDrawImage(G,flname,0.,0.,(float)Xi,(float) Yi);
-  DII *Ibox = (DII *)kgGetNamedWidget(D,(char *)"GCAdsp");
-  sprintf(buff,"%s",flname+2);
-  kgWrite(Ibox,buff);
   kgUpdateOn(Tmp);
   return ;
 }
@@ -69,25 +80,66 @@ int GetCropAreaGCAbutncallback( int butno,int i,void *Tmp) {
   if(pt[1]==NULL ) pt[1]=malloc(sizeof(int)*4);
   Vals = (int *)(pt[1]);
   n = B->nx;
-  float xx=100,yy=100,xo=10,yo=10;
+  float xx=500,yy=500,xo=0,yo=0,xl,yl,dx,dy;
+
+  DIT *T = (DIT *) kgGetNamedWidget(Tmp,(char *)"GCAtbox");
+//  printf("Vals: %d %d %d %d\n",Vals[0],Vals[1],Vals[2],Vals[3]);
+  xo = kgGetInt(T,0);
+  yo = kgGetInt(T,1);
+  Vals[0] = xo;
+  Vals[1] = yo;
+  yo = Yi -yo;
+  dx = kgGetInt(T,2);
+  dy = kgGetInt(T,3);
+  Vals[2] = dx;
+  Vals[3] = dy;
+  
+  xx = xo + dx;
+  yy = yo - dy;
+//  printf("Box: %f %f %f %f\n",xo,yo,xx,yy);
+
   char flname[500];
   DII *Ibox = (DII *)kgGetNamedWidget(D,(char *)"GCAdsp");
   switch(butno) {
-    case 1: //  Select Area 
+    case 1: //  Move  Area 
+      ret =0;
+      float xxn = xx ;
+      float yyn = yy ;
+      
+      kgBoxCursor(G,&xxn,&yyn,&xo,&yo);  //Problem
+      Vals[0] =(int)(xxn+0.5);
+      Vals[1] =  Yi - (int) (yyn+0.5);
+      kgSetInt(T,0,(int)(Vals[0]));
+      kgSetInt(T,1,(int)(Vals[1]));
+      kgUpdateWidget(T);
+      sprintf (flname,"Loc: ( %d , %d)  Reso: (%d , %d)",Vals[0],Vals[1],Vals[2],Vals[3]);
+      kgWrite(Ibox,flname);
+      kgUpdateOn(Tmp);
       break;
     case 2: //  Select Area 
       ret = 0;
+      int dum;
       kgCrossCursor(G,&xo,&yo);
       kgRectCursor(G,&xx,&yy,&xo,&yo);
       Vals[0] =(int)(xo+0.5);
-      Vals[1] =  Yi - (int) (yo+0.5);
-      Vals[2] = (int)(fabsf(xo-xx)+0.5);
-      Vals[3] = (int) (fabsf(yo-yy)+0.5); 
-      sprintf (flname,"Loc %d:%d Reso %d:%d",Vals[0],Vals[1],Vals[2],Vals[3]);
+      Vals[2] =(int)(xx+0.5);
+      Vals[1] = Yi - (int)(yo+0.5);
+      Vals[3] = Yi - (int)(yy+0.5);
+      if(Vals[2] < Vals[0] ){ dum = Vals[0];Vals[0]=Vals[2];Vals[2]=dum;}
+      if(Vals[1]>Vals[3] ){ dum = Vals[1];Vals[1] = Vals[3]; Vals[3]=dum;}
+      dum = Vals[2]-Vals[0];
+      Vals[2] = (int)(abs(dum));
+      dum = Vals[3]-Vals[1];
+      Vals[3] = (int) (abs(dum)); 
+      kgSetInt(T,0,(int)(Vals[0]));
+      kgSetInt(T,1,(int)(Vals[1]));
+      kgSetInt(T,2,(int)(Vals[2]));
+      kgSetInt(T,3,(int)(Vals[3]));
+      kgUpdateWidget(T);
+      sprintf (flname,"Loc: ( %d , %d)  Reso: (%d , %d)",Vals[0],Vals[1],Vals[2],Vals[3]);
       kgWrite(Ibox,flname);
       kgUpdateOn(Tmp);
       
-//    kgBoxCursor(G,&xx,&yy,&xo,&yo);  //Problem
       break;
     default:
       break;
@@ -101,6 +153,25 @@ void  GetCropAreaGCAbutninit (DIL *B,void *ptmp) {
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
+}
+
+ /* Callback for  GCAtbox   */ 
+
+int GetCropAreaGCAtboxcallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  return ret;
 }
 int GetCropAreaSetup(void *Tmp,void *args) {
   /*********************************** 

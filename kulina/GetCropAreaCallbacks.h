@@ -1,6 +1,7 @@
 void GetCropAreaGCAgboxinit (int i,void *Tmp) ;
 int GetCropAreaGCAbutncallback(int butno,int i,void *Tmp) ;
 void  GetCropAreaGCAbutninit (DIL *B,void *pt) ;
+int GetCropAreaGCAtboxcallback(int cellno,int i,void *Tmp) ;
 int GetCropAreainit(void *Tmp) ;
 int GetCropAreacleanup(void *Tmp) ;
 void *RunGetCropArea(void *,void *) ;

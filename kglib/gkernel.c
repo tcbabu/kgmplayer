@@ -4989,6 +4989,10 @@ static char FONTSTRV[60]= "-adobe-helvetica-bold-r-*-*-";
       }
   }
   void uiPositionPointer ( kgWC *wc , int x , int y ) {
+      if(x < 0) return;
+      if(x>wc->EVGAX ) return;
+      if(y < 0) return;
+      if(y>wc->EVGAY ) return;
       XWarpPointer ( wc->Dsp , wc->Win , wc->Win , 0 , \
       0 , wc->EVGAX+1 , wc->EVGAY+1 , x , y ) ;
   }
