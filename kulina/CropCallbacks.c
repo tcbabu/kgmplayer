@@ -26,6 +26,7 @@ static MODINTERFACE ModFuns[] = {
 };
 static Dlink *ModuleList=NULL;
 
+static   float duration=0;
 
 static int FolderBrowser(char *FileName) {
 	char *Str=NULL;
@@ -88,7 +89,6 @@ int CropCRPinput1browsecallback(int butno,int i,void *Tmp) {
   DIT *TL=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPloc");
   DIT *TR=(DIT *)kgGetNamedWidget(Tmp,(char *)"CRPres");
   int xo,yo,xres,yres;
-  float duration;
   ExtractVideoInfo(FileName,&xres,&yres,&duration);
   kgSetInt(TR,0,xres);
   kgSetInt(TR,1,yres);
@@ -248,7 +248,8 @@ int CropCRPselectcallback(int butno,int i,void *Tmp) {
   DIALOG *D;DIN *B; 
   int n,ret =0; 
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-  int *Vals=NULL;
+  int Vals[4];
+  void *args[2];
 // pt[0] is args passed as inputs; pt[1] is output pointer
   DIT *TL = (DIT *)kgGetNamedWidget(Tmp,(char *)"CRPloc");
   DIT *TR = (DIT *)kgGetNamedWidget(Tmp,(char *)"CRPres");
@@ -262,11 +263,17 @@ int CropCRPselectcallback(int butno,int i,void *Tmp) {
     strcpy(infile,(char *)kgGetString(TI,0));
     if(infile[0]=='\0') return 0;
     sprintf(frame1,"/tmp/%-d.png",getpid());
-    sprintf(buff,"kgffmpeg -y  -ss 00:00:0.1 -i %s -frames:v 1 %s" ,infile,frame1);
+    sprintf(buff,"kgffmpeg -y  -ss 00:00:%-4.2f -i %s -frames:v 1 %s" ,duration/2,infile,frame1);
 //    runfunction(buff,ProcessPrint,ffmpegfun);
     RunAndWait(buff);
 //    system(buff);
-    Vals = (int *)RunGetCropArea(Tmp,(char *)frame1);
+    args[0] = frame1;
+    args[1] = Vals;
+    Vals[0] = kgGetInt(TL,0);
+    Vals[1] = kgGetInt(TL,1);
+    Vals[2] = kgGetInt(TR,0);
+    Vals[3] = kgGetInt(TR,1);
+    RunGetCropArea(Tmp,args);
     kgSetInt(TL,0,Vals[0]);
     kgSetInt(TL,1,Vals[1]);
     kgSetInt(TR,0,Vals[2]);
@@ -274,7 +281,7 @@ int CropCRPselectcallback(int butno,int i,void *Tmp) {
     kgUpdateWidget(TL);
     kgUpdateWidget(TR);
     kgUpdateOn(Tmp);
-    free(Vals);
+
       break;
   }
   return ret;

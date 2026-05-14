@@ -248,10 +248,12 @@ void *RunGetCropArea(void *parent ,void *args) {
     Text_Box1  4 data values
 
 *************************************************/
-   int   v0 = 1;
-   int   v1 = 1;
-   int   v2 = 1;
-   int   v3 = 1;
+   void **Args = (void **)args;
+   int *ipt=(int *)Args[1];
+   int   v0 = ipt[0];
+   int   v1 = ipt[1];
+   int   v2 = ipt[2];
+   int   v3 = ipt[3];
    void* v[4];
    v[0]=(void *)(&v0);
    v[1]=(void *)(&v1);
@@ -259,7 +261,8 @@ void *RunGetCropArea(void *parent ,void *args) {
    v[3]=(void *)(&v3);
    void *pt[2]={NULL,NULL}; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
-   pt[0]=args;
+   pt[0]=Args[0];
+   pt[1]=Args[1];
    GetCropArea(parent,v,(void *)pt );
    return pt[1];
 }

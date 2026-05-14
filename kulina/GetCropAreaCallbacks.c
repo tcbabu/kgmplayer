@@ -12,7 +12,7 @@ static MODINTERFACE ModFuns[] = {
 };
 static Dlink *ModuleList=NULL;
 
-static int Xi,Yi;
+static int Xi=0,Yi=0;
 static int *Vals;
 
  /* InitFunction for  GCAgbox   */ 
@@ -37,6 +37,7 @@ void GetCropAreaGCAgboxinit (int i,void *Tmp) {
   img = kgGetImage(imgfile);
   kgGetImageSize(img,&Xi,&Yi);
   printf("Res: %d %d\n",Xi,Yi);
+  if ((Xi==0) || (Yi==0 )){Xi=100;Yi=100;}
   kgFreeImage(img);
   if(pt[1]==NULL) {
      Vals = (int *)malloc(sizeof(int)*4);
