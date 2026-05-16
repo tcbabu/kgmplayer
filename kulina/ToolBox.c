@@ -192,37 +192,37 @@ TOOLGRP ToolList[ ] = {
        "may not be satisfactory, but it is worth the try\n"
   },
   { 0, MakeRangeSelectGroup,"!f23Select Audio Frequency band",346,0,RunHelper,0,
-       "\n\n\nSelects a frequency band for  audio \n"
-       " Uses bandpass filter at mid-frquency\n"
-       "Other frequencies are attenuated\n"
+       "\n\n\nSelects a frequency band for  audio. \n"
+       " Uses bandpass filter at mid-frquency.\n"
+       "Other frequencies are attenuated.\n"
   },
   { 0, MakeRangeRejectGroup,"!f23Reject Audio Frequency band",346,0,RunHelper,0,
-       "\n\n\nSelects a frequency band for  audio \n"
-       " Uses bandreject filter at mid frequency\n"
+       "\n\n\nSelects a frequency band for  audio. \n"
+       " Uses bandreject filter at mid frequency.\n"
   },
   { 0, MakeLowPassGroup,"!f23 Audio LowPass Filter",346,0,RunHelper,0,
-       "\n\n\nLowpass filter for  audio \n"
-       " Only frequencies below the given frequency are selected\n"
+       "\n\n\nLowpass filter for  audio. \n"
+       " Only frequencies below the given frequency are selected.\n"
   },
   { 0, MakeHighPassGroup,"!f23 Audio HighPass Filter",346,0,RunHelper,0,
-       "\n\n\nHighpass filter for  audio \n"
-       " Only frequencies above the given frequency are selected\n"
+       "\n\n\nHighpass filter for  audio. \n"
+       " Only frequencies above the given frequency are selected.\n"
   },
   { 0, MakeCaptureAudioGroup,"!f23Capture Audio",346,0,RunHelper,0,
        "\n\n\nTo capture playing audio\noutput should be saved as Wav file\n"
-       "May change it as required.\nTo copy the output press the Save button\n"
+       "May change it as required.\nTo copy the output press the Save button.\n"
   },
   { 0, MakeVideoInfoGroup,"!f23Show Video Information",346,40,RunHelper,0,
        "Displays information about Video file.\n"
   },
   { 0, MakevtobwGroup,"!f23Convert Video to Black&White", 346,40 ,RunHelper,0,
-       "\n\n\nConverts a video to gray scale or Balck&White\n"
+       "\n\n\nConverts a video to gray scale or Balck&White.\n"
   },
   { 0, MakevflipGroup,"!f23Vertically flip Video", 346,40,RunHelper,0,
-       "\n\n\nFlips each frame vertically\n"
+       "\n\n\nFlips each frame vertically.\n"
   },
   { 0, MakehflipGroup,"!f23Horizontaly flip Video", 346,40,RunHelper,0,
-       "\n\n\nFlips each frame Horizontally\n"
+       "\n\n\nFlips each frame Horizontally.\n"
   },
   { 0, MakesliceGroup,"!f23Make slices of Video", 346,40,RunHelper,0,
        "\nCreates slices of a video in to many slices\n"
@@ -231,50 +231,52 @@ TOOLGRP ToolList[ ] = {
        "which may be put back in to a video.\n"
        "Though it keeps the audio also, it may be better\n"
        "to keep the audio separate and add later, since it\n"
-       "is better to keep it in a lossless format like wav or flac\n"
+       "is better to keep it in a lossless format like wav or flac.\n"
   },
   { 0, MakeChangeSizeGroup,"!f23Change Video Size", 346,40,RunHelper,0,
-       "Resize Video\n"
+       "Resize Video.\n"
+       "Convert/Extract video to mp4 got better options.\n"
   },
   { 0, MakeRotate90Group,"!f23Rotate Video 90 degree", 346,40,RunHelper,0,
-       "Rotates Video 90 degree clockewise or counter clockwise\n"
+       "Rotates Video 90 degree clockewise or counter clockwise.\n"
        "Some cases one may not get the desired result.\n"
        "In such cases case apply the rotation once again on the ouput\n"
        " or can use the specific angle tool.\n"
-       "For specific  angles use different tool\n"
-       " use repeatedly for multiples of 90 degree\n"      
+       "For specific  angles use different tool.\n"
+       " Use repeatedly for multiples of 90 degree.\n"      
   },
   { 0, MakeVRGroup,"!f23Rotate Video in angle", 346,40,RunHelper,0,
-       "Rotates Video in specific angle\n"
-       "For 90 degree angles use different tool\n"
+       "Rotates Video in specific angle.\n"
+       "For 90 degree angles use different tool.\n"
   },
   { 0, MakeSidebySideGroup,"!f23Two Videos side by side", 346,40,RunHelper,0,
-       "bring two videos side by side\n"
-       "Height of videos must be same\n"
-       "Adjust video and audio timings using other tools\n"
+       "Bring two videos side by side.\n"
+       "Height of videos must be same.\n"
+       "Adjust video and audio timings using other tools.\n"
        "It is better to extract and process audios and\n"
-       "  add to the procssed video later\n"
+       "  add to the procssed video later.\n"
   },
   { 0, MaketopandbottomGroup,"!f23Two Videos top and bottom", 346,40,RunHelper,0,
-       "bring two videos top and bottom\n"
+       "bring two videos top and bottom.\n"
        "Width of videos must be same\n"
-       "Adjust video and audio timings using other tools\n"
+       "Adjust video and audio timings using other tools.\n"
        "It is better to extract and process audios and\n"
-       "  add to the procssed video later\n"
+       "  add to the procssed video later.\n"
   },
   { 0, MakeOverlayGroup,"!f23Overlay Video over first", 346,40,RunHelper,0,
-       "Overlays second video over first\n"
-       "Adjust videos  using other tools\n"
+       "Overlays second video over first.\n"
+       "Adjust videos  using other tools.\n"
        "It is better to extract and process audios and\n"
-       "  add to the procssed video later\n"
+       "  add to the procssed video later.\n"
   },
   { 0, MakeCropGroup,"!f23Crop Video ", 346,40,RunHelper,0,
-       "Selected area is cropped\n"
+       "Selected area (within the video) is cropped,\n"
+       "if selected area is outside the video it will be adjusted.\n"
        "It is better to extract and process audios and\n"
-       "  add to the procssed video later\n"
+       "  add to the procssed video later.\n"
   },
   { 0, MakePicFrameGroup,"!f23Pic one Frame Video ", 346,40,RunHelper,0,
-       "Pic a frome from the time position(float)\n"
+       "Pic a frome from the time position(float).\n"
   },
   { 0, Makeimgs2vGroup,"!f23Images to Video",346,10,RunHelper,0,
        "Useful in creating a video from a set of photographs or images\n"
@@ -285,6 +287,7 @@ TOOLGRP ToolList[ ] = {
   },
   { 0, MakeAddStillGroup,"!f23Add Still to Video at start ", 346,40,RunHelper,0,
        "Adds a still in video for a given time in seconds\n"
+       "Probably useful in arraging multiple videos together.\n"
   },
 #if 0
 #endif
