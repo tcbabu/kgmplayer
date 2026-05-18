@@ -15,6 +15,24 @@ static Dlink *ModuleList=NULL;
 static int Xi=0,Yi=0;
 static int *Vals;
 
+static int SetViewport(DIG *G,int Xi,int Yi) {
+  float vx1=0.0,vy1=0.0,vx2=1.0,vy2=1.0;
+  float ratio=1,dvx=0.0,dvy=0.0;
+  if(Xi > Yi) {
+     ratio = 1.00 - (float)Yi/(float)Xi;
+     dvy = ratio*0.5;
+     vy1 = dvy;
+     vy2 = 1.0 - dvy;
+  }
+  if(Yi > Xi ) {
+    ratio = 1.00 - (float)Xi/(float)Yi;
+    dvx = ratio*0.5;
+    vx1 = dvx;
+    vx2 = 1.0 - dvx;
+  }
+  kgViewport(G,vx1,vy1,vx2,vy2);
+  return 1;
+}
  /* InitFunction for  GCAgbox   */ 
 
 void GetCropAreaGCAgboxinit (int i,void *Tmp) {
@@ -54,6 +72,7 @@ void GetCropAreaGCAgboxinit (int i,void *Tmp) {
   kgSetInt(T,2,Vals[2]);
   kgSetInt(T,3,Vals[3]);
   kgUpdateWidget(T);
+  SetViewport(G,Xi,Yi);
   kgUserFrame(G,0.,0.,(float)Xi,(float) Yi);
   kgDrawImage(G,flname,0.,0.,(float)Xi,(float) Yi);
   kgUpdateOn(Tmp);

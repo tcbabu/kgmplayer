@@ -4589,6 +4589,7 @@ void transch(int c) {
       x2 = x1 , y2 = y1;
       uiUpdateOn ( wc->D ) ;
 #endif
+
       dc->x2 = x2 , dc->y2 = y2;
       return ( key ) ;
   }
@@ -5495,11 +5496,43 @@ void transch(int c) {
       int ch , key , MAG = 0;
       int xpo , ypo , but , pointer , xorg , yorg , xorg1 , yorg1;
       int temp;
+      float dx,dy,xl,xu,yl,yu;
       D = ( DIALOG * ) G->D;
       kgWC *wc;
       kgDC *dc;
       wc = G->wc;
       dc = G->dc;
+      
+      xl = uiusr_x ( G->x1 ) ;
+      xu =  uiusr_x ( G->x2 ) ;
+      yl= uiusr_y ( ( D->evgay-G->y2 ) ) ;
+      yu = uiusr_y ( ( D->evgay-G->y1 ) ) ;
+      if(*xbgn < xl )*xbgn = xl;
+      if(*xx > xu ) *xx = xu;
+      if(*ybgn > yu ) *ybgn = yu;
+      if(*yy < yl ) *yy = yl;
+      if(*xbgn > xu ) *xbgn =xl;
+      if(*ybgn < yl ) *ybgn = yu;      
+      dx = *xx - *xbgn;
+      dy = *ybgn - *yy;
+      if(dx > (xu - xl)) {
+         dx = xu -xl;;
+         *xbgn = xl;
+         *xx   = xl + dx;
+      }
+      if(dy > (yu - yl)) {
+         dy = yu -yl;
+         *ybgn = yu;
+         *yy   = *ybgn - dy;
+      }   
+      if (*xx > xu ) {
+         *xx = xu;
+         *xbgn = *xx -dx;
+      }
+      if (*yy < yl){
+         *yy = yl;
+         *ybgn = *yy+dy;
+      }
       if ( G->D_ON == 0 ) {
           MAG = G->MAG;
           kgAntialiasingOff ( G ) ;
@@ -5531,6 +5564,14 @@ void transch(int c) {
           event = kbevent.event;
           button = kbevent.button;
           kb = kbevent.key;
+#if 1
+          if( (event == 0) || (event==3)) {
+          if( kbevent.x+xorg > G->x2 ) kbevent.x = G->x2 - xorg;
+          if( kbevent.y - yorg > G->y2 )kbevent.y = G->y2 + yorg;
+          if( kbevent.x < G->x1 ) kbevent.x = G->x1;
+          if(kbevent.y < G->y1  ) kbevent.y = G->y1;
+          }
+#endif
           xpo = kbevent.x;
           ypo = kbevent.y;
           switch ( event ) {
@@ -5630,6 +5671,14 @@ void transch(int c) {
           event = kbevent.event;
           button = kbevent.button;
           kb = kbevent.key;
+#if 1
+          if( (event == 0) || (event==3)) {
+          if( kbevent.x> G->x2 ) kbevent.x = G->x2 ;
+          if( kbevent.y  > G->y2 )kbevent.y = G->y2 ;
+          if( kbevent.x < G->x1 ) kbevent.x = G->x1;
+          if(kbevent.y < G->y1  ) kbevent.y = G->y1;
+          }
+#endif
           xpo = kbevent.x;
           ypo = kbevent.y;
           switch ( event ) {
@@ -5755,6 +5804,14 @@ void transch(int c) {
           event = kbevent.event;
           button = kbevent.button;
           kb = kbevent.key;
+#if 1
+          if( (event == 0) || (event==3)) {
+          if( kbevent.x> G->x2 ) kbevent.x = G->x2 ;
+          if( kbevent.y  > G->y2 )kbevent.y = G->y2 ;
+          if( kbevent.x < G->x1 ) kbevent.x = G->x1;
+          if(kbevent.y < G->y1  ) kbevent.y = G->y1;
+          }
+#endif
           xpo = kbevent.x;
           ypo = kbevent.y;
           switch ( event ) {
@@ -5931,6 +5988,14 @@ void transch(int c) {
           event = kbevent.event;
           button = kbevent.button;
           kb = kbevent.key;
+#if 1
+          if( (event == 0) || (event==3)) {
+          if( kbevent.x> G->x2 ) kbevent.x = G->x2 ;
+          if( kbevent.y  > G->y2 )kbevent.y = G->y2 ;
+          if( kbevent.x < G->x1 ) kbevent.x = G->x1;
+          if(kbevent.y < G->y1  ) kbevent.y = G->y1;
+          }
+#endif
           xpo = kbevent.x;
           ypo = kbevent.y;
           switch ( event ) {
