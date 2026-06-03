@@ -106,13 +106,27 @@ ffmpegbuild	:
 		 echo "export LD_LIBRARY_PATH=$(PWD)/lib:$(LD_LIBRARY_PATH)">>ffmpegbuild
 	 	 echo "export PATH=\"$(PATHNEW)\"">>ffmpegbuild
 		 echo "cd ffmpeg" >> ffmpegbuild
-		 echo "export CFLAGS=\"$(CFLAGS) $(X11_CFLAGS)\"">>ffmpegbuild
+		 echo "export CFLAGS=\"$(CFLAGS) $(X11_CFLAGS) -I$(PWD)/ffmpeg/libavcodec \"">>ffmpegbuild
 		 echo "export LDFLAGS=\"$(LDFLAGS) $(X11_LIBS)\"">>ffmpegbuild
 		 cat ffmpeg/rebuild >> ffmpegbuild
 		 cc -c ffmain.c
 		 cp ffmain.o ffmpeg/fftools
 		 chmod +x ffmpegbuild
-x264build	:  
+ffmpegbuildmin	:  
+		 echo "#! /bin/bash" >ffmpegbuildmin
+		 echo "export KULINA=$(PWD)" >> ffmpegbuildmin
+		 echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:$(PKG_CONFIG_PATH_OLD)">>ffmpegbuildmin
+		 echo "export LD_LIBRARY_PATH=$(PWD)/lib:$(LD_LIBRARY_PATH)">>ffmpegbuildmin
+	 	 echo "export PATH=\"$(PATHNEW)\"">>ffmpegbuildmin
+		 echo "cd ffmpeg" >> ffmpegbuildmin
+		 echo "export CFLAGS=\"$(CFLAGS) $(X11_CFLAGS) -I$(PWD)/ffmpeg/libavcodec \"">>ffmpegbuildmin
+		 echo "export LDFLAGS=\"$(LDFLAGS) $(X11_LIBS)\"">>ffmpegbuildmin
+		 cat ffmpeg/rebuildmin >> ffmpegbuildmin
+		 cc -c ffmain.c
+		 cp ffmain.o ffmpeg/fftools
+		 chmod +x ffmpegbuildmin
+x264build	:ffmpegbuildmin 
+		 ./ffmpegbuildmin 
 		 echo "#! /bin/bash" >x264build
 		 echo "export KULINA=$(PWD)" >> x264build
 		 echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:$(PKG_CONFIG_PATH_OLD)">>x264build
@@ -194,14 +208,14 @@ install	: bin/kgmplayer
 	 tar xzvf fonts.tar -C /usr/share/fonts
 
 tarball		: bin/kgmplayer
-		  mv TARBALL kgmplayer-5.3
-		  cp bin/kgmplayer kgmplayer-5.3
-		  tar czf kgmplayer-5.3.bin.tar kgmplayer-5.3
-		  mv kgmplayer-5.3 TARBALL
+		  mv TARBALL kgmplayer-5.4
+		  cp bin/kgmplayer kgmplayer-5.4
+		  tar czf kgmplayer-5.4.bin.tar kgmplayer-5.4
+		  mv kgmplayer-5.4 TARBALL
 		  rm -f TARBALL/kgmplayer
 
 clean	:
-	 rm -rf lib/* share/* bin/* man/* build grabmak ffmpegbuild \
+	 rm -rf lib/* share/* bin/* man/* build grabmak ffmpegbuild ffmpegbuildmin \
 	 x264build x265build lamebuild bin/movgrab sbin/* var/* \
 	 etc/* include/* mplayer/kgmplayer kgmplayer-4.4.bin.tar
 		  rm -f TARBALL/kgmplayer

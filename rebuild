@@ -1,16 +1,23 @@
-#! /bin/bash
-export X11_CFLAGS=`pkg-config --cflags x11`
-export X11_LIBS=`pkg-config --libs x11`
-echo "X11_CFLAGS=$X11_CFLAGS">OpenSource/config.mak
-echo "X11_LIBS=$X11_LIBS">>OpenSource/config.mak
-echo "KULINA=$PWD">>OpenSource/config.mak
-PKG_CONFIG_PATH_OLD=$PKG_CONFIG_PATH
-PKG_CONFIG_PATH=$PWD/lib
-PATH=$PWD/bin:$PATH
-make -C OpenSource
-make -C OpenSource install
-PKG_CONFIG_PATH=$PWD/lib:$PKG_CONFIG_PATH_OLD
-./configure --prefix=/usr --enable-pulse --enable-vm --disable-gui --disable-mencoder --enable-runtime-cpudetection   --enable-ffmepg_a --disable-ffmpeg_so --disable-relocatable --disable-gnutls   --disable-gif --disable-fontconfig --disable-speex --disable-gl --enable-ass-internal
-echo "X11_CFLAGS=$X11_CFLAGS">>config.mak
-echo "X11_LIBS=$X11_LIBS">>config.mak
-make -j2
+./configure --prefix=/usr  --enable-static --disable-shared \
+--enable-gpl  \
+--enable-filter=volumedetect \
+--disable-doc --enable-libmp3lame  \
+--enable-version3 --enable-gmp  \
+--disable-vaapi \
+--disable-jni \
+--enable-nonfree  \
+--enable-libfdk-aac \
+--enable-avfilter \
+--disable-asm \
+--disable-gnutls \
+--disable-lzma \
+--disable-libxcb   --enable-libx265 --enable-libx264 \
+--extra-libs="-lgnutls -lgnutlsxx -lnettle -lhogweed -lgmp -lfdk-aac" 
+#--disable-libxcb   --enable-libx265 --enable-libx264 \
+#--disable-outdevs --disable-outdevs \
+#--disable-libxcb  --enable-libx264 --enable-libx265 \
+#--enable-nonfree --enable-openssl \
+#--enable-runtime-cpudetect  --enable-indev=x11grab \
+#--enable-vdpau \
+#make -j2
+

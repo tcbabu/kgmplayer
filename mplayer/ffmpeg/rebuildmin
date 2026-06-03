@@ -1,0 +1,21 @@
+./configure --prefix=$KULINA  --enable-static --disable-shared \
+--enable-gpl \
+--disable-doc   \
+--enable-version3 --enable-gmp  \
+--disable-vaapi \
+--enable-avfilter \
+--disable-asm \
+--disable-protocols \
+--disable-libxcb   \
+--disable-gnutls \
+--disable-lzma \
+--extra-libs="-lgnutls -lgnutlsxx -lnettle -lhogweed -lgmp -lfdk-aac" 
+#--disable-libxcb   --enable-libx265 --enable-libx264 \
+#--disable-outdevs --disable-outdevs \
+#--disable-libxcb  --enable-libx264 --enable-libx265 \
+#--enable-nonfree --enable-openssl \
+#--enable-runtime-cpudetect  --enable-indev=x11grab \
+#--enable-vdpau \
+make -j2
+make install
+
