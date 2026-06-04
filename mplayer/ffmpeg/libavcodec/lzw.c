@@ -27,7 +27,7 @@
  * @author modified for use in TIFF by Konstantin Shishkov
  */
 
-#include "avcodec.h"
+#include "libavutil/attributes.h"
 #include "bytestream.h"
 #include "lzw.h"
 #include "libavutil/mem.h"
@@ -70,6 +70,9 @@ struct LZWState {
 static int lzw_get_code(struct LZWState * s)
 {
     int c;
+
+    if (s->bbits < s->cursize && bytestream2_get_bytes_left(&s->gb) <= 0)
+        return s->end_code;
 
     if(s->mode == FF_LZW_GIF) {
         while (s->bbits < s->cursize) {

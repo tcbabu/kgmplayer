@@ -41,6 +41,8 @@ typedef struct APadContext {
     int packet_size;
     int64_t pad_len, pad_len_left;
     int64_t whole_len, whole_len_left;
+    int64_t pad_dur;
+    int64_t whole_dur;
 } APadContext;
 
 #define OFFSET(x) offsetof(APadContext, x)
@@ -50,6 +52,8 @@ static const AVOption apad_options[] = {
     { "packet_size", "set silence packet size",                                  OFFSET(packet_size), AV_OPT_TYPE_INT,   { .i64 = 4096 }, 0, INT_MAX, A },
     { "pad_len",     "set number of samples of silence to add",                  OFFSET(pad_len),     AV_OPT_TYPE_INT64, { .i64 = -1 }, -1, INT64_MAX, A },
     { "whole_len",   "set minimum target number of samples in the audio stream", OFFSET(whole_len),   AV_OPT_TYPE_INT64, { .i64 = -1 }, -1, INT64_MAX, A },
+    { "pad_dur",     "set duration of silence to add",                           OFFSET(pad_dur),     AV_OPT_TYPE_DURATION, { .i64 = -1 }, -1, INT64_MAX, A },
+    { "whole_dur",   "set minimum target duration in the audio stream",          OFFSET(whole_dur),   AV_OPT_TYPE_DURATION, { .i64 = -1 }, -1, INT64_MAX, A },
     { NULL }
 };
 
@@ -64,8 +68,6 @@ static av_cold int init(AVFilterContext *ctx)
         av_log(ctx, AV_LOG_ERROR, "Both whole and pad length are set, this is not possible\n");
         return AVERROR(EINVAL);
     }
-    s->pad_len_left   = s->pad_len;
-    s->whole_len_left = s->whole_len;
 
     return 0;
 }
@@ -131,31 +133,46 @@ static int request_frame(AVFilterLink *outlink)
     return ret;
 }
 
+static int config_output(AVFilterLink *outlink)
+{
+    AVFilterContext *ctx = outlink->src;
+    APadContext *s  = ctx->priv;
+
+    if (s->pad_dur >= 0)
+        s->pad_len = av_rescale(s->pad_dur, outlink->sample_rate, AV_TIME_BASE);
+    if (s->whole_dur >= 0)
+        s->whole_len = av_rescale(s->whole_dur, outlink->sample_rate, AV_TIME_BASE);
+
+    s->pad_len_left   = s->pad_len;
+    s->whole_len_left = s->whole_len;
+
+    return 0;
+}
+
 static const AVFilterPad apad_inputs[] = {
     {
         .name         = "default",
         .type         = AVMEDIA_TYPE_AUDIO,
         .filter_frame = filter_frame,
     },
-    { NULL }
 };
 
 static const AVFilterPad apad_outputs[] = {
     {
         .name          = "default",
         .request_frame = request_frame,
+        .config_props  = config_output,
         .type          = AVMEDIA_TYPE_AUDIO,
     },
-    { NULL }
 };
 
-AVFilter ff_af_apad = {
+const AVFilter ff_af_apad = {
     .name          = "apad",
     .description   = NULL_IF_CONFIG_SMALL("Pad audio with silence."),
     .init          = init,
     .priv_size     = sizeof(APadContext),
-    .inputs        = apad_inputs,
-    .outputs       = apad_outputs,
+    FILTER_INPUTS(apad_inputs),
+    FILTER_OUTPUTS(apad_outputs),
     .priv_class    = &apad_class,
     .flags         = AVFILTER_FLAG_SUPPORT_TIMELINE_INTERNAL,
 };

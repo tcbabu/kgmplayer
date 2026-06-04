@@ -23,21 +23,15 @@
 
 #include <string.h>
 
-#if HAVE_SOUNDCARD_H
-#include <soundcard.h>
-#else
-#include <sys/soundcard.h>
-#endif
-
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <sys/soundcard.h>
 
 #include "libavutil/log.h"
 
-#include "libavcodec/avcodec.h"
 #include "avdevice.h"
 
 #include "oss.h"

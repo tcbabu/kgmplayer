@@ -27,11 +27,7 @@
 
 static av_cold int decode_init(AVCodecContext *avctx)
 {
-    if ((avctx->codec_tag & 0xFFFFFF) == MKTAG('r', '1', '0', 0)) {
-        avctx->pix_fmt = AV_PIX_FMT_BGR48;
-    } else {
-        avctx->pix_fmt = AV_PIX_FMT_RGB48;
-    }
+    avctx->pix_fmt = AV_PIX_FMT_GBRP10;
     avctx->bits_per_raw_sample = 10;
 
     return 0;
@@ -45,7 +41,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *got_frame,
     const uint32_t *src = (const uint32_t *)avpkt->data;
     int aligned_width = FFALIGN(avctx->width,
                                 avctx->codec_id == AV_CODEC_ID_R10K ? 1 : 64);
-    uint8_t *dst_line;
+    uint8_t *g_line, *b_line, *r_line;
     int r10 = (avctx->codec_tag & 0xFFFFFF) == MKTAG('r', '1', '0', 0);
     int le = avctx->codec_tag == MKTAG('R', '1', '0', 'k') &&
              avctx->extradata_size >= 12 && !memcmp(&avctx->extradata[4], "DpxE", 4) &&
@@ -61,10 +57,14 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *got_frame,
 
     pic->pict_type = AV_PICTURE_TYPE_I;
     pic->key_frame = 1;
-    dst_line = pic->data[0];
+    g_line = pic->data[0];
+    b_line = pic->data[1];
+    r_line = pic->data[2];
 
     for (h = 0; h < avctx->height; h++) {
-        uint16_t *dst = (uint16_t *)dst_line;
+        uint16_t *dstg = (uint16_t *)g_line;
+        uint16_t *dstb = (uint16_t *)b_line;
+        uint16_t *dstr = (uint16_t *)r_line;
         for (w = 0; w < avctx->width; w++) {
             uint32_t pixel;
             uint16_t r, g, b;
@@ -73,21 +73,27 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *got_frame,
             } else {
                 pixel = av_be2ne32(*src++);
             }
-            if (avctx->codec_id == AV_CODEC_ID_R210 || r10) {
-                b =  pixel <<  6;
-                g = (pixel >>  4) & 0xffc0;
-                r = (pixel >> 14) & 0xffc0;
+            if (avctx->codec_id == AV_CODEC_ID_R210) {
+                b =  pixel & 0x3ff;
+                g = (pixel >> 10) & 0x3ff;
+                r = (pixel >> 20) & 0x3ff;
+            } else if (r10) {
+                r =  pixel & 0x3ff;
+                g = (pixel >> 10) & 0x3ff;
+                b = (pixel >> 20) & 0x3ff;
             } else {
-                b = (pixel <<  4) & 0xffc0;
-                g = (pixel >>  6) & 0xffc0;
-                r = (pixel >> 16) & 0xffc0;
+                b = (pixel >>  2) & 0x3ff;
+                g = (pixel >> 12) & 0x3ff;
+                r = (pixel >> 22) & 0x3ff;
             }
-            *dst++ = r | (r >> 10);
-            *dst++ = g | (g >> 10);
-            *dst++ = b | (b >> 10);
+            *dstr++ = r;
+            *dstg++ = g;
+            *dstb++ = b;
         }
         src += aligned_width - avctx->width;
-        dst_line += pic->linesize[0];
+        g_line += pic->linesize[0];
+        b_line += pic->linesize[1];
+        r_line += pic->linesize[2];
     }
 
     *got_frame      = 1;
@@ -96,7 +102,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *got_frame,
 }
 
 #if CONFIG_R210_DECODER
-AVCodec ff_r210_decoder = {
+const AVCodec ff_r210_decoder = {
     .name           = "r210",
     .long_name      = NULL_IF_CONFIG_SMALL("Uncompressed RGB 10-bit"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -108,7 +114,7 @@ AVCodec ff_r210_decoder = {
 };
 #endif
 #if CONFIG_R10K_DECODER
-AVCodec ff_r10k_decoder = {
+const AVCodec ff_r10k_decoder = {
     .name           = "r10k",
     .long_name      = NULL_IF_CONFIG_SMALL("AJA Kona 10-bit RGB Codec"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -120,7 +126,7 @@ AVCodec ff_r10k_decoder = {
 };
 #endif
 #if CONFIG_AVRP_DECODER
-AVCodec ff_avrp_decoder = {
+const AVCodec ff_avrp_decoder = {
     .name           = "avrp",
     .long_name      = NULL_IF_CONFIG_SMALL("Avid 1:1 10-bit RGB Packer"),
     .type           = AVMEDIA_TYPE_VIDEO,

@@ -21,6 +21,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include "config.h"
 #if (_WIN32_WINNT < 0x0602) || HAVE_WINRT
 #include "libavutil/wchar_filename.h"
 #endif
@@ -41,7 +42,7 @@ static inline HMODULE win32_dlopen(const char *name)
         DWORD pathlen;
         if (utf8towchar(name, &name_w))
             goto exit;
-        path = (wchar_t *)av_mallocz_array(MAX_PATH, sizeof(wchar_t));
+        path = (wchar_t *)av_calloc(MAX_PATH, sizeof(wchar_t));
         // Try local directory first
         pathlen = GetModuleFileNameW(NULL, path, MAX_PATH);
         pathlen = wcsrchr(path, '\\') - path;

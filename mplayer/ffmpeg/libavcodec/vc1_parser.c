@@ -29,7 +29,6 @@
 #include "parser.h"
 #include "vc1.h"
 #include "get_bits.h"
-#include "internal.h"
 
 /** The maximum number of bytes of a sequence, entry point or
  *  frame header whose values we pay any attention to */
@@ -67,7 +66,7 @@ static void vc1_extract_header(AVCodecParserContext *s, AVCodecContext *avctx,
     int ret;
     vpc->v.s.avctx = avctx;
     vpc->v.parse_only = 1;
-    init_get_bits(&gb, buf, buf_size * 8);
+    init_get_bits8(&gb, buf, buf_size);
     switch (vpc->prev_start_code) {
     case VC1_CODE_SEQHDR & 0xFF:
         ff_vc1_decode_sequence_header(avctx, &vpc->v, &gb);
@@ -256,24 +255,6 @@ static int vc1_parse(AVCodecParserContext *s,
     return next;
 }
 
-static int vc1_split(AVCodecContext *avctx,
-                           const uint8_t *buf, int buf_size)
-{
-    uint32_t state = -1;
-    int charged = 0;
-    const uint8_t *ptr = buf, *end = buf + buf_size;
-
-    while (ptr < end) {
-        ptr = avpriv_find_start_code(ptr, end, &state);
-        if (state == VC1_CODE_SEQHDR || state == VC1_CODE_ENTRYPOINT) {
-            charged = 1;
-        } else if (charged && IS_MARKER(state))
-            return ptr - 4 - buf;
-    }
-
-    return 0;
-}
-
 static av_cold int vc1_parse_init(AVCodecParserContext *s)
 {
     VC1ParseContext *vpc = s->priv_data;
@@ -283,14 +264,14 @@ static av_cold int vc1_parse_init(AVCodecParserContext *s)
     vpc->bytes_to_skip = 0;
     vpc->unesc_index = 0;
     vpc->search_state = NO_MATCH;
-    return ff_vc1_init_common(&vpc->v);
+    ff_vc1_init_common(&vpc->v);
+    return 0;
 }
 
-AVCodecParser ff_vc1_parser = {
+const AVCodecParser ff_vc1_parser = {
     .codec_ids      = { AV_CODEC_ID_VC1 },
     .priv_data_size = sizeof(VC1ParseContext),
     .parser_init    = vc1_parse_init,
     .parser_parse   = vc1_parse,
     .parser_close   = ff_parse_close,
-    .split          = vc1_split,
 };

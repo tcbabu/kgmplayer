@@ -20,7 +20,7 @@
 ;* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 ;******************************************************************************
 
-%include "x86util.asm"
+%include "libavutil/x86/x86util.asm"
 
 SECTION_RODATA 32
 pd_reverse: dd 7, 6, 5, 4, 3, 2, 1, 0
@@ -56,6 +56,39 @@ VECTOR_FMUL
 %if HAVE_AVX_EXTERNAL
 INIT_YMM avx
 VECTOR_FMUL
+%endif
+
+;-----------------------------------------------------------------------------
+; void vector_dmul(double *dst, const double *src0, const double *src1, int len)
+;-----------------------------------------------------------------------------
+%macro VECTOR_DMUL 0
+cglobal vector_dmul, 4,4,4, dst, src0, src1, len
+    lea       lend, [lenq*8 - mmsize*4]
+ALIGN 16
+.loop:
+    movaps    m0,     [src0q + lenq + 0*mmsize]
+    movaps    m1,     [src0q + lenq + 1*mmsize]
+    movaps    m2,     [src0q + lenq + 2*mmsize]
+    movaps    m3,     [src0q + lenq + 3*mmsize]
+    mulpd     m0, m0, [src1q + lenq + 0*mmsize]
+    mulpd     m1, m1, [src1q + lenq + 1*mmsize]
+    mulpd     m2, m2, [src1q + lenq + 2*mmsize]
+    mulpd     m3, m3, [src1q + lenq + 3*mmsize]
+    movaps    [dstq + lenq + 0*mmsize], m0
+    movaps    [dstq + lenq + 1*mmsize], m1
+    movaps    [dstq + lenq + 2*mmsize], m2
+    movaps    [dstq + lenq + 3*mmsize], m3
+
+    sub       lenq, mmsize*4
+    jge       .loop
+    RET
+%endmacro
+
+INIT_XMM sse2
+VECTOR_DMUL
+%if HAVE_AVX_EXTERNAL
+INIT_YMM avx
+VECTOR_DMUL
 %endif
 
 ;------------------------------------------------------------------------------

@@ -60,7 +60,7 @@ typedef struct CinDemuxContext {
 } CinDemuxContext;
 
 
-static int cin_probe(AVProbeData *p)
+static int cin_probe(const AVProbeData *p)
 {
     /* header starts with this special marker */
     if (AV_RL32(&p->buf[0]) != 0x55AA0000)
@@ -203,7 +203,6 @@ static int cin_read_packet(AVFormatContext *s, AVPacket *pkt)
 
         ret = avio_read(pb, &pkt->data[4], pkt_size);
         if (ret < 0) {
-            av_packet_unref(pkt);
             return ret;
         }
         if (ret < pkt_size)
@@ -227,7 +226,7 @@ static int cin_read_packet(AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-AVInputFormat ff_dsicin_demuxer = {
+const AVInputFormat ff_dsicin_demuxer = {
     .name           = "dsicin",
     .long_name      = NULL_IF_CONFIG_SMALL("Delphine Software International CIN"),
     .priv_data_size = sizeof(CinDemuxContext),

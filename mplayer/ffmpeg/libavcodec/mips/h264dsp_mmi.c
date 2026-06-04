@@ -26,19 +26,22 @@
 #include "libavcodec/bit_depth_template.c"
 #include "h264dsp_mips.h"
 #include "libavutil/mips/mmiutils.h"
+#include "libavutil/mem_internal.h"
 
 void ff_h264_add_pixels4_8_mmi(uint8_t *dst, int16_t *src, int stride)
 {
     double ftmp[9];
     DECLARE_VAR_LOW32;
-    DECLARE_VAR_ALL64;
 
     __asm__ volatile (
-        "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
+        "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
         MMI_LDC1(%[ftmp1], %[src], 0x00)
         MMI_LDC1(%[ftmp2], %[src], 0x08)
         MMI_LDC1(%[ftmp3], %[src], 0x10)
         MMI_LDC1(%[ftmp4], %[src], 0x18)
+        /* memset(src, 0, 32); */
+        MMI_SQC1(%[ftmp0], %[ftmp0], %[src], 0x00)
+        MMI_SQC1(%[ftmp0], %[ftmp0], %[src], 0x10)
         MMI_ULWC1(%[ftmp5], %[dst0], 0x00)
         MMI_ULWC1(%[ftmp6], %[dst1], 0x00)
         MMI_ULWC1(%[ftmp7], %[dst2], 0x00)
@@ -64,7 +67,6 @@ void ff_h264_add_pixels4_8_mmi(uint8_t *dst, int16_t *src, int stride)
           [ftmp4]"=&f"(ftmp[4]),            [ftmp5]"=&f"(ftmp[5]),
           [ftmp6]"=&f"(ftmp[6]),            [ftmp7]"=&f"(ftmp[7]),
           RESTRICT_ASM_LOW32
-          RESTRICT_ASM_ALL64
           [ftmp8]"=&f"(ftmp[8])
         : [dst0]"r"(dst),                   [dst1]"r"(dst+stride),
           [dst2]"r"(dst+2*stride),          [dst3]"r"(dst+3*stride),
@@ -72,7 +74,6 @@ void ff_h264_add_pixels4_8_mmi(uint8_t *dst, int16_t *src, int stride)
         : "memory"
     );
 
-    memset(src, 0, 32);
 }
 
 void ff_h264_idct_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
@@ -80,19 +81,22 @@ void ff_h264_idct_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
     double ftmp[12];
     uint64_t tmp[1];
     DECLARE_VAR_LOW32;
-    DECLARE_VAR_ALL64;
     DECLARE_VAR_ADDRT;
 
     __asm__ volatile (
-        "dli        %[tmp0],    0x01                                    \n\t"
         MMI_LDC1(%[ftmp0], %[block], 0x00)
-        "mtc1       %[tmp0],    %[ftmp8]                                \n\t"
         MMI_LDC1(%[ftmp1], %[block], 0x08)
-        "dli        %[tmp0],    0x06                                    \n\t"
         MMI_LDC1(%[ftmp2], %[block], 0x10)
+        MMI_LDC1(%[ftmp3], %[block], 0x18)
+        /* memset(block, 0, 32) */
+        "pxor       %[ftmp4],   %[ftmp4],       %[ftmp4]                \n\t"
+        MMI_SQC1(%[ftmp4], %[ftmp4], %[block], 0x00)
+        MMI_SQC1(%[ftmp4], %[ftmp4], %[block], 0x10)
+        "dli        %[tmp0],    0x01                                    \n\t"
+        "mtc1       %[tmp0],    %[ftmp8]                                \n\t"
+        "dli        %[tmp0],    0x06                                    \n\t"
         "mtc1       %[tmp0],    %[ftmp9]                                \n\t"
         "psrah      %[ftmp4],   %[ftmp1],       %[ftmp8]                \n\t"
-        MMI_LDC1(%[ftmp3], %[block], 0x18)
         "psrah      %[ftmp5],   %[ftmp3],       %[ftmp8]                \n\t"
         "psubh      %[ftmp4],   %[ftmp4],       %[ftmp3]                \n\t"
         "paddh      %[ftmp5],   %[ftmp5],       %[ftmp1]                \n\t"
@@ -120,15 +124,11 @@ void ff_h264_idct_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
         "paddh      %[ftmp10],  %[ftmp3],       %[ftmp1]                \n\t"
         "psubh      %[ftmp1],   %[ftmp1],       %[ftmp3]                \n\t"
         "paddh      %[ftmp11],  %[ftmp4],       %[ftmp5]                \n\t"
-        "xor        %[ftmp7],   %[ftmp7],       %[ftmp7]                \n\t"
         "psubh      %[ftmp5],   %[ftmp5],       %[ftmp4]                \n\t"
-        MMI_SDC1(%[ftmp7], %[block], 0x00)
-        MMI_SDC1(%[ftmp7], %[block], 0x08)
-        MMI_SDC1(%[ftmp7], %[block], 0x10)
-        MMI_SDC1(%[ftmp7], %[block], 0x18)
         MMI_ULWC1(%[ftmp2], %[dst], 0x00)
-        "psrah      %[ftmp3],   %[ftmp10],      %[ftmp9]                \n\t"
         MMI_LWXC1(%[ftmp0], %[dst], %[stride], 0x00)
+        "pxor       %[ftmp7],   %[ftmp7],       %[ftmp7]                \n\t"
+        "psrah      %[ftmp3],   %[ftmp10],      %[ftmp9]                \n\t"
         "psrah      %[ftmp4],   %[ftmp11],      %[ftmp9]                \n\t"
         "punpcklbh  %[ftmp2],   %[ftmp2],       %[ftmp7]                \n\t"
         "punpcklbh  %[ftmp0],   %[ftmp0],       %[ftmp7]                \n\t"
@@ -159,15 +159,13 @@ void ff_h264_idct_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
           [ftmp8]"=&f"(ftmp[8]),            [ftmp9]"=&f"(ftmp[9]),
           [ftmp10]"=&f"(ftmp[10]),          [ftmp11]"=&f"(ftmp[11]),
           RESTRICT_ASM_LOW32
-          RESTRICT_ASM_ALL64
           RESTRICT_ASM_ADDRT
           [tmp0]"=&r"(tmp[0])
         : [dst]"r"(dst),                    [block]"r"(block),
-          [stride]"r"((mips_reg)stride),    [ff_pw_32]"f"(ff_pw_32)
+          [stride]"r"((mips_reg)stride),    [ff_pw_32]"f"(ff_pw_32.f)
         : "memory"
     );
 
-    memset(block, 0, 32);
 }
 
 void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
@@ -176,12 +174,11 @@ void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
     uint64_t tmp[7];
     mips_reg addr[1];
     DECLARE_VAR_LOW32;
-    DECLARE_VAR_ALL64;
     DECLARE_VAR_ADDRT;
 
     __asm__ volatile (
         "lhu        %[tmp0],    0x00(%[block])                          \n\t"
-        PTR_ADDI   "$29,        $29,            -0x20                   \n\t"
+        PTR_ADDI   "$sp,        $sp,            -0x20                   \n\t"
         PTR_ADDIU  "%[tmp0],    %[tmp0],        0x20                    \n\t"
         MMI_LDC1(%[ftmp1], %[block], 0x10)
         "sh         %[tmp0],    0x00(%[block])                          \n\t"
@@ -258,8 +255,8 @@ void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
         "punpckhwd  %[ftmp3],   %[ftmp6],       %[ftmp0]                \n\t"
         "punpcklwd  %[ftmp6],   %[ftmp6],       %[ftmp0]                \n\t"
         MMI_LDC1(%[ftmp0], %[block], 0x00)
-        MMI_SDC1(%[ftmp7], $29, 0x00)
-        MMI_SDC1(%[ftmp1], $29, 0x10)
+        MMI_SDC1(%[ftmp7], $sp, 0x00)
+        MMI_SDC1(%[ftmp1], $sp, 0x10)
         "dmfc1      %[tmp1],    %[ftmp6]                                \n\t"
         "dmfc1      %[tmp3],    %[ftmp3]                                \n\t"
         "punpckhhw  %[ftmp3],   %[ftmp5],       %[ftmp2]                \n\t"
@@ -270,8 +267,8 @@ void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
         "punpcklwd  %[ftmp5],   %[ftmp5],       %[ftmp4]                \n\t"
         "punpckhwd  %[ftmp4],   %[ftmp3],       %[ftmp2]                \n\t"
         "punpcklwd  %[ftmp3],   %[ftmp3],       %[ftmp2]                \n\t"
-        MMI_SDC1(%[ftmp5], $29, 0x08)
-        MMI_SDC1(%[ftmp0], $29, 0x18)
+        MMI_SDC1(%[ftmp5], $sp, 0x08)
+        MMI_SDC1(%[ftmp0], $sp, 0x18)
         "dmfc1      %[tmp2],    %[ftmp3]                                \n\t"
         "dmfc1      %[tmp4],    %[ftmp4]                                \n\t"
         MMI_LDC1(%[ftmp1], %[block], 0x18)
@@ -363,7 +360,7 @@ void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
         PTR_ADDIU  "%[addr0],   %[dst],         0x04                    \n\t"
         "mov.d      %[ftmp7],   %[ftmp10]                               \n\t"
         "dmtc1      %[tmp3],    %[ftmp6]                                \n\t"
-        MMI_LDC1(%[ftmp1], $29, 0x10)
+        MMI_LDC1(%[ftmp1], $sp, 0x10)
         "dmtc1      %[tmp1],    %[ftmp3]                                \n\t"
         "mov.d      %[ftmp4],   %[ftmp1]                                \n\t"
         "psrah      %[ftmp1],   %[ftmp1],       %[ftmp8]                \n\t"
@@ -396,7 +393,7 @@ void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
         "psrah      %[ftmp0],   %[ftmp3],       %[ftmp8]                \n\t"
         "paddh      %[ftmp2],   %[ftmp2],       %[ftmp3]                \n\t"
         "psubh      %[ftmp0],   %[ftmp0],       %[ftmp7]                \n\t"
-        MMI_LDC1(%[ftmp3], $29, 0x00)
+        MMI_LDC1(%[ftmp3], $sp, 0x00)
         "dmtc1      %[tmp5],    %[ftmp7]                                \n\t"
         "paddh      %[ftmp7],   %[ftmp7],       %[ftmp3]                \n\t"
         "paddh      %[ftmp3],   %[ftmp3],       %[ftmp3]                \n\t"
@@ -418,11 +415,11 @@ void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
         "paddh      %[ftmp1],   %[ftmp1],       %[ftmp7]                \n\t"
         "psubh      %[ftmp3],   %[ftmp3],       %[ftmp6]                \n\t"
         "paddh      %[ftmp7],   %[ftmp7],       %[ftmp7]                \n\t"
-        MMI_SDC1(%[ftmp3], $29, 0x00)
+        MMI_SDC1(%[ftmp3], $sp, 0x00)
         "psubh      %[ftmp7],   %[ftmp7],       %[ftmp1]                \n\t"
-        MMI_SDC1(%[ftmp0], $29, 0x10)
+        MMI_SDC1(%[ftmp0], $sp, 0x10)
         "dmfc1      %[tmp1],    %[ftmp2]                                \n\t"
-        "xor        %[ftmp2],   %[ftmp2],       %[ftmp2]                \n\t"
+        "pxor       %[ftmp2],   %[ftmp2],       %[ftmp2]                \n\t"
         MMI_SDC1(%[ftmp2], %[block], 0x00)
         MMI_SDC1(%[ftmp2], %[block], 0x08)
         MMI_SDC1(%[ftmp2], %[block], 0x10)
@@ -467,8 +464,8 @@ void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
         "packushb   %[ftmp0],   %[ftmp0],       %[ftmp2]                \n\t"
         MMI_SWC1(%[ftmp3], %[dst], 0x00)
         MMI_SWXC1(%[ftmp0], %[dst], %[stride], 0x00)
-        MMI_LDC1(%[ftmp5], $29, 0x00)
-        MMI_LDC1(%[ftmp4], $29, 0x10)
+        MMI_LDC1(%[ftmp5], $sp, 0x00)
+        MMI_LDC1(%[ftmp4], $sp, 0x10)
         "dmtc1      %[tmp1],    %[ftmp6]                                \n\t"
         PTR_ADDU   "%[dst],     %[dst],         %[stride]               \n\t"
         PTR_ADDU   "%[dst],     %[dst],         %[stride]               \n\t"
@@ -500,7 +497,7 @@ void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
         MMI_SWXC1(%[ftmp0], %[dst], %[stride], 0x00)
         "dmtc1      %[tmp4],    %[ftmp1]                                \n\t"
         "dmtc1      %[tmp2],    %[ftmp6]                                \n\t"
-        MMI_LDC1(%[ftmp4], $29, 0x18)
+        MMI_LDC1(%[ftmp4], $sp, 0x18)
         "mov.d      %[ftmp5],   %[ftmp4]                                \n\t"
         "psrah      %[ftmp4],   %[ftmp4],       %[ftmp8]                \n\t"
         "psrah      %[ftmp7],   %[ftmp11],      %[ftmp8]                \n\t"
@@ -532,7 +529,7 @@ void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
         "psrah      %[ftmp7],   %[ftmp6],       %[ftmp8]                \n\t"
         "paddh      %[ftmp0],   %[ftmp0],       %[ftmp6]                \n\t"
         "psubh      %[ftmp7],   %[ftmp7],       %[ftmp3]                \n\t"
-        MMI_LDC1(%[ftmp6], $29, 0x08)
+        MMI_LDC1(%[ftmp6], $sp, 0x08)
         "dmtc1      %[tmp6],    %[ftmp3]                                \n\t"
         "paddh      %[ftmp3],   %[ftmp3],       %[ftmp6]                \n\t"
         "paddh      %[ftmp6],   %[ftmp6],       %[ftmp6]                \n\t"
@@ -554,11 +551,11 @@ void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
         "paddh      %[ftmp4],   %[ftmp4],       %[ftmp3]                \n\t"
         "psubh      %[ftmp6],   %[ftmp6],       %[ftmp1]                \n\t"
         "paddh      %[ftmp3],   %[ftmp3],       %[ftmp3]                \n\t"
-        MMI_SDC1(%[ftmp6], $29, 0x08)
+        MMI_SDC1(%[ftmp6], $sp, 0x08)
         "psubh      %[ftmp3],   %[ftmp3],       %[ftmp4]                \n\t"
-        MMI_SDC1(%[ftmp7], $29, 0x18)
+        MMI_SDC1(%[ftmp7], $sp, 0x18)
         "dmfc1      %[tmp2],    %[ftmp0]                                \n\t"
-        "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
+        "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
         MMI_ULWC1(%[ftmp6], %[addr0], 0x00)
         MMI_LWXC1(%[ftmp7], %[addr0], %[stride], 0x00)
         "psrah      %[ftmp2],   %[ftmp2],       %[ftmp10]               \n\t"
@@ -585,8 +582,8 @@ void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
         "packushb   %[ftmp7],   %[ftmp7],       %[ftmp0]                \n\t"
         MMI_SWC1(%[ftmp6], %[addr0], 0x00)
         MMI_SWXC1(%[ftmp7], %[addr0], %[stride], 0x00)
-        MMI_LDC1(%[ftmp2], $29, 0x08)
-        MMI_LDC1(%[ftmp5], $29, 0x18)
+        MMI_LDC1(%[ftmp2], $sp, 0x08)
+        MMI_LDC1(%[ftmp5], $sp, 0x18)
         PTR_ADDU   "%[addr0],   %[addr0],       %[stride]               \n\t"
         "dmtc1      %[tmp2],    %[ftmp1]                                \n\t"
         PTR_ADDU   "%[addr0],   %[addr0],       %[stride]               \n\t"
@@ -616,7 +613,7 @@ void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
         "packushb   %[ftmp7],   %[ftmp7],       %[ftmp0]                \n\t"
         MMI_SWC1(%[ftmp6], %[addr0], 0x00)
         MMI_SWXC1(%[ftmp7], %[addr0], %[stride], 0x00)
-        PTR_ADDIU  "$29,        $29,            0x20                    \n\t"
+        PTR_ADDIU  "$sp,        $sp,            0x20                    \n\t"
         : [ftmp0]"=&f"(ftmp[0]),            [ftmp1]"=&f"(ftmp[1]),
           [ftmp2]"=&f"(ftmp[2]),            [ftmp3]"=&f"(ftmp[3]),
           [ftmp4]"=&f"(ftmp[4]),            [ftmp5]"=&f"(ftmp[5]),
@@ -630,15 +627,13 @@ void ff_h264_idct8_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
           [tmp4]"=&r"(tmp[4]),              [tmp5]"=&r"(tmp[5]),
           [tmp6]"=&r"(tmp[6]),
           RESTRICT_ASM_LOW32
-          RESTRICT_ASM_ALL64
           RESTRICT_ASM_ADDRT
           [addr0]"=&r"(addr[0])
         : [dst]"r"(dst),                    [block]"r"(block),
           [stride]"r"((mips_reg)stride)
-        : "$29","memory"
+        : "memory"
     );
 
-    memset(block, 0, 128);
 }
 
 void ff_h264_idct_dc_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
@@ -651,7 +646,7 @@ void ff_h264_idct_dc_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
 
     __asm__ volatile (
         "mtc1       %[dc],      %[ftmp5]                                \n\t"
-        "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
+        "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
         "pshufh     %[ftmp5],   %[ftmp5],       %[ftmp0]                \n\t"
         MMI_ULWC1(%[ftmp1], %[dst0], 0x00)
         MMI_ULWC1(%[ftmp2], %[dst1], 0x00)
@@ -695,7 +690,7 @@ void ff_h264_idct8_dc_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
 
     __asm__ volatile (
         "mtc1       %[dc],      %[ftmp5]                                \n\t"
-        "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
+        "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
         "pshufh     %[ftmp5],   %[ftmp5],       %[ftmp0]                \n\t"
         MMI_LDC1(%[ftmp1], %[dst0], 0x00)
         MMI_LDC1(%[ftmp2], %[dst1], 0x00)
@@ -771,7 +766,8 @@ void ff_h264_idct8_dc_add_8_mmi(uint8_t *dst, int16_t *block, int stride)
 }
 
 void ff_h264_idct_add16_8_mmi(uint8_t *dst, const int *block_offset,
-        int16_t *block, int stride, const uint8_t nnzc[15*8])
+                              int16_t *block, int stride,
+                              const uint8_t nnzc[5 * 8])
 {
     int i;
     for(i=0; i<16; i++){
@@ -788,7 +784,7 @@ void ff_h264_idct_add16_8_mmi(uint8_t *dst, const int *block_offset,
 }
 
 void ff_h264_idct_add16intra_8_mmi(uint8_t *dst, const int *block_offset,
-        int16_t *block, int stride, const uint8_t nnzc[15*8])
+        int16_t *block, int stride, const uint8_t nnzc[5 * 8])
 {
     int i;
     for(i=0; i<16; i++){
@@ -801,7 +797,7 @@ void ff_h264_idct_add16intra_8_mmi(uint8_t *dst, const int *block_offset,
 }
 
 void ff_h264_idct8_add4_8_mmi(uint8_t *dst, const int *block_offset,
-        int16_t *block, int stride, const uint8_t nnzc[15*8])
+        int16_t *block, int stride, const uint8_t nnzc[5 * 8])
 {
     int i;
     for(i=0; i<16; i+=4){
@@ -934,7 +930,7 @@ void ff_h264_luma_dc_dequant_idct_8_mmi(int16_t *output, int16_t *input,
         "packsswh   %[ftmp0],   %[ftmp0],       %[ftmp1]                \n\t"
         "packsswh   %[ftmp2],   %[ftmp2],       %[ftmp5]                \n\t"
         "dmfc1      %[tmp1],    %[ftmp0]                                \n\t"
-        "dsrl       %[ftmp0],   %[ftmp0],       %[ftmp9]                \n\t"
+        "ssrld      %[ftmp0],   %[ftmp0],       %[ftmp9]                \n\t"
         "mfc1       %[input],   %[ftmp0]                                \n\t"
         "sh         %[tmp1],    0x00(%[output])                         \n\t"
         "sh         %[input],   0x80(%[output])                         \n\t"
@@ -943,7 +939,7 @@ void ff_h264_luma_dc_dequant_idct_8_mmi(int16_t *output, int16_t *input,
         "sh         %[tmp1],    0x20(%[output])                         \n\t"
         "sh         %[input],   0xa0(%[output])                         \n\t"
         "dmfc1      %[tmp1],    %[ftmp2]                                \n\t"
-        "dsrl       %[ftmp2],   %[ftmp2],       %[ftmp9]                \n\t"
+        "ssrld      %[ftmp2],   %[ftmp2],       %[ftmp9]                \n\t"
         "mfc1       %[input],   %[ftmp2]                                \n\t"
         "sh         %[tmp1],    0x40(%[output])                         \n\t"
         "sh         %[input],   0xc0(%[output])                         \n\t"
@@ -968,7 +964,7 @@ void ff_h264_luma_dc_dequant_idct_8_mmi(int16_t *output, int16_t *input,
         "packsswh   %[ftmp3],   %[ftmp3],       %[ftmp1]                \n\t"
         "packsswh   %[ftmp4],   %[ftmp4],       %[ftmp5]                \n\t"
         "dmfc1      %[tmp1],    %[ftmp3]                                \n\t"
-        "dsrl       %[ftmp3],   %[ftmp3],       %[ftmp9]                \n\t"
+        "ssrld      %[ftmp3],   %[ftmp3],       %[ftmp9]                \n\t"
         "mfc1       %[input],   %[ftmp3]                                \n\t"
         "sh         %[tmp1],    0x100(%[output])                        \n\t"
         "sh         %[input],   0x180(%[output])                        \n\t"
@@ -977,7 +973,7 @@ void ff_h264_luma_dc_dequant_idct_8_mmi(int16_t *output, int16_t *input,
         "sh         %[tmp1],    0x120(%[output])                        \n\t"
         "sh         %[input],   0x1a0(%[output])                        \n\t"
         "dmfc1      %[tmp1],    %[ftmp4]                                \n\t"
-        "dsrl       %[ftmp4],   %[ftmp4],       %[ftmp9]                \n\t"
+        "ssrld      %[ftmp4],   %[ftmp4],       %[ftmp9]                \n\t"
         "mfc1       %[input],   %[ftmp4]                                \n\t"
         "sh         %[tmp1],    0x140(%[output])                        \n\t"
         "sh         %[input],   0x1c0(%[output])                        \n\t"
@@ -1021,7 +1017,7 @@ void ff_h264_luma_dc_dequant_idct_8_mmi(int16_t *output, int16_t *input,
         "packsswh   %[ftmp0],   %[ftmp0],       %[ftmp1]                \n\t"
         "packsswh   %[ftmp2],   %[ftmp2],       %[ftmp5]                \n\t"
         "dmfc1      %[tmp1],    %[ftmp0]                                \n\t"
-        "dsrl       %[ftmp0],   %[ftmp0],       %[ftmp9]                \n\t"
+        "ssrld      %[ftmp0],   %[ftmp0],       %[ftmp9]                \n\t"
         "sh         %[tmp1],    0x00(%[output])                         \n\t"
         "mfc1       %[input],   %[ftmp0]                                \n\t"
         "dsrl       %[tmp1],    %[tmp1],        0x10                    \n\t"
@@ -1030,7 +1026,7 @@ void ff_h264_luma_dc_dequant_idct_8_mmi(int16_t *output, int16_t *input,
         PTR_SRL    "%[input],   %[input],       0x10                    \n\t"
         "dmfc1      %[tmp1],    %[ftmp2]                                \n\t"
         "sh         %[input],   0xa0(%[output])                         \n\t"
-        "dsrl       %[ftmp2],   %[ftmp2],       %[ftmp9]                \n\t"
+        "ssrld      %[ftmp2],   %[ftmp2],       %[ftmp9]                \n\t"
         "sh         %[tmp1],    0x40(%[output])                         \n\t"
         "mfc1       %[input],   %[ftmp2]                                \n\t"
         "dsrl       %[tmp1],    %[tmp1],        0x10                    \n\t"
@@ -1055,7 +1051,7 @@ void ff_h264_luma_dc_dequant_idct_8_mmi(int16_t *output, int16_t *input,
         "packsswh   %[ftmp3],   %[ftmp3],       %[ftmp1]                \n\t"
         "packsswh   %[ftmp4],   %[ftmp4],       %[ftmp5]                \n\t"
         "dmfc1      %[tmp1],    %[ftmp3]                                \n\t"
-        "dsrl       %[ftmp3],   %[ftmp3],       %[ftmp9]                \n\t"
+        "ssrld      %[ftmp3],   %[ftmp3],       %[ftmp9]                \n\t"
         "mfc1       %[input],   %[ftmp3]                                \n\t"
         "sh         %[tmp1],    0x100(%[output])                        \n\t"
         "sh         %[input],   0x180(%[output])                        \n\t"
@@ -1064,7 +1060,7 @@ void ff_h264_luma_dc_dequant_idct_8_mmi(int16_t *output, int16_t *input,
         "sh         %[tmp1],    0x120(%[output])                        \n\t"
         "sh         %[input],   0x1a0(%[output])                        \n\t"
         "dmfc1      %[tmp1],    %[ftmp4]                                \n\t"
-        "dsrl       %[ftmp4],   %[ftmp4],       %[ftmp9]                \n\t"
+        "ssrld      %[ftmp4],   %[ftmp4],       %[ftmp9]                \n\t"
         "mfc1       %[input],   %[ftmp4]                                \n\t"
         "sh         %[tmp1],    0x140(%[output])                        \n\t"
         "sh         %[input],   0x1c0(%[output])                        \n\t"
@@ -1083,7 +1079,7 @@ void ff_h264_luma_dc_dequant_idct_8_mmi(int16_t *output, int16_t *input,
           RESTRICT_ASM_ALL64
           [output]"+&r"(output),            [input]"+&r"(input),
           [qmul]"+&r"(qmul)
-        : [ff_pw_1]"f"(ff_pw_1)
+        : [ff_pw_1]"f"(ff_pw_1.f)
         : "memory"
     );
 }
@@ -1149,7 +1145,7 @@ void ff_h264_weight_pixels16_8_mmi(uint8_t *block, ptrdiff_t stride, int height,
 
     for (y=0; y<height; y++, block+=stride) {
         __asm__ volatile (
-            "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]            \n\t"
+            "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]            \n\t"
             MMI_LDC1(%[ftmp1], %[block0], 0x00)
             MMI_LDC1(%[ftmp2], %[block1], 0x00)
             "mtc1       %[weight],  %[ftmp3]                            \n\t"
@@ -1203,7 +1199,7 @@ void ff_h264_biweight_pixels16_8_mmi(uint8_t *dst, uint8_t *src,
 
     for (y=0; y<height; y++, dst+=stride, src+=stride) {
         __asm__ volatile (
-            "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]            \n\t"
+            "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]            \n\t"
             MMI_LDC1(%[ftmp1], %[src0], 0x00)
             MMI_LDC1(%[ftmp2], %[dst0], 0x00)
             "mtc1       %[weights], %[ftmp3]                            \n\t"
@@ -1276,7 +1272,7 @@ void ff_h264_weight_pixels8_8_mmi(uint8_t *block, ptrdiff_t stride, int height,
 
     for (y=0; y<height; y++, block+=stride) {
         __asm__ volatile (
-            "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]            \n\t"
+            "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]            \n\t"
             MMI_LDC1(%[ftmp1], %[block], 0x00)
             "mtc1       %[weight],  %[ftmp2]                            \n\t"
             "mtc1       %[offset],  %[ftmp3]                            \n\t"
@@ -1317,7 +1313,7 @@ void ff_h264_biweight_pixels8_8_mmi(uint8_t *dst, uint8_t *src,
 
     for (y=0; y<height; y++, dst+=stride, src+=stride) {
         __asm__ volatile (
-            "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]            \n\t"
+            "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]            \n\t"
             MMI_LDC1(%[ftmp1], %[src], 0x00)
             MMI_LDC1(%[ftmp2], %[dst], 0x00)
             "mtc1       %[weights], %[ftmp3]                            \n\t"
@@ -1371,7 +1367,7 @@ void ff_h264_weight_pixels4_8_mmi(uint8_t *block, ptrdiff_t stride, int height,
 
     for (y=0; y<height; y++, block+=stride) {
         __asm__ volatile (
-            "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]            \n\t"
+            "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]            \n\t"
             MMI_ULWC1(%[ftmp1], %[block], 0x00)
             "mtc1       %[weight],  %[ftmp2]                            \n\t"
             "mtc1       %[offset],  %[ftmp3]                            \n\t"
@@ -1407,7 +1403,7 @@ void ff_h264_biweight_pixels4_8_mmi(uint8_t *dst, uint8_t *src,
 
     for (y=0; y<height; y++, dst+=stride, src+=stride) {
         __asm__ volatile (
-            "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]            \n\t"
+            "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]            \n\t"
             MMI_ULWC1(%[ftmp1], %[src], 0x00)
             MMI_ULWC1(%[ftmp2], %[dst], 0x00)
             "mtc1       %[weight],  %[ftmp3]                            \n\t"
@@ -1439,7 +1435,7 @@ void ff_h264_biweight_pixels4_8_mmi(uint8_t *dst, uint8_t *src,
     }
 }
 
-void ff_deblock_v8_luma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
+void ff_deblock_v8_luma_8_mmi(uint8_t *pix, ptrdiff_t stride, int alpha, int beta,
         int8_t *tc0)
 {
     double ftmp[12];
@@ -1450,7 +1446,7 @@ void ff_deblock_v8_luma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
 
     __asm__ volatile (
         PTR_ADDU   "%[addr0],   %[stride],      %[stride]               \n\t"
-        "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
+        "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
         PTR_ADDU   "%[addr1],   %[stride],      %[addr0]                \n\t"
         "addi       %[alpha],   %[alpha],       -0x01                   \n\t"
         PTR_SUBU   "%[addr1],   $0,             %[addr1]                \n\t"
@@ -1468,18 +1464,18 @@ void ff_deblock_v8_luma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
         "packushb   %[ftmp6],   %[ftmp6],       %[ftmp6]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp3],       %[ftmp2]                \n\t"
         "psubusb    %[ftmp8],   %[ftmp2],       %[ftmp3]                \n\t"
-        "or         %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
+        "por        %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp2],       %[ftmp1]                \n\t"
         "psubusb    %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp1],       %[ftmp2]                \n\t"
-        "or         %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
+        "por        %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp3],       %[ftmp4]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp5],       %[ftmp6]                \n\t"
-        "or         %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
+        "por        %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp4],       %[ftmp3]                \n\t"
-        "or         %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
+        "por        %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp5],       %[ftmp6]                \n\t"
-        "or         %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
+        "por        %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
         "pcmpeqb    %[ftmp8],   %[ftmp8],       %[ftmp0]                \n\t"
         "pcmpeqb    %[ftmp4],   %[ftmp4],       %[ftmp4]                \n\t"
         MMI_ULWC1(%[ftmp5], %[tc0], 0x00)
@@ -1487,21 +1483,21 @@ void ff_deblock_v8_luma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
         "punpcklbh  %[ftmp9],   %[ftmp5],       %[ftmp5]                \n\t"
         "pcmpgtb    %[ftmp5],   %[ftmp9],       %[ftmp4]                \n\t"
         MMI_LDC1(%[ftmp4], %[addr1], 0x00)
-        "and        %[ftmp10],  %[ftmp5],       %[ftmp8]                \n\t"
+        "pand       %[ftmp10],  %[ftmp5],       %[ftmp8]                \n\t"
         "psubusb    %[ftmp8],   %[ftmp4],       %[ftmp2]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp2],       %[ftmp4]                \n\t"
         "psubusb    %[ftmp8],   %[ftmp8],       %[ftmp6]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
         "pcmpeqb    %[ftmp7],   %[ftmp7],       %[ftmp8]                \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
-        "and        %[ftmp5],   %[ftmp10],      %[ftmp9]                \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
+        "pand       %[ftmp5],   %[ftmp10],      %[ftmp9]                \n\t"
         "psubb      %[ftmp8],   %[ftmp5],       %[ftmp7]                \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ftmp5]                \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ftmp5]                \n\t"
         "pavgb      %[ftmp5],   %[ftmp2],       %[ftmp3]                \n\t"
         MMI_LDC1(%[ftmp11], %[addr1], 0x00)
         "pavgb      %[ftmp4],   %[ftmp4],       %[ftmp5]                \n\t"
-        "xor        %[ftmp5],   %[ftmp5],       %[ftmp11]               \n\t"
-        "and        %[ftmp5],   %[ftmp5],       %[ff_pb_1]              \n\t"
+        "pxor       %[ftmp5],   %[ftmp5],       %[ftmp11]               \n\t"
+        "pand       %[ftmp5],   %[ftmp5],       %[ff_pb_1]              \n\t"
         "psubusb    %[ftmp4],   %[ftmp4],       %[ftmp5]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp1],       %[ftmp7]                \n\t"
         "paddusb    %[ftmp7],   %[ftmp7],       %[ftmp1]                \n\t"
@@ -1514,26 +1510,26 @@ void ff_deblock_v8_luma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
         "psubusb    %[ftmp4],   %[ftmp4],       %[ftmp6]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
         "pcmpeqb    %[ftmp7],   %[ftmp7],       %[ftmp4]                \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
         "psubb      %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
-        "and        %[ftmp6],   %[ftmp9],       %[ftmp7]                \n\t"
+        "pand       %[ftmp6],   %[ftmp9],       %[ftmp7]                \n\t"
         MMI_LDXC1(%[ftmp4], %[pix], %[stride], 0x00)
         "pavgb      %[ftmp7],   %[ftmp2],       %[ftmp3]                \n\t"
         MMI_LDXC1(%[ftmp11], %[pix], %[addr0], 0x00)
         "pavgb      %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
-        "xor        %[ftmp7],   %[ftmp7],       %[ftmp11]               \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ff_pb_1]              \n\t"
+        "pxor       %[ftmp7],   %[ftmp7],       %[ftmp11]               \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ff_pb_1]              \n\t"
         "psubusb    %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp4],       %[ftmp6]                \n\t"
         "paddusb    %[ftmp6],   %[ftmp6],       %[ftmp4]                \n\t"
         "pmaxub     %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         "pminub     %[ftmp5],   %[ftmp5],       %[ftmp6]                \n\t"
         MMI_SDXC1(%[ftmp5], %[pix], %[stride], 0x00)
-        "xor        %[ftmp6],   %[ftmp2],       %[ftmp3]                \n\t"
+        "pxor       %[ftmp6],   %[ftmp2],       %[ftmp3]                \n\t"
         "pcmpeqb    %[ftmp5],   %[ftmp5],       %[ftmp5]                \n\t"
-        "and        %[ftmp6],   %[ftmp6],       %[ff_pb_1]              \n\t"
-        "xor        %[ftmp4],   %[ftmp4],       %[ftmp5]                \n\t"
-        "xor        %[ftmp5],   %[ftmp5],       %[ftmp2]                \n\t"
+        "pand       %[ftmp6],   %[ftmp6],       %[ff_pb_1]              \n\t"
+        "pxor       %[ftmp4],   %[ftmp4],       %[ftmp5]                \n\t"
+        "pxor       %[ftmp5],   %[ftmp5],       %[ftmp2]                \n\t"
         "pavgb      %[ftmp4],   %[ftmp4],       %[ftmp1]                \n\t"
         "pavgb      %[ftmp4],   %[ftmp4],       %[ff_pb_3]              \n\t"
         "pavgb      %[ftmp5],   %[ftmp5],       %[ftmp3]                \n\t"
@@ -1561,13 +1557,13 @@ void ff_deblock_v8_luma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
           [addr0]"=&r"(addr[0]),            [addr1]"=&r"(addr[1])
         : [pix]"r"(pix),                    [stride]"r"((mips_reg)stride),
           [alpha]"r"((mips_reg)alpha),      [beta]"r"((mips_reg)beta),
-          [tc0]"r"(tc0),                    [ff_pb_1]"f"(ff_pb_1),
-          [ff_pb_3]"f"(ff_pb_3),            [ff_pb_A1]"f"(ff_pb_A1)
+          [tc0]"r"(tc0),                    [ff_pb_1]"f"(ff_pb_1.f),
+          [ff_pb_3]"f"(ff_pb_3.f),          [ff_pb_A1]"f"(ff_pb_A1.f)
         : "memory"
     );
 }
 
-static void deblock_v8_luma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
+static void deblock_v8_luma_intra_8_mmi(uint8_t *pix, ptrdiff_t stride, int alpha,
         int beta)
 {
     DECLARE_ALIGNED(8, const uint64_t, stack[0x0a]);
@@ -1579,12 +1575,12 @@ static void deblock_v8_luma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
 
     __asm__ volatile (
         "ori        %[tmp0],    $0,             0x01                    \n\t"
-        "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
+        "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
         "mtc1       %[tmp0],    %[ftmp9]                                \n\t"
         PTR_SLL    "%[addr0],   %[stride],      0x02                    \n\t"
         PTR_ADDU   "%[addr2],   %[stride],      %[stride]               \n\t"
         PTR_ADDIU  "%[alpha],   %[alpha],       -0x01                   \n\t"
-        PTR_SLL    "%[ftmp11],  %[ftmp9],       %[ftmp9]                \n\t"
+        "sslld      %[ftmp11],  %[ftmp9],       %[ftmp9]                \n\t"
         "bltz       %[alpha],   1f                                      \n\t"
         PTR_ADDU   "%[addr1],   %[addr2],       %[stride]               \n\t"
         PTR_ADDIU  "%[beta],    %[beta],        -0x01                   \n\t"
@@ -1603,20 +1599,20 @@ static void deblock_v8_luma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
         "psubusb    %[ftmp7],   %[ftmp3],       %[ftmp2]                \n\t"
         "psubusb    %[ftmp8],   %[ftmp2],       %[ftmp3]                \n\t"
         "packushb   %[ftmp6],   %[ftmp6],       %[ftmp6]                \n\t"
-        "or         %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
+        "por        %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
         MMI_SDC1(%[ftmp5], %[stack], 0x10)
         "psubusb    %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp2],       %[ftmp1]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp1],       %[ftmp2]                \n\t"
-        "or         %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
+        "por        %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp5],       %[ftmp6]                \n\t"
-        "or         %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
+        "por        %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp3],       %[ftmp4]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp4],       %[ftmp3]                \n\t"
-        "or         %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
+        "por        %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp5],       %[ftmp6]                \n\t"
-        "or         %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
-        "xor        %[ftmp7],   %[ftmp7],       %[ftmp7]                \n\t"
+        "por        %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
+        "pxor       %[ftmp7],   %[ftmp7],       %[ftmp7]                \n\t"
         MMI_LDC1(%[ftmp5], %[stack], 0x10)
         "pcmpeqb    %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
         "ldc1       %[ftmp10],  %[ff_pb_1]                              \n\t"
@@ -1629,14 +1625,14 @@ static void deblock_v8_luma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
         "psubusb    %[ftmp7],   %[ftmp7],       %[ftmp5]                \n\t"
         MMI_LDC1(%[ftmp15], %[stack], 0x20)
         "pcmpeqb    %[ftmp7],   %[ftmp7],       %[ftmp8]                \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ftmp15]               \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ftmp15]               \n\t"
         MMI_LDXC1(%[ftmp15], %[addr0], %[stride], 0x00)
         "psubusb    %[ftmp8],   %[ftmp15],      %[ftmp2]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp2],       %[ftmp15]               \n\t"
         "psubusb    %[ftmp8],   %[ftmp8],       %[ftmp6]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp5],       %[ftmp6]                \n\t"
         "pcmpeqb    %[ftmp5],   %[ftmp5],       %[ftmp8]                \n\t"
-        "and        %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
+        "pand       %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         MMI_LDXC1(%[ftmp14], %[pix], %[addr2], 0x00)
         MMI_SDC1(%[ftmp5], %[stack], 0x30)
         "psubusb    %[ftmp8],   %[ftmp14],      %[ftmp3]                \n\t"
@@ -1644,7 +1640,7 @@ static void deblock_v8_luma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
         "psubusb    %[ftmp8],   %[ftmp8],       %[ftmp6]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp5],       %[ftmp6]                \n\t"
         "pcmpeqb    %[ftmp5],   %[ftmp5],       %[ftmp8]                \n\t"
-        "and        %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
+        "pand       %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         MMI_SDC1(%[ftmp5], %[stack], 0x40)
         "pavgb      %[ftmp5],   %[ftmp15],      %[ftmp1]                \n\t"
         "pavgb      %[ftmp6],   %[ftmp2],       %[ftmp3]                \n\t"
@@ -1657,36 +1653,36 @@ static void deblock_v8_luma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
         MMI_SDC1(%[ftmp7], %[stack], 0x00)
         "psrlh      %[ftmp7],   %[ftmp7],       %[ftmp9]                \n\t"
         "pavgb      %[ftmp7],   %[ftmp7],       %[ftmp0]                \n\t"
-        "xor        %[ftmp7],   %[ftmp7],       %[ftmp5]                \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
+        "pxor       %[ftmp7],   %[ftmp7],       %[ftmp5]                \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
         "psubb      %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         "pavgb      %[ftmp6],   %[ftmp15],      %[ftmp4]                \n\t"
         "psubb      %[ftmp7],   %[ftmp15],      %[ftmp4]                \n\t"
         "paddb      %[ftmp8],   %[ftmp8],       %[ftmp8]                \n\t"
         "psubb      %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
         "psubb      %[ftmp6],   %[ftmp6],       %[ftmp7]                \n\t"
         MMI_LDC1(%[ftmp13], %[stack], 0x10)
         "pavgb      %[ftmp6],   %[ftmp6],       %[ftmp1]                \n\t"
         "psrlh      %[ftmp8],   %[ftmp8],       %[ftmp11]               \n\t"
         "pavgb      %[ftmp6],   %[ftmp6],       %[ftmp13]               \n\t"
         "pavgb      %[ftmp8],   %[ftmp8],       %[ftmp0]                \n\t"
-        "xor        %[ftmp8],   %[ftmp8],       %[ftmp6]                \n\t"
-        "and        %[ftmp8],   %[ftmp8],       %[ftmp10]               \n\t"
+        "pxor       %[ftmp8],   %[ftmp8],       %[ftmp6]                \n\t"
+        "pand       %[ftmp8],   %[ftmp8],       %[ftmp10]               \n\t"
         "psubb      %[ftmp6],   %[ftmp6],       %[ftmp8]                \n\t"
-        "xor        %[ftmp8],   %[ftmp2],       %[ftmp4]                \n\t"
+        "pxor       %[ftmp8],   %[ftmp2],       %[ftmp4]                \n\t"
         "pavgb      %[ftmp7],   %[ftmp2],       %[ftmp4]                \n\t"
-        "and        %[ftmp8],   %[ftmp8],       %[ftmp10]               \n\t"
+        "pand       %[ftmp8],   %[ftmp8],       %[ftmp10]               \n\t"
         "psubb      %[ftmp7],   %[ftmp7],       %[ftmp8]                \n\t"
         MMI_LDC1(%[ftmp13], %[stack], 0x30)
         "pavgb      %[ftmp7],   %[ftmp7],       %[ftmp1]                \n\t"
         MMI_LDC1(%[ftmp12], %[stack], 0x20)
-        "xor        %[ftmp6],   %[ftmp6],       %[ftmp7]                \n\t"
-        "xor        %[ftmp7],   %[ftmp7],       %[ftmp2]                \n\t"
-        "and        %[ftmp6],   %[ftmp6],       %[ftmp13]               \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ftmp12]               \n\t"
-        "xor        %[ftmp6],   %[ftmp6],       %[ftmp7]                \n\t"
-        "xor        %[ftmp6],   %[ftmp6],       %[ftmp2]                \n\t"
+        "pxor       %[ftmp6],   %[ftmp6],       %[ftmp7]                \n\t"
+        "pxor       %[ftmp7],   %[ftmp7],       %[ftmp2]                \n\t"
+        "pand       %[ftmp6],   %[ftmp6],       %[ftmp13]               \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ftmp12]               \n\t"
+        "pxor       %[ftmp6],   %[ftmp6],       %[ftmp7]                \n\t"
+        "pxor       %[ftmp6],   %[ftmp6],       %[ftmp2]                \n\t"
         MMI_SDXC1(%[ftmp6], %[addr0], %[addr1], 0x00)
         MMI_LDC1(%[ftmp6], %[addr0], 0x00)
         "paddb      %[ftmp7],   %[ftmp15],      %[ftmp6]                \n\t"
@@ -1697,16 +1693,16 @@ static void deblock_v8_luma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
         "paddb      %[ftmp7],   %[ftmp7],       %[ftmp12]               \n\t"
         "psrlh      %[ftmp7],   %[ftmp7],       %[ftmp11]               \n\t"
         "pavgb      %[ftmp7],   %[ftmp7],       %[ftmp0]                \n\t"
-        "xor        %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
+        "pxor       %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
         MMI_LDC1(%[ftmp12], %[stack], 0x30)
         "psubb      %[ftmp6],   %[ftmp6],       %[ftmp7]                \n\t"
-        "xor        %[ftmp5],   %[ftmp5],       %[ftmp1]                \n\t"
-        "xor        %[ftmp6],   %[ftmp6],       %[ftmp15]               \n\t"
-        "and        %[ftmp5],   %[ftmp5],       %[ftmp12]               \n\t"
-        "and        %[ftmp6],   %[ftmp6],       %[ftmp12]               \n\t"
-        "xor        %[ftmp5],   %[ftmp5],       %[ftmp1]                \n\t"
-        "xor        %[ftmp6],   %[ftmp6],       %[ftmp15]               \n\t"
+        "pxor       %[ftmp5],   %[ftmp5],       %[ftmp1]                \n\t"
+        "pxor       %[ftmp6],   %[ftmp6],       %[ftmp15]               \n\t"
+        "pand       %[ftmp5],   %[ftmp5],       %[ftmp12]               \n\t"
+        "pand       %[ftmp6],   %[ftmp6],       %[ftmp12]               \n\t"
+        "pxor       %[ftmp5],   %[ftmp5],       %[ftmp1]                \n\t"
+        "pxor       %[ftmp6],   %[ftmp6],       %[ftmp15]               \n\t"
         MMI_SDXC1(%[ftmp5], %[addr0], %[addr2], 0x00)
         MMI_SDXC1(%[ftmp6], %[addr0], %[stride], 0x00)
         "pavgb      %[ftmp5],   %[ftmp14],      %[ftmp4]                \n\t"
@@ -1720,36 +1716,36 @@ static void deblock_v8_luma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
         MMI_SDC1(%[ftmp7], %[stack], 0x00)
         "psrlh      %[ftmp7],   %[ftmp7],       %[ftmp9]                \n\t"
         "pavgb      %[ftmp7],   %[ftmp7],       %[ftmp0]                \n\t"
-        "xor        %[ftmp7],   %[ftmp7],       %[ftmp5]                \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
+        "pxor       %[ftmp7],   %[ftmp7],       %[ftmp5]                \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
         "psubb      %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         "pavgb      %[ftmp6],   %[ftmp14],      %[ftmp1]                \n\t"
         "paddb      %[ftmp8],   %[ftmp8],       %[ftmp8]                \n\t"
         "psubb      %[ftmp7],   %[ftmp14],      %[ftmp1]                \n\t"
         "psubb      %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
         "psubb      %[ftmp6],   %[ftmp6],       %[ftmp7]                \n\t"
         MMI_LDC1(%[ftmp12], %[stack], 0x10)
         "pavgb      %[ftmp6],   %[ftmp6],       %[ftmp4]                \n\t"
         "pavgb      %[ftmp6],   %[ftmp6],       %[ftmp12]               \n\t"
         "psrlh      %[ftmp8],   %[ftmp8],       %[ftmp11]               \n\t"
         "pavgb      %[ftmp8],   %[ftmp8],       %[ftmp0]                \n\t"
-        "xor        %[ftmp8],   %[ftmp8],       %[ftmp6]                \n\t"
-        "and        %[ftmp8],   %[ftmp8],       %[ftmp10]               \n\t"
+        "pxor       %[ftmp8],   %[ftmp8],       %[ftmp6]                \n\t"
+        "pand       %[ftmp8],   %[ftmp8],       %[ftmp10]               \n\t"
         "psubb      %[ftmp6],   %[ftmp6],       %[ftmp8]                \n\t"
-        "xor        %[ftmp8],   %[ftmp3],       %[ftmp1]                \n\t"
+        "pxor       %[ftmp8],   %[ftmp3],       %[ftmp1]                \n\t"
         "pavgb      %[ftmp7],   %[ftmp3],       %[ftmp1]                \n\t"
-        "and        %[ftmp8],   %[ftmp8],       %[ftmp10]               \n\t"
+        "pand       %[ftmp8],   %[ftmp8],       %[ftmp10]               \n\t"
         MMI_LDC1(%[ftmp12], %[stack], 0x40)
         "psubb      %[ftmp7],   %[ftmp7],       %[ftmp8]                \n\t"
         MMI_LDC1(%[ftmp13], %[stack], 0x20)
         "pavgb      %[ftmp7],   %[ftmp7],       %[ftmp4]                \n\t"
-        "xor        %[ftmp6],   %[ftmp6],       %[ftmp7]                \n\t"
-        "xor        %[ftmp7],   %[ftmp7],       %[ftmp3]                \n\t"
-        "and        %[ftmp6],   %[ftmp6],       %[ftmp12]               \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ftmp13]               \n\t"
-        "xor        %[ftmp6],   %[ftmp6],       %[ftmp7]                \n\t"
-        "xor        %[ftmp6],   %[ftmp6],       %[ftmp3]                \n\t"
+        "pxor       %[ftmp6],   %[ftmp6],       %[ftmp7]                \n\t"
+        "pxor       %[ftmp7],   %[ftmp7],       %[ftmp3]                \n\t"
+        "pand       %[ftmp6],   %[ftmp6],       %[ftmp12]               \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ftmp13]               \n\t"
+        "pxor       %[ftmp6],   %[ftmp6],       %[ftmp7]                \n\t"
+        "pxor       %[ftmp6],   %[ftmp6],       %[ftmp3]                \n\t"
         MMI_SDC1(%[ftmp6], %[pix], 0x00)
         MMI_LDXC1(%[ftmp6], %[pix], %[addr1], 0x00)
         "paddb      %[ftmp7],   %[ftmp14],      %[ftmp6]                \n\t"
@@ -1760,16 +1756,16 @@ static void deblock_v8_luma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
         "paddb      %[ftmp7],   %[ftmp7],       %[ftmp12]               \n\t"
         "psrlh      %[ftmp7],   %[ftmp7],       %[ftmp11]               \n\t"
         "pavgb      %[ftmp7],   %[ftmp7],       %[ftmp0]                \n\t"
-        "xor        %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
+        "pxor       %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ftmp10]               \n\t"
         MMI_LDC1(%[ftmp12], %[stack], 0x40)
         "psubb      %[ftmp6],   %[ftmp6],       %[ftmp7]                \n\t"
-        "xor        %[ftmp5],   %[ftmp5],       %[ftmp4]                \n\t"
-        "xor        %[ftmp6],   %[ftmp6],       %[ftmp14]               \n\t"
-        "and        %[ftmp5],   %[ftmp5],       %[ftmp12]               \n\t"
-        "and        %[ftmp6],   %[ftmp6],       %[ftmp12]               \n\t"
-        "xor        %[ftmp5],   %[ftmp5],       %[ftmp4]                \n\t"
-        "xor        %[ftmp6],   %[ftmp6],       %[ftmp14]               \n\t"
+        "pxor       %[ftmp5],   %[ftmp5],       %[ftmp4]                \n\t"
+        "pxor       %[ftmp6],   %[ftmp6],       %[ftmp14]               \n\t"
+        "pand       %[ftmp5],   %[ftmp5],       %[ftmp12]               \n\t"
+        "pand       %[ftmp6],   %[ftmp6],       %[ftmp12]               \n\t"
+        "pxor       %[ftmp5],   %[ftmp5],       %[ftmp4]                \n\t"
+        "pxor       %[ftmp6],   %[ftmp6],       %[ftmp14]               \n\t"
         MMI_SDXC1(%[ftmp5], %[pix], %[stride], 0x00)
         MMI_SDXC1(%[ftmp6], %[pix], %[addr2], 0x00)
         "1:                                                             \n\t"
@@ -1813,7 +1809,7 @@ void ff_deblock_v_chroma_8_mmi(uint8_t *pix, ptrdiff_t stride, int alpha,
         MMI_LDC1(%[ftmp3], %[pix], 0x00)
         MMI_LDXC1(%[ftmp4], %[pix], %[stride], 0x00)
 
-        "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
+        "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
         "mtc1       %[alpha],   %[ftmp5]                                \n\t"
         "mtc1       %[beta],    %[ftmp6]                                \n\t"
         "pshufh     %[ftmp5],   %[ftmp5],       %[ftmp0]                \n\t"
@@ -1822,29 +1818,29 @@ void ff_deblock_v_chroma_8_mmi(uint8_t *pix, ptrdiff_t stride, int alpha,
         "packushb   %[ftmp6],   %[ftmp6],       %[ftmp6]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp3],       %[ftmp2]                \n\t"
         "psubusb    %[ftmp8],   %[ftmp2],       %[ftmp3]                \n\t"
-        "or         %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
+        "por        %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
         "psubusb    %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp2],       %[ftmp1]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp1],       %[ftmp2]                \n\t"
-        "or         %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
+        "por        %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp5],       %[ftmp6]                \n\t"
-        "or         %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
+        "por        %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp3],       %[ftmp4]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp4],       %[ftmp3]                \n\t"
-        "or         %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
+        "por        %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp5],       %[ftmp6]                \n\t"
-        "or         %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
-        "xor        %[ftmp7],   %[ftmp7],       %[ftmp7]                \n\t"
+        "por        %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
+        "pxor       %[ftmp7],   %[ftmp7],       %[ftmp7]                \n\t"
         "pcmpeqb    %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
         MMI_ULWC1(%[ftmp7], %[tc0], 0x00)
         "punpcklbh  %[ftmp7],   %[ftmp7],       %[ftmp7]                \n\t"
-        "and        %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
+        "pand       %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
         "pcmpeqb    %[ftmp5],   %[ftmp5],       %[ftmp5]                \n\t"
-        "xor        %[ftmp6],   %[ftmp2],       %[ftmp3]                \n\t"
-        "xor        %[ftmp4],   %[ftmp4],       %[ftmp5]                \n\t"
-        "and        %[ftmp6],   %[ftmp6],       %[ff_pb_1]              \n\t"
+        "pxor       %[ftmp6],   %[ftmp2],       %[ftmp3]                \n\t"
+        "pxor       %[ftmp4],   %[ftmp4],       %[ftmp5]                \n\t"
+        "pand       %[ftmp6],   %[ftmp6],       %[ff_pb_1]              \n\t"
         "pavgb      %[ftmp4],   %[ftmp4],       %[ftmp1]                \n\t"
-        "xor        %[ftmp5],   %[ftmp5],       %[ftmp2]                \n\t"
+        "pxor       %[ftmp5],   %[ftmp5],       %[ftmp2]                \n\t"
         "pavgb      %[ftmp4],   %[ftmp4],       %[ff_pb_3]              \n\t"
         "pavgb      %[ftmp5],   %[ftmp5],       %[ftmp3]                \n\t"
         "pavgb      %[ftmp4],   %[ftmp4],       %[ftmp6]                \n\t"
@@ -1871,13 +1867,13 @@ void ff_deblock_v_chroma_8_mmi(uint8_t *pix, ptrdiff_t stride, int alpha,
           [addr0]"=&r"(addr[0])
         : [pix]"r"(pix),                    [stride]"r"((mips_reg)stride),
           [alpha]"r"(alpha),                [beta]"r"(beta),
-          [tc0]"r"(tc0),                    [ff_pb_1]"f"(ff_pb_1),
-          [ff_pb_3]"f"(ff_pb_3),            [ff_pb_A1]"f"(ff_pb_A1)
+          [tc0]"r"(tc0),                    [ff_pb_1]"f"(ff_pb_1.f),
+          [ff_pb_3]"f"(ff_pb_3.f),          [ff_pb_A1]"f"(ff_pb_A1.f)
         : "memory"
     );
 }
 
-void ff_deblock_v_chroma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
+void ff_deblock_v_chroma_intra_8_mmi(uint8_t *pix, ptrdiff_t stride, int alpha,
         int beta)
 {
     double ftmp[9];
@@ -1896,7 +1892,7 @@ void ff_deblock_v_chroma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
         MMI_LDC1(%[ftmp3], %[pix], 0x00)
         MMI_LDXC1(%[ftmp4], %[pix], %[stride], 0x00)
 
-        "xor        %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
+        "pxor       %[ftmp0],   %[ftmp0],       %[ftmp0]                \n\t"
         "mtc1       %[alpha],   %[ftmp5]                                \n\t"
         "mtc1       %[beta],    %[ftmp6]                                \n\t"
         "pshufh     %[ftmp5],   %[ftmp5],       %[ftmp0]                \n\t"
@@ -1905,36 +1901,36 @@ void ff_deblock_v_chroma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
         "packushb   %[ftmp6],   %[ftmp6],       %[ftmp6]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp3],       %[ftmp2]                \n\t"
         "psubusb    %[ftmp8],   %[ftmp2],       %[ftmp3]                \n\t"
-        "or         %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
+        "por        %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
         "psubusb    %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp2],       %[ftmp1]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp1],       %[ftmp2]                \n\t"
-        "or         %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
+        "por        %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp5],       %[ftmp6]                \n\t"
-        "or         %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
+        "por        %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp3],       %[ftmp4]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp4],       %[ftmp3]                \n\t"
-        "or         %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
+        "por        %[ftmp5],   %[ftmp5],       %[ftmp7]                \n\t"
         "psubusb    %[ftmp5],   %[ftmp5],       %[ftmp6]                \n\t"
-        "or         %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
-        "xor        %[ftmp7],   %[ftmp7],       %[ftmp7]                \n\t"
+        "por        %[ftmp8],   %[ftmp8],       %[ftmp5]                \n\t"
+        "pxor       %[ftmp7],   %[ftmp7],       %[ftmp7]                \n\t"
         "pcmpeqb    %[ftmp8],   %[ftmp8],       %[ftmp7]                \n\t"
         "mov.d      %[ftmp6],   %[ftmp2]                                \n\t"
         "mov.d      %[ftmp7],   %[ftmp3]                                \n\t"
-        "xor        %[ftmp5],   %[ftmp2],       %[ftmp4]                \n\t"
-        "and        %[ftmp5],   %[ftmp5],       %[ff_pb_1]              \n\t"
+        "pxor       %[ftmp5],   %[ftmp2],       %[ftmp4]                \n\t"
+        "pand       %[ftmp5],   %[ftmp5],       %[ff_pb_1]              \n\t"
         "pavgb      %[ftmp2],   %[ftmp2],       %[ftmp4]                \n\t"
         "psubusb    %[ftmp2],   %[ftmp2],       %[ftmp5]                \n\t"
         "pavgb      %[ftmp2],   %[ftmp2],       %[ftmp1]                \n\t"
-        "xor        %[ftmp5],   %[ftmp3],       %[ftmp1]                \n\t"
-        "and        %[ftmp5],   %[ftmp5],       %[ff_pb_1]              \n\t"
+        "pxor       %[ftmp5],   %[ftmp3],       %[ftmp1]                \n\t"
+        "pand       %[ftmp5],   %[ftmp5],       %[ff_pb_1]              \n\t"
         "pavgb      %[ftmp3],   %[ftmp3],       %[ftmp1]                \n\t"
         "psubusb    %[ftmp3],   %[ftmp3],       %[ftmp5]                \n\t"
         "pavgb      %[ftmp3],   %[ftmp3],       %[ftmp4]                \n\t"
         "psubb      %[ftmp2],   %[ftmp2],       %[ftmp6]                \n\t"
         "psubb      %[ftmp3],   %[ftmp3],       %[ftmp7]                \n\t"
-        "and        %[ftmp2],   %[ftmp2],       %[ftmp8]                \n\t"
-        "and        %[ftmp3],   %[ftmp3],       %[ftmp8]                \n\t"
+        "pand       %[ftmp2],   %[ftmp2],       %[ftmp8]                \n\t"
+        "pand       %[ftmp3],   %[ftmp3],       %[ftmp8]                \n\t"
         "paddb      %[ftmp2],   %[ftmp2],       %[ftmp6]                \n\t"
         "paddb      %[ftmp3],   %[ftmp3],       %[ftmp7]                \n\t"
 
@@ -1950,12 +1946,12 @@ void ff_deblock_v_chroma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
           [addr0]"=&r"(addr[0])
         : [pix]"r"(pix),                    [stride]"r"((mips_reg)stride),
           [alpha]"r"(alpha),                [beta]"r"(beta),
-          [ff_pb_1]"f"(ff_pb_1)
+          [ff_pb_1]"f"(ff_pb_1.f)
         : "memory"
     );
 }
 
-void ff_deblock_h_chroma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
+void ff_deblock_h_chroma_8_mmi(uint8_t *pix, ptrdiff_t stride, int alpha, int beta,
         int8_t *tc0)
 {
     double ftmp[11];
@@ -2001,7 +1997,7 @@ void ff_deblock_h_chroma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
         "mov.d      %[ftmp9],   %[ftmp0]                                \n\t"
         "mov.d      %[ftmp10],  %[ftmp3]                                \n\t"
 
-        "xor        %[ftmp8],   %[ftmp8],       %[ftmp8]                \n\t"
+        "pxor       %[ftmp8],   %[ftmp8],       %[ftmp8]                \n\t"
         "mtc1       %[alpha],   %[ftmp4]                                \n\t"
         "mtc1       %[beta],    %[ftmp5]                                \n\t"
         "pshufh     %[ftmp4],   %[ftmp4],       %[ftmp8]                \n\t"
@@ -2010,29 +2006,29 @@ void ff_deblock_h_chroma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
         "packushb   %[ftmp5],   %[ftmp5],       %[ftmp5]                \n\t"
         "psubusb    %[ftmp6],   %[ftmp2],       %[ftmp1]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp1],       %[ftmp2]                \n\t"
-        "or         %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
+        "por        %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp7],       %[ftmp4]                \n\t"
         "psubusb    %[ftmp6],   %[ftmp1],       %[ftmp0]                \n\t"
         "psubusb    %[ftmp4],   %[ftmp0],       %[ftmp1]                \n\t"
-        "or         %[ftmp4],   %[ftmp4],       %[ftmp6]                \n\t"
+        "por        %[ftmp4],   %[ftmp4],       %[ftmp6]                \n\t"
         "psubusb    %[ftmp4],   %[ftmp4],       %[ftmp5]                \n\t"
-        "or         %[ftmp7],   %[ftmp7],       %[ftmp4]                \n\t"
+        "por        %[ftmp7],   %[ftmp7],       %[ftmp4]                \n\t"
         "psubusb    %[ftmp6],   %[ftmp2],       %[ftmp3]                \n\t"
         "psubusb    %[ftmp4],   %[ftmp3],       %[ftmp2]                \n\t"
-        "or         %[ftmp4],   %[ftmp4],       %[ftmp6]                \n\t"
+        "por        %[ftmp4],   %[ftmp4],       %[ftmp6]                \n\t"
         "psubusb    %[ftmp4],   %[ftmp4],       %[ftmp5]                \n\t"
-        "or         %[ftmp7],   %[ftmp7],       %[ftmp4]                \n\t"
-        "xor        %[ftmp6],   %[ftmp6],       %[ftmp6]                \n\t"
+        "por        %[ftmp7],   %[ftmp7],       %[ftmp4]                \n\t"
+        "pxor       %[ftmp6],   %[ftmp6],       %[ftmp6]                \n\t"
         "pcmpeqb    %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
         MMI_ULWC1(%[ftmp6], %[tc0], 0x00)
         "punpcklbh  %[ftmp6],   %[ftmp6],       %[ftmp6]                \n\t"
-        "and        %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
+        "pand       %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
         "pcmpeqb    %[ftmp4],   %[ftmp4],       %[ftmp4]                \n\t"
-        "xor        %[ftmp5],   %[ftmp1],       %[ftmp2]                \n\t"
-        "xor        %[ftmp3],   %[ftmp3],       %[ftmp4]                \n\t"
-        "and        %[ftmp5],   %[ftmp5],       %[ff_pb_1]              \n\t"
+        "pxor       %[ftmp5],   %[ftmp1],       %[ftmp2]                \n\t"
+        "pxor       %[ftmp3],   %[ftmp3],       %[ftmp4]                \n\t"
+        "pand       %[ftmp5],   %[ftmp5],       %[ff_pb_1]              \n\t"
         "pavgb      %[ftmp3],   %[ftmp3],       %[ftmp0]                \n\t"
-        "xor        %[ftmp4],   %[ftmp4],       %[ftmp1]                \n\t"
+        "pxor       %[ftmp4],   %[ftmp4],       %[ftmp1]                \n\t"
         "pavgb      %[ftmp3],   %[ftmp3],       %[ff_pb_3]              \n\t"
         "pavgb      %[ftmp4],   %[ftmp4],       %[ftmp2]                \n\t"
         "pavgb      %[ftmp3],   %[ftmp3],       %[ftmp5]                \n\t"
@@ -2089,13 +2085,13 @@ void ff_deblock_h_chroma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
           [pix]"+&r"(pix)
         : [alpha]"r"(alpha),                [beta]"r"(beta),
           [stride]"r"((mips_reg)stride),    [tc0]"r"(tc0),
-          [ff_pb_1]"f"(ff_pb_1),            [ff_pb_3]"f"(ff_pb_3),
-          [ff_pb_A1]"f"(ff_pb_A1)
+          [ff_pb_1]"f"(ff_pb_1.f),          [ff_pb_3]"f"(ff_pb_3.f),
+          [ff_pb_A1]"f"(ff_pb_A1.f)
         : "memory"
     );
 }
 
-void ff_deblock_h_chroma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
+void ff_deblock_h_chroma_intra_8_mmi(uint8_t *pix, ptrdiff_t stride, int alpha,
         int beta)
 {
     double ftmp[11];
@@ -2139,7 +2135,7 @@ void ff_deblock_h_chroma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
         "punpcklwd  %[ftmp0],   %[ftmp0],       %[ftmp4]                \n\t"
         "punpcklwd  %[ftmp2],   %[ftmp2],       %[ftmp6]                \n\t"
 
-        "xor        %[ftmp8],   %[ftmp8],       %[ftmp8]                \n\t"
+        "pxor       %[ftmp8],   %[ftmp8],       %[ftmp8]                \n\t"
         "mtc1       %[alpha],   %[ftmp4]                                \n\t"
         "mtc1       %[beta],    %[ftmp5]                                \n\t"
         "pshufh     %[ftmp4],   %[ftmp4],       %[ftmp8]                \n\t"
@@ -2148,36 +2144,36 @@ void ff_deblock_h_chroma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
         "packushb   %[ftmp5],   %[ftmp5],       %[ftmp5]                \n\t"
         "psubusb    %[ftmp6],   %[ftmp2],       %[ftmp1]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp1],       %[ftmp2]                \n\t"
-        "or         %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
+        "por        %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
         "psubusb    %[ftmp7],   %[ftmp7],       %[ftmp4]                \n\t"
         "psubusb    %[ftmp6],   %[ftmp1],       %[ftmp0]                \n\t"
         "psubusb    %[ftmp4],   %[ftmp0],       %[ftmp1]                \n\t"
-        "or         %[ftmp4],   %[ftmp4],       %[ftmp6]                \n\t"
+        "por        %[ftmp4],   %[ftmp4],       %[ftmp6]                \n\t"
         "psubusb    %[ftmp4],   %[ftmp4],       %[ftmp5]                \n\t"
-        "or         %[ftmp7],   %[ftmp7],       %[ftmp4]                \n\t"
+        "por        %[ftmp7],   %[ftmp7],       %[ftmp4]                \n\t"
         "psubusb    %[ftmp6],   %[ftmp2],       %[ftmp3]                \n\t"
         "psubusb    %[ftmp4],   %[ftmp3],       %[ftmp2]                \n\t"
-        "or         %[ftmp4],   %[ftmp4],       %[ftmp6]                \n\t"
+        "por        %[ftmp4],   %[ftmp4],       %[ftmp6]                \n\t"
         "psubusb    %[ftmp4],   %[ftmp4],       %[ftmp5]                \n\t"
-        "or         %[ftmp7],   %[ftmp7],       %[ftmp4]                \n\t"
-        "xor        %[ftmp6],   %[ftmp6],       %[ftmp6]                \n\t"
+        "por        %[ftmp7],   %[ftmp7],       %[ftmp4]                \n\t"
+        "pxor       %[ftmp6],   %[ftmp6],       %[ftmp6]                \n\t"
         "pcmpeqb    %[ftmp7],   %[ftmp7],       %[ftmp6]                \n\t"
         "mov.d      %[ftmp5],   %[ftmp1]                                \n\t"
         "mov.d      %[ftmp6],   %[ftmp2]                                \n\t"
-        "xor        %[ftmp4],   %[ftmp1],       %[ftmp3]                \n\t"
-        "and        %[ftmp4],   %[ftmp4],       %[ff_pb_1]              \n\t"
+        "pxor       %[ftmp4],   %[ftmp1],       %[ftmp3]                \n\t"
+        "pand       %[ftmp4],   %[ftmp4],       %[ff_pb_1]              \n\t"
         "pavgb      %[ftmp1],   %[ftmp1],       %[ftmp3]                \n\t"
         "psubusb    %[ftmp1],   %[ftmp1],       %[ftmp4]                \n\t"
         "pavgb      %[ftmp1],   %[ftmp1],       %[ftmp0]                \n\t"
-        "xor        %[ftmp4],   %[ftmp2],       %[ftmp0]                \n\t"
-        "and        %[ftmp4],   %[ftmp4],       %[ff_pb_1]              \n\t"
+        "pxor       %[ftmp4],   %[ftmp2],       %[ftmp0]                \n\t"
+        "pand       %[ftmp4],   %[ftmp4],       %[ff_pb_1]              \n\t"
         "pavgb      %[ftmp2],   %[ftmp2],       %[ftmp0]                \n\t"
         "psubusb    %[ftmp2],   %[ftmp2],       %[ftmp4]                \n\t"
         "pavgb      %[ftmp2],   %[ftmp2],       %[ftmp3]                \n\t"
         "psubb      %[ftmp1],   %[ftmp1],       %[ftmp5]                \n\t"
         "psubb      %[ftmp2],   %[ftmp2],       %[ftmp6]                \n\t"
-        "and        %[ftmp1],   %[ftmp1],       %[ftmp7]                \n\t"
-        "and        %[ftmp2],   %[ftmp2],       %[ftmp7]                \n\t"
+        "pand       %[ftmp1],   %[ftmp1],       %[ftmp7]                \n\t"
+        "pand       %[ftmp2],   %[ftmp2],       %[ftmp7]                \n\t"
         "paddb      %[ftmp1],   %[ftmp1],       %[ftmp5]                \n\t"
         "paddb      %[ftmp2],   %[ftmp2],       %[ftmp6]                \n\t"
 
@@ -2223,12 +2219,12 @@ void ff_deblock_h_chroma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
           [addr4]"=&r"(addr[4]),            [addr5]"=&r"(addr[5]),
           [pix]"+&r"(pix)
         : [alpha]"r"(alpha),                [beta]"r"(beta),
-          [stride]"r"((mips_reg)stride),    [ff_pb_1]"f"(ff_pb_1)
+          [stride]"r"((mips_reg)stride),    [ff_pb_1]"f"(ff_pb_1.f)
         : "memory"
     );
 }
 
-void ff_deblock_v_luma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
+void ff_deblock_v_luma_8_mmi(uint8_t *pix, ptrdiff_t stride, int alpha, int beta,
         int8_t *tc0)
 {
     if ((tc0[0] & tc0[1]) >= 0)
@@ -2237,14 +2233,14 @@ void ff_deblock_v_luma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
         ff_deblock_v8_luma_8_mmi(pix + 8, stride, alpha, beta, tc0 + 2);
 }
 
-void ff_deblock_v_luma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
+void ff_deblock_v_luma_intra_8_mmi(uint8_t *pix, ptrdiff_t stride, int alpha,
         int beta)
 {
     deblock_v8_luma_intra_8_mmi(pix + 0, stride, alpha, beta);
     deblock_v8_luma_intra_8_mmi(pix + 8, stride, alpha, beta);
 }
 
-void ff_deblock_h_luma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
+void ff_deblock_h_luma_8_mmi(uint8_t *pix, ptrdiff_t stride, int alpha, int beta,
         int8_t *tc0)
 {
     DECLARE_ALIGNED(8, const uint64_t, stack[0x0d]);
@@ -2463,7 +2459,7 @@ void ff_deblock_h_luma_8_mmi(uint8_t *pix, int stride, int alpha, int beta,
     );
 }
 
-void ff_deblock_h_luma_intra_8_mmi(uint8_t *pix, int stride, int alpha,
+void ff_deblock_h_luma_intra_8_mmi(uint8_t *pix, ptrdiff_t stride, int alpha,
         int beta)
 {
     DECLARE_ALIGNED(8, const uint64_t, ptmp[0x11]);

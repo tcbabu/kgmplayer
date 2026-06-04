@@ -22,9 +22,9 @@
  */
 
 #include "libavutil/avassert.h"
+#include "libavutil/mem_internal.h"
 
-#include "avcodec.h"
-#include "internal.h"
+#include "threadframe.h"
 #include "videodsp.h"
 #include "vp9data.h"
 #include "vp9dec.h"
@@ -318,11 +318,7 @@ static av_always_inline void mc_luma_unscaled(VP9TileData *td, vp9_mc_func (*mc)
     // The arm/aarch64 _hv filters read one more row than what actually is
     // needed, so switch to emulated edge one pixel sooner vertically
     // (!!my * 5) than horizontally (!!mx * 4).
-    // The arm/aarch64 _h filters read one more pixel than what actually is
-    // needed, so switch to emulated edge if that would read beyond the bottom
-    // right block.
     if (x < !!mx * 3 || y < !!my * 3 ||
-        ((ARCH_AARCH64 || ARCH_ARM) && (x + !!mx * 5 > w - bw) && (y + !!my * 5 + 1 > h - bh)) ||
         x + !!mx * 4 > w - bw || y + !!my * 5 > h - bh) {
         s->vdsp.emulated_edge_mc(td->edge_emu_buffer,
                                  ref - !!my * 3 * ref_stride - !!mx * 3 * bytesperpixel,
@@ -361,11 +357,7 @@ static av_always_inline void mc_chroma_unscaled(VP9TileData *td, vp9_mc_func (*m
     // The arm/aarch64 _hv filters read one more row than what actually is
     // needed, so switch to emulated edge one pixel sooner vertically
     // (!!my * 5) than horizontally (!!mx * 4).
-    // The arm/aarch64 _h filters read one more pixel than what actually is
-    // needed, so switch to emulated edge if that would read beyond the bottom
-    // right block.
     if (x < !!mx * 3 || y < !!my * 3 ||
-        ((ARCH_AARCH64 || ARCH_ARM) && (x + !!mx * 5 > w - bw) && (y + !!my * 5 + 1 > h - bh)) ||
         x + !!mx * 4 > w - bw || y + !!my * 5 > h - bh) {
         s->vdsp.emulated_edge_mc(td->edge_emu_buffer,
                                  ref_u - !!my * 3 * src_stride_u - !!mx * 3 * bytesperpixel,
@@ -579,6 +571,16 @@ static av_always_inline void inter_recon(VP9TileData *td, int bytesperpixel)
     VP9Context *s = td->s;
     VP9Block *b = td->b;
     int row = td->row, col = td->col;
+
+    if (s->mvscale[b->ref[0]][0] == REF_INVALID_SCALE ||
+        (b->comp && s->mvscale[b->ref[1]][0] == REF_INVALID_SCALE)) {
+        if (!s->td->error_info) {
+            s->td->error_info = AVERROR_INVALIDDATA;
+            av_log(NULL, AV_LOG_ERROR, "Bitstream not supported, "
+                                       "reference frame has invalid dimensions\n");
+        }
+        return;
+    }
 
     if (s->mvscale[b->ref[0]][0] || (b->comp && s->mvscale[b->ref[1]][0])) {
         if (bytesperpixel == 1) {

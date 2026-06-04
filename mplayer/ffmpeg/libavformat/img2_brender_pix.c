@@ -22,7 +22,7 @@
 #include "img2.h"
 #include "libavutil/intreadwrite.h"
 
-static int brender_read_probe(AVProbeData *p)
+static int brender_read_probe(const AVProbeData *p)
 {
     static const uint8_t brender_magic[16] = {
         0,0,0,0x12,0,0,0,8,0,0,0,2,0,0,0,2
@@ -45,7 +45,7 @@ static const AVClass image2_brender_pix_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVInputFormat ff_image2_brender_pix_demuxer = {
+const AVInputFormat ff_image2_brender_pix_demuxer = {
     .name           = "brender_pix",
     .long_name      = NULL_IF_CONFIG_SMALL("BRender PIX image"),
     .priv_data_size = sizeof(VideoDemuxData),

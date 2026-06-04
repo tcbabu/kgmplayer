@@ -84,14 +84,6 @@ void ff_amf_write_object_end(uint8_t **dst)
     bytestream_put_be24(dst, AMF_DATA_TYPE_OBJECT_END);
 }
 
-int ff_amf_read_bool(GetByteContext *bc, int *val)
-{
-    if (bytestream2_get_byte(bc) != AMF_DATA_TYPE_BOOL)
-        return AVERROR_INVALIDDATA;
-    *val = bytestream2_get_byte(bc);
-    return 0;
-}
-
 int ff_amf_read_number(GetByteContext *bc, double *val)
 {
     uint64_t read;
@@ -382,6 +374,12 @@ int ff_rtmp_packet_write(URLContext *h, RTMPPacket *pkt,
     prev_pkt[pkt->channel_id].ts_field   = pkt->ts_field;
     prev_pkt[pkt->channel_id].extra      = pkt->extra;
 
+    // FIXME:
+    // Writing packets is currently not optimized to minimize system calls.
+    // Since system calls flush on exit which we cannot change in a system-independant way.
+    // We should fix this behavior and by writing packets in a single or in as few as possible system calls.
+    // Protocols like TCP and RTMP should benefit from this when enabling TCP_NODELAY.
+
     if ((ret = ffurl_write(h, pkt_hdr, p - pkt_hdr)) < 0)
         return ret;
     written = p - pkt_hdr + pkt->size;
@@ -437,6 +435,7 @@ static int amf_tag_skip(GetByteContext *gb)
 {
     AMFDataType type;
     unsigned nb   = -1;
+    int parse_key = 1;
 
     if (bytestream2_get_bytes_left(gb) < 1)
         return -1;
@@ -461,12 +460,13 @@ static int amf_tag_skip(GetByteContext *gb)
         bytestream2_skip(gb, 10);
         return 0;
     case AMF_DATA_TYPE_ARRAY:
+        parse_key = 0;
     case AMF_DATA_TYPE_MIXEDARRAY:
         nb = bytestream2_get_be32(gb);
     case AMF_DATA_TYPE_OBJECT:
-        while (type != AMF_DATA_TYPE_ARRAY || nb-- > 0) {
+        while (nb-- > 0 || type != AMF_DATA_TYPE_ARRAY) {
             int t;
-            if (type != AMF_DATA_TYPE_ARRAY) {
+            if (parse_key) {
                 int size = bytestream2_get_be16(gb);
                 if (!size) {
                     bytestream2_get_byte(gb);
@@ -567,6 +567,7 @@ int ff_amf_get_field_value(const uint8_t *data, const uint8_t *data_end,
     return amf_get_field_value2(&gb, name, dst, dst_size);
 }
 
+#ifdef DEBUG
 static const char* rtmp_packet_type(int type)
 {
     switch (type) {
@@ -683,6 +684,7 @@ void ff_rtmp_packet_dump(void *ctx, RTMPPacket *p)
         av_log(ctx, AV_LOG_DEBUG, "\n");
     }
 }
+#endif
 
 int ff_amf_match_string(const uint8_t *data, int size, const char *str)
 {

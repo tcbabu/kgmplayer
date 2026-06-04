@@ -35,24 +35,19 @@
 #include "libavutil/opt.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/time.h"
+#include "libavfilter/qsvvpp.h"
 
 #include "avfilter.h"
 #include "formats.h"
 #include "internal.h"
 #include "video.h"
 
+#define MFX_IMPL_VIA_MASK(impl) (0x0f00 & (impl))
+
 enum {
     QSVDEINT_MORE_OUTPUT = 1,
     QSVDEINT_MORE_INPUT,
 };
-
-typedef struct QSVFrame {
-    AVFrame *frame;
-    mfxFrameSurface1 surface;
-    int used;
-
-    struct QSVFrame *next;
-} QSVFrame;
 
 typedef struct QSVDeintContext {
     const AVClass *class;
@@ -68,16 +63,21 @@ typedef struct QSVDeintContext {
     int             nb_surface_ptrs;
 
     mfxExtOpaqueSurfaceAlloc opaque_alloc;
-    mfxExtBuffer            *ext_buffers[1];
+    mfxExtVPPDeinterlacing   deint_conf;
+    mfxExtBuffer            *ext_buffers[2];
+    int                      num_ext_buffers;
 
     QSVFrame *work_frames;
 
     int64_t last_pts;
 
     int eof;
+
+    /* option for Deinterlacing algorithm to be used */
+    int mode;
 } QSVDeintContext;
 
-static void qsvdeint_uninit(AVFilterContext *ctx)
+static av_cold void qsvdeint_uninit(AVFilterContext *ctx)
 {
     QSVDeintContext *s = ctx->priv;
     QSVFrame *cur;
@@ -101,20 +101,6 @@ static void qsvdeint_uninit(AVFilterContext *ctx)
 
     av_freep(&s->surface_ptrs);
     s->nb_surface_ptrs = 0;
-}
-
-static int qsvdeint_query_formats(AVFilterContext *ctx)
-{
-    static const enum AVPixelFormat pixel_formats[] = {
-        AV_PIX_FMT_QSV, AV_PIX_FMT_NONE,
-    };
-    AVFilterFormats *pix_fmts  = ff_make_format_list(pixel_formats);
-    int ret;
-
-    if ((ret = ff_set_common_formats(ctx, pix_fmts)) < 0)
-        return ret;
-
-    return 0;
 }
 
 static mfxStatus frame_alloc(mfxHDL pthis, mfxFrameAllocRequest *req,
@@ -151,15 +137,15 @@ static mfxStatus frame_unlock(mfxHDL pthis, mfxMemId mid, mfxFrameData *ptr)
 
 static mfxStatus frame_get_hdl(mfxHDL pthis, mfxMemId mid, mfxHDL *hdl)
 {
-    *hdl = mid;
+    mfxHDLPair *pair_dst = (mfxHDLPair*)hdl;
+    mfxHDLPair *pair_src = (mfxHDLPair*)mid;
+
+    pair_dst->first = pair_src->first;
+
+    if (pair_src->second != (mfxMemId)MFX_INFINITE)
+        pair_dst->second = pair_src->second;
     return MFX_ERR_NONE;
 }
-
-static const mfxHandleType handle_types[] = {
-    MFX_HANDLE_VA_DISPLAY,
-    MFX_HANDLE_D3D9_DEVICE_MANAGER,
-    MFX_HANDLE_D3D11_DEVICE,
-};
 
 static int init_out_session(AVFilterContext *ctx)
 {
@@ -188,19 +174,32 @@ static int init_out_session(AVFilterContext *ctx)
         return AVERROR_UNKNOWN;
     }
 
-    for (i = 0; i < FF_ARRAY_ELEMS(handle_types); i++) {
-        err = MFXVideoCORE_GetHandle(device_hwctx->session, handle_types[i], &handle);
-        if (err == MFX_ERR_NONE) {
-            handle_type = handle_types[i];
-            break;
-        }
+    if (MFX_IMPL_VIA_VAAPI == MFX_IMPL_VIA_MASK(impl)) {
+        handle_type = MFX_HANDLE_VA_DISPLAY;
+    } else if (MFX_IMPL_VIA_D3D11 == MFX_IMPL_VIA_MASK(impl)) {
+        handle_type = MFX_HANDLE_D3D11_DEVICE;
+    } else if (MFX_IMPL_VIA_D3D9 == MFX_IMPL_VIA_MASK(impl)) {
+        handle_type = MFX_HANDLE_D3D9_DEVICE_MANAGER;
+    } else {
+        av_log(ctx, AV_LOG_ERROR, "Error unsupported handle type\n");
+        return AVERROR_UNKNOWN;
+    }
+
+    err = MFXVideoCORE_GetHandle(device_hwctx->session, handle_type, &handle);
+    if (err < 0)
+        return ff_qsvvpp_print_error(ctx, err, "Error getting the session handle");
+    else if (err > 0) {
+        ff_qsvvpp_print_warning(ctx, err, "Warning in getting the session handle");
+        return AVERROR_UNKNOWN;
     }
 
     /* create a "slave" session with those same properties, to be used for
      * actual deinterlacing */
     err = MFXInit(impl, &ver, &s->session);
-    if (err != MFX_ERR_NONE) {
-        av_log(ctx, AV_LOG_ERROR, "Error initializing a session for deinterlacing\n");
+    if (err < 0)
+        return ff_qsvvpp_print_error(ctx, err, "Error initializing a session for deinterlacing");
+    else if (err > 0) {
+        ff_qsvvpp_print_warning(ctx, err, "Warning in session initialization");
         return AVERROR_UNKNOWN;
     }
 
@@ -210,11 +209,23 @@ static int init_out_session(AVFilterContext *ctx)
             return AVERROR_UNKNOWN;
     }
 
+    if (QSV_RUNTIME_VERSION_ATLEAST(ver, 1, 25)) {
+        err = MFXJoinSession(device_hwctx->session, s->session);
+        if (err != MFX_ERR_NONE)
+            return AVERROR_UNKNOWN;
+    }
+
     memset(&par, 0, sizeof(par));
 
+    s->deint_conf.Header.BufferId = MFX_EXTBUFF_VPP_DEINTERLACING;
+    s->deint_conf.Header.BufferSz = sizeof(s->deint_conf);
+    s->deint_conf.Mode = s->mode;
+
+    s->ext_buffers[s->num_ext_buffers++] = (mfxExtBuffer *)&s->deint_conf;
+
     if (opaque) {
-        s->surface_ptrs = av_mallocz_array(hw_frames_hwctx->nb_surfaces,
-                                           sizeof(*s->surface_ptrs));
+        s->surface_ptrs = av_calloc(hw_frames_hwctx->nb_surfaces,
+                                    sizeof(*s->surface_ptrs));
         if (!s->surface_ptrs)
             return AVERROR(ENOMEM);
         for (i = 0; i < hw_frames_hwctx->nb_surfaces; i++)
@@ -230,10 +241,7 @@ static int init_out_session(AVFilterContext *ctx)
         s->opaque_alloc.Header.BufferId = MFX_EXTBUFF_OPAQUE_SURFACE_ALLOCATION;
         s->opaque_alloc.Header.BufferSz = sizeof(s->opaque_alloc);
 
-        s->ext_buffers[0] = (mfxExtBuffer*)&s->opaque_alloc;
-
-        par.ExtParam    = s->ext_buffers;
-        par.NumExtParam = FF_ARRAY_ELEMS(s->ext_buffers);
+        s->ext_buffers[s->num_ext_buffers++] = (mfxExtBuffer *)&s->opaque_alloc;
 
         par.IOPattern = MFX_IOPATTERN_IN_OPAQUE_MEMORY | MFX_IOPATTERN_OUT_OPAQUE_MEMORY;
     } else {
@@ -246,8 +254,8 @@ static int init_out_session(AVFilterContext *ctx)
             .Free   = frame_free,
         };
 
-        s->mem_ids = av_mallocz_array(hw_frames_hwctx->nb_surfaces,
-                                      sizeof(*s->mem_ids));
+        s->mem_ids = av_calloc(hw_frames_hwctx->nb_surfaces,
+                               sizeof(*s->mem_ids));
         if (!s->mem_ids)
             return AVERROR(ENOMEM);
         for (i = 0; i < hw_frames_hwctx->nb_surfaces; i++)
@@ -260,6 +268,9 @@ static int init_out_session(AVFilterContext *ctx)
 
         par.IOPattern = MFX_IOPATTERN_IN_VIDEO_MEMORY | MFX_IOPATTERN_OUT_VIDEO_MEMORY;
     }
+
+    par.ExtParam    = s->ext_buffers;
+    par.NumExtParam = s->num_ext_buffers;
 
     par.AsyncDepth = 1;    // TODO async
 
@@ -286,9 +297,17 @@ static int init_out_session(AVFilterContext *ctx)
         par.vpp.Out.FrameRateExtD = ctx->outputs[0]->time_base.den;
     }
 
+    /* Print input memory mode */
+    ff_qsvvpp_print_iopattern(ctx, par.IOPattern & 0x0F, "VPP");
+    /* Print output memory mode */
+    ff_qsvvpp_print_iopattern(ctx, par.IOPattern & 0xF0, "VPP");
     err = MFXVideoVPP_Init(s->session, &par);
-    if (err != MFX_ERR_NONE) {
-        av_log(ctx, AV_LOG_ERROR, "Error opening the VPP for deinterlacing: %d\n", err);
+    if (err < 0)
+        return ff_qsvvpp_print_error(ctx, err,
+                                     "Error opening the VPP for deinterlacing");
+    else if (err > 0) {
+        ff_qsvvpp_print_warning(ctx, err,
+                                "Warning in VPP initialization");
         return AVERROR_UNKNOWN;
     }
 
@@ -341,7 +360,7 @@ static void clear_unused_frames(QSVDeintContext *s)
     while (cur) {
         if (!cur->surface.Data.Locked) {
             av_frame_free(&cur->frame);
-            cur->used = 0;
+            cur->queued = 0;
         }
         cur = cur->next;
     }
@@ -356,7 +375,7 @@ static int get_free_frame(QSVDeintContext *s, QSVFrame **f)
     frame = s->work_frames;
     last  = &s->work_frames;
     while (frame) {
-        if (!frame->used) {
+        if (!frame->queued) {
             *f = frame;
             return 0;
         }
@@ -396,9 +415,11 @@ static int submit_frame(AVFilterContext *ctx, AVFrame *frame,
     qf->surface.Info.PicStruct = !qf->frame->interlaced_frame ? MFX_PICSTRUCT_PROGRESSIVE :
                                  (qf->frame->top_field_first ? MFX_PICSTRUCT_FIELD_TFF :
                                                            MFX_PICSTRUCT_FIELD_BFF);
-    if (qf->frame->repeat_pict == 1)
+    if (qf->frame->repeat_pict == 1) {
         qf->surface.Info.PicStruct |= MFX_PICSTRUCT_FIELD_REPEATED;
-    else if (qf->frame->repeat_pict == 2)
+        qf->surface.Info.PicStruct |= qf->frame->top_field_first ? MFX_PICSTRUCT_FIELD_TFF :
+                                                            MFX_PICSTRUCT_FIELD_BFF;
+    } else if (qf->frame->repeat_pict == 2)
         qf->surface.Info.PicStruct |= MFX_PICSTRUCT_FRAME_DOUBLING;
     else if (qf->frame->repeat_pict == 4)
         qf->surface.Info.PicStruct |= MFX_PICSTRUCT_FRAME_TRIPLING;
@@ -416,7 +437,7 @@ static int submit_frame(AVFilterContext *ctx, AVFrame *frame,
                                               (AVRational){1, 90000});
 
     *surface = &qf->surface;
-    qf->used = 1;
+    qf->queued = 1;
 
     return 0;
 }
@@ -457,8 +478,13 @@ static int process_frame(AVFilterContext *ctx, const AVFrame *in,
         return QSVDEINT_MORE_INPUT;
     }
 
-    if ((err < 0 && err != MFX_ERR_MORE_SURFACE) || !sync) {
-        av_log(ctx, AV_LOG_ERROR, "Error during deinterlacing: %d\n", err);
+    if (err < 0 && err != MFX_ERR_MORE_SURFACE) {
+        ret = ff_qsvvpp_print_error(ctx, err, "Error during deinterlacing");
+        goto fail;
+    }
+
+    if (!sync) {
+        av_log(ctx, AV_LOG_ERROR, "No sync during deinterlacing\n");
         ret = AVERROR_UNKNOWN;
         goto fail;
     }
@@ -469,8 +495,7 @@ static int process_frame(AVFilterContext *ctx, const AVFrame *in,
         err = MFXVideoCORE_SyncOperation(s->session, sync, 1000);
     } while (err == MFX_WRN_IN_EXECUTION);
     if (err < 0) {
-        av_log(ctx, AV_LOG_ERROR, "Error synchronizing the operation: %d\n", err);
-        ret = AVERROR_UNKNOWN;
+        ret = ff_qsvvpp_print_error(ctx, err, "Error synchronizing the operation");
         goto fail;
     }
 
@@ -529,6 +554,9 @@ static int qsvdeint_request_frame(AVFilterLink *outlink)
 #define OFFSET(x) offsetof(QSVDeintContext, x)
 #define FLAGS AV_OPT_FLAG_VIDEO_PARAM|AV_OPT_FLAG_FILTERING_PARAM
 static const AVOption options[] = {
+    { "mode", "set deinterlace mode", OFFSET(mode),   AV_OPT_TYPE_INT, {.i64 = MFX_DEINTERLACING_ADVANCED}, MFX_DEINTERLACING_BOB, MFX_DEINTERLACING_ADVANCED, FLAGS, "mode"},
+    { "bob",   "bob algorithm",                  0, AV_OPT_TYPE_CONST,      {.i64 = MFX_DEINTERLACING_BOB}, MFX_DEINTERLACING_BOB, MFX_DEINTERLACING_ADVANCED, FLAGS, "mode"},
+    { "advanced", "Motion adaptive algorithm",   0, AV_OPT_TYPE_CONST, {.i64 = MFX_DEINTERLACING_ADVANCED}, MFX_DEINTERLACING_BOB, MFX_DEINTERLACING_ADVANCED, FLAGS, "mode"},
     { NULL },
 };
 
@@ -545,7 +573,6 @@ static const AVFilterPad qsvdeint_inputs[] = {
         .type         = AVMEDIA_TYPE_VIDEO,
         .filter_frame = qsvdeint_filter_frame,
     },
-    { NULL }
 };
 
 static const AVFilterPad qsvdeint_outputs[] = {
@@ -555,21 +582,20 @@ static const AVFilterPad qsvdeint_outputs[] = {
         .config_props  = qsvdeint_config_props,
         .request_frame = qsvdeint_request_frame,
     },
-    { NULL }
 };
 
-AVFilter ff_vf_deinterlace_qsv = {
+const AVFilter ff_vf_deinterlace_qsv = {
     .name      = "deinterlace_qsv",
     .description = NULL_IF_CONFIG_SMALL("QuickSync video deinterlacing"),
 
     .uninit        = qsvdeint_uninit,
-    .query_formats = qsvdeint_query_formats,
 
     .priv_size = sizeof(QSVDeintContext),
     .priv_class = &qsvdeint_class,
 
-    .inputs    = qsvdeint_inputs,
-    .outputs   = qsvdeint_outputs,
+    FILTER_INPUTS(qsvdeint_inputs),
+    FILTER_OUTPUTS(qsvdeint_outputs),
+    FILTER_SINGLE_PIXFMT(AV_PIX_FMT_QSV),
 
     .flags_internal = FF_FILTER_FLAG_HWFRAME_AWARE,
 };

@@ -20,11 +20,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavutil/intreadwrite.h"
 #include "libavutil/pixdesc.h"
 #include "avcodec.h"
 #include "bytestream.h"
-#include "internal.h"
+#include "encode.h"
 #include "xwd.h"
 
 #define WINDOW_NAME         "lavcxwdenc"
@@ -41,6 +40,7 @@ static int xwd_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     int i, out_size, ret;
     uint8_t *ptr, *buf;
     AVFrame * const p = (AVFrame *)pict;
+    uint32_t pal[256];
 
     pixdepth = av_get_bits_per_pixel(desc);
     if (desc->flags & AV_PIX_FMT_FLAG_BE)
@@ -146,7 +146,7 @@ static int xwd_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     header_size = XWD_HEADER_SIZE + WINDOW_NAME_SIZE;
     out_size    = header_size + ncolors * XWD_CMAP_SIZE + avctx->height * lsize;
 
-    if ((ret = ff_alloc_packet2(avctx, pkt, out_size, 0)) < 0)
+    if ((ret = ff_get_encode_buffer(avctx, pkt, out_size, 0)) < 0)
         return ret;
     buf = pkt->data;
 
@@ -180,11 +180,17 @@ static int xwd_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     bytestream_put_be32(&buf, 0);             // window border width
     bytestream_put_buffer(&buf, WINDOW_NAME, WINDOW_NAME_SIZE);
 
+    if (pix_fmt == AV_PIX_FMT_PAL8) {
+        memcpy(pal, p->data[1], sizeof(pal));
+    } else {
+        avpriv_set_systematic_pal2(pal, pix_fmt);
+    }
+
     for (i = 0; i < ncolors; i++) {
         uint32_t val;
         uint8_t red, green, blue;
 
-        val   = AV_RN32A(p->data[1] + i * 4);
+        val   = pal[i];
         red   = (val >> 16) & 0xFF;
         green = (val >>  8) & 0xFF;
         blue  =  val        & 0xFF;
@@ -203,16 +209,16 @@ static int xwd_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
         ptr += p->linesize[0];
     }
 
-    pkt->flags |= AV_PKT_FLAG_KEY;
     *got_packet = 1;
     return 0;
 }
 
-AVCodec ff_xwd_encoder = {
+const AVCodec ff_xwd_encoder = {
     .name         = "xwd",
     .long_name    = NULL_IF_CONFIG_SMALL("XWD (X Window Dump) image"),
     .type         = AVMEDIA_TYPE_VIDEO,
     .id           = AV_CODEC_ID_XWD,
+    .capabilities = AV_CODEC_CAP_DR1,
     .encode2      = xwd_encode_frame,
     .pix_fmts     = (const enum AVPixelFormat[]) { AV_PIX_FMT_BGRA,
                                                  AV_PIX_FMT_RGBA,

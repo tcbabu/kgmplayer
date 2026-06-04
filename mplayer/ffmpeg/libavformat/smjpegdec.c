@@ -36,7 +36,7 @@ typedef struct SMJPEGContext {
     int video_stream_index;
 } SMJPEGContext;
 
-static int smjpeg_probe(AVProbeData *p)
+static int smjpeg_probe(const AVProbeData *p)
 {
     if (!memcmp(p->buf, SMJPEG_MAGIC, 8))
         return AVPROBE_SCORE_MAX;
@@ -180,7 +180,7 @@ static int smjpeg_read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-AVInputFormat ff_smjpeg_demuxer = {
+const AVInputFormat ff_smjpeg_demuxer = {
     .name           = "smjpeg",
     .long_name      = NULL_IF_CONFIG_SMALL("Loki SDL MJPEG"),
     .priv_data_size = sizeof(SMJPEGContext),

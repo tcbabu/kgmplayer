@@ -23,7 +23,7 @@
  * libiec61883 interface
  */
 
-#include <sys/poll.h>
+#include <poll.h>
 #include <libraw1394/raw1394.h>
 #include <libavc1394/avc1394.h>
 #include <libavc1394/rom1394.h>
@@ -220,6 +220,7 @@ static int iec61883_parse_queue_dv(struct iec61883_data *dv, AVPacket *pkt)
 
 static int iec61883_parse_queue_hdv(struct iec61883_data *dv, AVPacket *pkt)
 {
+#if CONFIG_MPEGTS_DEMUXER
     DVPacket *packet;
     int size;
 
@@ -235,7 +236,7 @@ static int iec61883_parse_queue_hdv(struct iec61883_data *dv, AVPacket *pkt)
         if (size > 0)
             return size;
     }
-
+#endif
     return -1;
 }
 
@@ -268,14 +269,14 @@ static int iec61883_read_header(AVFormatContext *context)
         goto fail;
     }
 
-    inport = strtol(context->filename, &endptr, 10);
-    if (endptr != context->filename && *endptr == '\0') {
+    inport = strtol(context->url, &endptr, 10);
+    if (endptr != context->url && *endptr == '\0') {
         av_log(context, AV_LOG_INFO, "Selecting IEEE1394 port: %d\n", inport);
         j = inport;
         nb_ports = inport + 1;
-    } else if (strcmp(context->filename, "auto")) {
+    } else if (strcmp(context->url, "auto")) {
         av_log(context, AV_LOG_ERROR, "Invalid input \"%s\", you should specify "
-               "\"auto\" for auto-detection, or the port number.\n", context->filename);
+               "\"auto\" for auto-detection, or the port number.\n", context->url);
         goto fail;
     }
 
@@ -499,7 +500,7 @@ static const AVClass iec61883_class = {
     .category   = AV_CLASS_CATEGORY_DEVICE_VIDEO_INPUT,
 };
 
-AVInputFormat ff_iec61883_demuxer = {
+const AVInputFormat ff_iec61883_demuxer = {
     .name           = "iec61883",
     .long_name      = NULL_IF_CONFIG_SMALL("libiec61883 (new DV1394) A/V input device"),
     .priv_data_size = sizeof(struct iec61883_data),

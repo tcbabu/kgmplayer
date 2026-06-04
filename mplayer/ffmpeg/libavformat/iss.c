@@ -58,7 +58,7 @@ static void get_token(AVIOContext *s, char *buf, int maxlen)
     buf[i] = 0; /* Ensure null terminated, but may be truncated */
 }
 
-static int iss_probe(AVProbeData *p)
+static int iss_probe(const AVProbeData *p)
 {
     if (strncmp(p->buf, ISS_SIG, ISS_SIG_LEN))
         return 0;
@@ -143,7 +143,7 @@ static int iss_read_packet(AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-AVInputFormat ff_iss_demuxer = {
+const AVInputFormat ff_iss_demuxer = {
     .name           = "iss",
     .long_name      = NULL_IF_CONFIG_SMALL("Funcom ISS"),
     .priv_data_size = sizeof(IssDemuxContext),

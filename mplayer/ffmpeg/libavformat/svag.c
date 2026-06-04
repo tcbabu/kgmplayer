@@ -22,7 +22,7 @@
 #include "avformat.h"
 #include "internal.h"
 
-static int svag_probe(AVProbeData *p)
+static int svag_probe(const AVProbeData *p)
 {
     if (memcmp(p->buf, "Svag", 4))
         return 0;
@@ -68,7 +68,7 @@ static int svag_read_packet(AVFormatContext *s, AVPacket *pkt)
     return av_get_packet(s->pb, pkt, par->block_align);
 }
 
-AVInputFormat ff_svag_demuxer = {
+const AVInputFormat ff_svag_demuxer = {
     .name           = "svag",
     .long_name      = NULL_IF_CONFIG_SMALL("Konami PS2 SVAG"),
     .read_probe     = svag_probe,

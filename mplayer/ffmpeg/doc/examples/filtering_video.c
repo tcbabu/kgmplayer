@@ -29,10 +29,11 @@
 
 #define _XOPEN_SOURCE 600 /* for usleep */
 #include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-#include <libavfilter/avfiltergraph.h>
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
 #include <libavutil/opt.h>
@@ -52,8 +53,8 @@ static int64_t last_pts = AV_NOPTS_VALUE;
 
 static int open_input_file(const char *filename)
 {
+    const AVCodec *dec;
     int ret;
-    AVCodec *dec;
 
     if ((ret = avformat_open_input(&fmt_ctx, filename, NULL, NULL)) < 0) {
         av_log(NULL, AV_LOG_ERROR, "Cannot open input file\n");
@@ -78,7 +79,6 @@ static int open_input_file(const char *filename)
     if (!dec_ctx)
         return AVERROR(ENOMEM);
     avcodec_parameters_to_context(dec_ctx, fmt_ctx->streams[video_stream_index]->codecpar);
-    av_opt_set_int(dec_ctx, "refcounted_frames", 1, 0);
 
     /* init the video decoder */
     if ((ret = avcodec_open2(dec_ctx, dec, NULL)) < 0) {
@@ -93,8 +93,8 @@ static int init_filters(const char *filters_descr)
 {
     char args[512];
     int ret = 0;
-    AVFilter *buffersrc  = avfilter_get_by_name("buffer");
-    AVFilter *buffersink = avfilter_get_by_name("buffersink");
+    const AVFilter *buffersrc  = avfilter_get_by_name("buffer");
+    const AVFilter *buffersink = avfilter_get_by_name("buffersink");
     AVFilterInOut *outputs = avfilter_inout_alloc();
     AVFilterInOut *inputs  = avfilter_inout_alloc();
     AVRational time_base = fmt_ctx->streams[video_stream_index]->time_base;
@@ -210,21 +210,22 @@ static void display_frame(const AVFrame *frame, AVRational time_base)
 int main(int argc, char **argv)
 {
     int ret;
-    AVPacket packet;
-    AVFrame *frame = av_frame_alloc();
-    AVFrame *filt_frame = av_frame_alloc();
+    AVPacket *packet;
+    AVFrame *frame;
+    AVFrame *filt_frame;
 
-    if (!frame || !filt_frame) {
-        perror("Could not allocate frame");
-        exit(1);
-    }
     if (argc != 2) {
         fprintf(stderr, "Usage: %s file\n", argv[0]);
         exit(1);
     }
 
-    av_register_all();
-    avfilter_register_all();
+    frame = av_frame_alloc();
+    filt_frame = av_frame_alloc();
+    packet = av_packet_alloc();
+    if (!frame || !filt_frame || !packet) {
+        fprintf(stderr, "Could not allocate frame or packet\n");
+        exit(1);
+    }
 
     if ((ret = open_input_file(argv[1])) < 0)
         goto end;
@@ -233,11 +234,11 @@ int main(int argc, char **argv)
 
     /* read all packets */
     while (1) {
-        if ((ret = av_read_frame(fmt_ctx, &packet)) < 0)
+        if ((ret = av_read_frame(fmt_ctx, packet)) < 0)
             break;
 
-        if (packet.stream_index == video_stream_index) {
-            ret = avcodec_send_packet(dec_ctx, &packet);
+        if (packet->stream_index == video_stream_index) {
+            ret = avcodec_send_packet(dec_ctx, packet);
             if (ret < 0) {
                 av_log(NULL, AV_LOG_ERROR, "Error while sending a packet to the decoder\n");
                 break;
@@ -252,30 +253,28 @@ int main(int argc, char **argv)
                     goto end;
                 }
 
-                if (ret >= 0) {
-                    frame->pts = frame->best_effort_timestamp;
+                frame->pts = frame->best_effort_timestamp;
 
-                    /* push the decoded frame into the filtergraph */
-                    if (av_buffersrc_add_frame_flags(buffersrc_ctx, frame, AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
-                        av_log(NULL, AV_LOG_ERROR, "Error while feeding the filtergraph\n");
-                        break;
-                    }
-
-                    /* pull filtered frames from the filtergraph */
-                    while (1) {
-                        ret = av_buffersink_get_frame(buffersink_ctx, filt_frame);
-                        if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
-                            break;
-                        if (ret < 0)
-                            goto end;
-                        display_frame(filt_frame, buffersink_ctx->inputs[0]->time_base);
-                        av_frame_unref(filt_frame);
-                    }
-                    av_frame_unref(frame);
+                /* push the decoded frame into the filtergraph */
+                if (av_buffersrc_add_frame_flags(buffersrc_ctx, frame, AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
+                    av_log(NULL, AV_LOG_ERROR, "Error while feeding the filtergraph\n");
+                    break;
                 }
+
+                /* pull filtered frames from the filtergraph */
+                while (1) {
+                    ret = av_buffersink_get_frame(buffersink_ctx, filt_frame);
+                    if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+                        break;
+                    if (ret < 0)
+                        goto end;
+                    display_frame(filt_frame, buffersink_ctx->inputs[0]->time_base);
+                    av_frame_unref(filt_frame);
+                }
+                av_frame_unref(frame);
             }
         }
-        av_packet_unref(&packet);
+        av_packet_unref(packet);
     }
 end:
     avfilter_graph_free(&filter_graph);
@@ -283,6 +282,7 @@ end:
     avformat_close_input(&fmt_ctx);
     av_frame_free(&frame);
     av_frame_free(&filt_frame);
+    av_packet_free(&packet);
 
     if (ret < 0 && ret != AVERROR_EOF) {
         fprintf(stderr, "Error occurred: %s\n", av_err2str(ret));

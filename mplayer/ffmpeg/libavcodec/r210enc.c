@@ -21,6 +21,7 @@
  */
 
 #include "avcodec.h"
+#include "encode.h"
 #include "internal.h"
 #include "bytestream.h"
 
@@ -31,7 +32,7 @@ static av_cold int encode_init(AVCodecContext *avctx)
 
     avctx->bits_per_coded_sample = 32;
     if (avctx->width > 0)
-        avctx->bit_rate = av_rescale(ff_guess_coded_bitrate(avctx), aligned_width, avctx->width);
+        avctx->bit_rate = ff_guess_coded_bitrate(avctx) * aligned_width / avctx->width;
 
     return 0;
 }
@@ -43,22 +44,27 @@ static int encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     int aligned_width = FFALIGN(avctx->width,
                                 avctx->codec_id == AV_CODEC_ID_R10K ? 1 : 64);
     int pad = (aligned_width - avctx->width) * 4;
-    uint8_t *src_line;
+    uint8_t *srcr_line, *srcg_line, *srcb_line;
     uint8_t *dst;
 
-    if ((ret = ff_alloc_packet2(avctx, pkt, 4 * aligned_width * avctx->height, 0)) < 0)
+    ret = ff_get_encode_buffer(avctx, pkt, 4 * aligned_width * avctx->height, 0);
+    if (ret < 0)
         return ret;
 
-    src_line = pic->data[0];
+    srcg_line = pic->data[0];
+    srcb_line = pic->data[1];
+    srcr_line = pic->data[2];
     dst = pkt->data;
 
     for (i = 0; i < avctx->height; i++) {
-        uint16_t *src = (uint16_t *)src_line;
+        uint16_t *srcr = (uint16_t *)srcr_line;
+        uint16_t *srcg = (uint16_t *)srcg_line;
+        uint16_t *srcb = (uint16_t *)srcb_line;
         for (j = 0; j < avctx->width; j++) {
             uint32_t pixel;
-            uint16_t r = *src++ >> 6;
-            uint16_t g = *src++ >> 6;
-            uint16_t b = *src++ >> 6;
+            unsigned r = *srcr++;
+            unsigned g = *srcg++;
+            unsigned b = *srcb++;
             if (avctx->codec_id == AV_CODEC_ID_R210)
                 pixel = (r << 20) | (g << 10) | b;
             else
@@ -70,48 +76,53 @@ static int encode_frame(AVCodecContext *avctx, AVPacket *pkt,
         }
         memset(dst, 0, pad);
         dst += pad;
-        src_line += pic->linesize[0];
+        srcr_line += pic->linesize[2];
+        srcg_line += pic->linesize[0];
+        srcb_line += pic->linesize[1];
     }
 
-    pkt->flags |= AV_PKT_FLAG_KEY;
     *got_packet = 1;
     return 0;
 }
 
+static const enum AVPixelFormat pix_fmt[] = { AV_PIX_FMT_GBRP10, AV_PIX_FMT_NONE };
 
 #if CONFIG_R210_ENCODER
-AVCodec ff_r210_encoder = {
+const AVCodec ff_r210_encoder = {
     .name           = "r210",
     .long_name      = NULL_IF_CONFIG_SMALL("Uncompressed RGB 10-bit"),
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = AV_CODEC_ID_R210,
+    .capabilities   = AV_CODEC_CAP_DR1,
     .init           = encode_init,
     .encode2        = encode_frame,
-    .pix_fmts       = (const enum AVPixelFormat[]) { AV_PIX_FMT_RGB48, AV_PIX_FMT_NONE },
-    .capabilities   = AV_CODEC_CAP_INTRA_ONLY,
+    .pix_fmts       = pix_fmt,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };
 #endif
 #if CONFIG_R10K_ENCODER
-AVCodec ff_r10k_encoder = {
+const AVCodec ff_r10k_encoder = {
     .name           = "r10k",
     .long_name      = NULL_IF_CONFIG_SMALL("AJA Kona 10-bit RGB Codec"),
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = AV_CODEC_ID_R10K,
+    .capabilities   = AV_CODEC_CAP_DR1,
     .init           = encode_init,
     .encode2        = encode_frame,
-    .pix_fmts       = (const enum AVPixelFormat[]) { AV_PIX_FMT_RGB48, AV_PIX_FMT_NONE },
-    .capabilities   = AV_CODEC_CAP_INTRA_ONLY,
+    .pix_fmts       = pix_fmt,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };
 #endif
 #if CONFIG_AVRP_ENCODER
-AVCodec ff_avrp_encoder = {
+const AVCodec ff_avrp_encoder = {
     .name           = "avrp",
     .long_name      = NULL_IF_CONFIG_SMALL("Avid 1:1 10-bit RGB Packer"),
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = AV_CODEC_ID_AVRP,
+    .capabilities   = AV_CODEC_CAP_DR1,
     .init           = encode_init,
     .encode2        = encode_frame,
-    .pix_fmts       = (const enum AVPixelFormat[]) { AV_PIX_FMT_RGB48, AV_PIX_FMT_NONE },
-    .capabilities   = AV_CODEC_CAP_INTRA_ONLY,
+    .pix_fmts       = pix_fmt,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };
 #endif

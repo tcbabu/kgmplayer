@@ -23,7 +23,7 @@
 #include "avformat.h"
 #include "internal.h"
 
-static int ads_probe(AVProbeData *p)
+static int ads_probe(const AVProbeData *p)
 {
     if (memcmp(p->buf, "SShd", 4) ||
         memcmp(p->buf+32, "SSbd", 4))
@@ -80,7 +80,7 @@ static int ads_read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-AVInputFormat ff_ads_demuxer = {
+const AVInputFormat ff_ads_demuxer = {
     .name           = "ads",
     .long_name      = NULL_IF_CONFIG_SMALL("Sony PS2 ADS"),
     .read_probe     = ads_probe,

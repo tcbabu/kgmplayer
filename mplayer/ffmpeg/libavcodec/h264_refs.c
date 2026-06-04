@@ -28,7 +28,6 @@
 #include <inttypes.h>
 
 #include "libavutil/avassert.h"
-#include "internal.h"
 #include "avcodec.h"
 #include "h264.h"
 #include "h264dec.h"
@@ -616,6 +615,12 @@ int ff_h264_execute_ref_pic_marking(H264Context *h)
     int current_ref_assigned = 0, err = 0;
     H264Picture *av_uninit(pic);
 
+    if (!h->ps.sps) {
+        av_log(h->avctx, AV_LOG_ERROR, "SPS is unset\n");
+        err = AVERROR_INVALIDDATA;
+        goto out;
+    }
+
     if (!h->explicit_ref_marking)
         generate_sliding_window_mmcos(h);
     mmco_count = h->nb_mmco;
@@ -723,10 +728,10 @@ int ff_h264_execute_ref_pic_marking(H264Context *h)
             h->poc.frame_num = h->cur_pic_ptr->frame_num = 0;
             h->mmco_reset = 1;
             h->cur_pic_ptr->mmco_reset = 1;
-            for (j = 0; j < MAX_DELAYED_PIC_COUNT; j++)
+            for (j = 0; j < FF_ARRAY_ELEMS(h->last_pocs); j++)
                 h->last_pocs[j] = INT_MIN;
             break;
-        default: assert(0);
+        default: av_assert0(0);
         }
     }
 
@@ -812,6 +817,7 @@ int ff_h264_execute_ref_pic_marking(H264Context *h)
     if (   err >= 0
         && h->long_ref_count==0
         && (   h->short_ref_count<=2
+            || pps_ref_count[0] <= 2 && pps_ref_count[1] <= 1 && h->avctx->has_b_frames
             || pps_ref_count[0] <= 1 + (h->picture_structure != PICT_FRAME) && pps_ref_count[1] <= 1)
         && pps_ref_count[0]<=2 + (h->picture_structure != PICT_FRAME) + (2*!h->has_recovery_point)
         && h->cur_pic_ptr->f->pict_type == AV_PICTURE_TYPE_I){
@@ -820,6 +826,7 @@ int ff_h264_execute_ref_pic_marking(H264Context *h)
             h->frame_recovered |= FRAME_RECOVERED_SEI;
     }
 
+out:
     return (h->avctx->err_recognition & AV_EF_EXPLODE) ? err : 0;
 }
 
@@ -841,7 +848,7 @@ int ff_h264_decode_ref_pic_marking(H264SliceContext *sl, GetBitContext *gb,
     } else {
         sl->explicit_ref_marking = get_bits1(gb);
         if (sl->explicit_ref_marking) {
-            for (i = 0; i < MAX_MMCO_COUNT; i++) {
+            for (i = 0; i < FF_ARRAY_ELEMS(sl->mmco); i++) {
                 MMCOOpcode opcode = get_ue_golomb_31(gb);
 
                 mmco[i].opcode = opcode;
@@ -860,6 +867,7 @@ int ff_h264_decode_ref_pic_marking(H264SliceContext *sl, GetBitContext *gb,
                         av_log(logctx, AV_LOG_ERROR,
                                "illegal long ref in memory management control "
                                "operation %d\n", opcode);
+                        sl->nb_mmco = i;
                         return -1;
                     }
                     mmco[i].long_arg = long_arg;
@@ -869,6 +877,7 @@ int ff_h264_decode_ref_pic_marking(H264SliceContext *sl, GetBitContext *gb,
                     av_log(logctx, AV_LOG_ERROR,
                            "illegal memory management control operation %d\n",
                            opcode);
+                    sl->nb_mmco = i;
                     return -1;
                 }
                 if (opcode == MMCO_END)

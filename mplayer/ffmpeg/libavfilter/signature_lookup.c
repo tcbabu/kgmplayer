@@ -37,16 +37,6 @@
 #define STATUS_END_REACHED 1
 #define STATUS_BEGIN_REACHED 2
 
-static void sll_free(MatchingInfo **sll)
-{
-    while (*sll) {
-        MatchingInfo *tmp = *sll;
-        *sll = tmp->next;
-        tmp->next = NULL;
-        av_free(tmp);
-    }
-}
-
 static void fill_l1distlut(uint8_t lut[])
 {
     int i, j, tmp_i, tmp_j,count;
@@ -210,7 +200,7 @@ static MatchingInfo* get_matching_parameters(AVFilterContext *ctx, SignatureCont
     /* initialize houghspace */
     for (i = 0; i < MAX_FRAMERATE; i++) {
         hspace[i] = av_malloc_array(2 * HOUGH_MAX_OFFSET + 1, sizeof(hspace_elem));
-        for (j = 0; j < HOUGH_MAX_OFFSET; j++) {
+        for (j = 0; j < 2 * HOUGH_MAX_OFFSET + 1; j++) {
             hspace[i][j].score = 0;
             hspace[i][j].dist = 99999;
         }
@@ -254,9 +244,9 @@ static MatchingInfo* get_matching_parameters(AVFilterContext *ctx, SignatureCont
                     if (pairs[i].b[j] != pairs[k].b[l]) {
                         /* linear regression */
                         m = (pairs[k].b_pos[l]-pairs[i].b_pos[j]) / (k-i); /* good value between 0.0 - 2.0 */
-                        framerate = (int) m*30 + 0.5; /* round up to 0 - 60 */
+                        framerate = (int) (m*30 + 0.5); /* round up to 0 - 60 */
                         if (framerate>0 && framerate <= MAX_FRAMERATE) {
-                            offset = pairs[i].b_pos[j] - ((int) m*i + 0.5); /* only second part has to be rounded up */
+                            offset = pairs[i].b_pos[j] - ((int) (m*i + 0.5)); /* only second part has to be rounded up */
                             if (offset > -HOUGH_MAX_OFFSET && offset < HOUGH_MAX_OFFSET) {
                                 if (pairs[i].dist < pairs[k].dist) {
                                     if (pairs[i].dist < hspace[framerate-1][offset+HOUGH_MAX_OFFSET].dist) {
@@ -299,11 +289,6 @@ static MatchingInfo* get_matching_parameters(AVFilterContext *ctx, SignatureCont
                         if (!c->next)
                             av_log(ctx, AV_LOG_FATAL, "Could not allocate memory");
                         c = c->next;
-
-                    }
-                    if (!c) {
-                        sll_free(&cands);
-                        goto error;
                     }
                     c->framerateratio = (i+1.0) / 30;
                     c->score = hspace[i][j].score;
@@ -320,7 +305,6 @@ static MatchingInfo* get_matching_parameters(AVFilterContext *ctx, SignatureCont
             }
         }
     }
-    error:
     for (i = 0; i < MAX_FRAMERATE; i++) {
         av_freep(&hspace[i]);
     }
@@ -453,14 +437,14 @@ static MatchingInfo evaluate_parameters(AVFilterContext *ctx, SignatureContext *
                 }
 
                 if (tolerancecount > 2) {
+                    a = aprev;
+                    b = bprev;
                     if (dir == DIR_NEXT) {
                         /* turn around */
                         a = infos->first;
                         b = infos->second;
                         dir = DIR_PREV;
                     } else {
-                        a = aprev;
-                        b = bprev;
                         break;
                     }
                 }
@@ -501,13 +485,13 @@ static MatchingInfo evaluate_parameters(AVFilterContext *ctx, SignatureContext *
             continue; /* matching sequence is too short */
         if ((double) goodfcount / (double) fcount < sc->thit)
             continue;
-        if ((double) goodfcount*0.5 <= FFMAX(gooda, goodb))
+        if ((double) goodfcount*0.5 < FFMAX(gooda, goodb))
             continue;
 
-        meandist = (double) distsum / (double) goodfcount;
+        meandist = (double) goodfcount / (double) distsum;
 
         if (meandist < minmeandist ||
-                status == STATUS_END_REACHED | STATUS_BEGIN_REACHED ||
+                status == (STATUS_END_REACHED | STATUS_BEGIN_REACHED) ||
                 mode == MODE_FAST){
             minmeandist = meandist;
             /* bestcandidate in this iteration */
@@ -534,6 +518,16 @@ static MatchingInfo evaluate_parameters(AVFilterContext *ctx, SignatureContext *
         }
     }
     return bestmatch;
+}
+
+static void sll_free(MatchingInfo *sll)
+{
+    void *tmp;
+    while (sll) {
+        tmp = sll;
+        sll = sll->next;
+        av_freep(&tmp);
+    }
 }
 
 static MatchingInfo lookup_signatures(AVFilterContext *ctx, SignatureContext *sc, StreamContext *first, StreamContext *second, int mode)
@@ -578,7 +572,7 @@ static MatchingInfo lookup_signatures(AVFilterContext *ctx, SignatureContext *sc
                    "ratio %f, offset %d, score %d, %d frames matching\n",
                    bestmatch.first->index, bestmatch.second->index,
                    bestmatch.framerateratio, bestmatch.offset, bestmatch.score, bestmatch.matchframes);
-            sll_free(&infos);
+            sll_free(infos);
         }
     } while (find_next_coarsecandidate(sc, second->coarsesiglist, &cs, &cs2, 0) && !bestmatch.whole);
     return bestmatch;

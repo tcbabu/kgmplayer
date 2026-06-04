@@ -23,7 +23,7 @@
 #include "avformat.h"
 #include "internal.h"
 
-static int vag_probe(AVProbeData *p)
+static int vag_probe(const AVProbeData *p)
 {
     if (memcmp(p->buf, "VAGp\0\0\0", 7))
         return 0;
@@ -73,7 +73,7 @@ static int vag_read_packet(AVFormatContext *s, AVPacket *pkt)
     return av_get_packet(s->pb, pkt, par->block_align);
 }
 
-AVInputFormat ff_vag_demuxer = {
+const AVInputFormat ff_vag_demuxer = {
     .name           = "vag",
     .long_name      = NULL_IF_CONFIG_SMALL("Sony PS2 VAG"),
     .read_probe     = vag_probe,

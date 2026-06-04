@@ -29,6 +29,7 @@
 #include "libavutil/opt.h"
 
 #include "avcodec.h"
+#include "encode.h"
 #include "internal.h"
 #include "bswapdsp.h"
 #include "bytestream.h"
@@ -36,6 +37,19 @@
 #include "mathops.h"
 #include "utvideo.h"
 #include "huffman.h"
+
+typedef struct HuffEntry {
+    uint16_t sym;
+    uint8_t  len;
+    uint32_t code;
+} HuffEntry;
+
+/* Compare huffman tree nodes */
+static int ut_huff_cmp_len(const void *a, const void *b)
+{
+    const HuffEntry *aa = a, *bb = b;
+    return (aa->len - bb->len)*256 + aa->sym - bb->sym;
+}
 
 /* Compare huffentry symbols */
 static int huff_cmp_sym(const void *a, const void *b)
@@ -67,12 +81,12 @@ static av_cold int utvideo_encode_init(AVCodecContext *avctx)
     c->slice_stride    = FFALIGN(avctx->width, 32);
 
     switch (avctx->pix_fmt) {
-    case AV_PIX_FMT_RGB24:
+    case AV_PIX_FMT_GBRP:
         c->planes        = 3;
         avctx->codec_tag = MKTAG('U', 'L', 'R', 'G');
         original_format  = UTVIDEO_RGB;
         break;
-    case AV_PIX_FMT_RGBA:
+    case AV_PIX_FMT_GBRAP:
         c->planes        = 4;
         avctx->codec_tag = MKTAG('U', 'L', 'R', 'A');
         original_format  = UTVIDEO_RGBA;
@@ -121,28 +135,6 @@ static av_cold int utvideo_encode_init(AVCodecContext *avctx)
     ff_bswapdsp_init(&c->bdsp);
     ff_llvidencdsp_init(&c->llvidencdsp);
 
-#if FF_API_PRIVATE_OPT
-FF_DISABLE_DEPRECATION_WARNINGS
-    /* Check the prediction method, and error out if unsupported */
-    if (avctx->prediction_method < 0 || avctx->prediction_method > 4) {
-        av_log(avctx, AV_LOG_WARNING,
-               "Prediction method %d is not supported in Ut Video.\n",
-               avctx->prediction_method);
-        return AVERROR_OPTION_NOT_FOUND;
-    }
-
-    if (avctx->prediction_method == FF_PRED_PLANE) {
-        av_log(avctx, AV_LOG_ERROR,
-               "Plane prediction is not supported in Ut Video.\n");
-        return AVERROR_OPTION_NOT_FOUND;
-    }
-
-    /* Convert from libavcodec prediction type to Ut Video's */
-    if (avctx->prediction_method)
-        c->frame_pred = ff_ut_pred_order[avctx->prediction_method];
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
     if (c->frame_pred == PRED_GRADIENT) {
         av_log(avctx, AV_LOG_ERROR, "Gradient prediction is not supported.\n");
         return AVERROR_OPTION_NOT_FOUND;
@@ -176,7 +168,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
 
     if (!avctx->extradata) {
         av_log(avctx, AV_LOG_ERROR, "Could not allocate extradata.\n");
-        utvideo_encode_close(avctx);
         return AVERROR(ENOMEM);
     }
 
@@ -185,7 +176,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
                                        AV_INPUT_BUFFER_PADDING_SIZE);
         if (!c->slice_buffer[i]) {
             av_log(avctx, AV_LOG_ERROR, "Cannot allocate temporary buffer 1.\n");
-            utvideo_encode_close(avctx);
             return AVERROR(ENOMEM);
         }
     }
@@ -233,7 +223,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
      * - Compression mode (none/huff)
      * And write the flags.
      */
-    c->flags  = (c->slices - 1U) << 24;
+    c->flags  = (c->slices - 1) << 24;
     c->flags |= 0 << 11; // bit field to signal interlaced encoding mode
     c->flags |= c->compression;
 
@@ -243,53 +233,43 @@ FF_ENABLE_DEPRECATION_WARNINGS
 }
 
 static void mangle_rgb_planes(uint8_t *dst[4], ptrdiff_t dst_stride,
-                              uint8_t *src, int step, ptrdiff_t stride,
+                              uint8_t *const src[4], int planes, const int stride[4],
                               int width, int height)
 {
     int i, j;
     int k = 2 * dst_stride;
+    const uint8_t *sg = src[0];
+    const uint8_t *sb = src[1];
+    const uint8_t *sr = src[2];
+    const uint8_t *sa = src[3];
     unsigned int g;
 
     for (j = 0; j < height; j++) {
-        if (step == 3) {
-            for (i = 0; i < width * step; i += step) {
-                g         = src[i + 1];
+        if (planes == 3) {
+            for (i = 0; i < width; i++) {
+                g         = sg[i];
                 dst[0][k] = g;
                 g        += 0x80;
-                dst[1][k] = src[i + 2] - g;
-                dst[2][k] = src[i + 0] - g;
+                dst[1][k] = sb[i] - g;
+                dst[2][k] = sr[i] - g;
                 k++;
             }
         } else {
-            for (i = 0; i < width * step; i += step) {
-                g         = src[i + 1];
+            for (i = 0; i < width; i++) {
+                g         = sg[i];
                 dst[0][k] = g;
                 g        += 0x80;
-                dst[1][k] = src[i + 2] - g;
-                dst[2][k] = src[i + 0] - g;
-                dst[3][k] = src[i + 3];
+                dst[1][k] = sb[i] - g;
+                dst[2][k] = sr[i] - g;
+                dst[3][k] = sa[i];
                 k++;
             }
+            sa += stride[3];
         }
         k += dst_stride - width;
-        src += stride;
-    }
-}
-
-/* Write data to a plane with left prediction */
-static void left_predict(uint8_t *src, uint8_t *dst, ptrdiff_t stride,
-                         int width, int height)
-{
-    int i, j;
-    uint8_t prev;
-
-    prev = 0x80; /* Set the initial value */
-    for (j = 0; j < height; j++) {
-        for (i = 0; i < width; i++) {
-            *dst++ = src[i] - prev;
-            prev   = src[i];
-        }
-        src += stride;
+        sg += stride[0];
+        sb += stride[1];
+        sr += stride[2];
     }
 }
 
@@ -350,13 +330,13 @@ static void calculate_codes(HuffEntry *he)
     int last, i;
     uint32_t code;
 
-    qsort(he, 256, sizeof(*he), ff_ut_huff_cmp_len);
+    qsort(he, 256, sizeof(*he), ut_huff_cmp_len);
 
     last = 255;
     while (he[last].len == 255 && last)
         last--;
 
-    code = 1;
+    code = 0;
     for (i = last; i >= 0; i--) {
         he[i].code  = code >> (32 - he[i].len);
         code       += 0x80000000u >> (he[i].len - 1);
@@ -389,13 +369,11 @@ static int write_huff_codes(uint8_t *src, uint8_t *dst, int dst_size,
     if (count)
         put_bits(&pb, 32 - count, 0);
 
-    /* Get the amount of bits written */
-    count = put_bits_count(&pb);
-
     /* Flush the rest with zeroes */
     flush_put_bits(&pb);
 
-    return count;
+    /* Return the amount of bytes written */
+    return put_bytes_output(&pb);
 }
 
 static int encode_plane(AVCodecContext *avctx, uint8_t *src,
@@ -429,8 +407,7 @@ static int encode_plane(AVCodecContext *avctx, uint8_t *src,
         for (i = 0; i < c->slices; i++) {
             sstart = send;
             send   = height * (i + 1) / c->slices & cmask;
-            left_predict(src + sstart * stride, dst + sstart * width,
-                         stride, width, send - sstart);
+            c->llvidencdsp.sub_left_predict(dst + sstart * width, src + sstart * stride, stride, width, send - sstart);
         }
         break;
     case PRED_MEDIAN:
@@ -504,11 +481,11 @@ static int encode_plane(AVCodecContext *avctx, uint8_t *src,
 
         /*
          * Write the huffman codes to a buffer,
-         * get the offset in bits and convert to bytes.
+         * get the offset in bytes.
          */
         offset += write_huff_codes(dst + sstart * width, c->slice_bits,
                                    width * height + 4, width,
-                                   send - sstart, he) >> 3;
+                                   send - sstart, he);
 
         slice_len = offset - slice_len;
 
@@ -554,8 +531,8 @@ static int utvideo_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     int i, ret = 0;
 
     /* Allocate a new packet if needed, and set it to the pointer dst */
-    ret = ff_alloc_packet2(avctx, pkt, (256 + 4 * c->slices + width * height) *
-                           c->planes + 4, 0);
+    ret = ff_alloc_packet(avctx, pkt, (256 + 4 * c->slices + width * height)
+                                      * c->planes + 4);
 
     if (ret < 0)
         return ret;
@@ -572,14 +549,14 @@ static int utvideo_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     }
 
     /* In case of RGB, mangle the planes to Ut Video's format */
-    if (avctx->pix_fmt == AV_PIX_FMT_RGBA || avctx->pix_fmt == AV_PIX_FMT_RGB24)
-        mangle_rgb_planes(c->slice_buffer, c->slice_stride, pic->data[0],
-                          c->planes, pic->linesize[0], width, height);
+    if (avctx->pix_fmt == AV_PIX_FMT_GBRAP || avctx->pix_fmt == AV_PIX_FMT_GBRP)
+        mangle_rgb_planes(c->slice_buffer, c->slice_stride, pic->data,
+                          c->planes, pic->linesize, width, height);
 
     /* Deal with the planes */
     switch (avctx->pix_fmt) {
-    case AV_PIX_FMT_RGB24:
-    case AV_PIX_FMT_RGBA:
+    case AV_PIX_FMT_GBRP:
+    case AV_PIX_FMT_GBRAP:
         for (i = 0; i < c->planes; i++) {
             ret = encode_plane(avctx, c->slice_buffer[i] + 2 * c->slice_stride,
                                c->slice_buffer[i], c->slice_stride, i,
@@ -639,19 +616,7 @@ static int utvideo_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     frame_info = c->frame_pred << 8;
     bytestream2_put_le32(&pb, frame_info);
 
-    /*
-     * At least currently Ut Video is IDR only.
-     * Set flags accordingly.
-     */
-#if FF_API_CODED_FRAME
-FF_DISABLE_DEPRECATION_WARNINGS
-    avctx->coded_frame->key_frame = 1;
-    avctx->coded_frame->pict_type = AV_PICTURE_TYPE_I;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
     pkt->size   = bytestream2_tell_p(&pb);
-    pkt->flags |= AV_PKT_FLAG_KEY;
 
     /* Packet should be done */
     *got_packet = 1;
@@ -678,7 +643,7 @@ static const AVClass utvideo_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVCodec ff_utvideo_encoder = {
+const AVCodec ff_utvideo_encoder = {
     .name           = "utvideo",
     .long_name      = NULL_IF_CONFIG_SMALL("Ut Video"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -688,9 +653,10 @@ AVCodec ff_utvideo_encoder = {
     .init           = utvideo_encode_init,
     .encode2        = utvideo_encode_frame,
     .close          = utvideo_encode_close,
-    .capabilities   = AV_CODEC_CAP_FRAME_THREADS | AV_CODEC_CAP_INTRA_ONLY,
+    .capabilities   = AV_CODEC_CAP_FRAME_THREADS,
     .pix_fmts       = (const enum AVPixelFormat[]) {
-                          AV_PIX_FMT_RGB24, AV_PIX_FMT_RGBA, AV_PIX_FMT_YUV422P,
+                          AV_PIX_FMT_GBRP, AV_PIX_FMT_GBRAP, AV_PIX_FMT_YUV422P,
                           AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV444P, AV_PIX_FMT_NONE
                       },
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
 };

@@ -1,10 +1,10 @@
 libavcodec/flacdsp.o: libavcodec/flacdsp.c libavutil/attributes.h \
- libavutil/samplefmt.h libavutil/avutil.h libavutil/common.h \
- libavutil/attributes.h libavutil/macros.h libavutil/version.h \
- libavutil/avconfig.h config.h libavutil/intmath.h libavutil/mem.h \
- libavutil/error.h libavutil/internal.h libavutil/timer.h libavutil/log.h \
- libavutil/cpu.h libavutil/dict.h libavutil/pixfmt.h libavutil/libm.h \
- libavutil/intfloat.h libavutil/mathematics.h libavutil/rational.h \
- libavcodec/flacdsp.h libavutil/internal.h libavcodec/flacdsp_template.c \
- libavutil/avutil.h libavcodec/flacdsp_lpc_template.c \
- libavcodec/mathops.h libavutil/common.h libavutil/reverse.h
+ libavutil/internal.h config.h libavutil/attributes.h libavutil/timer.h \
+ libavutil/common.h libavutil/macros.h libavutil/avconfig.h \
+ libavutil/intmath.h libavutil/mem.h libavutil/avutil.h libavutil/error.h \
+ libavutil/rational.h libavutil/version.h libavutil/mathematics.h \
+ libavutil/intfloat.h libavutil/log.h libavutil/pixfmt.h \
+ libavutil/internal.h libavutil/dict.h libavutil/libm.h \
+ libavutil/samplefmt.h libavcodec/flacdsp.h libavcodec/flacdsp_template.c \
+ libavutil/macros.h libavcodec/flacdsp_lpc_template.c libavutil/common.h \
+ libavcodec/mathops.h libavutil/reverse.h

@@ -65,22 +65,21 @@ static int64_t seek_by_sector(AVIOContext *pb, int64_t sector, int64_t offset)
 }
 
 /**
- * @return bytes read, 0 on end of file, or <0 on error
+ * @return bytes read, AVERROR_EOF on end of file, or <0 on error
  */
 static int wtvfile_read_packet(void *opaque, uint8_t *buf, int buf_size)
 {
     WtvFile *wf = opaque;
     AVIOContext *pb = wf->pb_filesystem;
-    int nread = 0;
+    int nread = 0, n = 0;
 
     if (wf->error || pb->error)
         return -1;
     if (wf->position >= wf->length || avio_feof(pb))
-        return 0;
+        return AVERROR_EOF;
 
     buf_size = FFMIN(buf_size, wf->length - wf->position);
     while(nread < buf_size) {
-        int n;
         int remaining_in_sector = (1 << wf->sector_bits) - (wf->position & ((1 << wf->sector_bits) - 1));
         int read_request        = FFMIN(buf_size - nread, remaining_in_sector);
 
@@ -100,7 +99,7 @@ static int wtvfile_read_packet(void *opaque, uint8_t *buf, int buf_size)
             }
         }
     }
-    return nread;
+    return nread ? nread : n;
 }
 
 /**
@@ -183,7 +182,7 @@ static AVIOContext * wtvfile_open_sector(unsigned first_sector, uint64_t length,
         int nb_sectors1 = read_ints(s->pb, sectors1, WTV_SECTOR_SIZE / 4);
         int i;
 
-        wf->sectors = av_calloc(nb_sectors1, 1 << WTV_SECTOR_BITS);
+        wf->sectors = av_malloc_array(nb_sectors1, 1 << WTV_SECTOR_BITS);
         if (!wf->sectors) {
             av_free(wf);
             return NULL;
@@ -295,7 +294,7 @@ static AVIOContext * wtvfile_open2(AVFormatContext *s, const uint8_t *buf, int b
 
         buf += dir_length;
     }
-    return 0;
+    return NULL;
 }
 
 #define wtvfile_open(s, buf, buf_size, filename) \
@@ -376,7 +375,7 @@ static const ff_asf_guid mediasubtype_dtvccdata =
 static const ff_asf_guid mediasubtype_mpeg2_sections =
     {0x79,0x85,0x9F,0x4A,0xF8,0x6B,0x92,0x43,0x8A,0x6D,0xD2,0xDD,0x09,0xFA,0x78,0x61};
 
-static int read_probe(AVProbeData *p)
+static int read_probe(const AVProbeData *p)
 {
     return ff_guidcmp(p->buf, ff_wtv_guid) ? 0 : AVPROBE_SCORE_MAX;
 }
@@ -435,7 +434,6 @@ static void get_attachment(AVFormatContext *s, AVIOContext *pb, int length)
     char description[1024];
     unsigned int filesize;
     AVStream *st;
-    int ret;
     int64_t pos = avio_tell(pb);
 
     avio_get_str16le(pb, INT_MAX, mime, sizeof(mime));
@@ -448,19 +446,12 @@ static void get_attachment(AVFormatContext *s, AVIOContext *pb, int length)
     if (!filesize)
         goto done;
 
-    st = avformat_new_stream(s, NULL);
-    if (!st)
+    if (ff_add_attached_pic(s, NULL, pb, NULL, filesize) < 0)
         goto done;
+    st = s->streams[s->nb_streams - 1];
     av_dict_set(&st->metadata, "title", description, 0);
-    st->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
     st->codecpar->codec_id   = AV_CODEC_ID_MJPEG;
     st->id = -1;
-    ret = av_get_packet(pb, &st->attached_pic, filesize);
-    if (ret < 0)
-        goto done;
-    st->attached_pic.stream_index = st->index;
-    st->attached_pic.flags       |= AV_PKT_FLAG_KEY;
-    st->disposition              |= AV_DISPOSITION_ATTACHED_PIC;
 done:
     avio_seek(pb, pos + length, SEEK_SET);
 }
@@ -627,7 +618,7 @@ static AVStream * new_stream(AVFormatContext *s, AVStream *st, int sid, int code
         st->priv_data = wst;
     }
     st->codecpar->codec_type = codec_type;
-    st->need_parsing      = AVSTREAM_PARSE_FULL;
+    ffstream(st)->need_parsing = AVSTREAM_PARSE_FULL;
     avpriv_set_pts_info(st, 64, 1, 10000000);
     return st;
 }
@@ -850,7 +841,7 @@ static int parse_chunks(AVFormatContext *s, int mode, int64_t seekts, int *len_p
             int stream_index = ff_find_stream_index(s, sid);
             if (stream_index >= 0) {
                 AVStream *st = s->streams[stream_index];
-                uint8_t buf[258] = {0};
+                uint8_t buf[258];
                 const uint8_t *pbuf = buf;
                 int buf_size;
 
@@ -863,8 +854,7 @@ static int parse_chunks(AVFormatContext *s, int mode, int64_t seekts, int *len_p
                 }
 
                 buf_size = FFMIN(len - consumed, sizeof(buf));
-                if (avio_read(pb, buf, buf_size) != buf_size)
-                    return AVERROR_INVALIDDATA;
+                avio_read(pb, buf, buf_size);
                 consumed += buf_size;
                 ff_parse_mpeg2_descriptor(s, st, 0, &pbuf, buf + buf_size, NULL, 0, 0, NULL);
             }
@@ -916,10 +906,10 @@ static int parse_chunks(AVFormatContext *s, int mode, int64_t seekts, int *len_p
                     wtv->last_valid_pts = wtv->pts;
                     if (wtv->epoch == AV_NOPTS_VALUE || wtv->pts < wtv->epoch)
                         wtv->epoch = wtv->pts;
-                if (mode == SEEK_TO_PTS && wtv->pts >= seekts) {
-                    avio_skip(pb, WTV_PAD8(len) - consumed);
-                    return 0;
-                }
+                    if (mode == SEEK_TO_PTS && wtv->pts >= seekts) {
+                        avio_skip(pb, WTV_PAD8(len) - consumed);
+                        return 0;
+                    }
                 }
             }
         } else if (!ff_guidcmp(g, ff_data_guid)) {
@@ -960,6 +950,9 @@ static int parse_chunks(AVFormatContext *s, int mode, int64_t seekts, int *len_p
             //ignore known guids
         } else
             av_log(s, AV_LOG_WARNING, "unsupported chunk:"FF_PRI_GUID"\n", FF_ARG_GUID(g));
+
+        if (avio_feof(pb))
+            break;
 
         avio_skip(pb, WTV_PAD8(len) - consumed);
     }
@@ -1133,7 +1126,7 @@ static int read_close(AVFormatContext *s)
     return 0;
 }
 
-AVInputFormat ff_wtv_demuxer = {
+const AVInputFormat ff_wtv_demuxer = {
     .name           = "wtv",
     .long_name      = NULL_IF_CONFIG_SMALL("Windows Television (WTV)"),
     .priv_data_size = sizeof(WtvContext),

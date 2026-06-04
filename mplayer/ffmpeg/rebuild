@@ -1,15 +1,20 @@
 ./configure --prefix=/usr  --enable-static --disable-shared \
---enable-gpl --enable-postproc \
+--enable-gpl  \
 --enable-filter=volumedetect \
 --disable-doc --enable-libmp3lame  \
---enable-version3 --enable-gmp --enable-gnutls \
---disable-libxcb   --enable-libx265 --enable-libx264 \
+--enable-version3 --enable-gmp  \
 --disable-vaapi \
+--disable-jni \
 --enable-nonfree  \
 --enable-libfdk-aac \
 --enable-avfilter \
 --disable-asm \
+--disable-gnutls \
+--disable-lzma \
+--disable-libxcb   --enable-libx265 --enable-libx264 \
 --extra-libs="-lgnutls -lgnutlsxx -lnettle -lhogweed -lgmp -lfdk-aac" 
+#--disable-libxcb   --enable-libx265 --enable-libx264 \
+#--disable-outdevs --disable-outdevs \
 #--disable-libxcb  --enable-libx264 --enable-libx265 \
 #--enable-nonfree --enable-openssl \
 #--enable-runtime-cpudetect  --enable-indev=x11grab \

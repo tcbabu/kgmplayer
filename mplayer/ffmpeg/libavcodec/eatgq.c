@@ -29,6 +29,9 @@
  */
 
 #define BITSTREAM_READER_LE
+
+#include "libavutil/mem_internal.h"
+
 #include "aandcttab.h"
 #include "avcodec.h"
 #include "bytestream.h"
@@ -58,7 +61,7 @@ static av_cold int tgq_decode_init(AVCodecContext *avctx)
     return 0;
 }
 
-static int tgq_decode_block(TgqContext *s, int16_t block[64], GetBitContext *gb)
+static void tgq_decode_block(TgqContext *s, int16_t block[64], GetBitContext *gb)
 {
     uint8_t *perm = s->scantable.permutated;
     int i, j, value;
@@ -66,8 +69,6 @@ static int tgq_decode_block(TgqContext *s, int16_t block[64], GetBitContext *gb)
     for (i = 1; i < 64;) {
         switch (show_bits(gb, 3)) {
         case 4:
-            if (i >= 63)
-                return AVERROR_INVALIDDATA;
             block[perm[i++]] = 0;
         case 0:
             block[perm[i++]] = 0;
@@ -77,8 +78,6 @@ static int tgq_decode_block(TgqContext *s, int16_t block[64], GetBitContext *gb)
         case 1:
             skip_bits(gb, 2);
             value = get_bits(gb, 6);
-            if (value > 64 - i)
-                return AVERROR_INVALIDDATA;
             for (j = 0; j < value; j++)
                 block[perm[i++]] = 0;
             break;
@@ -106,7 +105,6 @@ static int tgq_decode_block(TgqContext *s, int16_t block[64], GetBitContext *gb)
         }
     }
     block[0] += 128 << 4;
-    return 0;
 }
 
 static void tgq_idct_put_mb(TgqContext *s, int16_t (*block)[64], AVFrame *frame,
@@ -166,11 +164,8 @@ static int tgq_decode_mb(TgqContext *s, AVFrame *frame, int mb_y, int mb_x)
         if (ret < 0)
             return ret;
 
-        for (i = 0; i < 6; i++) {
-            int ret = tgq_decode_block(s, s->block[i], &gb);
-            if (ret < 0)
-                return ret;
-        }
+        for (i = 0; i < 6; i++)
+            tgq_decode_block(s, s->block[i], &gb);
         tgq_idct_put_mb(s, s->block, frame, mb_x, mb_y);
         bytestream2_skip(&s->gb, mode);
     } else {
@@ -252,7 +247,7 @@ static int tgq_decode_frame(AVCodecContext *avctx,
     return avpkt->size;
 }
 
-AVCodec ff_eatgq_decoder = {
+const AVCodec ff_eatgq_decoder = {
     .name           = "eatgq",
     .long_name      = NULL_IF_CONFIG_SMALL("Electronic Arts TGQ video"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -261,4 +256,5 @@ AVCodec ff_eatgq_decoder = {
     .init           = tgq_decode_init,
     .decode         = tgq_decode_frame,
     .capabilities   = AV_CODEC_CAP_DR1,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };

@@ -1,15 +1,11 @@
-libavcodec/mpc.o: libavcodec/mpc.c libavutil/attributes.h \
- libavcodec/avcodec.h libavutil/samplefmt.h libavutil/avutil.h \
- libavutil/common.h libavutil/attributes.h libavutil/macros.h \
- libavutil/version.h libavutil/avconfig.h config.h libavutil/intmath.h \
- libavutil/mem.h libavutil/error.h libavutil/internal.h libavutil/timer.h \
- libavutil/log.h libavutil/cpu.h libavutil/dict.h libavutil/pixfmt.h \
- libavutil/libm.h libavutil/intfloat.h libavutil/mathematics.h \
- libavutil/rational.h libavutil/avutil.h libavutil/buffer.h \
- libavutil/cpu.h libavutil/channel_layout.h libavutil/dict.h \
- libavutil/frame.h libavutil/buffer.h libavutil/samplefmt.h \
- libavutil/log.h libavutil/pixfmt.h libavutil/rational.h \
- libavcodec/version.h libavutil/version.h libavcodec/mpegaudiodsp.h \
- libavutil/common.h libavcodec/mpegaudio.h libavutil/internal.h \
- libavcodec/mpc.h libavutil/lfg.h libavcodec/bswapdsp.h \
+libavcodec/mpc.o: libavcodec/mpc.c libavutil/intmath.h config.h \
+ libavutil/attributes.h libavcodec/mpegaudiodsp.h libavutil/macros.h \
+ libavutil/avconfig.h libavcodec/mpc.h libavutil/lfg.h \
+ libavutil/mem_internal.h libavutil/avassert.h libavutil/log.h \
+ libavutil/version.h libavutil/macros.h libavutil/mem.h \
+ libavutil/avutil.h libavutil/common.h libavutil/intmath.h \
+ libavutil/internal.h libavutil/timer.h libavutil/dict.h \
+ libavutil/pixfmt.h libavutil/libm.h libavutil/intfloat.h \
+ libavutil/mathematics.h libavutil/rational.h libavutil/error.h \
+ libavcodec/bswapdsp.h libavcodec/mpegaudio.h libavutil/internal.h \
  libavcodec/mpcdata.h

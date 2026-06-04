@@ -138,8 +138,7 @@ static int tls_close(URLContext *h)
     av_freep(&c->dec_buf);
     c->dec_buf_size = c->dec_buf_offset = 0;
 
-    if (c->tls_shared.tcp)
-        ffurl_close(c->tls_shared.tcp);
+    ffurl_closep(&c->tls_shared.tcp);
     return 0;
 }
 
@@ -389,7 +388,7 @@ static int tls_read(URLContext *h, uint8_t *buf, int len)
     SECURITY_STATUS sspi_ret = SEC_E_OK;
     SecBuffer inbuf[4];
     SecBufferDesc inbuf_desc;
-    int size, ret = 0;
+    int size, ret;
     int min_enc_buf_size = len + SCHANNEL_FREE_BUFFER_SIZE;
 
     /* If we have some left-over data from previous network activity,
@@ -418,11 +417,13 @@ static int tls_read(URLContext *h, uint8_t *buf, int len)
 
         ret = ffurl_read(s->tcp, c->enc_buf + c->enc_buf_offset,
                          c->enc_buf_size - c->enc_buf_offset);
-        if (ret < 0) {
+        if (ret == AVERROR_EOF) {
+            c->connection_closed = 1;
+            ret = 0;
+        } else if (ret < 0) {
             av_log(h, AV_LOG_ERROR, "Unable to read from socket\n");
             return ret;
-        } else if (ret == 0)
-            c->connection_closed = 1;
+        }
 
         c->enc_buf_offset += ret;
     }
@@ -520,7 +521,7 @@ cleanup:
     if (ret == 0 && !c->connection_closed)
         ret = AVERROR(EAGAIN);
 
-    return ret < 0 ? ret : 0;
+    return ret < 0 ? ret : AVERROR_EOF;
 }
 
 static int tls_write(URLContext *h, const uint8_t *buf, int len)
@@ -588,6 +589,12 @@ static int tls_get_file_handle(URLContext *h)
     return ffurl_get_file_handle(c->tls_shared.tcp);
 }
 
+static int tls_get_short_seek(URLContext *h)
+{
+    TLSContext *s = h->priv_data;
+    return ffurl_get_short_seek(s->tls_shared.tcp);
+}
+
 static const AVOption options[] = {
     TLS_COMMON_OPTIONS(TLSContext, tls_shared),
     { NULL }
@@ -600,13 +607,14 @@ static const AVClass tls_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-const URLProtocol ff_tls_schannel_protocol = {
+const URLProtocol ff_tls_protocol = {
     .name           = "tls",
     .url_open2      = tls_open,
     .url_read       = tls_read,
     .url_write      = tls_write,
     .url_close      = tls_close,
     .url_get_file_handle = tls_get_file_handle,
+    .url_get_short_seek  = tls_get_short_seek,
     .priv_data_size = sizeof(TLSContext),
     .flags          = URL_PROTOCOL_FLAG_NETWORK,
     .priv_data_class = &tls_class,

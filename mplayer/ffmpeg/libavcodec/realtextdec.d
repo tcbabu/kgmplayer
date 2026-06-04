@@ -1,13 +1,18 @@
 libavcodec/realtextdec.o: libavcodec/realtextdec.c libavcodec/avcodec.h \
- libavutil/samplefmt.h libavutil/avutil.h libavutil/common.h \
- libavutil/attributes.h libavutil/macros.h libavutil/version.h \
+ libavutil/samplefmt.h libavutil/attributes.h libavutil/avutil.h \
+ libavutil/common.h libavutil/attributes.h libavutil/macros.h \
  libavutil/avconfig.h config.h libavutil/intmath.h libavutil/mem.h \
- libavutil/error.h libavutil/internal.h libavutil/timer.h libavutil/log.h \
- libavutil/cpu.h libavutil/dict.h libavutil/pixfmt.h libavutil/libm.h \
- libavutil/intfloat.h libavutil/mathematics.h libavutil/rational.h \
- libavutil/attributes.h libavutil/avutil.h libavutil/buffer.h \
- libavutil/cpu.h libavutil/channel_layout.h libavutil/dict.h \
- libavutil/frame.h libavutil/buffer.h libavutil/samplefmt.h \
- libavutil/log.h libavutil/pixfmt.h libavutil/rational.h \
- libavcodec/version.h libavutil/version.h libavcodec/ass.h \
- libavutil/bprint.h libavutil/avstring.h libavutil/avstring.h
+ libavutil/avutil.h libavutil/version.h libavutil/internal.h \
+ libavutil/timer.h libavutil/log.h libavutil/dict.h libavutil/pixfmt.h \
+ libavutil/libm.h libavutil/intfloat.h libavutil/mathematics.h \
+ libavutil/rational.h libavutil/error.h libavutil/buffer.h \
+ libavutil/dict.h libavutil/frame.h libavutil/buffer.h \
+ libavutil/samplefmt.h libavutil/log.h libavutil/pixfmt.h \
+ libavutil/rational.h libavcodec/codec.h libavutil/hwcontext.h \
+ libavutil/frame.h libavcodec/codec_id.h libavcodec/version.h \
+ libavutil/version.h libavcodec/codec_desc.h libavcodec/codec_id.h \
+ libavcodec/codec_par.h libavcodec/defs.h libavcodec/packet.h \
+ libavcodec/version.h libavcodec/ass.h libavutil/bprint.h \
+ libavutil/avstring.h libavcodec/internal.h libavutil/channel_layout.h \
+ libavutil/fifo.h libavutil/mathematics.h libavcodec/bsf.h \
+ libavutil/avstring.h

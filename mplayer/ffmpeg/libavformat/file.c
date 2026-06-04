@@ -73,6 +73,7 @@ typedef struct FileContext {
     int trunc;
     int blocksize;
     int follow;
+    int seekable;
 #if HAVE_DIRENT_H
     DIR *dir;
 #endif
@@ -82,6 +83,7 @@ static const AVOption file_options[] = {
     { "truncate", "truncate existing files on write", offsetof(FileContext, trunc), AV_OPT_TYPE_BOOL, { .i64 = 1 }, 0, 1, AV_OPT_FLAG_ENCODING_PARAM },
     { "blocksize", "set I/O operation maximum block size", offsetof(FileContext, blocksize), AV_OPT_TYPE_INT, { .i64 = INT_MAX }, 1, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM },
     { "follow", "Follow a file as it is being written", offsetof(FileContext, follow), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, 1, AV_OPT_FLAG_DECODING_PARAM },
+    { "seekable", "Sets if the file is seekable", offsetof(FileContext, seekable), AV_OPT_TYPE_INT, { .i64 = -1 }, -1, 0, AV_OPT_FLAG_DECODING_PARAM | AV_OPT_FLAG_ENCODING_PARAM },
     { NULL }
 };
 
@@ -165,6 +167,8 @@ static int file_check(URLContext *h, int mask)
     return ret;
 }
 
+#if CONFIG_FILE_PROTOCOL
+
 static int file_delete(URLContext *h)
 {
 #if HAVE_UNISTD_H
@@ -173,7 +177,11 @@ static int file_delete(URLContext *h)
     av_strstart(filename, "file:", &filename);
 
     ret = rmdir(filename);
-    if (ret < 0 && errno == ENOTDIR)
+    if (ret < 0 && (errno == ENOTDIR
+#   ifdef _WIN32
+        || errno == EINVAL
+#   endif
+        ))
         ret = unlink(filename);
     if (ret < 0)
         return AVERROR(errno);
@@ -196,8 +204,6 @@ static int file_move(URLContext *h_src, URLContext *h_dst)
 
     return 0;
 }
-
-#if CONFIG_FILE_PROTOCOL
 
 static int file_open(URLContext *h, const char *filename, int flags)
 {
@@ -234,6 +240,9 @@ static int file_open(URLContext *h, const char *filename, int flags)
     if (!h->is_streamed && flags & AVIO_FLAG_WRITE)
         h->min_packet_size = h->max_packet_size = 262144;
 
+    if (c->seekable >= 0)
+        h->is_streamed = !c->seekable;
+
     return 0;
 }
 
@@ -257,7 +266,8 @@ static int64_t file_seek(URLContext *h, int64_t pos, int whence)
 static int file_close(URLContext *h)
 {
     FileContext *c = h->priv_data;
-    return close(c->fd);
+    int ret = close(c->fd);
+    return (ret == -1) ? AVERROR(errno) : 0;
 }
 
 static int file_open_dir(URLContext *h)
@@ -360,7 +370,7 @@ const URLProtocol ff_file_protocol = {
     .url_open_dir        = file_open_dir,
     .url_read_dir        = file_read_dir,
     .url_close_dir       = file_close_dir,
-    .default_whitelist   = "file,crypto"
+    .default_whitelist   = "file,crypto,data"
 };
 
 #endif /* CONFIG_FILE_PROTOCOL */
@@ -399,7 +409,7 @@ const URLProtocol ff_pipe_protocol = {
     .url_check           = file_check,
     .priv_data_size      = sizeof(FileContext),
     .priv_data_class     = &pipe_class,
-    .default_whitelist   = "crypto"
+    .default_whitelist   = "crypto,data"
 };
 
 #endif /* CONFIG_PIPE_PROTOCOL */

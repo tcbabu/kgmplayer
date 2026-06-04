@@ -26,7 +26,11 @@
 #include "parser.h"
 #include "mpegvideo.h"
 #include "mpeg4video.h"
+#include "mpeg4videodec.h"
+#if FF_API_FLAG_TRUNCATED
+/* Nuke this header when removing FF_API_FLAG_TRUNCATED */
 #include "mpeg4video_parser.h"
+#endif
 
 struct Mp4vParseContext {
     ParseContext pc;
@@ -34,7 +38,15 @@ struct Mp4vParseContext {
     int first_picture;
 };
 
+#if FF_API_FLAG_TRUNCATED
 int ff_mpeg4_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size)
+#else
+/**
+ * Find the end of the current frame in the bitstream.
+ * @return the position of the first byte of the next frame, or -1
+ */
+static int mpeg4_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size)
+#endif
 {
     int vop_found, i;
     uint32_t state;
@@ -46,7 +58,7 @@ int ff_mpeg4_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size)
     if (!vop_found) {
         for (i = 0; i < buf_size; i++) {
             state = (state << 8) | buf[i];
-            if (state == 0x1B6) {
+            if (state == VOP_STARTCODE) {
                 i++;
                 vop_found = 1;
                 break;
@@ -61,6 +73,8 @@ int ff_mpeg4_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size)
         for (; i < buf_size; i++) {
             state = (state << 8) | buf[i];
             if ((state & 0xFFFFFF00) == 0x100) {
+                if (state == SLICE_STARTCODE || state == EXT_STARTCODE)
+                    continue;
                 pc->frame_start_found = 0;
                 pc->state             = -1;
                 return i - 3;
@@ -87,13 +101,13 @@ static int mpeg4_decode_header(AVCodecParserContext *s1, AVCodecContext *avctx,
 
     if (avctx->extradata_size && pc->first_picture) {
         init_get_bits(gb, avctx->extradata, avctx->extradata_size * 8);
-        ret = ff_mpeg4_decode_picture_header(dec_ctx, gb);
-        if (ret < -1)
+        ret = ff_mpeg4_decode_picture_header(dec_ctx, gb, 1, 1);
+        if (ret < 0)
             av_log(avctx, AV_LOG_WARNING, "Failed to parse extradata\n");
     }
 
     init_get_bits(gb, buf, 8 * buf_size);
-    ret = ff_mpeg4_decode_picture_header(dec_ctx, gb);
+    ret = ff_mpeg4_decode_picture_header(dec_ctx, gb, 0, 1);
     if (s->width && (!avctx->width || !avctx->height ||
                      !avctx->coded_width || !avctx->coded_height)) {
         ret = ff_set_dimensions(avctx, s->width, s->height);
@@ -116,8 +130,6 @@ static av_cold int mpeg4video_parse_init(AVCodecParserContext *s)
 {
     struct Mp4vParseContext *pc = s->priv_data;
 
-    ff_mpeg4videodec_static_init();
-
     pc->first_picture           = 1;
     pc->dec_ctx.m.quant_precision     = 5;
     pc->dec_ctx.m.slice_context_count = 1;
@@ -136,7 +148,11 @@ static int mpeg4video_parse(AVCodecParserContext *s,
     if (s->flags & PARSER_FLAG_COMPLETE_FRAMES) {
         next = buf_size;
     } else {
+#if FF_API_FLAG_TRUNCATED
         next = ff_mpeg4_find_frame_end(pc, buf, buf_size);
+#else
+        next = mpeg4_find_frame_end(pc, buf, buf_size);
+#endif
 
         if (ff_combine_frame(pc, next, &buf, &buf_size) < 0) {
             *poutbuf      = NULL;
@@ -151,11 +167,10 @@ static int mpeg4video_parse(AVCodecParserContext *s,
     return next;
 }
 
-AVCodecParser ff_mpeg4video_parser = {
+const AVCodecParser ff_mpeg4video_parser = {
     .codec_ids      = { AV_CODEC_ID_MPEG4 },
     .priv_data_size = sizeof(struct Mp4vParseContext),
     .parser_init    = mpeg4video_parse_init,
     .parser_parse   = mpeg4video_parse,
     .parser_close   = ff_parse_close,
-    .split          = ff_mpeg4video_split,
 };

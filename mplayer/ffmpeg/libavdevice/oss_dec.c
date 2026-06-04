@@ -23,23 +23,16 @@
 
 #include <stdint.h>
 
-#if HAVE_SOUNDCARD_H
-#include <soundcard.h>
-#else
-#include <sys/soundcard.h>
-#endif
-
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <sys/soundcard.h>
 
 #include "libavutil/internal.h"
 #include "libavutil/opt.h"
 #include "libavutil/time.h"
-
-#include "libavcodec/avcodec.h"
 
 #include "avdevice.h"
 #include "libavformat/internal.h"
@@ -57,7 +50,7 @@ static int audio_read_header(AVFormatContext *s1)
         return AVERROR(ENOMEM);
     }
 
-    ret = ff_oss_audio_open(s1, 0, s1->filename);
+    ret = ff_oss_audio_open(s1, 0, s1->url);
     if (ret < 0) {
         return AVERROR(EIO);
     }
@@ -130,14 +123,14 @@ static const AVOption options[] = {
 };
 
 static const AVClass oss_demuxer_class = {
-    .class_name     = "OSS demuxer",
+    .class_name     = "OSS indev",
     .item_name      = av_default_item_name,
     .option         = options,
     .version        = LIBAVUTIL_VERSION_INT,
     .category       = AV_CLASS_CATEGORY_DEVICE_AUDIO_INPUT,
 };
 
-AVInputFormat ff_oss_demuxer = {
+const AVInputFormat ff_oss_demuxer = {
     .name           = "oss",
     .long_name      = NULL_IF_CONFIG_SMALL("OSS (Open Sound System) capture"),
     .priv_data_size = sizeof(OSSAudioData),

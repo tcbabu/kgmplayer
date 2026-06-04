@@ -33,6 +33,7 @@ typedef struct ReverseContext {
     unsigned int pts_size;
     int64_t *pts;
     int flush_idx;
+    int64_t nb_samples;
 } ReverseContext;
 
 static av_cold int init(AVFilterContext *ctx)
@@ -57,6 +58,11 @@ static av_cold int init(AVFilterContext *ctx)
 static av_cold void uninit(AVFilterContext *ctx)
 {
     ReverseContext *s = ctx->priv;
+
+    while (s->nb_frames > 0) {
+        av_frame_free(&s->frames[s->nb_frames - 1]);
+        s->nb_frames--;
+    }
 
     av_freep(&s->pts);
     av_freep(&s->frames);
@@ -103,6 +109,7 @@ static int request_frame(AVFilterLink *outlink)
         AVFrame *out = s->frames[s->nb_frames - 1];
         out->pts     = s->pts[s->flush_idx++];
         ret          = ff_filter_frame(outlink, out);
+        s->frames[s->nb_frames - 1] = NULL;
         s->nb_frames--;
     }
 
@@ -115,7 +122,6 @@ static const AVFilterPad reverse_inputs[] = {
         .type         = AVMEDIA_TYPE_VIDEO,
         .filter_frame = filter_frame,
     },
-    { NULL }
 };
 
 static const AVFilterPad reverse_outputs[] = {
@@ -124,94 +130,135 @@ static const AVFilterPad reverse_outputs[] = {
         .type          = AVMEDIA_TYPE_VIDEO,
         .request_frame = request_frame,
     },
-    { NULL }
 };
 
-AVFilter ff_vf_reverse = {
+const AVFilter ff_vf_reverse = {
     .name        = "reverse",
     .description = NULL_IF_CONFIG_SMALL("Reverse a clip."),
     .priv_size   = sizeof(ReverseContext),
     .init        = init,
     .uninit      = uninit,
-    .inputs      = reverse_inputs,
-    .outputs     = reverse_outputs,
+    FILTER_INPUTS(reverse_inputs),
+    FILTER_OUTPUTS(reverse_outputs),
 };
 
 #endif /* CONFIG_REVERSE_FILTER */
 
 #if CONFIG_AREVERSE_FILTER
 
-static int query_formats(AVFilterContext *ctx)
+static void reverse_samples_planar(AVFrame *out)
 {
-    AVFilterFormats *formats;
-    AVFilterChannelLayouts *layouts;
-    int ret;
+    for (int p = 0; p < out->channels; p++) {
+        switch (out->format) {
+        case AV_SAMPLE_FMT_U8P: {
+            uint8_t *dst = (uint8_t *)out->extended_data[p];
+            for (int i = 0, j = out->nb_samples - 1; i < j; i++, j--)
+                FFSWAP(uint8_t, dst[i], dst[j]);
+        }
+            break;
+        case AV_SAMPLE_FMT_S16P: {
+            int16_t *dst = (int16_t *)out->extended_data[p];
+            for (int i = 0, j = out->nb_samples - 1; i < j; i++, j--)
+                FFSWAP(int16_t, dst[i], dst[j]);
+        }
+            break;
+        case AV_SAMPLE_FMT_S32P: {
+            int32_t *dst = (int32_t *)out->extended_data[p];
+            for (int i = 0, j = out->nb_samples - 1; i < j; i++, j--)
+                FFSWAP(int32_t, dst[i], dst[j]);
+        }
+            break;
+        case AV_SAMPLE_FMT_S64P: {
+            int64_t *dst = (int64_t *)out->extended_data[p];
+            for (int i = 0, j = out->nb_samples - 1; i < j; i++, j--)
+                FFSWAP(int64_t, dst[i], dst[j]);
+        }
+            break;
+        case AV_SAMPLE_FMT_FLTP: {
+            float *dst = (float *)out->extended_data[p];
+            for (int i = 0, j = out->nb_samples - 1; i < j; i++, j--)
+                FFSWAP(float, dst[i], dst[j]);
+        }
+            break;
+        case AV_SAMPLE_FMT_DBLP: {
+            double *dst = (double *)out->extended_data[p];
+            for (int i = 0, j = out->nb_samples - 1; i < j; i++, j--)
+                FFSWAP(double, dst[i], dst[j]);
+        }
+            break;
+        }
+    }
+}
 
-    layouts = ff_all_channel_counts();
-    if (!layouts)
-        return AVERROR(ENOMEM);
-    ret = ff_set_common_channel_layouts(ctx, layouts);
-    if (ret < 0)
-        return ret;
+static void reverse_samples_packed(AVFrame *out)
+{
+    const int channels = out->channels;
 
-    ret = ff_set_common_formats(ctx, ff_planar_sample_fmts());
-    if (ret < 0)
-        return ret;
-
-    formats = ff_all_samplerates();
-    if (!formats)
-        return AVERROR(ENOMEM);
-    return ff_set_common_samplerates(ctx, formats);
+    switch (out->format) {
+    case AV_SAMPLE_FMT_U8: {
+        uint8_t *dst = (uint8_t *)out->extended_data[0];
+        for (int i = 0, j = out->nb_samples - 1; i < j; i++, j--)
+            for (int p = 0; p < channels; p++)
+                FFSWAP(uint8_t, dst[i * channels + p], dst[j * channels + p]);
+    }
+        break;
+    case AV_SAMPLE_FMT_S16: {
+        int16_t *dst = (int16_t *)out->extended_data[0];
+        for (int i = 0, j = out->nb_samples - 1; i < j; i++, j--)
+            for (int p = 0; p < channels; p++)
+                FFSWAP(int16_t, dst[i * channels + p], dst[j * channels + p]);
+    }
+        break;
+    case AV_SAMPLE_FMT_S32: {
+        int32_t *dst = (int32_t *)out->extended_data[0];
+        for (int i = 0, j = out->nb_samples - 1; i < j; i++, j--)
+            for (int p = 0; p < channels; p++)
+                FFSWAP(int32_t, dst[i * channels + p], dst[j * channels + p]);
+    }
+        break;
+    case AV_SAMPLE_FMT_S64: {
+        int64_t *dst = (int64_t *)out->extended_data[0];
+        for (int i = 0, j = out->nb_samples - 1; i < j; i++, j--)
+            for (int p = 0; p < channels; p++)
+                FFSWAP(int64_t, dst[i * channels + p], dst[j * channels + p]);
+    }
+        break;
+    case AV_SAMPLE_FMT_FLT: {
+        float *dst = (float *)out->extended_data[0];
+        for (int i = 0, j = out->nb_samples - 1; i < j; i++, j--)
+            for (int p = 0; p < channels; p++)
+                FFSWAP(float, dst[i * channels + p], dst[j * channels + p]);
+    }
+        break;
+    case AV_SAMPLE_FMT_DBL: {
+        double *dst = (double *)out->extended_data[0];
+        for (int i = 0, j = out->nb_samples - 1; i < j; i++, j--)
+            for (int p = 0; p < channels; p++)
+                FFSWAP(double, dst[i * channels + p], dst[j * channels + p]);
+    }
+        break;
+    }
 }
 
 static int areverse_request_frame(AVFilterLink *outlink)
 {
     AVFilterContext *ctx = outlink->src;
     ReverseContext *s = ctx->priv;
-    int ret, p, i, j;
+    int ret;
 
     ret = ff_request_frame(ctx->inputs[0]);
 
     if (ret == AVERROR_EOF && s->nb_frames > 0) {
         AVFrame *out = s->frames[s->nb_frames - 1];
-        out->pts     = s->pts[s->flush_idx++];
+        out->pts     = s->pts[s->flush_idx++] - s->nb_samples;
+        s->nb_samples += s->pts[s->flush_idx] - s->pts[s->flush_idx - 1] - out->nb_samples;
 
-        for (p = 0; p < outlink->channels; p++) {
-            switch (outlink->format) {
-            case AV_SAMPLE_FMT_U8P: {
-                uint8_t *dst = (uint8_t *)out->extended_data[p];
-                for (i = 0, j = out->nb_samples - 1; i < j; i++, j--)
-                    FFSWAP(uint8_t, dst[i], dst[j]);
-            }
-                break;
-            case AV_SAMPLE_FMT_S16P: {
-                int16_t *dst = (int16_t *)out->extended_data[p];
-                for (i = 0, j = out->nb_samples - 1; i < j; i++, j--)
-                    FFSWAP(int16_t, dst[i], dst[j]);
-            }
-                break;
-            case AV_SAMPLE_FMT_S32P: {
-                int32_t *dst = (int32_t *)out->extended_data[p];
-                for (i = 0, j = out->nb_samples - 1; i < j; i++, j--)
-                    FFSWAP(int32_t, dst[i], dst[j]);
-            }
-                break;
-            case AV_SAMPLE_FMT_FLTP: {
-                float *dst = (float *)out->extended_data[p];
-                for (i = 0, j = out->nb_samples - 1; i < j; i++, j--)
-                    FFSWAP(float, dst[i], dst[j]);
-            }
-                break;
-            case AV_SAMPLE_FMT_DBLP: {
-                double *dst = (double *)out->extended_data[p];
-                for (i = 0, j = out->nb_samples - 1; i < j; i++, j--)
-                    FFSWAP(double, dst[i], dst[j]);
-            }
-                break;
-            }
-        }
-
+        if (av_sample_fmt_is_planar(out->format))
+            reverse_samples_planar(out);
+        else
+            reverse_samples_packed(out);
         ret = ff_filter_frame(outlink, out);
+        s->frames[s->nb_frames - 1] = NULL;
         s->nb_frames--;
     }
 
@@ -222,10 +269,9 @@ static const AVFilterPad areverse_inputs[] = {
     {
         .name           = "default",
         .type           = AVMEDIA_TYPE_AUDIO,
+        .flags          = AVFILTERPAD_FLAG_NEEDS_WRITABLE,
         .filter_frame   = filter_frame,
-        .needs_writable = 1,
     },
-    { NULL }
 };
 
 static const AVFilterPad areverse_outputs[] = {
@@ -234,18 +280,16 @@ static const AVFilterPad areverse_outputs[] = {
         .type          = AVMEDIA_TYPE_AUDIO,
         .request_frame = areverse_request_frame,
     },
-    { NULL }
 };
 
-AVFilter ff_af_areverse = {
+const AVFilter ff_af_areverse = {
     .name          = "areverse",
     .description   = NULL_IF_CONFIG_SMALL("Reverse an audio clip."),
-    .query_formats = query_formats,
     .priv_size     = sizeof(ReverseContext),
     .init          = init,
     .uninit        = uninit,
-    .inputs        = areverse_inputs,
-    .outputs       = areverse_outputs,
+    FILTER_INPUTS(areverse_inputs),
+    FILTER_OUTPUTS(areverse_outputs),
 };
 
 #endif /* CONFIG_AREVERSE_FILTER */

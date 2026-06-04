@@ -25,6 +25,7 @@
  */
 
 #include "avcodec.h"
+#include "decode.h"
 #include "internal.h"
 
 #include "libavutil/internal.h"
@@ -98,11 +99,17 @@ static int wrapped_avframe_decode(AVCodecContext *avctx, void *data,
 
     av_frame_move_ref(out, in);
 
+    err = ff_attach_decode_data(out);
+    if (err < 0) {
+        av_frame_unref(out);
+        return err;
+    }
+
     *got_frame = 1;
     return 0;
 }
 
-AVCodec ff_wrapped_avframe_encoder = {
+const AVCodec ff_wrapped_avframe_encoder = {
     .name           = "wrapped_avframe",
     .long_name      = NULL_IF_CONFIG_SMALL("AVFrame to AVPacket passthrough"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -111,7 +118,7 @@ AVCodec ff_wrapped_avframe_encoder = {
     .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };
 
-AVCodec ff_wrapped_avframe_decoder = {
+const AVCodec ff_wrapped_avframe_decoder = {
     .name           = "wrapped_avframe",
     .long_name      = NULL_IF_CONFIG_SMALL("AVPacket to AVFrame passthrough"),
     .type           = AVMEDIA_TYPE_VIDEO,

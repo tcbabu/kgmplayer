@@ -23,7 +23,7 @@
 #include "avformat.h"
 #include "riff.h"
 
-static int lvf_probe(AVProbeData *p)
+static int lvf_probe(const AVProbeData *p)
 {
     if (AV_RL32(p->buf) != MKTAG('L', 'V', 'F', 'F'))
         return 0;
@@ -145,7 +145,7 @@ static int lvf_read_packet(AVFormatContext *s, AVPacket *pkt)
     return AVERROR_EOF;
 }
 
-AVInputFormat ff_lvf_demuxer = {
+const AVInputFormat ff_lvf_demuxer = {
     .name        = "lvf",
     .long_name   = NULL_IF_CONFIG_SMALL("LVF"),
     .read_probe  = lvf_probe,

@@ -23,7 +23,6 @@
 #include <stdint.h>
 
 #include "avcodec.h"
-#include "version.h"
 
 /* add and put pixel (decoding)
  * Block sizes for op_pixels_func are 8x4,8x8 16x8 16x16.
@@ -33,8 +32,8 @@ typedef void (*op_fill_func)(uint8_t *block /* align width (8 or 16) */,
                              uint8_t value, ptrdiff_t line_size, int h);
 
 typedef struct BlockDSPContext {
-    void (*clear_block)(int16_t *block /* align 16 */);
-    void (*clear_blocks)(int16_t *blocks /* align 16 */);
+    void (*clear_block)(int16_t *block /* align 32 */);
+    void (*clear_blocks)(int16_t *blocks /* align 32 */);
 
     op_fill_func fill_block_tab[2];
 } BlockDSPContext;

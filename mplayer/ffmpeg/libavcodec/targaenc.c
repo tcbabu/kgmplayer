@@ -21,13 +21,13 @@
 
 #include <string.h>
 
-#include "libavutil/avassert.h"
 #include "libavutil/imgutils.h"
 #include "libavutil/internal.h"
 #include "libavutil/intreadwrite.h"
 #include "libavutil/opt.h"
 #include "libavutil/pixdesc.h"
 #include "avcodec.h"
+#include "encode.h"
 #include "internal.h"
 #include "rle.h"
 #include "targa.h"
@@ -89,11 +89,10 @@ static int targa_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     TargaContext *s = avctx->priv_data;
     int bpp, picsize, datasize = -1, ret, i;
     uint8_t *out;
-    int maxpal = 32*32;
 
     picsize = av_image_get_buffer_size(avctx->pix_fmt,
                                        avctx->width, avctx->height, 1);
-    if ((ret = ff_alloc_packet2(avctx, pkt, picsize + 45 + maxpal, 0)) < 0)
+    if ((ret = ff_alloc_packet(avctx, pkt, picsize + 45)) < 0)
         return ret;
 
     /* zero out the header and only set applicable fields */
@@ -126,7 +125,6 @@ static int targa_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
             AV_WL24(pkt->data + 18 + 3 * i, *(uint32_t *)(p->data[1] + i * 4));
             }
         out += 32 * pal_bpp;        /* skip past the palette we just output */
-        av_assert0(32 * pal_bpp <= maxpal);
         break;
         }
     case AV_PIX_FMT_GRAY8:
@@ -155,13 +153,6 @@ static int targa_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     bpp = pkt->data[16] >> 3;
 
 
-#if FF_API_CODER_TYPE
-FF_DISABLE_DEPRECATION_WARNINGS
-    if (avctx->coder_type == FF_CODER_TYPE_RAW)
-        s->rle = 0;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
     /* try RLE compression */
     if (s->rle)
         datasize = targa_encode_rle(out, picsize, p, bpp, avctx->width, avctx->height);
@@ -181,7 +172,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
     memcpy(out, "\0\0\0\0\0\0\0\0TRUEVISION-XFILE.", 26);
 
     pkt->size   = out + 26 - pkt->data;
-    pkt->flags |= AV_PKT_FLAG_KEY;
     *got_packet = 1;
 
     return 0;
@@ -193,13 +183,6 @@ static av_cold int targa_encode_init(AVCodecContext *avctx)
         av_log(avctx, AV_LOG_ERROR, "image dimensions too large\n");
         return AVERROR(EINVAL);
     }
-
-#if FF_API_CODED_FRAME
-FF_DISABLE_DEPRECATION_WARNINGS
-    avctx->coded_frame->key_frame = 1;
-    avctx->coded_frame->pict_type = AV_PICTURE_TYPE_I;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
 
     return 0;
 }
@@ -219,7 +202,7 @@ static const AVClass targa_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVCodec ff_targa_encoder = {
+const AVCodec ff_targa_encoder = {
     .name           = "targa",
     .long_name      = NULL_IF_CONFIG_SMALL("Truevision Targa image"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -232,4 +215,5 @@ AVCodec ff_targa_encoder = {
         AV_PIX_FMT_BGR24, AV_PIX_FMT_BGRA, AV_PIX_FMT_RGB555LE, AV_PIX_FMT_GRAY8, AV_PIX_FMT_PAL8,
         AV_PIX_FMT_NONE
     },
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };

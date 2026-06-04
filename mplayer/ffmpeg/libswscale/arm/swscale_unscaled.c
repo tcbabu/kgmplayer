@@ -23,6 +23,7 @@
 #include "libswscale/swscale_internal.h"
 #include "libavutil/arm/cpu.h"
 
+#if HAVE_AS_DN_DIRECTIVE
 extern void rgbx_to_nv12_neon_32(const uint8_t *src, uint8_t *y, uint8_t *chroma,
                 int width, int height,
                 int y_stride, int c_stride, int src_stride,
@@ -146,7 +147,7 @@ DECLARE_FF_NVX_TO_ALL_RGBX_FUNCS(nv21)
         && !(c->srcH & 1)                                                                   \
         && !(c->srcW & 15)                                                                  \
         && !accurate_rnd) {                                                                 \
-        c->swscale = ifmt##_to_##ofmt##_neon_wrapper;                                       \
+        c->convert_unscaled = ifmt##_to_##ofmt##_neon_wrapper;                              \
     }                                                                                       \
 } while (0)
 
@@ -162,8 +163,8 @@ static void get_unscaled_swscale_neon(SwsContext *c) {
     if (c->srcFormat == AV_PIX_FMT_RGBA
             && c->dstFormat == AV_PIX_FMT_NV12
             && (c->srcW >= 16)) {
-        c->swscale = accurate_rnd ? rgbx_to_nv12_neon_32_wrapper
-                        : rgbx_to_nv12_neon_16_wrapper;
+        c->convert_unscaled = accurate_rnd ? rgbx_to_nv12_neon_32_wrapper
+                                           : rgbx_to_nv12_neon_16_wrapper;
     }
 
     SET_FF_NVX_TO_ALL_RGBX_FUNC(nv12, NV12, accurate_rnd);
@@ -178,3 +179,8 @@ void ff_get_unscaled_swscale_arm(SwsContext *c)
     if (have_neon(cpu_flags))
         get_unscaled_swscale_neon(c);
 }
+#else
+void ff_get_unscaled_swscale_arm(SwsContext *c)
+{
+}
+#endif

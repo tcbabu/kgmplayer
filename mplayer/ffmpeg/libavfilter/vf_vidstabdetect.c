@@ -82,23 +82,6 @@ static av_cold void uninit(AVFilterContext *ctx)
     vsMotionDetectionCleanup(md);
 }
 
-static int query_formats(AVFilterContext *ctx)
-{
-    // If you add something here also add it in vidstabutils.c
-    static const enum AVPixelFormat pix_fmts[] = {
-        AV_PIX_FMT_YUV444P,  AV_PIX_FMT_YUV422P, AV_PIX_FMT_YUV420P,
-        AV_PIX_FMT_YUV411P,  AV_PIX_FMT_YUV410P, AV_PIX_FMT_YUVA420P,
-        AV_PIX_FMT_YUV440P,  AV_PIX_FMT_GRAY8,
-        AV_PIX_FMT_RGB24, AV_PIX_FMT_BGR24, AV_PIX_FMT_RGBA,
-        AV_PIX_FMT_NONE
-    };
-
-    AVFilterFormats *fmts_list = ff_make_format_list(pix_fmts);
-    if (!fmts_list)
-        return AVERROR(ENOMEM);
-    return ff_set_common_formats(ctx, fmts_list);
-}
-
 static int config_input(AVFilterLink *inlink)
 {
     AVFilterContext *ctx = inlink->dst;
@@ -107,10 +90,11 @@ static int config_input(AVFilterLink *inlink)
     VSMotionDetect* md = &(s->md);
     VSFrameInfo fi;
     const AVPixFmtDescriptor *desc = av_pix_fmt_desc_get(inlink->format);
+    int is_planar = desc->flags & AV_PIX_FMT_FLAG_PLANAR;
 
     vsFrameInfoInit(&fi, inlink->w, inlink->h,
                     ff_av2vs_pixfmt(ctx, inlink->format));
-    if (fi.bytesPerPixel != av_get_bits_per_pixel(desc)/8) {
+    if (!is_planar && fi.bytesPerPixel != av_get_bits_per_pixel(desc)/8) {
         av_log(ctx, AV_LOG_ERROR, "pixel-format error: wrong bits/per/pixel, please report a BUG");
         return AVERROR(EINVAL);
     }
@@ -175,7 +159,7 @@ static int filter_frame(AVFilterLink *inlink, AVFrame *in)
     }
     if (vsMotionDetection(md, &localmotions, &frame) != VS_OK) {
         av_log(ctx, AV_LOG_ERROR, "motion detection failed");
-        return AVERROR_EXTERNAL;
+        return AVERROR(AVERROR_EXTERNAL);
     } else {
         if (vsWriteToFile(md, s->f, &localmotions) != VS_OK) {
             int ret = AVERROR(errno);
@@ -195,7 +179,6 @@ static const AVFilterPad avfilter_vf_vidstabdetect_inputs[] = {
         .filter_frame = filter_frame,
         .config_props = config_input,
     },
-    { NULL }
 };
 
 static const AVFilterPad avfilter_vf_vidstabdetect_outputs[] = {
@@ -203,10 +186,9 @@ static const AVFilterPad avfilter_vf_vidstabdetect_outputs[] = {
         .name = "default",
         .type = AVMEDIA_TYPE_VIDEO,
     },
-    { NULL }
 };
 
-AVFilter ff_vf_vidstabdetect = {
+const AVFilter ff_vf_vidstabdetect = {
     .name          = "vidstabdetect",
     .description   = NULL_IF_CONFIG_SMALL("Extract relative transformations, "
                                           "pass 1 of 2 for stabilization "
@@ -214,8 +196,9 @@ AVFilter ff_vf_vidstabdetect = {
     .priv_size     = sizeof(StabData),
     .init          = init,
     .uninit        = uninit,
-    .query_formats = query_formats,
-    .inputs        = avfilter_vf_vidstabdetect_inputs,
-    .outputs       = avfilter_vf_vidstabdetect_outputs,
+    .flags         = AVFILTER_FLAG_METADATA_ONLY,
+    FILTER_INPUTS(avfilter_vf_vidstabdetect_inputs),
+    FILTER_OUTPUTS(avfilter_vf_vidstabdetect_outputs),
+    FILTER_PIXFMTS_ARRAY(ff_vidstab_pix_fmts),
     .priv_class    = &vidstabdetect_class,
 };

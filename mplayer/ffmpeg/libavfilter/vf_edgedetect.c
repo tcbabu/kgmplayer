@@ -26,15 +26,25 @@
  */
 
 #include "libavutil/avassert.h"
+#include "libavutil/imgutils.h"
 #include "libavutil/opt.h"
 #include "avfilter.h"
 #include "formats.h"
 #include "internal.h"
 #include "video.h"
 
+#define PLANE_R 0x4
+#define PLANE_G 0x1
+#define PLANE_B 0x2
+#define PLANE_Y 0x1
+#define PLANE_U 0x2
+#define PLANE_V 0x4
+#define PLANE_A 0x8
+
 enum FilterMode {
     MODE_WIRES,
     MODE_COLORMIX,
+    MODE_CANNY,
     NB_MODE
 };
 
@@ -42,11 +52,13 @@ struct plane_info {
     uint8_t  *tmpbuf;
     uint16_t *gradients;
     char     *directions;
+    int      width, height;
 };
 
 typedef struct EdgeDetectContext {
     const AVClass *class;
     struct plane_info planes[3];
+    int filter_planes;
     int nb_planes;
     double   low, high;
     uint8_t  low_u8, high_u8;
@@ -61,6 +73,14 @@ static const AVOption edgedetect_options[] = {
     { "mode", "set mode", OFFSET(mode), AV_OPT_TYPE_INT, {.i64=MODE_WIRES}, 0, NB_MODE-1, FLAGS, "mode" },
         { "wires",    "white/gray wires on black",  0, AV_OPT_TYPE_CONST, {.i64=MODE_WIRES},    INT_MIN, INT_MAX, FLAGS, "mode" },
         { "colormix", "mix colors",                 0, AV_OPT_TYPE_CONST, {.i64=MODE_COLORMIX}, INT_MIN, INT_MAX, FLAGS, "mode" },
+        { "canny",    "detect edges on planes",     0, AV_OPT_TYPE_CONST, {.i64=MODE_CANNY},    INT_MIN, INT_MAX, FLAGS, "mode" },
+    { "planes", "set planes to filter",  OFFSET(filter_planes), AV_OPT_TYPE_FLAGS, {.i64=7}, 1, 0x7, FLAGS, "flags" },
+        { "y", "filter luma plane",  0, AV_OPT_TYPE_CONST, {.i64=PLANE_Y}, 0, 0, FLAGS, "flags" },
+        { "u", "filter u plane",     0, AV_OPT_TYPE_CONST, {.i64=PLANE_U}, 0, 0, FLAGS, "flags" },
+        { "v", "filter v plane",     0, AV_OPT_TYPE_CONST, {.i64=PLANE_V}, 0, 0, FLAGS, "flags" },
+        { "r", "filter red plane",   0, AV_OPT_TYPE_CONST, {.i64=PLANE_R}, 0, 0, FLAGS, "flags" },
+        { "g", "filter green plane", 0, AV_OPT_TYPE_CONST, {.i64=PLANE_G}, 0, 0, FLAGS, "flags" },
+        { "b", "filter blue plane",  0, AV_OPT_TYPE_CONST, {.i64=PLANE_B}, 0, 0, FLAGS, "flags" },
     { NULL }
 };
 
@@ -79,21 +99,20 @@ static int query_formats(AVFilterContext *ctx)
 {
     const EdgeDetectContext *edgedetect = ctx->priv;
     static const enum AVPixelFormat wires_pix_fmts[] = {AV_PIX_FMT_GRAY8, AV_PIX_FMT_NONE};
+    static const enum AVPixelFormat canny_pix_fmts[] = {AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV422P, AV_PIX_FMT_YUV444P, AV_PIX_FMT_GBRP, AV_PIX_FMT_GRAY8, AV_PIX_FMT_NONE};
     static const enum AVPixelFormat colormix_pix_fmts[] = {AV_PIX_FMT_GBRP, AV_PIX_FMT_GRAY8, AV_PIX_FMT_NONE};
-    AVFilterFormats *fmts_list;
     const enum AVPixelFormat *pix_fmts = NULL;
 
     if (edgedetect->mode == MODE_WIRES) {
         pix_fmts = wires_pix_fmts;
     } else if (edgedetect->mode == MODE_COLORMIX) {
         pix_fmts = colormix_pix_fmts;
+    } else if (edgedetect->mode == MODE_CANNY) {
+        pix_fmts = canny_pix_fmts;
     } else {
         av_assert0(0);
     }
-    fmts_list = ff_make_format_list(pix_fmts);
-    if (!fmts_list)
-        return AVERROR(ENOMEM);
-    return ff_set_common_formats(ctx, fmts_list);
+    return ff_set_common_formats_from_list(ctx, pix_fmts);
 }
 
 static int config_props(AVFilterLink *inlink)
@@ -101,14 +120,19 @@ static int config_props(AVFilterLink *inlink)
     int p;
     AVFilterContext *ctx = inlink->dst;
     EdgeDetectContext *edgedetect = ctx->priv;
+    const AVPixFmtDescriptor *desc = av_pix_fmt_desc_get(inlink->format);
 
     edgedetect->nb_planes = inlink->format == AV_PIX_FMT_GRAY8 ? 1 : 3;
     for (p = 0; p < edgedetect->nb_planes; p++) {
         struct plane_info *plane = &edgedetect->planes[p];
+        int vsub = p ? desc->log2_chroma_h : 0;
+        int hsub = p ? desc->log2_chroma_w : 0;
 
-        plane->tmpbuf     = av_malloc(inlink->w * inlink->h);
-        plane->gradients  = av_calloc(inlink->w * inlink->h, sizeof(*plane->gradients));
-        plane->directions = av_malloc(inlink->w * inlink->h);
+        plane->width      = AV_CEIL_RSHIFT(inlink->w, hsub);
+        plane->height     = AV_CEIL_RSHIFT(inlink->h, vsub);
+        plane->tmpbuf     = av_malloc(plane->width * plane->height);
+        plane->gradients  = av_calloc(plane->width * plane->height, sizeof(*plane->gradients));
+        plane->directions = av_malloc(plane->width * plane->height);
         if (!plane->tmpbuf || !plane->gradients || !plane->directions)
             return AVERROR(ENOMEM);
     }
@@ -122,8 +146,9 @@ static void gaussian_blur(AVFilterContext *ctx, int w, int h,
     int i, j;
 
     memcpy(dst, src, w); dst += dst_linesize; src += src_linesize;
-    if (h > 1)
+    if (h > 1) {
         memcpy(dst, src, w); dst += dst_linesize; src += src_linesize;
+    }
     for (j = 2; j < h - 2; j++) {
         dst[0] = src[0];
         if (w > 1)
@@ -156,8 +181,9 @@ static void gaussian_blur(AVFilterContext *ctx, int w, int h,
         dst += dst_linesize;
         src += src_linesize;
     }
-    if (h > 2)
+    if (h > 2) {
         memcpy(dst, src, w); dst += dst_linesize; src += src_linesize;
+    }
     if (h > 3)
         memcpy(dst, src, w);
 }
@@ -186,7 +212,7 @@ static int get_rounded_direction(int gx, int gy)
 
         if (gx < 0)
             gx = -gx, gy = -gy;
-        gy <<= 16;
+        gy *= (1 << 16);
         tanpi8gx  =  27146 * gx;
         tan3pi8gx = 158218 * gx;
         if (gy > -tan3pi8gx && gy < -tanpi8gx)  return DIRECTION_45UP;
@@ -264,7 +290,7 @@ static void double_threshold(int low, int high, int w, int h,
                 continue;
             }
 
-            if ((!i || i == w - 1 || !j || j == h - 1) &&
+            if (!(!i || i == w - 1 || !j || j == h - 1) &&
                 src[i] > low &&
                 (src[-src_linesize + i-1] > high ||
                  src[-src_linesize + i  ] > high ||
@@ -322,34 +348,44 @@ static int filter_frame(AVFilterLink *inlink, AVFrame *in)
         uint8_t  *tmpbuf     = plane->tmpbuf;
         uint16_t *gradients  = plane->gradients;
         int8_t   *directions = plane->directions;
+        const int width      = plane->width;
+        const int height     = plane->height;
+
+        if (!((1 << p) & edgedetect->filter_planes)) {
+            if (!direct)
+                av_image_copy_plane(out->data[p], out->linesize[p],
+                                    in->data[p], in->linesize[p],
+                                    width, height);
+            continue;
+        }
 
         /* gaussian filter to reduce noise  */
-        gaussian_blur(ctx, inlink->w, inlink->h,
-                      tmpbuf,      inlink->w,
+        gaussian_blur(ctx, width, height,
+                      tmpbuf,      width,
                       in->data[p], in->linesize[p]);
 
         /* compute the 16-bits gradients and directions for the next step */
-        sobel(inlink->w, inlink->h,
-              gradients, inlink->w,
-              directions,inlink->w,
-              tmpbuf,    inlink->w);
+        sobel(width, height,
+              gradients, width,
+              directions,width,
+              tmpbuf,    width);
 
         /* non_maximum_suppression() will actually keep & clip what's necessary and
          * ignore the rest, so we need a clean output buffer */
-        memset(tmpbuf, 0, inlink->w * inlink->h);
-        non_maximum_suppression(inlink->w, inlink->h,
-                                tmpbuf,    inlink->w,
-                                directions,inlink->w,
-                                gradients, inlink->w);
+        memset(tmpbuf, 0, width * height);
+        non_maximum_suppression(width, height,
+                                tmpbuf,    width,
+                                directions,width,
+                                gradients, width);
 
         /* keep high values, or low values surrounded by high values */
         double_threshold(edgedetect->low_u8, edgedetect->high_u8,
-                         inlink->w, inlink->h,
+                         width, height,
                          out->data[p], out->linesize[p],
-                         tmpbuf,       inlink->w);
+                         tmpbuf,       width);
 
         if (edgedetect->mode == MODE_COLORMIX) {
-            color_mix(inlink->w, inlink->h,
+            color_mix(width, height,
                       out->data[p], out->linesize[p],
                       in->data[p], in->linesize[p]);
         }
@@ -380,7 +416,6 @@ static const AVFilterPad edgedetect_inputs[] = {
         .config_props = config_props,
         .filter_frame = filter_frame,
     },
-    { NULL }
 };
 
 static const AVFilterPad edgedetect_outputs[] = {
@@ -388,18 +423,17 @@ static const AVFilterPad edgedetect_outputs[] = {
         .name = "default",
         .type = AVMEDIA_TYPE_VIDEO,
     },
-    { NULL }
 };
 
-AVFilter ff_vf_edgedetect = {
+const AVFilter ff_vf_edgedetect = {
     .name          = "edgedetect",
     .description   = NULL_IF_CONFIG_SMALL("Detect and draw edge."),
     .priv_size     = sizeof(EdgeDetectContext),
     .init          = init,
     .uninit        = uninit,
-    .query_formats = query_formats,
-    .inputs        = edgedetect_inputs,
-    .outputs       = edgedetect_outputs,
+    FILTER_INPUTS(edgedetect_inputs),
+    FILTER_OUTPUTS(edgedetect_outputs),
+    FILTER_QUERY_FUNC(query_formats),
     .priv_class    = &edgedetect_class,
     .flags         = AVFILTER_FLAG_SUPPORT_TIMELINE_GENERIC,
 };

@@ -1,29 +1,34 @@
 libavformat/matroskadec.o: libavformat/matroskadec.c config.h \
- libavutil/avstring.h libavutil/attributes.h libavutil/base64.h \
- libavutil/dict.h libavutil/version.h libavutil/macros.h \
- libavutil/intfloat.h libavutil/intreadwrite.h libavutil/avconfig.h \
+ libavutil/avstring.h libavutil/attributes.h libavutil/version.h \
+ libavutil/macros.h libavutil/avconfig.h libavutil/base64.h \
+ libavutil/bprint.h libavutil/avstring.h libavutil/dict.h \
+ libavutil/display.h libavutil/intfloat.h libavutil/intreadwrite.h \
  libavutil/bswap.h libavutil/lzo.h libavutil/mastering_display_metadata.h \
  libavutil/frame.h libavutil/avutil.h libavutil/common.h \
- libavutil/intmath.h libavutil/mem.h libavutil/error.h \
- libavutil/internal.h libavutil/timer.h libavutil/log.h libavutil/cpu.h \
- libavutil/dict.h libavutil/pixfmt.h libavutil/libm.h \
- libavutil/intfloat.h libavutil/mathematics.h libavutil/rational.h \
- libavutil/buffer.h libavutil/samplefmt.h libavutil/mathematics.h \
- libavutil/opt.h libavutil/time_internal.h libavutil/spherical.h \
- libavcodec/bytestream.h libavutil/avassert.h libavutil/common.h \
- libavcodec/flac.h libavcodec/avcodec.h libavutil/samplefmt.h \
- libavutil/attributes.h libavutil/avutil.h libavutil/buffer.h \
- libavutil/cpu.h libavutil/channel_layout.h libavutil/frame.h \
- libavutil/log.h libavutil/pixfmt.h libavutil/rational.h \
- libavcodec/version.h libavutil/version.h libavcodec/bytestream.h \
- libavcodec/get_bits.h libavcodec/mathops.h libavutil/reverse.h \
- libavcodec/vlc.h libavcodec/mpeg4audio.h libavcodec/put_bits.h \
- libavformat/avformat.h libavcodec/avcodec.h libavformat/avio.h \
- libavformat/version.h libavformat/avio_internal.h libavformat/url.h \
- libavformat/internal.h libavutil/bprint.h libavutil/avstring.h \
- libavformat/os_support.h libavformat/isom.h libavutil/stereo3d.h \
- libavformat/dv.h libavformat/matroska.h libavformat/metadata.h \
- libavformat/oggdec.h libavformat/riff.h libavformat/rmsipr.h \
- /home/kulina/BUILD/kgmplayer/include/bzlib.h \
+ libavutil/intmath.h libavutil/mem.h libavutil/internal.h \
+ libavutil/timer.h libavutil/log.h libavutil/dict.h libavutil/pixfmt.h \
+ libavutil/libm.h libavutil/intfloat.h libavutil/mathematics.h \
+ libavutil/rational.h libavutil/error.h libavutil/buffer.h \
+ libavutil/samplefmt.h libavutil/mathematics.h libavutil/opt.h \
+ libavutil/time_internal.h libavutil/spherical.h libavcodec/bytestream.h \
+ libavutil/avassert.h libavutil/common.h libavcodec/flac.h \
+ libavcodec/avcodec.h libavutil/samplefmt.h libavutil/attributes.h \
+ libavutil/avutil.h libavutil/buffer.h libavutil/frame.h libavutil/log.h \
+ libavutil/pixfmt.h libavutil/rational.h libavcodec/codec.h \
+ libavutil/hwcontext.h libavcodec/codec_id.h libavcodec/version.h \
+ libavutil/version.h libavcodec/codec_desc.h libavcodec/codec_id.h \
+ libavcodec/codec_par.h libavcodec/defs.h libavcodec/packet.h \
+ libavcodec/version.h libavcodec/bytestream.h libavcodec/get_bits.h \
+ libavcodec/mathops.h libavutil/reverse.h libavcodec/vlc.h \
+ libavcodec/mpeg4audio.h libavcodec/put_bits.h \
+ libavcodec/packet_internal.h libavformat/avformat.h libavcodec/codec.h \
+ libavcodec/codec_par.h libavcodec/defs.h libavcodec/packet.h \
+ libavformat/avio.h libavformat/version.h libavformat/avio_internal.h \
+ libavformat/url.h libavformat/dovi_isom.h libavutil/dovi_meta.h \
+ libavformat/internal.h libavcodec/avcodec.h libavcodec/bsf.h \
+ libavformat/os_support.h libavformat/isom.h libavutil/encryption_info.h \
+ libavutil/stereo3d.h libavformat/dv.h libavformat/matroska.h \
+ libavformat/metadata.h libavformat/oggdec.h libavformat/riff.h \
+ libavformat/rmsipr.h /home/kulina/BUILD/kgmplayer/include/bzlib.h \
  /home/kulina/BUILD/kgmplayer/include/zlib.h \
  /home/kulina/BUILD/kgmplayer/include/zconf.h libavformat/qtpalette.h

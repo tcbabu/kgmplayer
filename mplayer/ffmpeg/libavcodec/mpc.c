@@ -26,18 +26,12 @@
  * divided into 32 subbands.
  */
 
-#include "libavutil/attributes.h"
-#include "avcodec.h"
+#include <string.h>
+#include "libavutil/intmath.h"
 #include "mpegaudiodsp.h"
-#include "mpegaudio.h"
 
 #include "mpc.h"
 #include "mpcdata.h"
-
-av_cold void ff_mpc_init(void)
-{
-    ff_mpa_synth_init_fixed(ff_mpa_synth_window_fixed);
-}
 
 /**
  * Process decoded Musepack data and produce PCM

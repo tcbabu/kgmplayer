@@ -130,11 +130,7 @@ int ff_slice_thread_init(AVCodecContext *avctx)
 {
     SliceThreadContext *c;
     int thread_count = avctx->thread_count;
-    static void (*mainfunc)(void *);
-
-#if HAVE_W32THREADS
-    w32thread_init();
-#endif
+    void (*mainfunc)(void *);
 
     // We cannot do this in the encoder init as the threads are created before
     if (av_codec_is_encoder(avctx->codec) &&
@@ -215,7 +211,7 @@ int ff_alloc_entries(AVCodecContext *avctx, int count)
         }
 
         p->thread_count  = avctx->thread_count;
-        p->entries       = av_mallocz_array(count, sizeof(int));
+        p->entries       = av_calloc(count, sizeof(*p->entries));
 
         if (!p->progress_mutex) {
             p->progress_mutex = av_malloc_array(p->thread_count, sizeof(pthread_mutex_t));

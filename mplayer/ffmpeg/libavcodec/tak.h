@@ -44,7 +44,6 @@
 #define TAK_LAST_FRAME_SIZE_BITS               24
 #define TAK_ENCODER_CODEC_BITS                  6
 #define TAK_ENCODER_PROFILE_BITS                4
-#define TAK_ENCODER_VERSION_BITS               24
 #define TAK_SAMPLE_RATE_MIN                  6000
 #define TAK_CHANNELS_MIN                        1
 #define TAK_BPS_MIN                             8
@@ -143,10 +142,14 @@ int ff_tak_check_crc(const uint8_t *buf, unsigned int buf_size);
 
 /**
  * Parse the Streaminfo metadata block.
- * @param[in]  gb pointer to GetBitContext
  * @param[out] s  storage for parsed information
+ * @param[in]  buf   input buffer
+ * @param[in]  size  size of input buffer in bytes
+ * @return non-zero on error, 0 if OK
  */
-void avpriv_tak_parse_streaminfo(GetBitContext *gb, TAKStreamInfo *s);
+int avpriv_tak_parse_streaminfo(TAKStreamInfo *s, const uint8_t *buf, int size);
+
+void ff_tak_parse_streaminfo(TAKStreamInfo *s, GetBitContext *gb);
 
 /**
  * Validate and decode a frame header.

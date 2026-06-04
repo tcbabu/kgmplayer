@@ -18,7 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "avcodec.h"
+#include "config.h"
+#include "libavutil/attributes.h"
+#include "libavutil/common.h"
 #include "diracdsp.h"
 
 #define FILTER(src, stride)                                     \
@@ -195,7 +197,7 @@ static void dequant_subband_ ## PX ## _c(uint8_t *src, uint8_t *dst, ptrdiff_t s
 {                                                                                          \
     int i, y;                                                                              \
     for (y = 0; y < tot_v; y++) {                                                          \
-        PX c, sign, *src_r = (PX *)src, *dst_r = (PX *)dst;                                \
+        PX c, *src_r = (PX *)src, *dst_r = (PX *)dst;                                      \
         for (i = 0; i < tot_h; i++) {                                                      \
             c = *src_r++;                                                                  \
             if     (c < 0) c = -((-(unsigned)c*qf + qs) >> 2);                             \

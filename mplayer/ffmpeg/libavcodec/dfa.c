@@ -149,6 +149,8 @@ static int decode_dds1(GetByteContext *gb, uint8_t *frame, int width, int height
     int mask = 0x10000, bitbuf = 0;
     int i, v, offset, count, segments;
 
+    if ((width | height) & 1)
+        return AVERROR_INVALIDDATA;
     segments = bytestream2_get_le16(gb);
     while (segments--) {
         if (bytestream2_get_bytes_left(gb) < 2)
@@ -176,7 +178,7 @@ static int decode_dds1(GetByteContext *gb, uint8_t *frame, int width, int height
                 return AVERROR_INVALIDDATA;
             frame += v;
         } else {
-            if (frame_end - frame < width + 4)
+            if (width < 4 || frame_end - frame < width + 4)
                 return AVERROR_INVALIDDATA;
             frame[0] = frame[1] =
             frame[width] = frame[width + 1] =  bytestream2_get_byte(gb);
@@ -330,7 +332,7 @@ static const chunk_decoder decoder[8] = {
     decode_tdlt, decode_dsw1, decode_blck, decode_dds1,
 };
 
-static const char * const chunk_name[8] = {
+static const char chunk_name[8][5] = {
     "COPY", "TSW1", "BDLT", "WDLT", "TDLT", "DSW1", "BLCK", "DDS1"
 };
 
@@ -412,7 +414,7 @@ static av_cold int dfa_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_dfa_decoder = {
+const AVCodec ff_dfa_decoder = {
     .name           = "dfa",
     .long_name      = NULL_IF_CONFIG_SMALL("Chronomaster DFA"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -422,4 +424,5 @@ AVCodec ff_dfa_decoder = {
     .close          = dfa_decode_end,
     .decode         = dfa_decode_frame,
     .capabilities   = AV_CODEC_CAP_DR1,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };

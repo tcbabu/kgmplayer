@@ -24,7 +24,7 @@
 #include "internal.h"
 #include "pcm.h"
 
-static int pvf_probe(AVProbeData *p)
+static int pvf_probe(const AVProbeData *p)
 {
     if (!memcmp(p->buf, "PVF1\n", 5))
         return AVPROBE_SCORE_MAX;
@@ -65,7 +65,7 @@ static int pvf_read_header(AVFormatContext *s)
     return 0;
 }
 
-AVInputFormat ff_pvf_demuxer = {
+const AVInputFormat ff_pvf_demuxer = {
     .name           = "pvf",
     .long_name      = NULL_IF_CONFIG_SMALL("PVF (Portable Voice Format)"),
     .read_probe     = pvf_probe,

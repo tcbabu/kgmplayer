@@ -458,7 +458,7 @@ static int process_ea_header(AVFormatContext *s)
     return 1;
 }
 
-static int ea_probe(AVProbeData *p)
+static int ea_probe(const AVProbeData *p)
 {
     unsigned big_endian, size;
 
@@ -503,7 +503,7 @@ static int init_video_stream(AVFormatContext *s, VideoProperties *video)
     st->codecpar->codec_id    = video->codec;
     // parsing is necessary to make FFmpeg generate correct timestamps
     if (st->codecpar->codec_id == AV_CODEC_ID_MPEG2VIDEO)
-        st->need_parsing = AVSTREAM_PARSE_HEADERS;
+        ffstream(st)->need_parsing = AVSTREAM_PARSE_HEADERS;
     st->codecpar->codec_tag   = 0; /* no fourcc */
     st->codecpar->width       = video->width;
     st->codecpar->height      = video->height;
@@ -561,14 +561,14 @@ static int ea_read_header(AVFormatContext *s)
                                               st->codecpar->bits_per_coded_sample;
         ea->audio_stream_index           = st->index;
         st->start_time                   = 0;
-        return 1;
+        return 0;
     }
 no_audio:
     ea->audio_codec = AV_CODEC_ID_NONE;
 
     if (!ea->video.codec)
         return AVERROR_INVALIDDATA;
-    return 1;
+    return 0;
 }
 
 static int ea_read_packet(AVFormatContext *s, AVPacket *pkt)
@@ -641,7 +641,6 @@ static int ea_read_packet(AVFormatContext *s, AVPacket *pkt)
             case AV_CODEC_ID_ADPCM_EA_R3:
                 if (pkt->size < 4) {
                     av_log(s, AV_LOG_ERROR, "Packet is too short\n");
-                    av_packet_unref(pkt);
                     return AVERROR_INVALIDDATA;
                 }
                 if (ea->audio_codec == AV_CODEC_ID_ADPCM_EA_R3)
@@ -747,15 +746,13 @@ get_video_packet:
         }
     }
 
-    if (ret < 0 && partial_packet)
-        av_packet_unref(pkt);
     if (ret >= 0 && hit_end && !packet_read)
         return AVERROR(EAGAIN);
 
     return ret;
 }
 
-AVInputFormat ff_ea_demuxer = {
+const AVInputFormat ff_ea_demuxer = {
     .name           = "ea",
     .long_name      = NULL_IF_CONFIG_SMALL("Electronic Arts Multimedia"),
     .priv_data_size = sizeof(EaDemuxContext),

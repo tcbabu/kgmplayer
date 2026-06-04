@@ -32,7 +32,7 @@
 /* if we don't know the size in advance */
 #define AU_UNKNOWN_SIZE ((uint32_t)(~0))
 
-static int sol_probe(AVProbeData *p)
+static int sol_probe(const AVProbeData *p)
 {
     /* check file header */
     uint16_t magic = AV_RL32(p->buf);
@@ -138,7 +138,7 @@ static int sol_read_packet(AVFormatContext *s,
     return 0;
 }
 
-AVInputFormat ff_sol_demuxer = {
+const AVInputFormat ff_sol_demuxer = {
     .name           = "sol",
     .long_name      = NULL_IF_CONFIG_SMALL("Sierra SOL"),
     .read_probe     = sol_probe,

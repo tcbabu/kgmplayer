@@ -131,8 +131,8 @@ static int zero12v_decode_frame(AVCodecContext *avctx, void *data,
             u = x/2 + (uint16_t *)(pic->data[1] + line * pic->linesize[1]);
             v = x/2 + (uint16_t *)(pic->data[2] + line * pic->linesize[2]);
             memcpy(y, y_temp, sizeof(*y) * (width - x));
-            memcpy(u, u_temp, sizeof(*u) * ((width - x + 1) / 2));
-            memcpy(v, v_temp, sizeof(*v) * ((width - x + 1) / 2));
+            memcpy(u, u_temp, sizeof(*u) * (width - x + 1) / 2);
+            memcpy(v, v_temp, sizeof(*v) * (width - x + 1) / 2);
         }
 
         line_end += stride;
@@ -144,7 +144,7 @@ static int zero12v_decode_frame(AVCodecContext *avctx, void *data,
     return avpkt->size;
 }
 
-AVCodec ff_zero12v_decoder = {
+const AVCodec ff_zero12v_decoder = {
     .name           = "012v",
     .long_name      = NULL_IF_CONFIG_SMALL("Uncompressed 4:2:2 10-bit"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -152,4 +152,5 @@ AVCodec ff_zero12v_decoder = {
     .init           = zero12v_decode_init,
     .decode         = zero12v_decode_frame,
     .capabilities   = AV_CODEC_CAP_DR1,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };

@@ -1,8 +1,8 @@
 libavutil/channel_layout.o: libavutil/channel_layout.c \
- libavutil/avstring.h libavutil/attributes.h libavutil/avutil.h \
- libavutil/common.h libavutil/macros.h libavutil/version.h \
- libavutil/avconfig.h config.h libavutil/intmath.h libavutil/mem.h \
- libavutil/error.h libavutil/internal.h libavutil/timer.h libavutil/log.h \
- libavutil/cpu.h libavutil/dict.h libavutil/pixfmt.h libavutil/libm.h \
- libavutil/intfloat.h libavutil/mathematics.h libavutil/rational.h \
- libavutil/channel_layout.h libavutil/bprint.h
+ libavutil/channel_layout.h libavutil/bprint.h libavutil/attributes.h \
+ libavutil/avstring.h libavutil/version.h libavutil/macros.h \
+ libavutil/avconfig.h libavutil/common.h config.h libavutil/intmath.h \
+ libavutil/mem.h libavutil/avutil.h libavutil/error.h \
+ libavutil/rational.h libavutil/mathematics.h libavutil/intfloat.h \
+ libavutil/log.h libavutil/pixfmt.h libavutil/internal.h \
+ libavutil/timer.h libavutil/dict.h libavutil/libm.h

@@ -1,21 +1,21 @@
 libavfilter/vf_signature.o: libavfilter/vf_signature.c \
- libavcodec/put_bits.h libavutil/intreadwrite.h libavutil/avconfig.h \
- libavutil/attributes.h libavutil/bswap.h config.h libavutil/avassert.h \
- libavutil/avutil.h libavutil/common.h libavutil/macros.h \
- libavutil/version.h libavutil/intmath.h libavutil/mem.h \
- libavutil/error.h libavutil/internal.h libavutil/timer.h libavutil/log.h \
- libavutil/cpu.h libavutil/dict.h libavutil/pixfmt.h libavutil/libm.h \
- libavutil/intfloat.h libavutil/mathematics.h libavutil/rational.h \
- libavformat/avformat.h libavcodec/avcodec.h libavutil/samplefmt.h \
- libavutil/attributes.h libavutil/avutil.h libavutil/buffer.h \
- libavutil/cpu.h libavutil/channel_layout.h libavutil/dict.h \
- libavutil/frame.h libavutil/buffer.h libavutil/samplefmt.h \
+ libavcodec/put_bits.h config.h libavutil/intreadwrite.h \
+ libavutil/avconfig.h libavutil/attributes.h libavutil/bswap.h \
+ libavutil/avassert.h libavutil/log.h libavutil/version.h \
+ libavutil/macros.h libavutil/common.h libavutil/intmath.h \
+ libavutil/mem.h libavutil/avutil.h libavutil/common.h libavutil/error.h \
+ libavutil/rational.h libavutil/mathematics.h libavutil/intfloat.h \
+ libavutil/pixfmt.h libavutil/internal.h libavutil/timer.h \
+ libavutil/dict.h libavutil/libm.h libavformat/avformat.h \
+ libavcodec/codec.h libavutil/avutil.h libavutil/hwcontext.h \
+ libavutil/buffer.h libavutil/frame.h libavutil/samplefmt.h \
  libavutil/log.h libavutil/pixfmt.h libavutil/rational.h \
- libavcodec/version.h libavutil/version.h libavformat/avio.h \
- libavutil/common.h libavformat/version.h libavutil/opt.h \
- libavutil/avstring.h libavutil/timestamp.h libavfilter/avfilter.h \
+ libavutil/samplefmt.h libavcodec/codec_id.h libavcodec/version.h \
+ libavutil/version.h libavcodec/codec_par.h libavcodec/codec_id.h \
+ libavcodec/defs.h libavcodec/packet.h libavutil/attributes.h \
+ libavutil/buffer.h libavutil/dict.h libavformat/avio.h \
+ libavformat/version.h libavutil/opt.h libavutil/avstring.h \
+ libavutil/timestamp.h libavfilter/avfilter.h libavutil/frame.h \
  libavfilter/version.h libavfilter/internal.h libavutil/internal.h \
- libavfilter/formats.h libavfilter/framepool.h libavfilter/framequeue.h \
- libavfilter/thread.h libavfilter/version.h libavfilter/video.h \
- libavcodec/internal.h libavutil/mathematics.h libavcodec/avcodec.h \
+ libavfilter/formats.h libavfilter/framequeue.h libavfilter/video.h \
  libavfilter/signature.h libavfilter/signature_lookup.c

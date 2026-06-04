@@ -43,7 +43,7 @@ enum idct_permutation_type {
     FF_IDCT_PERM_SSE2,
 };
 
-void ff_init_scantable(uint8_t *permutation, ScanTable *st,
+void ff_init_scantable(const uint8_t *permutation, ScanTable *st,
                        const uint8_t *src_scantable);
 void ff_init_scantable_permutation(uint8_t *idct_permutation,
                                    enum idct_permutation_type perm_type);
@@ -95,6 +95,8 @@ typedef struct IDCTDSPContext {
      */
     uint8_t idct_permutation[64];
     enum idct_permutation_type perm_type;
+
+    int mpeg4_studio_profile;
 } IDCTDSPContext;
 
 void ff_put_pixels_clamped_c(const int16_t *block, uint8_t *av_restrict pixels,
@@ -116,5 +118,7 @@ void ff_idctdsp_init_x86(IDCTDSPContext *c, AVCodecContext *avctx,
                          unsigned high_bit_depth);
 void ff_idctdsp_init_mips(IDCTDSPContext *c, AVCodecContext *avctx,
                           unsigned high_bit_depth);
+void ff_idctdsp_init_loongarch(IDCTDSPContext *c, AVCodecContext *avctx,
+                               unsigned high_bit_depth);
 
 #endif /* AVCODEC_IDCTDSP_H */

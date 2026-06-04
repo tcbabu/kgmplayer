@@ -24,7 +24,7 @@
 #include "avformat.h"
 #include "riff.h"
 
-static int read_probe(AVProbeData *p)
+static int read_probe(const AVProbeData *p)
 {
     if (AV_RB32(p->buf     ) != 0x000E ||
         AV_RB32(p->buf +  4) != 0x0050 ||
@@ -50,7 +50,7 @@ static int read_header(AVFormatContext *s)
     if (!st)
         return AVERROR(ENOMEM);
 
-    st->need_parsing = AVSTREAM_PARSE_HEADERS;
+    ffstream(st)->need_parsing = AVSTREAM_PARSE_HEADERS;
     st->start_time = 0;
     st->nb_frames  =
     st->duration   = avio_rb32(pb);
@@ -96,7 +96,7 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-AVInputFormat ff_mgsts_demuxer = {
+const AVInputFormat ff_mgsts_demuxer = {
     .name        = "mgsts",
     .long_name   = NULL_IF_CONFIG_SMALL("Metal Gear Solid: The Twin Snakes"),
     .read_probe  = read_probe,

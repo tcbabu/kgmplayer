@@ -26,6 +26,10 @@
 #include "avcodec.h"
 #include "internal.h"
 
+#define MIN_ELEMENT ' '
+#define MAX_ELEMENT 0xfe
+#define NB_ELEMENTS (MAX_ELEMENT - MIN_ELEMENT + 1)
+
 typedef struct XPMContext {
     uint32_t  *pixels;
     int        pixels_size;
@@ -290,10 +294,10 @@ static int ascii2index(const uint8_t *cpixel, int cpp)
     int n = 0, m = 1, i;
 
     for (i = 0; i < cpp; i++) {
-        if (*p < ' ' || *p > '~')
+        if (*p < MIN_ELEMENT || *p > MAX_ELEMENT)
             return AVERROR_INVALIDDATA;
-        n += (*p++ - ' ') * m;
-        m *= 95;
+        n += (*p++ - MIN_ELEMENT) * m;
+        m *= NB_ELEMENTS;
     }
     return n;
 }
@@ -344,15 +348,12 @@ static int xpm_decode_frame(AVCodecContext *avctx, void *data,
 
     size = 1;
     for (i = 0; i < cpp; i++)
-        size *= 95;
+        size *= NB_ELEMENTS;
 
     if (ncolors <= 0 || ncolors > size) {
         av_log(avctx, AV_LOG_ERROR, "invalid number of colors: %d\n", ncolors);
         return AVERROR_INVALIDDATA;
     }
-
-    if (size > SIZE_MAX / 4)
-        return AVERROR(ENOMEM);
 
     size *= 4;
 
@@ -435,7 +436,7 @@ static av_cold int xpm_decode_close(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_xpm_decoder = {
+const AVCodec ff_xpm_decoder = {
     .name           = "xpm",
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = AV_CODEC_ID_XPM,

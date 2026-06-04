@@ -28,9 +28,9 @@
 #ifndef AVCODEC_EXIF_H
 #define AVCODEC_EXIF_H
 
-#include "avcodec.h"
+#include <stdint.h>
+#include "libavutil/dict.h"
 #include "bytestream.h"
-#include "tiff.h"
 
 #define EXIF_MAX_IFD_RECURSION 2
 #define EXIF_TAG_NAME_LENGTH   32
@@ -164,7 +164,10 @@ static const struct exif_tag tag_list[] = { // JEITA CP-3451 EXIF specification:
 
 /** Recursively decodes all IFD's and
  *  adds included TAGS into the metadata dictionary. */
-int avpriv_exif_decode_ifd(void *logctx, GetByteContext *gbytes, int le,
-                           int depth, AVDictionary **metadata);
+int avpriv_exif_decode_ifd(void *logctx, const uint8_t *buf, int size,
+                           int le, int depth, AVDictionary **metadata);
+
+int ff_exif_decode_ifd(void *logctx, GetByteContext *gbytes, int le,
+                       int depth, AVDictionary **metadata);
 
 #endif /* AVCODEC_EXIF_H */

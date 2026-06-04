@@ -52,7 +52,7 @@ typedef struct LXFDemuxContext {
     uint32_t video_format, packet_type, extended_size;
 } LXFDemuxContext;
 
-static int lxf_probe(AVProbeData *p)
+static int lxf_probe(const AVProbeData *p)
 {
     if (!memcmp(p->buf, LXF_IDENT, LXF_IDENT_LENGTH))
         return AVPROBE_SCORE_MAX;
@@ -262,7 +262,7 @@ static int lxf_read_header(AVFormatContext *s)
     st->codecpar->bit_rate   = 1000000 * ((video_params >> 14) & 0xFF);
     st->codecpar->codec_tag  = video_params & 0xF;
     st->codecpar->codec_id   = ff_codec_get_id(lxf_tags, st->codecpar->codec_tag);
-    st->need_parsing         = AVSTREAM_PARSE_HEADERS;
+    ffstream(st)->need_parsing = AVSTREAM_PARSE_HEADERS;
 
     av_log(s, AV_LOG_DEBUG, "record: %x = %i-%02i-%02i\n",
            record_date, 1900 + (record_date & 0x7F), (record_date >> 7) & 0xF,
@@ -318,7 +318,6 @@ static int lxf_read_packet(AVFormatContext *s, AVPacket *pkt)
         return ret2;
 
     if ((ret2 = avio_read(pb, pkt->data, ret)) != ret) {
-        av_packet_unref(pkt);
         return ret2 < 0 ? ret2 : AVERROR_EOF;
     }
 
@@ -335,7 +334,7 @@ static int lxf_read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-AVInputFormat ff_lxf_demuxer = {
+const AVInputFormat ff_lxf_demuxer = {
     .name           = "lxf",
     .long_name      = NULL_IF_CONFIG_SMALL("VR native stream (LXF)"),
     .priv_data_size = sizeof(LXFDemuxContext),

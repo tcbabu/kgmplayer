@@ -1358,8 +1358,10 @@ static int read_frame_header(SANMVideoContext *ctx, SANMFrameHeader *hdr)
 
 static void fill_frame(uint16_t *pbuf, int buf_size, uint16_t color)
 {
-    while (buf_size--)
+    if (buf_size--) {
         *pbuf++ = color;
+        av_memcpy_backptr((uint8_t*)pbuf, 2, 2*buf_size);
+    }
 }
 
 static int copy_output(SANMVideoContext *ctx, SANMFrameHeader *hdr)
@@ -1513,7 +1515,7 @@ static int decode_frame(AVCodecContext *avctx, void *data,
     return pkt->size;
 }
 
-AVCodec ff_sanm_decoder = {
+const AVCodec ff_sanm_decoder = {
     .name           = "sanm",
     .long_name      = NULL_IF_CONFIG_SMALL("LucasArts SANM/Smush video"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -1523,4 +1525,5 @@ AVCodec ff_sanm_decoder = {
     .close          = decode_end,
     .decode         = decode_frame,
     .capabilities   = AV_CODEC_CAP_DR1,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };

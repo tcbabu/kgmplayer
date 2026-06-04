@@ -27,7 +27,6 @@
 
 #include <limits.h>
 
-#include "libavutil/atomic.h"
 #include "libavutil/internal.h"
 #include "avcodec.h"
 #include "error_resilience.h"
@@ -35,8 +34,7 @@
 #include "mpegutils.h"
 #include "mpegvideo.h"
 #include "rectangle.h"
-#include "thread.h"
-#include "version.h"
+#include "threadframe.h"
 
 /**
  * @param stride the number of MVs to get to the next row
@@ -478,8 +476,6 @@ static void guess_mv(ERContext *s)
         none_left = 1;
         changed   = 1;
         for (pass = 0; (changed || pass < 2) && pass < 10; pass++) {
-            int score_sum = 0;
-
             changed = 0;
             for (blocklist_index = 0; blocklist_index < blocklist_length; blocklist_index++) {
                 const int mb_x = blocklist[blocklist_index][0];
@@ -670,7 +666,6 @@ skip_mean_and_median:
                         best_pred  = j;
                     }
                 }
-                score_sum += best_score;
                 s->mv[0][0][0] = mv_predictor[best_pred][0];
                 s->mv[0][0][1] = mv_predictor[best_pred][1];
 
@@ -741,12 +736,6 @@ static int is_intra_more_likely(ERContext *s)
     if (undamaged_count < 5)
         return 0; // almost all MBs damaged -> use temporal prediction
 
-    // prevent dsp.sad() check, that requires access to the image
-    if (CONFIG_XVMC    &&
-        s->avctx->hwaccel && s->avctx->hwaccel->decode_mb &&
-        s->cur_pic.f->pict_type == AV_PICTURE_TYPE_I)
-        return 1;
-
     skip_amount     = FFMAX(undamaged_count / 50, 1); // check only up to 50 MBs
     is_intra_likely = 0;
 
@@ -807,16 +796,13 @@ void ff_er_frame_start(ERContext *s)
 
     memset(s->error_status_table, ER_MB_ERROR | VP_START | ER_MB_END,
            s->mb_stride * s->mb_height * sizeof(uint8_t));
-    s->error_count    = 3 * s->mb_num;
+    atomic_init(&s->error_count, 3 * s->mb_num);
     s->error_occurred = 0;
 }
 
 static int er_supported(ERContext *s)
 {
     if(s->avctx->hwaccel && s->avctx->hwaccel->decode_slice           ||
-#if FF_API_CAP_VDPAU
-       s->avctx->codec->capabilities&AV_CODEC_CAP_HWACCEL_VDPAU          ||
-#endif
        !s->cur_pic.f                                                  ||
        s->cur_pic.field_picture
     )
@@ -855,20 +841,20 @@ void ff_er_add_slice(ERContext *s, int startx, int starty,
     mask &= ~VP_START;
     if (status & (ER_AC_ERROR | ER_AC_END)) {
         mask           &= ~(ER_AC_ERROR | ER_AC_END);
-        avpriv_atomic_int_add_and_fetch(&s->error_count, start_i - end_i - 1);
+        atomic_fetch_add(&s->error_count, start_i - end_i - 1);
     }
     if (status & (ER_DC_ERROR | ER_DC_END)) {
         mask           &= ~(ER_DC_ERROR | ER_DC_END);
-        avpriv_atomic_int_add_and_fetch(&s->error_count, start_i - end_i - 1);
+        atomic_fetch_add(&s->error_count, start_i - end_i - 1);
     }
     if (status & (ER_MV_ERROR | ER_MV_END)) {
         mask           &= ~(ER_MV_ERROR | ER_MV_END);
-        avpriv_atomic_int_add_and_fetch(&s->error_count, start_i - end_i - 1);
+        atomic_fetch_add(&s->error_count, start_i - end_i - 1);
     }
 
     if (status & ER_MB_ERROR) {
         s->error_occurred = 1;
-        avpriv_atomic_int_set(&s->error_count, INT_MAX);
+        atomic_store(&s->error_count, INT_MAX);
     }
 
     if (mask == ~0x7F) {
@@ -881,7 +867,7 @@ void ff_er_add_slice(ERContext *s, int startx, int starty,
     }
 
     if (end_i == s->mb_num)
-        avpriv_atomic_int_set(&s->error_count, INT_MAX);
+        atomic_store(&s->error_count, INT_MAX);
     else {
         s->error_status_table[end_xy] &= mask;
         s->error_status_table[end_xy] |= status;
@@ -896,7 +882,7 @@ void ff_er_add_slice(ERContext *s, int startx, int starty,
         prev_status &= ~ VP_START;
         if (prev_status != (ER_MV_END | ER_DC_END | ER_AC_END)) {
             s->error_occurred = 1;
-            avpriv_atomic_int_set(&s->error_count, INT_MAX);
+            atomic_store(&s->error_count, INT_MAX);
         }
     }
 }
@@ -913,27 +899,28 @@ void ff_er_frame_end(ERContext *s)
 
     /* We do not support ER of field pictures yet,
      * though it should not crash if enabled. */
-    if (!s->avctx->error_concealment || s->error_count == 0            ||
+    if (!s->avctx->error_concealment || !atomic_load(&s->error_count)  ||
         s->avctx->lowres                                               ||
         !er_supported(s)                                               ||
-        s->error_count == 3 * s->mb_width *
+        atomic_load(&s->error_count) == 3 * s->mb_width *
                           (s->avctx->skip_top + s->avctx->skip_bottom)) {
         return;
     }
     linesize = s->cur_pic.f->linesize;
-    for (mb_x = 0; mb_x < s->mb_width; mb_x++) {
-        int status = s->error_status_table[mb_x + (s->mb_height - 1) * s->mb_stride];
-        if (status != 0x7F)
-            break;
-    }
 
-    if (   mb_x == s->mb_width
-        && s->avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO
+    if (   s->avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO
         && (FFALIGN(s->avctx->height, 16)&16)
-        && s->error_count == 3 * s->mb_width * (s->avctx->skip_top + s->avctx->skip_bottom + 1)
-    ) {
-        av_log(s->avctx, AV_LOG_DEBUG, "ignoring last missing slice\n");
-        return;
+        && atomic_load(&s->error_count) == 3 * s->mb_width * (s->avctx->skip_top + s->avctx->skip_bottom + 1)) {
+        for (mb_x = 0; mb_x < s->mb_width; mb_x++) {
+            int status = s->error_status_table[mb_x + (s->mb_height - 1) * s->mb_stride];
+            if (status != 0x7F)
+                break;
+        }
+
+        if (mb_x == s->mb_width) {
+            av_log(s->avctx, AV_LOG_DEBUG, "ignoring last missing slice\n");
+            return;
+        }
     }
 
     if (s->last_pic.f) {
@@ -1125,6 +1112,8 @@ void ff_er_frame_end(ERContext *s)
     av_log(s->avctx, AV_LOG_INFO, "concealing %d DC, %d AC, %d MV errors in %c frame\n",
            dc_error, ac_error, mv_error, av_get_picture_type_char(s->cur_pic.f->pict_type));
 
+    s->cur_pic.f->decode_error_flags |= FF_DECODE_ERROR_CONCEALMENT_ACTIVE;
+
     is_intra_likely = is_intra_more_likely(s);
 
     /* set unknown mb-type to most likely */
@@ -1234,9 +1223,6 @@ void ff_er_frame_end(ERContext *s)
     } else
         guess_mv(s);
 
-    /* the filters below manipulate raw image, skip them */
-    if (CONFIG_XVMC && s->avctx->hwaccel && s->avctx->hwaccel->decode_mb)
-        goto ec_clean;
     /* fill DC for inter blocks */
     for (mb_y = 0; mb_y < s->mb_height; mb_y++) {
         for (mb_x = 0; mb_x < s->mb_width; mb_x++) {
@@ -1341,7 +1327,6 @@ void ff_er_frame_end(ERContext *s)
         }
     }
 
-ec_clean:
     /* clean a few tables */
     for (i = 0; i < s->mb_num; i++) {
         const int mb_xy = s->mb_index2xy[i];

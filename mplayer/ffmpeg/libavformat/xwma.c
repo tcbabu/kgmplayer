@@ -34,7 +34,7 @@ typedef struct XWMAContext {
     int64_t data_end;
 } XWMAContext;
 
-static int xwma_probe(AVProbeData *p)
+static int xwma_probe(const AVProbeData *p)
 {
     if (!memcmp(p->buf, "RIFF", 4) && !memcmp(p->buf + 8, "XWMA", 4))
         return AVPROBE_SCORE_MAX;
@@ -60,16 +60,16 @@ static int xwma_read_header(AVFormatContext *s)
     /* check RIFF header */
     tag = avio_rl32(pb);
     if (tag != MKTAG('R', 'I', 'F', 'F'))
-        return -1;
+        return AVERROR_INVALIDDATA;
     avio_rl32(pb); /* file size */
     tag = avio_rl32(pb);
     if (tag != MKTAG('X', 'W', 'M', 'A'))
-        return -1;
+        return AVERROR_INVALIDDATA;
 
     /* parse fmt header */
     tag = avio_rl32(pb);
     if (tag != MKTAG('f', 'm', 't', ' '))
-        return -1;
+        return AVERROR_INVALIDDATA;
     size = avio_rl32(pb);
     st = avformat_new_stream(s, NULL);
     if (!st)
@@ -78,21 +78,45 @@ static int xwma_read_header(AVFormatContext *s)
     ret = ff_get_wav_header(s, pb, st->codecpar, size, 0);
     if (ret < 0)
         return ret;
-    st->need_parsing = AVSTREAM_PARSE_NONE;
+    ffstream(st)->need_parsing = AVSTREAM_PARSE_NONE;
 
-    /* All xWMA files I have seen contained WMAv2 data. If there are files
-     * using WMA Pro or some other codec, then we need to figure out the right
-     * extradata for that. Thus, ask the user for feedback, but try to go on
-     * anyway.
-     */
+    /* XWMA encoder only allows a few channel/sample rate/bitrate combinations,
+     * but some create identical files with fake bitrate (1ch 22050hz at
+     * 20/48/192kbps are all 20kbps, with the exact same codec data).
+     * Decoder needs correct bitrate to work, so it's normalized here. */
+    if (st->codecpar->codec_id == AV_CODEC_ID_WMAV2) {
+        int ch = st->codecpar->channels;
+        int sr = st->codecpar->sample_rate;
+        int br = st->codecpar->bit_rate;
+
+        if (ch == 1) {
+            if (sr == 22050 && (br==48000 || br==192000))
+                br = 20000;
+            else if (sr == 32000 && (br==48000 || br==192000))
+                br = 20000;
+            else if (sr == 44100 && (br==96000 || br==192000))
+                br = 48000;
+        }
+        else if (ch == 2) {
+            if (sr == 22050 && (br==48000 || br==192000))
+                br = 32000;
+            else if (sr == 32000 && (br==192000))
+                br = 48000;
+        }
+
+        st->codecpar->bit_rate = br;
+    }
+
+    /* Normally xWMA can only contain WMAv2 with 1/2 channels,
+     * and WMAPRO with 6 channels. */
     if (st->codecpar->codec_id != AV_CODEC_ID_WMAV2 &&
         st->codecpar->codec_id != AV_CODEC_ID_WMAPRO) {
         avpriv_request_sample(s, "Unexpected codec (tag %s; id %d)",
                               av_fourcc2str(st->codecpar->codec_tag),
                               st->codecpar->codec_id);
     } else {
-        /* In all xWMA files I have seen, there is no extradata. But the WMA
-         * codecs require extradata, so we provide our own fake extradata.
+        /* xWMA shouldn't have extradata. But the WMA codecs require it,
+         * so we provide our own fake extradata.
          *
          * First, check that there really was no extradata in the header. If
          * there was, then try to use it, after asking the user to provide a
@@ -106,15 +130,15 @@ static int xwma_read_header(AVFormatContext *s)
             avpriv_request_sample(s, "Unexpected extradata (%d bytes)",
                                   st->codecpar->extradata_size);
         } else if (st->codecpar->codec_id == AV_CODEC_ID_WMAPRO) {
-            if (ff_alloc_extradata(st->codecpar, 18))
-                return AVERROR(ENOMEM);
+            if ((ret = ff_alloc_extradata(st->codecpar, 18)) < 0)
+                return ret;
 
             memset(st->codecpar->extradata, 0, st->codecpar->extradata_size);
             st->codecpar->extradata[ 0] = st->codecpar->bits_per_coded_sample;
             st->codecpar->extradata[14] = 224;
         } else {
-            if (ff_alloc_extradata(st->codecpar, 6))
-                return AVERROR(ENOMEM);
+            if ((ret = ff_alloc_extradata(st->codecpar, 6)) < 0)
+                return ret;
 
             memset(st->codecpar->extradata, 0, st->codecpar->extradata_size);
             /* setup extradata with our experimentally obtained value */
@@ -127,7 +151,7 @@ static int xwma_read_header(AVFormatContext *s)
                st->codecpar->channels);
         return AVERROR_INVALIDDATA;
     }
-    if (!st->codecpar->bits_per_coded_sample || st->codecpar->bits_per_coded_sample > 64) {
+    if (!st->codecpar->bits_per_coded_sample) {
         av_log(s, AV_LOG_WARNING, "Invalid bits_per_coded_sample: %d\n",
                st->codecpar->bits_per_coded_sample);
         return AVERROR_INVALIDDATA;
@@ -254,7 +278,7 @@ static int xwma_read_header(AVFormatContext *s)
          * the total duration using the average bits per sample and the
          * total data length.
          */
-        st->duration = av_rescale((size<<3), st->codecpar->sample_rate, st->codecpar->bit_rate);
+        st->duration = (size<<3) * st->codecpar->sample_rate / st->codecpar->bit_rate;
     }
 
 fail:
@@ -289,7 +313,7 @@ static int xwma_read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-AVInputFormat ff_xwma_demuxer = {
+const AVInputFormat ff_xwma_demuxer = {
     .name           = "xwma",
     .long_name      = NULL_IF_CONFIG_SMALL("Microsoft xWMA"),
     .priv_data_size = sizeof(XWMAContext),

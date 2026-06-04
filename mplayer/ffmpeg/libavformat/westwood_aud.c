@@ -42,7 +42,7 @@
 #define AUD_CHUNK_PREAMBLE_SIZE 8
 #define AUD_CHUNK_SIGNATURE 0x0000DEAF
 
-static int wsaud_probe(AVProbeData *p)
+static int wsaud_probe(const AVProbeData *p)
 {
     int field;
 
@@ -178,7 +178,7 @@ static int wsaud_read_packet(AVFormatContext *s,
     return ret;
 }
 
-AVInputFormat ff_wsaud_demuxer = {
+const AVInputFormat ff_wsaud_demuxer = {
     .name           = "wsaud",
     .long_name      = NULL_IF_CONFIG_SMALL("Westwood Studios audio"),
     .read_probe     = wsaud_probe,

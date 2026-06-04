@@ -27,6 +27,7 @@
  */
 
 #include "libavutil/attributes.h"
+#include "libavutil/thread.h"
 #include "internal.h"
 #include "avcodec.h"
 #include "mpegvideo.h"
@@ -314,11 +315,11 @@ int ff_vc1_decode_sequence_header(AVCodecContext *avctx, VC1Context *v, GetBitCo
     v->multires        = get_bits1(gb);
     v->res_fasttx      = get_bits1(gb);
     if (!v->res_fasttx) {
-        v->vc1dsp.vc1_inv_trans_8x8    = ff_simple_idct_8;
+        v->vc1dsp.vc1_inv_trans_8x8    = ff_simple_idct_int16_8bit;
         v->vc1dsp.vc1_inv_trans_8x4    = ff_simple_idct84_add;
         v->vc1dsp.vc1_inv_trans_4x8    = ff_simple_idct48_add;
         v->vc1dsp.vc1_inv_trans_4x4    = ff_simple_idct44_add;
-        v->vc1dsp.vc1_inv_trans_8x8_dc = ff_simple_idct_add_8;
+        v->vc1dsp.vc1_inv_trans_8x8_dc = ff_simple_idct_add_int16_8bit;
         v->vc1dsp.vc1_inv_trans_8x4_dc = ff_simple_idct84_add;
         v->vc1dsp.vc1_inv_trans_4x8_dc = ff_simple_idct48_add;
         v->vc1dsp.vc1_inv_trans_4x4_dc = ff_simple_idct44_add;
@@ -378,11 +379,6 @@ int ff_vc1_decode_sequence_header(AVCodecContext *avctx, VC1Context *v, GetBitCo
         v->res_rtm_flag = 0;
     } else {
         v->res_rtm_flag = get_bits1(gb); //reserved
-    }
-    if (!v->res_rtm_flag) {
-        av_log(avctx, AV_LOG_ERROR,
-               "Old WMV3 version detected, some frames may be decoded incorrectly\n");
-        //return -1;
     }
     //TODO: figure out what they mean (always 0x402F)
     if (!v->res_fasttx)
@@ -633,7 +629,7 @@ int ff_vc1_parse_frame_header(VC1Context *v, GetBitContext* gb)
     int pqindex, lowquant, status;
 
     v->field_mode = 0;
-    v->fcm = 0;
+    v->fcm = PROGRESSIVE;
     if (v->finterpflag)
         v->interpfrm = get_bits1(gb);
     if (!v->s.avctx->codec)
@@ -775,7 +771,8 @@ int ff_vc1_parse_frame_header(VC1Context *v, GetBitContext* gb)
 
         /* Hopefully this is correct for P-frames */
         v->s.mv_table_index = get_bits(gb, 2); //but using ff_vc1_ tables
-        v->cbpcy_vlc = &ff_vc1_cbpcy_p_vlc[get_bits(gb, 2)];
+        v->cbptab = get_bits(gb, 2);
+        v->cbpcy_vlc = &ff_vc1_cbpcy_p_vlc[v->cbptab];
 
         if (v->dquant) {
             av_log(v->s.avctx, AV_LOG_DEBUG, "VOP DQuant info\n");
@@ -813,7 +810,8 @@ int ff_vc1_parse_frame_header(VC1Context *v, GetBitContext* gb)
                "Imode: %i, Invert: %i\n", status>>1, status&1);
 
         v->s.mv_table_index = get_bits(gb, 2);
-        v->cbpcy_vlc        = &ff_vc1_cbpcy_p_vlc[get_bits(gb, 2)];
+        v->cbptab           = get_bits(gb, 2);
+        v->cbpcy_vlc        = &ff_vc1_cbpcy_p_vlc[v->cbptab];
 
         if (v->dquant) {
             av_log(v->s.avctx, AV_LOG_DEBUG, "VOP DQuant info\n");
@@ -854,7 +852,6 @@ int ff_vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
 {
     int pqindex, lowquant;
     int status;
-    int mbmodetab, imvtab, icbptab, twomvbptab, fourmvbptab; /* useful only for debugging */
     int field_mode, fcm;
 
     v->numref          = 0;
@@ -1001,6 +998,7 @@ int ff_vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
         v->pquantizer = 1;
         break;
     }
+    v->dquantfrm = 0;
     if (v->postprocflag)
         v->postproc = get_bits(gb, 2);
 
@@ -1019,7 +1017,8 @@ int ff_vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
                 return -1;
             av_log(v->s.avctx, AV_LOG_DEBUG, "FIELDTX plane encoding: "
                    "Imode: %i, Invert: %i\n", status>>1, status&1);
-        }
+        } else
+            v->fieldtx_is_raw = 0;
         status = bitplane_decoding(v->acpred_plane, &v->acpred_is_raw, v);
         if (status < 0)
             return -1;
@@ -1065,23 +1064,25 @@ int ff_vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
                     v->last_use_ic = 1;
                 }
                 status = bitplane_decoding(v->s.mbskip_table, &v->skip_is_raw, v);
+                if (status < 0)
+                    return -1;
                 av_log(v->s.avctx, AV_LOG_DEBUG, "SKIPMB plane encoding: "
                        "Imode: %i, Invert: %i\n", status>>1, status&1);
-                mbmodetab = get_bits(gb, 2);
+                v->mbmodetab = get_bits(gb, 2);
                 if (v->fourmvswitch)
-                    v->mbmode_vlc = &ff_vc1_intfr_4mv_mbmode_vlc[mbmodetab];
+                    v->mbmode_vlc = &ff_vc1_intfr_4mv_mbmode_vlc[v->mbmodetab];
                 else
-                    v->mbmode_vlc = &ff_vc1_intfr_non4mv_mbmode_vlc[mbmodetab];
-                imvtab         = get_bits(gb, 2);
-                v->imv_vlc     = &ff_vc1_1ref_mvdata_vlc[imvtab];
+                    v->mbmode_vlc = &ff_vc1_intfr_non4mv_mbmode_vlc[v->mbmodetab];
+                v->imvtab      = get_bits(gb, 2);
+                v->imv_vlc     = &ff_vc1_1ref_mvdata_vlc[v->imvtab];
                 // interlaced p-picture cbpcy range is [1, 63]
-                icbptab        = get_bits(gb, 3);
-                v->cbpcy_vlc   = &ff_vc1_icbpcy_vlc[icbptab];
-                twomvbptab     = get_bits(gb, 2);
-                v->twomvbp_vlc = &ff_vc1_2mv_block_pattern_vlc[twomvbptab];
+                v->icbptab     = get_bits(gb, 3);
+                v->cbpcy_vlc   = &ff_vc1_icbpcy_vlc[v->icbptab];
+                v->twomvbptab     = get_bits(gb, 2);
+                v->twomvbp_vlc = &ff_vc1_2mv_block_pattern_vlc[v->twomvbptab];
                 if (v->fourmvswitch) {
-                    fourmvbptab     = get_bits(gb, 2);
-                    v->fourmvbp_vlc = &ff_vc1_4mv_block_pattern_vlc[fourmvbptab];
+                    v->fourmvbptab     = get_bits(gb, 2);
+                    v->fourmvbp_vlc = &ff_vc1_4mv_block_pattern_vlc[v->fourmvbptab];
                 }
             }
         }
@@ -1165,27 +1166,28 @@ int ff_vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
 
             /* Hopefully this is correct for P-frames */
             v->s.mv_table_index = get_bits(gb, 2); //but using ff_vc1_ tables
-            v->cbpcy_vlc        = &ff_vc1_cbpcy_p_vlc[get_bits(gb, 2)];
+            v->cbptab           = get_bits(gb, 2);
+            v->cbpcy_vlc        = &ff_vc1_cbpcy_p_vlc[v->cbptab];
         } else if (v->fcm == ILACE_FRAME) { // frame interlaced
             v->qs_last          = v->s.quarter_sample;
             v->s.quarter_sample = 1;
             v->s.mspel          = 1;
         } else {    // field interlaced
-            mbmodetab = get_bits(gb, 3);
-            imvtab = get_bits(gb, 2 + v->numref);
+            v->mbmodetab = get_bits(gb, 3);
+            v->imvtab = get_bits(gb, 2 + v->numref);
             if (!v->numref)
-                v->imv_vlc = &ff_vc1_1ref_mvdata_vlc[imvtab];
+                v->imv_vlc = &ff_vc1_1ref_mvdata_vlc[v->imvtab];
             else
-                v->imv_vlc = &ff_vc1_2ref_mvdata_vlc[imvtab];
-            icbptab = get_bits(gb, 3);
-            v->cbpcy_vlc = &ff_vc1_icbpcy_vlc[icbptab];
+                v->imv_vlc = &ff_vc1_2ref_mvdata_vlc[v->imvtab];
+            v->icbptab = get_bits(gb, 3);
+            v->cbpcy_vlc = &ff_vc1_icbpcy_vlc[v->icbptab];
             if ((v->mv_mode == MV_PMODE_INTENSITY_COMP &&
                 v->mv_mode2 == MV_PMODE_MIXED_MV) || v->mv_mode == MV_PMODE_MIXED_MV) {
-                fourmvbptab     = get_bits(gb, 2);
-                v->fourmvbp_vlc = &ff_vc1_4mv_block_pattern_vlc[fourmvbptab];
-                v->mbmode_vlc = &ff_vc1_if_mmv_mbmode_vlc[mbmodetab];
+                v->fourmvbptab     = get_bits(gb, 2);
+                v->fourmvbp_vlc = &ff_vc1_4mv_block_pattern_vlc[v->fourmvbptab];
+                v->mbmode_vlc = &ff_vc1_if_mmv_mbmode_vlc[v->mbmodetab];
             } else {
-                v->mbmode_vlc = &ff_vc1_if_1mv_mbmode_vlc[mbmodetab];
+                v->mbmode_vlc = &ff_vc1_if_1mv_mbmode_vlc[v->mbmodetab];
             }
         }
         if (v->dquant) {
@@ -1233,24 +1235,24 @@ int ff_vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
             v->mv_mode          = ff_vc1_mv_pmode_table2[lowquant][mvmode];
             v->qs_last          = v->s.quarter_sample;
             v->s.quarter_sample = (v->mv_mode == MV_PMODE_1MV || v->mv_mode == MV_PMODE_MIXED_MV);
-            v->s.mspel          = !(v->mv_mode == MV_PMODE_1MV_HPEL_BILIN || v->mv_mode == MV_PMODE_1MV_HPEL);
+            v->s.mspel          = (v->mv_mode != MV_PMODE_1MV_HPEL_BILIN);
             status = bitplane_decoding(v->forward_mb_plane, &v->fmb_is_raw, v);
             if (status < 0)
                 return -1;
             av_log(v->s.avctx, AV_LOG_DEBUG, "MB Forward Type plane encoding: "
                    "Imode: %i, Invert: %i\n", status>>1, status&1);
-            mbmodetab = get_bits(gb, 3);
+            v->mbmodetab = get_bits(gb, 3);
             if (v->mv_mode == MV_PMODE_MIXED_MV)
-                v->mbmode_vlc = &ff_vc1_if_mmv_mbmode_vlc[mbmodetab];
+                v->mbmode_vlc = &ff_vc1_if_mmv_mbmode_vlc[v->mbmodetab];
             else
-                v->mbmode_vlc = &ff_vc1_if_1mv_mbmode_vlc[mbmodetab];
-            imvtab       = get_bits(gb, 3);
-            v->imv_vlc   = &ff_vc1_2ref_mvdata_vlc[imvtab];
-            icbptab      = get_bits(gb, 3);
-            v->cbpcy_vlc = &ff_vc1_icbpcy_vlc[icbptab];
+                v->mbmode_vlc = &ff_vc1_if_1mv_mbmode_vlc[v->mbmodetab];
+            v->imvtab     = get_bits(gb, 3);
+            v->imv_vlc   = &ff_vc1_2ref_mvdata_vlc[v->imvtab];
+            v->icbptab   = get_bits(gb, 3);
+            v->cbpcy_vlc = &ff_vc1_icbpcy_vlc[v->icbptab];
             if (v->mv_mode == MV_PMODE_MIXED_MV) {
-                fourmvbptab     = get_bits(gb, 2);
-                v->fourmvbp_vlc = &ff_vc1_4mv_block_pattern_vlc[fourmvbptab];
+                v->fourmvbptab     = get_bits(gb, 2);
+                v->fourmvbp_vlc = &ff_vc1_4mv_block_pattern_vlc[v->fourmvbptab];
             }
             v->numref = 1; // interlaced field B pictures are always 2-ref
         } else if (v->fcm == ILACE_FRAME) {
@@ -1274,17 +1276,17 @@ int ff_vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
                 return -1;
             av_log(v->s.avctx, AV_LOG_DEBUG, "MB Skip plane encoding: "
                    "Imode: %i, Invert: %i\n", status>>1, status&1);
-            mbmodetab       = get_bits(gb, 2);
-            v->mbmode_vlc   = &ff_vc1_intfr_non4mv_mbmode_vlc[mbmodetab];
-            imvtab          = get_bits(gb, 2);
-            v->imv_vlc      = &ff_vc1_1ref_mvdata_vlc[imvtab];
+            v->mbmodetab       = get_bits(gb, 2);
+            v->mbmode_vlc   = &ff_vc1_intfr_non4mv_mbmode_vlc[v->mbmodetab];
+            v->imvtab       = get_bits(gb, 2);
+            v->imv_vlc      = &ff_vc1_1ref_mvdata_vlc[v->imvtab];
             // interlaced p/b-picture cbpcy range is [1, 63]
-            icbptab         = get_bits(gb, 3);
-            v->cbpcy_vlc    = &ff_vc1_icbpcy_vlc[icbptab];
-            twomvbptab      = get_bits(gb, 2);
-            v->twomvbp_vlc  = &ff_vc1_2mv_block_pattern_vlc[twomvbptab];
-            fourmvbptab     = get_bits(gb, 2);
-            v->fourmvbp_vlc = &ff_vc1_4mv_block_pattern_vlc[fourmvbptab];
+            v->icbptab      = get_bits(gb, 3);
+            v->cbpcy_vlc    = &ff_vc1_icbpcy_vlc[v->icbptab];
+            v->twomvbptab      = get_bits(gb, 2);
+            v->twomvbp_vlc  = &ff_vc1_2mv_block_pattern_vlc[v->twomvbptab];
+            v->fourmvbptab     = get_bits(gb, 2);
+            v->fourmvbp_vlc = &ff_vc1_4mv_block_pattern_vlc[v->fourmvbptab];
         } else {
             v->mv_mode          = get_bits1(gb) ? MV_PMODE_1MV : MV_PMODE_1MV_HPEL_BILIN;
             v->qs_last          = v->s.quarter_sample;
@@ -1301,7 +1303,8 @@ int ff_vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
             av_log(v->s.avctx, AV_LOG_DEBUG, "MB Skip plane encoding: "
                    "Imode: %i, Invert: %i\n", status>>1, status&1);
             v->s.mv_table_index = get_bits(gb, 2);
-            v->cbpcy_vlc = &ff_vc1_cbpcy_p_vlc[get_bits(gb, 2)];
+            v->cbptab = get_bits(gb, 2);
+            v->cbpcy_vlc = &ff_vc1_cbpcy_p_vlc[v->cbptab];
         }
 
         if (v->dquant) {
@@ -1579,135 +1582,133 @@ static const uint16_t vlc_offs[] = {
     31714, 31746, 31778, 32306, 32340, 32372
 };
 
+static av_cold void vc1_init_static(void)
+{
+    static VLC_TYPE vlc_table[32372][2];
+
+    INIT_VLC_STATIC(&ff_vc1_bfraction_vlc, VC1_BFRACTION_VLC_BITS, 23,
+                    ff_vc1_bfraction_bits,  1, 1,
+                    ff_vc1_bfraction_codes, 1, 1, 1 << VC1_BFRACTION_VLC_BITS);
+    INIT_VLC_STATIC(&ff_vc1_norm2_vlc, VC1_NORM2_VLC_BITS, 4,
+                    ff_vc1_norm2_bits,  1, 1,
+                    ff_vc1_norm2_codes, 1, 1, 1 << VC1_NORM2_VLC_BITS);
+    INIT_VLC_STATIC(&ff_vc1_norm6_vlc, VC1_NORM6_VLC_BITS, 64,
+                    ff_vc1_norm6_bits,  1, 1,
+                    ff_vc1_norm6_codes, 2, 2, 556);
+    INIT_VLC_STATIC(&ff_vc1_imode_vlc, VC1_IMODE_VLC_BITS, 7,
+                    ff_vc1_imode_bits,  1, 1,
+                    ff_vc1_imode_codes, 1, 1, 1 << VC1_IMODE_VLC_BITS);
+    for (int i = 0; i < 3; i++) {
+        ff_vc1_ttmb_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 0]];
+        ff_vc1_ttmb_vlc[i].table_allocated = vlc_offs[i * 3 + 1] - vlc_offs[i * 3 + 0];
+        init_vlc(&ff_vc1_ttmb_vlc[i], VC1_TTMB_VLC_BITS, 16,
+                 ff_vc1_ttmb_bits[i],  1, 1,
+                 ff_vc1_ttmb_codes[i], 2, 2, INIT_VLC_USE_NEW_STATIC);
+        ff_vc1_ttblk_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 1]];
+        ff_vc1_ttblk_vlc[i].table_allocated = vlc_offs[i * 3 + 2] - vlc_offs[i * 3 + 1];
+        init_vlc(&ff_vc1_ttblk_vlc[i], VC1_TTBLK_VLC_BITS, 8,
+                 ff_vc1_ttblk_bits[i],  1, 1,
+                 ff_vc1_ttblk_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
+        ff_vc1_subblkpat_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 2]];
+        ff_vc1_subblkpat_vlc[i].table_allocated = vlc_offs[i * 3 + 3] - vlc_offs[i * 3 + 2];
+        init_vlc(&ff_vc1_subblkpat_vlc[i], VC1_SUBBLKPAT_VLC_BITS, 15,
+                 ff_vc1_subblkpat_bits[i],  1, 1,
+                 ff_vc1_subblkpat_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
+    }
+    for (int i = 0; i < 4; i++) {
+        ff_vc1_4mv_block_pattern_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 9]];
+        ff_vc1_4mv_block_pattern_vlc[i].table_allocated = vlc_offs[i * 3 + 10] - vlc_offs[i * 3 + 9];
+        init_vlc(&ff_vc1_4mv_block_pattern_vlc[i], VC1_4MV_BLOCK_PATTERN_VLC_BITS, 16,
+                 ff_vc1_4mv_block_pattern_bits[i],  1, 1,
+                 ff_vc1_4mv_block_pattern_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
+        ff_vc1_cbpcy_p_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 10]];
+        ff_vc1_cbpcy_p_vlc[i].table_allocated = vlc_offs[i * 3 + 11] - vlc_offs[i * 3 + 10];
+        init_vlc(&ff_vc1_cbpcy_p_vlc[i], VC1_CBPCY_P_VLC_BITS, 64,
+                 ff_vc1_cbpcy_p_bits[i],  1, 1,
+                 ff_vc1_cbpcy_p_codes[i], 2, 2, INIT_VLC_USE_NEW_STATIC);
+        ff_vc1_mv_diff_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 11]];
+        ff_vc1_mv_diff_vlc[i].table_allocated = vlc_offs[i * 3 + 12] - vlc_offs[i * 3 + 11];
+        init_vlc(&ff_vc1_mv_diff_vlc[i], VC1_MV_DIFF_VLC_BITS, 73,
+                 ff_vc1_mv_diff_bits[i],  1, 1,
+                 ff_vc1_mv_diff_codes[i], 2, 2, INIT_VLC_USE_NEW_STATIC);
+    }
+    for (int i = 0; i < 8; i++) {
+        ff_vc1_ac_coeff_table[i].table           = &vlc_table[vlc_offs[i * 2 + 21]];
+        ff_vc1_ac_coeff_table[i].table_allocated = vlc_offs[i * 2 + 22] - vlc_offs[i * 2 + 21];
+        init_vlc(&ff_vc1_ac_coeff_table[i], AC_VLC_BITS, ff_vc1_ac_sizes[i],
+                 &vc1_ac_tables[i][0][1], 8, 4,
+                 &vc1_ac_tables[i][0][0], 8, 4, INIT_VLC_USE_NEW_STATIC);
+        /* initialize interlaced MVDATA tables (2-Ref) */
+        ff_vc1_2ref_mvdata_vlc[i].table           = &vlc_table[vlc_offs[i * 2 + 22]];
+        ff_vc1_2ref_mvdata_vlc[i].table_allocated = vlc_offs[i * 2 + 23] - vlc_offs[i * 2 + 22];
+        init_vlc(&ff_vc1_2ref_mvdata_vlc[i], VC1_2REF_MVDATA_VLC_BITS, 126,
+                 ff_vc1_2ref_mvdata_bits[i],  1, 1,
+                 ff_vc1_2ref_mvdata_codes[i], 4, 4, INIT_VLC_USE_NEW_STATIC);
+    }
+    for (int i = 0; i < 4; i++) {
+        /* initialize 4MV MBMODE VLC tables for interlaced frame P picture */
+        ff_vc1_intfr_4mv_mbmode_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 37]];
+        ff_vc1_intfr_4mv_mbmode_vlc[i].table_allocated = vlc_offs[i * 3 + 38] - vlc_offs[i * 3 + 37];
+        init_vlc(&ff_vc1_intfr_4mv_mbmode_vlc[i], VC1_INTFR_4MV_MBMODE_VLC_BITS, 15,
+                 ff_vc1_intfr_4mv_mbmode_bits[i],  1, 1,
+                 ff_vc1_intfr_4mv_mbmode_codes[i], 2, 2, INIT_VLC_USE_NEW_STATIC);
+        /* initialize NON-4MV MBMODE VLC tables for the same */
+        ff_vc1_intfr_non4mv_mbmode_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 38]];
+        ff_vc1_intfr_non4mv_mbmode_vlc[i].table_allocated = vlc_offs[i * 3 + 39] - vlc_offs[i * 3 + 38];
+        init_vlc(&ff_vc1_intfr_non4mv_mbmode_vlc[i], VC1_INTFR_NON4MV_MBMODE_VLC_BITS, 9,
+                 ff_vc1_intfr_non4mv_mbmode_bits[i],  1, 1,
+                 ff_vc1_intfr_non4mv_mbmode_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
+        /* initialize interlaced MVDATA tables (1-Ref) */
+        ff_vc1_1ref_mvdata_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 39]];
+        ff_vc1_1ref_mvdata_vlc[i].table_allocated = vlc_offs[i * 3 + 40] - vlc_offs[i * 3 + 39];
+        init_vlc(&ff_vc1_1ref_mvdata_vlc[i], VC1_1REF_MVDATA_VLC_BITS, 72,
+                 ff_vc1_1ref_mvdata_bits[i],  1, 1,
+                 ff_vc1_1ref_mvdata_codes[i], 4, 4, INIT_VLC_USE_NEW_STATIC);
+    }
+    for (int i = 0; i < 4; i++) {
+        /* Initialize 2MV Block pattern VLC tables */
+        ff_vc1_2mv_block_pattern_vlc[i].table           = &vlc_table[vlc_offs[i + 49]];
+        ff_vc1_2mv_block_pattern_vlc[i].table_allocated = vlc_offs[i + 50] - vlc_offs[i + 49];
+        init_vlc(&ff_vc1_2mv_block_pattern_vlc[i], VC1_2MV_BLOCK_PATTERN_VLC_BITS, 4,
+                 ff_vc1_2mv_block_pattern_bits[i],  1, 1,
+                 ff_vc1_2mv_block_pattern_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
+    }
+    for (int i = 0; i < 8; i++) {
+        /* Initialize interlaced CBPCY VLC tables (Table 124 - Table 131) */
+        ff_vc1_icbpcy_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 53]];
+        ff_vc1_icbpcy_vlc[i].table_allocated = vlc_offs[i * 3 + 54] - vlc_offs[i * 3 + 53];
+        init_vlc(&ff_vc1_icbpcy_vlc[i], VC1_ICBPCY_VLC_BITS, 63,
+                 ff_vc1_icbpcy_p_bits[i],  1, 1,
+                 ff_vc1_icbpcy_p_codes[i], 2, 2, INIT_VLC_USE_NEW_STATIC);
+        /* Initialize interlaced field picture MBMODE VLC tables */
+        ff_vc1_if_mmv_mbmode_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 54]];
+        ff_vc1_if_mmv_mbmode_vlc[i].table_allocated = vlc_offs[i * 3 + 55] - vlc_offs[i * 3 + 54];
+        init_vlc(&ff_vc1_if_mmv_mbmode_vlc[i], VC1_IF_MMV_MBMODE_VLC_BITS, 8,
+                 ff_vc1_if_mmv_mbmode_bits[i],  1, 1,
+                 ff_vc1_if_mmv_mbmode_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
+        ff_vc1_if_1mv_mbmode_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 55]];
+        ff_vc1_if_1mv_mbmode_vlc[i].table_allocated = vlc_offs[i * 3 + 56] - vlc_offs[i * 3 + 55];
+        init_vlc(&ff_vc1_if_1mv_mbmode_vlc[i], VC1_IF_1MV_MBMODE_VLC_BITS, 6,
+                 ff_vc1_if_1mv_mbmode_bits[i],  1, 1,
+                 ff_vc1_if_1mv_mbmode_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
+    }
+}
+
 /**
  * Init VC-1 specific tables and VC1Context members
  * @param v The VC1Context to initialize
  * @return Status
  */
-av_cold int ff_vc1_init_common(VC1Context *v)
+av_cold void ff_vc1_init_common(VC1Context *v)
 {
-    static int done = 0;
-    int i = 0;
-    static VLC_TYPE vlc_table[32372][2];
+    static AVOnce init_static_once = AV_ONCE_INIT;
 
-    v->hrd_rate = v->hrd_buffer = NULL;
-
-    /* VLC tables */
-    if (!done) {
-        INIT_VLC_STATIC(&ff_vc1_bfraction_vlc, VC1_BFRACTION_VLC_BITS, 23,
-                        ff_vc1_bfraction_bits, 1, 1,
-                        ff_vc1_bfraction_codes, 1, 1, 1 << VC1_BFRACTION_VLC_BITS);
-        INIT_VLC_STATIC(&ff_vc1_norm2_vlc, VC1_NORM2_VLC_BITS, 4,
-                        ff_vc1_norm2_bits, 1, 1,
-                        ff_vc1_norm2_codes, 1, 1, 1 << VC1_NORM2_VLC_BITS);
-        INIT_VLC_STATIC(&ff_vc1_norm6_vlc, VC1_NORM6_VLC_BITS, 64,
-                        ff_vc1_norm6_bits, 1, 1,
-                        ff_vc1_norm6_codes, 2, 2, 556);
-        INIT_VLC_STATIC(&ff_vc1_imode_vlc, VC1_IMODE_VLC_BITS, 7,
-                        ff_vc1_imode_bits, 1, 1,
-                        ff_vc1_imode_codes, 1, 1, 1 << VC1_IMODE_VLC_BITS);
-        for (i = 0; i < 3; i++) {
-            ff_vc1_ttmb_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 0]];
-            ff_vc1_ttmb_vlc[i].table_allocated = vlc_offs[i * 3 + 1] - vlc_offs[i * 3 + 0];
-            init_vlc(&ff_vc1_ttmb_vlc[i], VC1_TTMB_VLC_BITS, 16,
-                     ff_vc1_ttmb_bits[i], 1, 1,
-                     ff_vc1_ttmb_codes[i], 2, 2, INIT_VLC_USE_NEW_STATIC);
-            ff_vc1_ttblk_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 1]];
-            ff_vc1_ttblk_vlc[i].table_allocated = vlc_offs[i * 3 + 2] - vlc_offs[i * 3 + 1];
-            init_vlc(&ff_vc1_ttblk_vlc[i], VC1_TTBLK_VLC_BITS, 8,
-                     ff_vc1_ttblk_bits[i], 1, 1,
-                     ff_vc1_ttblk_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
-            ff_vc1_subblkpat_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 2]];
-            ff_vc1_subblkpat_vlc[i].table_allocated = vlc_offs[i * 3 + 3] - vlc_offs[i * 3 + 2];
-            init_vlc(&ff_vc1_subblkpat_vlc[i], VC1_SUBBLKPAT_VLC_BITS, 15,
-                     ff_vc1_subblkpat_bits[i], 1, 1,
-                     ff_vc1_subblkpat_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
-        }
-        for (i = 0; i < 4; i++) {
-            ff_vc1_4mv_block_pattern_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 9]];
-            ff_vc1_4mv_block_pattern_vlc[i].table_allocated = vlc_offs[i * 3 + 10] - vlc_offs[i * 3 + 9];
-            init_vlc(&ff_vc1_4mv_block_pattern_vlc[i], VC1_4MV_BLOCK_PATTERN_VLC_BITS, 16,
-                     ff_vc1_4mv_block_pattern_bits[i], 1, 1,
-                     ff_vc1_4mv_block_pattern_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
-            ff_vc1_cbpcy_p_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 10]];
-            ff_vc1_cbpcy_p_vlc[i].table_allocated = vlc_offs[i * 3 + 11] - vlc_offs[i * 3 + 10];
-            init_vlc(&ff_vc1_cbpcy_p_vlc[i], VC1_CBPCY_P_VLC_BITS, 64,
-                     ff_vc1_cbpcy_p_bits[i], 1, 1,
-                     ff_vc1_cbpcy_p_codes[i], 2, 2, INIT_VLC_USE_NEW_STATIC);
-            ff_vc1_mv_diff_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 11]];
-            ff_vc1_mv_diff_vlc[i].table_allocated = vlc_offs[i * 3 + 12] - vlc_offs[i * 3 + 11];
-            init_vlc(&ff_vc1_mv_diff_vlc[i], VC1_MV_DIFF_VLC_BITS, 73,
-                     ff_vc1_mv_diff_bits[i], 1, 1,
-                     ff_vc1_mv_diff_codes[i], 2, 2, INIT_VLC_USE_NEW_STATIC);
-        }
-        for (i = 0; i < 8; i++) {
-            ff_vc1_ac_coeff_table[i].table           = &vlc_table[vlc_offs[i * 2 + 21]];
-            ff_vc1_ac_coeff_table[i].table_allocated = vlc_offs[i * 2 + 22] - vlc_offs[i * 2 + 21];
-            init_vlc(&ff_vc1_ac_coeff_table[i], AC_VLC_BITS, ff_vc1_ac_sizes[i],
-                     &vc1_ac_tables[i][0][1], 8, 4,
-                     &vc1_ac_tables[i][0][0], 8, 4, INIT_VLC_USE_NEW_STATIC);
-            /* initialize interlaced MVDATA tables (2-Ref) */
-            ff_vc1_2ref_mvdata_vlc[i].table           = &vlc_table[vlc_offs[i * 2 + 22]];
-            ff_vc1_2ref_mvdata_vlc[i].table_allocated = vlc_offs[i * 2 + 23] - vlc_offs[i * 2 + 22];
-            init_vlc(&ff_vc1_2ref_mvdata_vlc[i], VC1_2REF_MVDATA_VLC_BITS, 126,
-                     ff_vc1_2ref_mvdata_bits[i], 1, 1,
-                     ff_vc1_2ref_mvdata_codes[i], 4, 4, INIT_VLC_USE_NEW_STATIC);
-        }
-        for (i = 0; i < 4; i++) {
-            /* initialize 4MV MBMODE VLC tables for interlaced frame P picture */
-            ff_vc1_intfr_4mv_mbmode_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 37]];
-            ff_vc1_intfr_4mv_mbmode_vlc[i].table_allocated = vlc_offs[i * 3 + 38] - vlc_offs[i * 3 + 37];
-            init_vlc(&ff_vc1_intfr_4mv_mbmode_vlc[i], VC1_INTFR_4MV_MBMODE_VLC_BITS, 15,
-                     ff_vc1_intfr_4mv_mbmode_bits[i], 1, 1,
-                     ff_vc1_intfr_4mv_mbmode_codes[i], 2, 2, INIT_VLC_USE_NEW_STATIC);
-            /* initialize NON-4MV MBMODE VLC tables for the same */
-            ff_vc1_intfr_non4mv_mbmode_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 38]];
-            ff_vc1_intfr_non4mv_mbmode_vlc[i].table_allocated = vlc_offs[i * 3 + 39] - vlc_offs[i * 3 + 38];
-            init_vlc(&ff_vc1_intfr_non4mv_mbmode_vlc[i], VC1_INTFR_NON4MV_MBMODE_VLC_BITS, 9,
-                     ff_vc1_intfr_non4mv_mbmode_bits[i], 1, 1,
-                     ff_vc1_intfr_non4mv_mbmode_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
-            /* initialize interlaced MVDATA tables (1-Ref) */
-            ff_vc1_1ref_mvdata_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 39]];
-            ff_vc1_1ref_mvdata_vlc[i].table_allocated = vlc_offs[i * 3 + 40] - vlc_offs[i * 3 + 39];
-            init_vlc(&ff_vc1_1ref_mvdata_vlc[i], VC1_1REF_MVDATA_VLC_BITS, 72,
-                     ff_vc1_1ref_mvdata_bits[i], 1, 1,
-                     ff_vc1_1ref_mvdata_codes[i], 4, 4, INIT_VLC_USE_NEW_STATIC);
-        }
-        for (i = 0; i < 4; i++) {
-            /* Initialize 2MV Block pattern VLC tables */
-            ff_vc1_2mv_block_pattern_vlc[i].table           = &vlc_table[vlc_offs[i + 49]];
-            ff_vc1_2mv_block_pattern_vlc[i].table_allocated = vlc_offs[i + 50] - vlc_offs[i + 49];
-            init_vlc(&ff_vc1_2mv_block_pattern_vlc[i], VC1_2MV_BLOCK_PATTERN_VLC_BITS, 4,
-                     ff_vc1_2mv_block_pattern_bits[i], 1, 1,
-                     ff_vc1_2mv_block_pattern_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
-        }
-        for (i = 0; i < 8; i++) {
-            /* Initialize interlaced CBPCY VLC tables (Table 124 - Table 131) */
-            ff_vc1_icbpcy_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 53]];
-            ff_vc1_icbpcy_vlc[i].table_allocated = vlc_offs[i * 3 + 54] - vlc_offs[i * 3 + 53];
-            init_vlc(&ff_vc1_icbpcy_vlc[i], VC1_ICBPCY_VLC_BITS, 63,
-                     ff_vc1_icbpcy_p_bits[i], 1, 1,
-                     ff_vc1_icbpcy_p_codes[i], 2, 2, INIT_VLC_USE_NEW_STATIC);
-            /* Initialize interlaced field picture MBMODE VLC tables */
-            ff_vc1_if_mmv_mbmode_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 54]];
-            ff_vc1_if_mmv_mbmode_vlc[i].table_allocated = vlc_offs[i * 3 + 55] - vlc_offs[i * 3 + 54];
-            init_vlc(&ff_vc1_if_mmv_mbmode_vlc[i], VC1_IF_MMV_MBMODE_VLC_BITS, 8,
-                     ff_vc1_if_mmv_mbmode_bits[i], 1, 1,
-                     ff_vc1_if_mmv_mbmode_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
-            ff_vc1_if_1mv_mbmode_vlc[i].table           = &vlc_table[vlc_offs[i * 3 + 55]];
-            ff_vc1_if_1mv_mbmode_vlc[i].table_allocated = vlc_offs[i * 3 + 56] - vlc_offs[i * 3 + 55];
-            init_vlc(&ff_vc1_if_1mv_mbmode_vlc[i], VC1_IF_1MV_MBMODE_VLC_BITS, 6,
-                     ff_vc1_if_1mv_mbmode_bits[i], 1, 1,
-                     ff_vc1_if_1mv_mbmode_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
-        }
-        done = 1;
-    }
-
-    /* Other defaults */
+    /* defaults */
     v->pq      = -1;
     v->mvrange = 0; /* 7.1.1.18, p80 */
 
     ff_vc1dsp_init(&v->vc1dsp);
 
-    return 0;
+    /* VLC tables */
+    ff_thread_once(&init_static_once, vc1_init_static);
 }

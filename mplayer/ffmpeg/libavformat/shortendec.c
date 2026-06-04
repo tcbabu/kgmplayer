@@ -25,7 +25,7 @@
 #include "rawdec.h"
 #include "libavcodec/golomb.h"
 
-static int shn_probe(AVProbeData *p)
+static int shn_probe(const AVProbeData *p)
 {
     GetBitContext gb;
     int version, internal_ftype, channels, blocksize;
@@ -65,7 +65,7 @@ static int shn_probe(AVProbeData *p)
     return AVPROBE_SCORE_EXTENSION + 1;
 }
 
-AVInputFormat ff_shorten_demuxer = {
+const AVInputFormat ff_shorten_demuxer = {
     .name           = "shn",
     .long_name      = NULL_IF_CONFIG_SMALL("raw Shorten"),
     .read_probe     = shn_probe,
@@ -74,4 +74,6 @@ AVInputFormat ff_shorten_demuxer = {
     .flags          = AVFMT_NOBINSEARCH | AVFMT_NOGENSEARCH | AVFMT_NO_BYTE_SEEK | AVFMT_NOTIMESTAMPS,
     .extensions     = "shn",
     .raw_codec_id   = AV_CODEC_ID_SHORTEN,
+    .priv_data_size = sizeof(FFRawDemuxerContext),
+    .priv_class     = &ff_raw_demuxer_class,
 };

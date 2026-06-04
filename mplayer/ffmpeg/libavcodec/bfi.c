@@ -71,7 +71,7 @@ static int bfi_decode_frame(AVCodecContext *avctx, void *data,
         frame->key_frame = 1;
         /* Setting the palette */
         if (avctx->extradata_size > 768) {
-            av_log(NULL, AV_LOG_ERROR, "Palette is too large.\n");
+            av_log(avctx, AV_LOG_ERROR, "Palette is too large.\n");
             return AVERROR_INVALIDDATA;
         }
         pal = (uint32_t *)frame->data[1];
@@ -175,7 +175,7 @@ static av_cold int bfi_decode_close(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_bfi_decoder = {
+const AVCodec ff_bfi_decoder = {
     .name           = "bfi",
     .long_name      = NULL_IF_CONFIG_SMALL("Brute Force & Ignorance"),
     .type           = AVMEDIA_TYPE_VIDEO,

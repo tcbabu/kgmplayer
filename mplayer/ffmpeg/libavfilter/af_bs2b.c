@@ -32,6 +32,8 @@
 #include "formats.h"
 #include "internal.h"
 
+typedef void (*filter_func)(t_bs2bdp bs2bdp, uint8_t *sample, int n);
+
 typedef struct Bs2bContext {
     const AVClass *class;
 
@@ -41,7 +43,7 @@ typedef struct Bs2bContext {
 
     t_bs2bdp bs2bp;
 
-    void (*filter)(t_bs2bdp bs2bdp, uint8_t *sample, int n);
+    filter_func filter;
 } Bs2bContext;
 
 #define OFFSET(x) offsetof(Bs2bContext, x)
@@ -90,7 +92,6 @@ static av_cold void uninit(AVFilterContext *ctx)
 
 static int query_formats(AVFilterContext *ctx)
 {
-    AVFilterFormats *formats = NULL;
     AVFilterChannelLayouts *layouts = NULL;
 
     static const enum AVSampleFormat sample_fmts[] = {
@@ -109,17 +110,11 @@ static int query_formats(AVFilterContext *ctx)
     if (ret < 0)
         return ret;
 
-    formats = ff_make_format_list(sample_fmts);
-    if (!formats)
-        return AVERROR(ENOMEM);
-    ret = ff_set_common_formats(ctx, formats);
+    ret = ff_set_common_formats_from_list(ctx, sample_fmts);
     if (ret < 0)
         return ret;
 
-    formats = ff_all_samplerates();
-    if (!formats)
-        return AVERROR(ENOMEM);
-    return ff_set_common_samplerates(ctx, formats);
+    return ff_set_common_all_samplerates(ctx);
 }
 
 static int filter_frame(AVFilterLink *inlink, AVFrame *frame)
@@ -133,7 +128,7 @@ static int filter_frame(AVFilterLink *inlink, AVFrame *frame)
     if (av_frame_is_writable(frame)) {
         out_frame = frame;
     } else {
-        out_frame = ff_get_audio_buffer(inlink, frame->nb_samples);
+        out_frame = ff_get_audio_buffer(outlink, frame->nb_samples);
         if (!out_frame) {
             av_frame_free(&frame);
             return AVERROR(ENOMEM);
@@ -165,19 +160,19 @@ static int config_output(AVFilterLink *outlink)
 
     switch (inlink->format) {
     case AV_SAMPLE_FMT_U8:
-        bs2b->filter = bs2b_cross_feed_u8;
+        bs2b->filter = (filter_func) bs2b_cross_feed_u8;
         break;
     case AV_SAMPLE_FMT_S16:
-        bs2b->filter = (void*)bs2b_cross_feed_s16;
+        bs2b->filter = (filter_func) bs2b_cross_feed_s16;
         break;
     case AV_SAMPLE_FMT_S32:
-        bs2b->filter = (void*)bs2b_cross_feed_s32;
+        bs2b->filter = (filter_func) bs2b_cross_feed_s32;
         break;
     case AV_SAMPLE_FMT_FLT:
-        bs2b->filter = (void*)bs2b_cross_feed_f;
+        bs2b->filter = (filter_func) bs2b_cross_feed_f;
         break;
     case AV_SAMPLE_FMT_DBL:
-        bs2b->filter = (void*)bs2b_cross_feed_d;
+        bs2b->filter = (filter_func) bs2b_cross_feed_d;
         break;
     default:
         return AVERROR_BUG;
@@ -197,7 +192,6 @@ static const AVFilterPad bs2b_inputs[] = {
         .type           = AVMEDIA_TYPE_AUDIO,
         .filter_frame   = filter_frame,
     },
-    { NULL }
 };
 
 static const AVFilterPad bs2b_outputs[] = {
@@ -206,17 +200,16 @@ static const AVFilterPad bs2b_outputs[] = {
         .type           = AVMEDIA_TYPE_AUDIO,
         .config_props   = config_output,
     },
-    { NULL }
 };
 
-AVFilter ff_af_bs2b = {
+const AVFilter ff_af_bs2b = {
     .name           = "bs2b",
     .description    = NULL_IF_CONFIG_SMALL("Bauer stereo-to-binaural filter."),
-    .query_formats  = query_formats,
     .priv_size      = sizeof(Bs2bContext),
     .priv_class     = &bs2b_class,
     .init           = init,
     .uninit         = uninit,
-    .inputs         = bs2b_inputs,
-    .outputs        = bs2b_outputs,
+    FILTER_INPUTS(bs2b_inputs),
+    FILTER_OUTPUTS(bs2b_outputs),
+    FILTER_QUERY_FUNC(query_formats),
 };

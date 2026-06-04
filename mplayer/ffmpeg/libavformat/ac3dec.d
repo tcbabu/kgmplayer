@@ -1,18 +1,16 @@
-libavformat/ac3dec.o: libavformat/ac3dec.c libavutil/crc.h \
- libavutil/attributes.h libavutil/version.h libavutil/macros.h \
- libavcodec/ac3_parser.h libavcodec/ac3.h libavutil/opt.h \
- libavutil/rational.h libavutil/avutil.h libavutil/common.h \
- libavutil/avconfig.h config.h libavutil/intmath.h libavutil/mem.h \
- libavutil/error.h libavutil/internal.h libavutil/timer.h libavutil/log.h \
- libavutil/cpu.h libavutil/dict.h libavutil/pixfmt.h libavutil/libm.h \
- libavutil/intfloat.h libavutil/mathematics.h libavutil/samplefmt.h \
- libavcodec/avcodec.h libavutil/samplefmt.h libavutil/attributes.h \
- libavutil/avutil.h libavutil/buffer.h libavutil/cpu.h \
- libavutil/channel_layout.h libavutil/dict.h libavutil/frame.h \
- libavutil/buffer.h libavutil/log.h libavutil/pixfmt.h \
- libavutil/rational.h libavcodec/version.h libavutil/version.h \
- libavcodec/ac3tab.h libavutil/internal.h libavcodec/get_bits.h \
- libavutil/common.h libavutil/intreadwrite.h libavutil/bswap.h \
- libavutil/avassert.h libavcodec/mathops.h libavutil/reverse.h \
- libavcodec/vlc.h libavformat/avformat.h libavcodec/avcodec.h \
- libavformat/avio.h libavformat/version.h libavformat/rawdec.h
+libavformat/ac3dec.o: libavformat/ac3dec.c libavutil/avassert.h \
+ libavutil/log.h libavutil/attributes.h libavutil/version.h \
+ libavutil/macros.h libavutil/avconfig.h libavutil/crc.h \
+ libavcodec/ac3_parser.h libavformat/avformat.h libavcodec/codec.h \
+ libavutil/avutil.h libavutil/common.h config.h libavutil/intmath.h \
+ libavutil/mem.h libavutil/avutil.h libavutil/internal.h \
+ libavutil/timer.h libavutil/dict.h libavutil/pixfmt.h libavutil/libm.h \
+ libavutil/intfloat.h libavutil/mathematics.h libavutil/rational.h \
+ libavutil/error.h libavutil/hwcontext.h libavutil/buffer.h \
+ libavutil/frame.h libavutil/samplefmt.h libavutil/log.h \
+ libavutil/pixfmt.h libavutil/rational.h libavutil/samplefmt.h \
+ libavcodec/codec_id.h libavcodec/version.h libavutil/version.h \
+ libavcodec/codec_par.h libavcodec/codec_id.h libavcodec/defs.h \
+ libavcodec/packet.h libavutil/attributes.h libavutil/buffer.h \
+ libavutil/dict.h libavformat/avio.h libavformat/version.h \
+ libavformat/rawdec.h

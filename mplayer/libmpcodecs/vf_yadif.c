@@ -315,7 +315,8 @@ static void filter_line_c(struct vf_priv_s *p, uint8_t *dst, uint8_t *prev, uint
             spatial_score= score;\
             spatial_pred= (cur[-refs  +j] + cur[+refs  -j])>>1;\
 
-        CHECK(-1) CHECK(-2) }} }}
+        // double parenthesis are workaround for MSVC preprocessor
+        CHECK((-1)) CHECK((-2)) }} }}
         CHECK( 1) CHECK( 2) }} }}
 
         if(p->mode<2){
@@ -396,7 +397,7 @@ static int config(struct vf_instance *vf,
 
 static int continue_buffered_image(struct vf_instance *vf);
 
-static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts){
+static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts, double endpts){
     int tff;
 
     if(vf->priv->parity < 0) {
@@ -415,7 +416,7 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts){
     vf->priv->buffered_pts = pts;
 
     if(vf->priv->do_deinterlace == 0)
-        return vf_next_put_image(vf, mpi, pts);
+        return vf_next_put_image(vf, mpi, pts, endpts);
     else if(vf->priv->do_deinterlace == 1){
         vf->priv->do_deinterlace= 2;
         return 0;
@@ -443,7 +444,7 @@ static int continue_buffered_image(struct vf_instance *vf)
         filter(vf->priv, dmpi->planes, dmpi->stride, mpi->w, mpi->h, i ^ tff ^ 1, tff);
         if (correct_pts && i < (vf->priv->mode & 1))
             vf_queue_frame(vf, continue_buffered_image);
-        ret |= vf_next_put_image(vf, dmpi, pts /*FIXME*/);
+        ret |= vf_next_put_image(vf, dmpi, pts /*FIXME*/, MP_NOPTS_VALUE);
         if (correct_pts)
             break;
         if(i<(vf->priv->mode&1))

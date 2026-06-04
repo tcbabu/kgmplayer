@@ -32,7 +32,7 @@ typedef struct {
     int packet_sizes_alloc;
 } PMPContext;
 
-static int pmp_probe(AVProbeData *p) {
+static int pmp_probe(const AVProbeData *p) {
     if (AV_RN32(p->buf) == AV_RN32("pmpm") &&
         AV_RL32(p->buf + 4) == 1)
         return AVPROBE_SCORE_MAX;
@@ -183,7 +183,7 @@ static int pmp_close(AVFormatContext *s)
     return 0;
 }
 
-AVInputFormat ff_pmp_demuxer = {
+const AVInputFormat ff_pmp_demuxer = {
     .name           = "pmp",
     .long_name      = NULL_IF_CONFIG_SMALL("Playstation Portable PMP"),
     .priv_data_size = sizeof(PMPContext),

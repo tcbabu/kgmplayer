@@ -19,6 +19,7 @@
 #ifndef AVCODEC_LOSSLESS_VIDEOENCDSP_H
 #define AVCODEC_LOSSLESS_VIDEOENCDSP_H
 
+#include <stddef.h>
 #include <stdint.h>
 
 typedef struct LLVidEncDSPContext {
@@ -33,6 +34,9 @@ typedef struct LLVidEncDSPContext {
     void (*sub_median_pred)(uint8_t *dst, const uint8_t *src1,
                             const uint8_t *src2, intptr_t w,
                             int *left, int *left_top);
+
+    void (*sub_left_predict)(uint8_t *dst, uint8_t *src,
+                          ptrdiff_t stride, ptrdiff_t width, int height);
 } LLVidEncDSPContext;
 
 void ff_llvidencdsp_init(LLVidEncDSPContext *c);

@@ -40,7 +40,7 @@
 #include "libvo/fastmemcpy.h"
 #include "libavutil/avutil.h"
 #include "libavutil/common.h"
-#include "libavutil/mem.h"
+#include "mpmem.h"
 #include "mpx86asm.h"
 
 struct vf_priv_s {
@@ -53,9 +53,9 @@ struct vf_priv_s {
                       uint8_t *src, int sstride, int width);
 };
 
-static const uint16_t __attribute__((aligned(16))) pw_7f[8] = {127,127,127,127,127,127,127,127};
-static const uint16_t __attribute__((aligned(16))) pw_ff[8] = {255,255,255,255,255,255,255,255};
-static const uint16_t __attribute__((aligned(16))) dither[8][8] = {
+DECLARE_ALIGNED(16, static const uint16_t, pw_7f)[8] = {127,127,127,127,127,127,127,127};
+DECLARE_ALIGNED(16, static const uint16_t, pw_ff)[8] = {255,255,255,255,255,255,255,255};
+DECLARE_ALIGNED(16, static const uint16_t, dither)[8][8] = {
     {  0, 96, 24,120,  6,102, 30,126 },
     { 64, 32, 88, 56, 70, 38, 94, 62 },
     { 16,112,  8,104, 22,118, 14,110 },
@@ -295,7 +295,7 @@ static void get_image(struct vf_instance *vf, mp_image_t *mpi)
     mpi->flags |= MP_IMGFLAG_DIRECT;
 }
 
-static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
+static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts, double endpts)
 {
     mp_image_t *dmpi = vf->dmpi;
     int p;
@@ -326,7 +326,7 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
                        dmpi->stride[p], mpi->stride[p]);
     }
 
-    return vf_next_put_image(vf, dmpi, pts);
+    return vf_next_put_image(vf, dmpi, pts, endpts);
 }
 
 static int query_format(struct vf_instance *vf, unsigned int fmt)

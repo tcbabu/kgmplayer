@@ -31,7 +31,7 @@
 #define TXD_MARKER          0x1803ffff
 #define TXD_MARKER2         0x1003ffff
 
-static int txd_probe(AVProbeData * pd) {
+static int txd_probe(const AVProbeData * pd) {
     if (AV_RL32(pd->buf  ) == TXD_FILE &&
        (AV_RL32(pd->buf+8) == TXD_MARKER || AV_RL32(pd->buf+8) == TXD_MARKER2))
         return AVPROBE_SCORE_MAX;
@@ -92,7 +92,7 @@ next_chunk:
     return 0;
 }
 
-AVInputFormat ff_txd_demuxer = {
+const AVInputFormat ff_txd_demuxer = {
     .name        = "txd",
     .long_name   = NULL_IF_CONFIG_SMALL("Renderware TeXture Dictionary"),
     .read_probe  = txd_probe,

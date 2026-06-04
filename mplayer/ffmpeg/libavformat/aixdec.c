@@ -23,7 +23,7 @@
 #include "avformat.h"
 #include "internal.h"
 
-static int aix_probe(AVProbeData *p)
+static int aix_probe(const AVProbeData *p)
 {
     if (AV_RL32(p->buf) != MKTAG('A','I','X','F') ||
         AV_RB32(p->buf +  8) != 0x01000014 ||
@@ -129,7 +129,7 @@ static int aix_read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-AVInputFormat ff_aix_demuxer = {
+const AVInputFormat ff_aix_demuxer = {
     .name        = "aix",
     .long_name   = NULL_IF_CONFIG_SMALL("CRI AIX"),
     .read_probe  = aix_probe,

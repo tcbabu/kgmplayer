@@ -27,7 +27,7 @@
 #include "avformat.h"
 #include "internal.h"
 #include "subtitles.h"
-#include "libavcodec/internal.h"
+#include "avio_internal.h"
 #include "libavutil/avstring.h"
 #include "libavutil/bprint.h"
 #include "libavutil/intreadwrite.h"
@@ -36,7 +36,7 @@ typedef struct {
     FFDemuxSubtitlesQueue q;
 } SubViewerContext;
 
-static int subviewer_probe(AVProbeData *p)
+static int subviewer_probe(const AVProbeData *p)
 {
     char c;
     const unsigned char *ptr = p->buf;
@@ -55,11 +55,21 @@ static int read_ts(const char *s, int64_t *start, int *duration)
     int64_t end;
     int hh1, mm1, ss1, ms1;
     int hh2, mm2, ss2, ms2;
+    int multiplier = 1;
 
+    if (sscanf(s, "%u:%u:%u.%2u,%u:%u:%u.%2u",
+               &hh1, &mm1, &ss1, &ms1, &hh2, &mm2, &ss2, &ms2) == 8) {
+        multiplier = 10;
+    } else if (sscanf(s, "%u:%u:%u.%1u,%u:%u:%u.%1u",
+                      &hh1, &mm1, &ss1, &ms1, &hh2, &mm2, &ss2, &ms2) == 8) {
+        multiplier = 100;
+    }
     if (sscanf(s, "%u:%u:%u.%u,%u:%u:%u.%u",
                &hh1, &mm1, &ss1, &ms1, &hh2, &mm2, &ss2, &ms2) == 8) {
-        end    = (hh2*3600LL + mm2*60LL + ss2) * 100LL + ms2;
-        *start = (hh1*3600LL + mm1*60LL + ss1) * 100LL + ms1;
+        ms1 = FFMIN(ms1, 999);
+        ms2 = FFMIN(ms2, 999);
+        end    = (hh2*3600LL + mm2*60LL + ss2) * 1000LL + ms2 * multiplier;
+        *start = (hh1*3600LL + mm1*60LL + ss1) * 1000LL + ms1 * multiplier;
         *duration = end - *start;
         return 0;
     }
@@ -78,7 +88,12 @@ static int subviewer_read_header(AVFormatContext *s)
 
     if (!st)
         return AVERROR(ENOMEM);
-    avpriv_set_pts_info(st, 64, 1, 100);
+    res = ffio_ensure_seekback(s->pb, 3);
+    if (res < 0)
+        return res;
+    if (avio_rb24(s->pb) != 0xefbbbf)
+        avio_seek(s->pb, -3, SEEK_CUR);
+    avpriv_set_pts_info(st, 64, 1, 1000);
     st->codecpar->codec_type = AVMEDIA_TYPE_SUBTITLE;
     st->codecpar->codec_id   = AV_CODEC_ID_SUBVIEWER;
 
@@ -160,41 +175,19 @@ static int subviewer_read_header(AVFormatContext *s)
     ff_subtitles_queue_finalize(s, &subviewer->q);
 
 end:
-    if (res < 0)
-        ff_subtitles_queue_clean(&subviewer->q);
     av_bprint_finalize(&header, NULL);
     return res;
 }
 
-static int subviewer_read_packet(AVFormatContext *s, AVPacket *pkt)
-{
-    SubViewerContext *subviewer = s->priv_data;
-    return ff_subtitles_queue_read_packet(&subviewer->q, pkt);
-}
-
-static int subviewer_read_seek(AVFormatContext *s, int stream_index,
-                               int64_t min_ts, int64_t ts, int64_t max_ts, int flags)
-{
-    SubViewerContext *subviewer = s->priv_data;
-    return ff_subtitles_queue_seek(&subviewer->q, s, stream_index,
-                                   min_ts, ts, max_ts, flags);
-}
-
-static int subviewer_read_close(AVFormatContext *s)
-{
-    SubViewerContext *subviewer = s->priv_data;
-    ff_subtitles_queue_clean(&subviewer->q);
-    return 0;
-}
-
-AVInputFormat ff_subviewer_demuxer = {
+const AVInputFormat ff_subviewer_demuxer = {
     .name           = "subviewer",
     .long_name      = NULL_IF_CONFIG_SMALL("SubViewer subtitle format"),
     .priv_data_size = sizeof(SubViewerContext),
+    .flags_internal = FF_FMT_INIT_CLEANUP,
     .read_probe     = subviewer_probe,
     .read_header    = subviewer_read_header,
-    .read_packet    = subviewer_read_packet,
-    .read_seek2     = subviewer_read_seek,
-    .read_close     = subviewer_read_close,
     .extensions     = "sub",
+    .read_packet    = ff_subtitles_read_packet,
+    .read_seek2     = ff_subtitles_read_seek,
+    .read_close     = ff_subtitles_read_close,
 };

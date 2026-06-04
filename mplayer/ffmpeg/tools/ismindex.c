@@ -342,7 +342,7 @@ static int read_tfra(struct Tracks *tracks, int start_index, AVIOContext *f)
     }
     fieldlength = avio_rb32(f);
     track->chunks  = avio_rb32(f);
-    track->offsets = av_mallocz_array(track->chunks, sizeof(*track->offsets));
+    track->offsets = av_calloc(track->chunks, sizeof(*track->offsets));
     if (!track->offsets) {
         track->chunks = 0;
         ret = AVERROR(ENOMEM);
@@ -790,8 +790,6 @@ int main(int argc, char **argv)
     char output_prefix_buf[2048];
     int split = 0, ismf = 0, i;
     struct Tracks tracks = { 0, .video_track = -1, .audio_track = -1 };
-
-    av_register_all();
 
     for (i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "-n")) {

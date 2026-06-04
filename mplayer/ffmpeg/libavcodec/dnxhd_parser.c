@@ -73,7 +73,7 @@ static int dnxhd_find_frame_end(DNXHDParserContext *dctx,
                 if (cid <= 0)
                     continue;
 
-                remaining = avpriv_dnxhd_get_frame_size(cid);
+                remaining = ff_dnxhd_get_frame_size(cid);
                 if (remaining <= 0) {
                     remaining = ff_dnxhd_get_hr_frame_size(cid, dctx->w, dctx->h);
                     if (remaining <= 0)
@@ -89,6 +89,10 @@ static int dnxhd_find_frame_end(DNXHDParserContext *dctx,
                     return remaining;
                 } else {
                     dctx->remaining -= buf_size;
+                    // Update variables for correctness, they are currently not used beyond here
+                    state = -1;
+                    dctx->cur_byte += buf_size - i;
+                    break;
                 }
             }
         }
@@ -134,7 +138,7 @@ static int dnxhd_parse(AVCodecParserContext *s,
     return next;
 }
 
-AVCodecParser ff_dnxhd_parser = {
+const AVCodecParser ff_dnxhd_parser = {
     .codec_ids      = { AV_CODEC_ID_DNXHD },
     .priv_data_size = sizeof(DNXHDParserContext),
     .parser_parse   = dnxhd_parse,

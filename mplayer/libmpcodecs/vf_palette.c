@@ -19,10 +19,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 #include <inttypes.h>
 
 #include "config.h"
+#include "libavutil/avstring.h"
 #include "mp_msg.h"
 #include "help_mp.h"
 
@@ -112,7 +112,7 @@ static int config(struct vf_instance *vf,
     return vf_next_config(vf,width,height,d_width,d_height,flags,vf->priv->fmt);
 }
 
-static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts){
+static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts, double endpts){
     mp_image_t *dmpi;
     uint8_t *old_palette = mpi->planes[1];
 
@@ -171,7 +171,7 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts){
     }
     mpi->planes[1] = old_palette;
 
-    return vf_next_put_image(vf,dmpi, pts);
+    return vf_next_put_image(vf, dmpi, pts, endpts);
 }
 
 //===========================================================================//
@@ -197,14 +197,14 @@ static int vf_open(vf_instance_t *vf, char *args){
     for(i=0;i<256;i++) gray_pal[i]=0x01010101*i;
     if (args)
     {
-        if (!strcasecmp(args,"rgb15")) vf->priv->fmt=IMGFMT_RGB15; else
-        if (!strcasecmp(args,"rgb16")) vf->priv->fmt=IMGFMT_RGB16; else
-        if (!strcasecmp(args,"rgb24")) vf->priv->fmt=IMGFMT_RGB24; else
-        if (!strcasecmp(args,"rgb32")) vf->priv->fmt=IMGFMT_RGB32; else
-        if (!strcasecmp(args,"bgr15")) vf->priv->fmt=IMGFMT_BGR15; else
-        if (!strcasecmp(args,"bgr16")) vf->priv->fmt=IMGFMT_BGR16; else
-        if (!strcasecmp(args,"bgr24")) vf->priv->fmt=IMGFMT_BGR24; else
-        if (!strcasecmp(args,"bgr32")) vf->priv->fmt=IMGFMT_BGR32; else
+        if (!av_strcasecmp(args,"rgb15")) vf->priv->fmt=IMGFMT_RGB15; else
+        if (!av_strcasecmp(args,"rgb16")) vf->priv->fmt=IMGFMT_RGB16; else
+        if (!av_strcasecmp(args,"rgb24")) vf->priv->fmt=IMGFMT_RGB24; else
+        if (!av_strcasecmp(args,"rgb32")) vf->priv->fmt=IMGFMT_RGB32; else
+        if (!av_strcasecmp(args,"bgr15")) vf->priv->fmt=IMGFMT_BGR15; else
+        if (!av_strcasecmp(args,"bgr16")) vf->priv->fmt=IMGFMT_BGR16; else
+        if (!av_strcasecmp(args,"bgr24")) vf->priv->fmt=IMGFMT_BGR24; else
+        if (!av_strcasecmp(args,"bgr32")) vf->priv->fmt=IMGFMT_BGR32; else
         {
             mp_msg(MSGT_VFILTER, MSGL_WARN, MSGTR_MPCODECS_UnknownFormatName, args);
             return 0;

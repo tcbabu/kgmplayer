@@ -26,7 +26,7 @@
 #include "pcm.h"
 #include "ircam.h"
 
-static int ircam_probe(AVProbeData *p)
+static int ircam_probe(const AVProbeData *p)
 {
     if ((p->buf[0] == 0x64 && p->buf[1] == 0xA3 && p->buf[3] == 0x00 &&
          p->buf[2] >=    1 && p->buf[2] <= 4) ||
@@ -66,12 +66,12 @@ static int ircam_read_header(AVFormatContext *s)
     }
 
     if (le == 1) {
-        sample_rate = av_int2float(avio_rl32(s->pb));
+        sample_rate = lrintf(av_int2float(avio_rl32(s->pb)));
         channels    = avio_rl32(s->pb);
         tag         = avio_rl32(s->pb);
         tags        = ff_codec_ircam_le_tags;
     } else if (le == 0) {
-        sample_rate = av_int2float(avio_rb32(s->pb));
+        sample_rate = lrintf(av_int2float(avio_rb32(s->pb)));
         channels    = avio_rb32(s->pb);
         tag         = avio_rb32(s->pb);
         tags        = ff_codec_ircam_be_tags;
@@ -106,7 +106,7 @@ static int ircam_read_header(AVFormatContext *s)
     return 0;
 }
 
-AVInputFormat ff_ircam_demuxer = {
+const AVInputFormat ff_ircam_demuxer = {
     .name           = "ircam",
     .long_name      = NULL_IF_CONFIG_SMALL("Berkeley/IRCAM/CARL Sound Format"),
     .read_probe     = ircam_probe,

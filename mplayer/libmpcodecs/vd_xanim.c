@@ -23,7 +23,7 @@
  * with MPlayer; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-#define D_KULINA
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h> /* strerror */
@@ -48,7 +48,7 @@ LIBVD_EXTERN(xanim)
 #include <unistd.h>
 #endif
 
-//#include <dlfcn.h> /* dlsym, dlopen, dlclose */
+#include <dlfcn.h> /* dlsym, dlopen, dlclose */
 #include <stdarg.h> /* va_alist, va_start, va_end */
 #include <errno.h> /* strerror, errno */
 
@@ -223,7 +223,7 @@ static int xacodec_load(sh_video_t *sh, char *filename)
     XAVID_MOD_HDR *mod_hdr;
     XAVID_FUNC_HDR *func;
     int i;
-#if 0  //TCB
+
 //    priv->file_handler = dlopen(filename, RTLD_NOW|RTLD_GLOBAL);
     priv->file_handler = dlopen(filename, RTLD_LAZY);
     if (!priv->file_handler)
@@ -305,7 +305,6 @@ static int xacodec_load(sh_video_t *sh, char *filename)
 	    priv->dec_func = func[i].dec_func;
 	}
     }
-#endif
     return 1;
 }
 
@@ -699,13 +698,13 @@ static int init(sh_video_t *sh)
     for (i=0; i < XA_CLOSE_FUNCS; i++)
 	xa_close_func[i] = NULL;
 
-    snprintf(dll, 1024, "%s/%s", codec_path, sh->codec->dll);
+    snprintf(dll, 1024, "%s/%s", codec_path, codec_idx2str(sh->codec->dll_idx));
     if (xacodec_load(sh, dll) == 0)
 	return 0;
 
     codec_hdr.xapi_rev = XAVID_API_REV;
     codec_hdr.anim_hdr = malloc(4096);
-    codec_hdr.description = sh->codec->info;
+    codec_hdr.description = codec_idx2str(sh->codec->info_idx);
     codec_hdr.compression = bswap_32(sh->bih->biCompression);
     codec_hdr.decoder = NULL;
     codec_hdr.x = sh->bih->biWidth; /* ->disp_w */
@@ -782,9 +781,7 @@ static void uninit(sh_video_t *sh)
 	    close_func = xa_close_func[i];
 	    close_func();
 	}
-    //TCB
-//    dlclose(priv->file_handler);
-    //
+    dlclose(priv->file_handler);
     free(priv->decinfo);
     free(priv);
 }

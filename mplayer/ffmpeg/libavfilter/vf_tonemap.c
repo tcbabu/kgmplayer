@@ -30,16 +30,14 @@
 #include "libavutil/imgutils.h"
 #include "libavutil/internal.h"
 #include "libavutil/intreadwrite.h"
-#include "libavutil/mastering_display_metadata.h"
 #include "libavutil/opt.h"
 #include "libavutil/pixdesc.h"
 
 #include "avfilter.h"
+#include "colorspace.h"
 #include "formats.h"
 #include "internal.h"
 #include "video.h"
-
-#define REFERENCE_WHITE 100.0f
 
 enum TonemapAlgorithm {
     TONEMAP_NONE,
@@ -51,11 +49,6 @@ enum TonemapAlgorithm {
     TONEMAP_MOBIUS,
     TONEMAP_MAX,
 };
-
-typedef struct LumaCoefficients {
-    double cr, cg, cb;
-} LumaCoefficients;
-
 
 static const struct LumaCoefficients luma_coefficients[AVCOL_SPC_NB] = {
     [AVCOL_SPC_FCC]        = { 0.30,   0.59,   0.11   },
@@ -75,19 +68,8 @@ typedef struct TonemapContext {
     double desat;
     double peak;
 
-    const LumaCoefficients *coeffs;
+    const struct LumaCoefficients *coeffs;
 } TonemapContext;
-
-static const enum AVPixelFormat pix_fmts[] = {
-    AV_PIX_FMT_GBRPF32,
-    AV_PIX_FMT_GBRAPF32,
-    AV_PIX_FMT_NONE,
-};
-
-static int query_formats(AVFilterContext *ctx)
-{
-    return ff_set_common_formats(ctx, ff_make_format_list(pix_fmts));
-}
 
 static av_cold int init(AVFilterContext *ctx)
 {
@@ -114,31 +96,6 @@ static av_cold int init(AVFilterContext *ctx)
     return 0;
 }
 
-static double determine_signal_peak(AVFrame *in)
-{
-    AVFrameSideData *sd = av_frame_get_side_data(in, AV_FRAME_DATA_CONTENT_LIGHT_LEVEL);
-    double peak = 0;
-
-    if (sd) {
-        AVContentLightMetadata *clm = (AVContentLightMetadata *)sd->data;
-        peak = clm->MaxCLL / REFERENCE_WHITE;
-    }
-
-    sd = av_frame_get_side_data(in, AV_FRAME_DATA_MASTERING_DISPLAY_METADATA);
-    if (!peak && sd) {
-        AVMasteringDisplayMetadata *metadata = (AVMasteringDisplayMetadata *)sd->data;
-        if (metadata->has_luminance)
-            peak = av_q2d(metadata->max_luminance) / REFERENCE_WHITE;
-    }
-
-    /* smpte2084 needs the side data above to work correctly
-     * if missing, assume that the original transfer was arib-std-b67 */
-    if (!peak)
-        peak = 12;
-
-    return peak;
-}
-
 static float hable(float in)
 {
     float a = 0.15f, b = 0.50f, c = 0.10f, d = 0.20f, e = 0.02f, f = 0.30f;
@@ -162,18 +119,19 @@ static float mobius(float in, float j, double peak)
 static void tonemap(TonemapContext *s, AVFrame *out, const AVFrame *in,
                     const AVPixFmtDescriptor *desc, int x, int y, double peak)
 {
-    const float *r_in = (const float *)(in->data[0] + x * desc->comp[0].step + y * in->linesize[0]);
-    const float *b_in = (const float *)(in->data[1] + x * desc->comp[1].step + y * in->linesize[1]);
-    const float *g_in = (const float *)(in->data[2] + x * desc->comp[2].step + y * in->linesize[2]);
-    float *r_out = (float *)(out->data[0] + x * desc->comp[0].step + y * out->linesize[0]);
-    float *b_out = (float *)(out->data[1] + x * desc->comp[1].step + y * out->linesize[1]);
-    float *g_out = (float *)(out->data[2] + x * desc->comp[2].step + y * out->linesize[2]);
+    int map[3] = { desc->comp[0].plane, desc->comp[1].plane, desc->comp[2].plane };
+    const float *r_in = (const float *)(in->data[map[0]] + x * desc->comp[map[0]].step + y * in->linesize[map[0]]);
+    const float *g_in = (const float *)(in->data[map[1]] + x * desc->comp[map[1]].step + y * in->linesize[map[1]]);
+    const float *b_in = (const float *)(in->data[map[2]] + x * desc->comp[map[2]].step + y * in->linesize[map[2]]);
+    float *r_out = (float *)(out->data[map[0]] + x * desc->comp[map[0]].step + y * out->linesize[map[0]]);
+    float *g_out = (float *)(out->data[map[1]] + x * desc->comp[map[1]].step + y * out->linesize[map[1]]);
+    float *b_out = (float *)(out->data[map[2]] + x * desc->comp[map[2]].step + y * out->linesize[map[2]]);
     float sig, sig_orig;
 
     /* load values */
     *r_out = *r_in;
-    *b_out = *b_in;
     *g_out = *g_in;
+    *b_out = *b_in;
 
     /* desaturate to prevent unnatural colors */
     if (s->desat > 0) {
@@ -223,10 +181,36 @@ static void tonemap(TonemapContext *s, AVFrame *out, const AVFrame *in,
     *b_out *= sig / sig_orig;
 }
 
+typedef struct ThreadData {
+    AVFrame *in, *out;
+    const AVPixFmtDescriptor *desc;
+    double peak;
+} ThreadData;
+
+static int tonemap_slice(AVFilterContext *ctx, void *arg, int jobnr, int nb_jobs)
+{
+    TonemapContext *s = ctx->priv;
+    ThreadData *td = arg;
+    AVFrame *in = td->in;
+    AVFrame *out = td->out;
+    const AVPixFmtDescriptor *desc = td->desc;
+    const int slice_start = (in->height * jobnr) / nb_jobs;
+    const int slice_end = (in->height * (jobnr+1)) / nb_jobs;
+    double peak = td->peak;
+
+    for (int y = slice_start; y < slice_end; y++)
+        for (int x = 0; x < out->width; x++)
+            tonemap(s, out, in, desc, x, y, peak);
+
+    return 0;
+}
+
 static int filter_frame(AVFilterLink *link, AVFrame *in)
 {
-    TonemapContext *s = link->dst->priv;
-    AVFilterLink *outlink = link->dst->outputs[0];
+    AVFilterContext *ctx = link->dst;
+    TonemapContext *s = ctx->priv;
+    AVFilterLink *outlink = ctx->outputs[0];
+    ThreadData td;
     AVFrame *out;
     const AVPixFmtDescriptor *desc = av_pix_fmt_desc_get(link->format);
     const AVPixFmtDescriptor *odesc = av_pix_fmt_desc_get(outlink->format);
@@ -260,7 +244,7 @@ static int filter_frame(AVFilterLink *link, AVFrame *in)
 
     /* read peak from side data if not passed in */
     if (!peak) {
-        peak = determine_signal_peak(in);
+        peak = ff_determine_signal_peak(in);
         av_log(s, AV_LOG_DEBUG, "Computed signal peak: %f\n", peak);
     }
 
@@ -277,9 +261,12 @@ static int filter_frame(AVFilterLink *link, AVFrame *in)
     }
 
     /* do the tone map */
-    for (y = 0; y < out->height; y++)
-        for (x = 0; x < out->width; x++)
-            tonemap(s, out, in, desc, x, y, peak);
+    td.out = out;
+    td.in = in;
+    td.desc = desc;
+    td.peak = peak;
+    ff_filter_execute(ctx, tonemap_slice, &td, NULL,
+                      FFMIN(in->height, ff_filter_get_nb_threads(ctx)));
 
     /* copy/generate alpha if needed */
     if (desc->flags & AV_PIX_FMT_FLAG_ALPHA && odesc->flags & AV_PIX_FMT_FLAG_ALPHA) {
@@ -296,6 +283,8 @@ static int filter_frame(AVFilterLink *link, AVFrame *in)
     }
 
     av_frame_free(&in);
+
+    ff_update_hdr_metadata(out, peak);
 
     return ff_filter_frame(outlink, out);
 }
@@ -317,13 +306,7 @@ static const AVOption tonemap_options[] = {
     { NULL }
 };
 
-static const AVClass tonemap_class = {
-    .class_name       = "tonemap",
-    .item_name        = av_default_item_name,
-    .option           = tonemap_options,
-    .version          = LIBAVUTIL_VERSION_INT,
-    .category         = AV_CLASS_CATEGORY_FILTER,
-};
+AVFILTER_DEFINE_CLASS(tonemap);
 
 static const AVFilterPad tonemap_inputs[] = {
     {
@@ -331,7 +314,6 @@ static const AVFilterPad tonemap_inputs[] = {
         .type         = AVMEDIA_TYPE_VIDEO,
         .filter_frame = filter_frame,
     },
-    { NULL }
 };
 
 static const AVFilterPad tonemap_outputs[] = {
@@ -339,16 +321,16 @@ static const AVFilterPad tonemap_outputs[] = {
         .name         = "default",
         .type         = AVMEDIA_TYPE_VIDEO,
     },
-    { NULL }
 };
 
-AVFilter ff_vf_tonemap = {
+const AVFilter ff_vf_tonemap = {
     .name            = "tonemap",
     .description     = NULL_IF_CONFIG_SMALL("Conversion to/from different dynamic ranges."),
     .init            = init,
-    .query_formats   = query_formats,
     .priv_size       = sizeof(TonemapContext),
     .priv_class      = &tonemap_class,
-    .inputs          = tonemap_inputs,
-    .outputs         = tonemap_outputs,
+    FILTER_INPUTS(tonemap_inputs),
+    FILTER_OUTPUTS(tonemap_outputs),
+    FILTER_PIXFMTS(AV_PIX_FMT_GBRPF32, AV_PIX_FMT_GBRAPF32),
+    .flags           = AVFILTER_FLAG_SLICE_THREADS,
 };

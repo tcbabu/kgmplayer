@@ -231,7 +231,7 @@ static int xwd_decode_frame(AVCodecContext *avctx, void *data,
             blue   = bytestream2_get_byteu(&gb);
             bytestream2_skipu(&gb, 3); // skip bitmask flag and padding
 
-            dst[i] = red << 16 | green << 8 | blue;
+            dst[i] = 0xFFU << 24 | red << 16 | green << 8 | blue;
         }
     }
 
@@ -247,7 +247,7 @@ static int xwd_decode_frame(AVCodecContext *avctx, void *data,
     return buf_size;
 }
 
-AVCodec ff_xwd_decoder = {
+const AVCodec ff_xwd_decoder = {
     .name           = "xwd",
     .long_name      = NULL_IF_CONFIG_SMALL("XWD (X Window Dump) image"),
     .type           = AVMEDIA_TYPE_VIDEO,

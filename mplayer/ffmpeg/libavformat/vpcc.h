@@ -27,10 +27,18 @@
 #ifndef AVFORMAT_VPCC_H
 #define AVFORMAT_VPCC_H
 
-#include <stdint.h>
+#include "libavutil/rational.h"
+#include "libavcodec/codec_par.h"
 #include "avio.h"
 #include "avformat.h"
-#include "libavcodec/avcodec.h"
+
+typedef struct VPCC {
+    int profile;
+    int level;
+    int bitdepth;
+    int chroma_subsampling;
+    int full_range_flag;
+} VPCC;
 
 /**
  * Writes VP codec configuration to the provided AVIOContext.
@@ -43,5 +51,8 @@
  */
 int ff_isom_write_vpcc(AVFormatContext *s, AVIOContext *pb,
                        AVCodecParameters *par);
+
+int ff_isom_get_vpcc_features(AVFormatContext *s, AVCodecParameters *par,
+                              AVRational *frame_rate, VPCC *vpcc);
 
 #endif /* AVFORMAT_VPCC_H */

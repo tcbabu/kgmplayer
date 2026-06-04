@@ -1,7 +1,8 @@
-libavutil/lls.o: libavutil/lls.c libavutil/attributes.h \
- libavutil/internal.h config.h libavutil/timer.h libavutil/log.h \
- libavutil/avutil.h libavutil/common.h libavutil/macros.h \
- libavutil/version.h libavutil/avconfig.h libavutil/intmath.h \
- libavutil/mem.h libavutil/error.h libavutil/rational.h \
- libavutil/mathematics.h libavutil/intfloat.h libavutil/pixfmt.h \
- libavutil/cpu.h libavutil/dict.h libavutil/libm.h libavutil/lls.h
+libavutil/lls.o: libavutil/lls.c config.h libavutil/attributes.h \
+ libavutil/lls.h libavutil/macros.h libavutil/avconfig.h \
+ libavutil/mem_internal.h libavutil/avassert.h libavutil/log.h \
+ libavutil/version.h libavutil/mem.h libavutil/avutil.h \
+ libavutil/common.h libavutil/intmath.h libavutil/internal.h \
+ libavutil/timer.h libavutil/dict.h libavutil/pixfmt.h libavutil/libm.h \
+ libavutil/intfloat.h libavutil/mathematics.h libavutil/rational.h \
+ libavutil/error.h

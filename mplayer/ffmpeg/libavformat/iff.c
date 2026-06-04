@@ -142,7 +142,7 @@ static int get_metadata(AVFormatContext *s,
     return 0;
 }
 
-static int iff_probe(AVProbeData *p)
+static int iff_probe(const AVProbeData *p)
 {
     const uint8_t *d = p->buf;
 
@@ -315,11 +315,10 @@ static int parse_dsd_prop(AVFormatContext *s, AVStream *st, uint64_t eof)
             break;
 
         case MKTAG('I','D','3',' '):
-            id3v2_extra_meta = NULL;
             ff_id3v2_read(s, ID3v2_DEFAULT_MAGIC, &id3v2_extra_meta, size);
             if (id3v2_extra_meta) {
-                if ((ret = ff_id3v2_parse_apic(s, &id3v2_extra_meta)) < 0 ||
-                    (ret = ff_id3v2_parse_chapters(s, &id3v2_extra_meta)) < 0) {
+                if ((ret = ff_id3v2_parse_apic(s, id3v2_extra_meta)) < 0 ||
+                    (ret = ff_id3v2_parse_chapters(s, id3v2_extra_meta)) < 0) {
                     ff_id3v2_free_extra_meta(&id3v2_extra_meta);
                     return ret;
                 }
@@ -359,9 +358,6 @@ static int read_dst_frame(AVFormatContext *s, AVPacket *pkt)
     uint64_t chunk_pos, data_pos, data_size;
     int ret = AVERROR_EOF;
 
-    if (s->nb_streams < 1)
-        return AVERROR_INVALIDDATA;
-
     while (!avio_feof(pb)) {
         chunk_pos = avio_tell(pb);
         if (chunk_pos >= iff->body_end)
@@ -388,7 +384,7 @@ static int read_dst_frame(AVFormatContext *s, AVPacket *pkt)
                 avio_skip(pb, 1);
             pkt->flags |= AV_PKT_FLAG_KEY;
             pkt->stream_index = 0;
-            pkt->duration = s->streams[0]->codecpar->sample_rate / 75;
+            pkt->duration = 588LL * s->streams[0]->codecpar->sample_rate / 44100;
             pkt->pos = chunk_pos;
 
             chunk_pos = avio_tell(pb);
@@ -401,8 +397,7 @@ static int read_dst_frame(AVFormatContext *s, AVPacket *pkt)
         case ID_FRTE:
             if (data_size < 4)
                 return AVERROR_INVALIDDATA;
-            s->streams[0]->duration = avio_rb32(pb) * (uint64_t)s->streams[0]->codecpar->sample_rate / 75;
-
+            s->streams[0]->duration = avio_rb32(pb) * 588LL * s->streams[0]->codecpar->sample_rate / 44100;
             break;
         }
 
@@ -505,9 +500,6 @@ static int iff_read_header(AVFormatContext *s)
         case ID_DST:
         case ID_MDAT:
             iff->body_pos = avio_tell(pb);
-            if (iff->body_pos < 0 || iff->body_pos + data_size > INT64_MAX)
-                return AVERROR_INVALIDDATA;
-
             iff->body_end = iff->body_pos + data_size;
             iff->body_size = data_size;
             if (chunk_id == ID_DST) {
@@ -541,12 +533,15 @@ static int iff_read_header(AVFormatContext *s)
                         data_size);
                  return AVERROR_INVALIDDATA;
             }
-            st->codecpar->extradata_size = data_size + IFF_EXTRA_VIDEO_SIZE;
-            st->codecpar->extradata      = av_malloc(data_size + IFF_EXTRA_VIDEO_SIZE + AV_INPUT_BUFFER_PADDING_SIZE);
-            if (!st->codecpar->extradata)
-                return AVERROR(ENOMEM);
-            if (avio_read(pb, st->codecpar->extradata + IFF_EXTRA_VIDEO_SIZE, data_size) < 0)
+            res = ff_alloc_extradata(st->codecpar,
+                                     data_size + IFF_EXTRA_VIDEO_SIZE);
+            if (res < 0)
+                return res;
+            if (avio_read(pb, st->codecpar->extradata + IFF_EXTRA_VIDEO_SIZE, data_size) < 0) {
+                av_freep(&st->codecpar->extradata);
+                st->codecpar->extradata_size = 0;
                 return AVERROR(EIO);
+            }
             break;
 
         case ID_BMHD:
@@ -784,10 +779,9 @@ static int iff_read_header(AVFormatContext *s)
         iff->transparency = transparency;
 
         if (!st->codecpar->extradata) {
-            st->codecpar->extradata_size = IFF_EXTRA_VIDEO_SIZE;
-            st->codecpar->extradata      = av_malloc(IFF_EXTRA_VIDEO_SIZE + AV_INPUT_BUFFER_PADDING_SIZE);
-            if (!st->codecpar->extradata)
-                return AVERROR(ENOMEM);
+            int ret = ff_alloc_extradata(st->codecpar, IFF_EXTRA_VIDEO_SIZE);
+            if (ret < 0)
+                return ret;
         }
         av_assert0(st->codecpar->extradata_size >= IFF_EXTRA_VIDEO_SIZE);
         buf = st->codecpar->extradata;
@@ -902,7 +896,7 @@ static int iff_read_packet(AVFormatContext *s,
     return ret;
 }
 
-AVInputFormat ff_iff_demuxer = {
+const AVInputFormat ff_iff_demuxer = {
     .name           = "iff",
     .long_name      = NULL_IF_CONFIG_SMALL("IFF (Interchange File Format)"),
     .priv_data_size = sizeof(IffDemuxContext),

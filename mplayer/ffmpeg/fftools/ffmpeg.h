@@ -25,16 +25,13 @@
 #include <stdio.h>
 #include <signal.h>
 
-#if HAVE_PTHREADS
-#include <pthread.h>
-#endif
-
 #include "cmdutils.h"
 
 #include "libavformat/avformat.h"
 #include "libavformat/avio.h"
 
 #include "libavcodec/avcodec.h"
+#include "libavcodec/bsf.h"
 
 #include "libavfilter/avfilter.h"
 
@@ -45,42 +42,30 @@
 #include "libavutil/hwcontext.h"
 #include "libavutil/pixfmt.h"
 #include "libavutil/rational.h"
+#include "libavutil/thread.h"
 #include "libavutil/threadmessage.h"
 
 #include "libswresample/swresample.h"
 
-#define VSYNC_AUTO       -1
-#define VSYNC_PASSTHROUGH 0
-#define VSYNC_CFR         1
-#define VSYNC_VFR         2
-#define VSYNC_VSCFR       0xfe
-#define VSYNC_DROP        0xff
+enum VideoSyncMethod {
+    VSYNC_AUTO = -1,
+    VSYNC_PASSTHROUGH,
+    VSYNC_CFR,
+    VSYNC_VFR,
+    VSYNC_VSCFR,
+    VSYNC_DROP,
+};
 
 #define MAX_STREAMS 1024    /* arbitrary sanity check value */
 
 enum HWAccelID {
     HWACCEL_NONE = 0,
     HWACCEL_AUTO,
-    HWACCEL_VDPAU,
-    HWACCEL_DXVA2,
-    HWACCEL_VDA,
-    HWACCEL_VIDEOTOOLBOX,
-    HWACCEL_QSV,
-    HWACCEL_VAAPI,
-    HWACCEL_CUVID,
-    HWACCEL_D3D11VA,
+    HWACCEL_GENERIC,
 };
 
-typedef struct HWAccel {
-    const char *name;
-    int (*init)(AVCodecContext *s);
-    enum HWAccelID id;
-    enum AVPixelFormat pix_fmt;
-    enum AVHWDeviceType device_type;
-} HWAccel;
-
 typedef struct HWDevice {
-    char *name;
+    const char *name;
     enum AVHWDeviceType type;
     AVBufferRef *device_ref;
 } HWDevice;
@@ -117,6 +102,8 @@ typedef struct OptionsContext {
     int        nb_audio_sample_rate;
     SpecifierOpt *frame_rates;
     int        nb_frame_rates;
+    SpecifierOpt *max_frame_rates;
+    int        nb_max_frame_rates;
     SpecifierOpt *frame_sizes;
     int        nb_frame_sizes;
     SpecifierOpt *frame_pix_fmts;
@@ -126,6 +113,7 @@ typedef struct OptionsContext {
     int64_t input_ts_offset;
     int loop;
     int rate_emu;
+    float readrate;
     int accurate_seek;
     int thread_queue_size;
 
@@ -161,6 +149,7 @@ typedef struct OptionsContext {
     float mux_preload;
     float mux_max_delay;
     int shortest;
+    int bitexact;
 
     int video_disable;
     int audio_disable;
@@ -223,6 +212,8 @@ typedef struct OptionsContext {
     int        nb_passlogfiles;
     SpecifierOpt *max_muxing_queue_size;
     int        nb_max_muxing_queue_size;
+    SpecifierOpt *muxing_queue_data_threshold;
+    int        nb_muxing_queue_data_threshold;
     SpecifierOpt *guess_layout_max;
     int        nb_guess_layout_max;
     SpecifierOpt *apad;
@@ -237,6 +228,10 @@ typedef struct OptionsContext {
     int        nb_time_bases;
     SpecifierOpt *enc_time_bases;
     int        nb_enc_time_bases;
+    SpecifierOpt *autoscale;
+    int        nb_autoscale;
+    SpecifierOpt *bits_per_raw_sample;
+    int        nb_bits_per_raw_sample;
 } OptionsContext;
 
 typedef struct InputFilter {
@@ -246,7 +241,7 @@ typedef struct InputFilter {
     uint8_t            *name;
     enum AVMediaType    type;   // AVMEDIA_TYPE_SUBTITLE for sub2video
 
-    AVFifoBuffer *frame_queue;
+    AVFifo *frame_queue;
 
     // parameters configured for this input
     int format;
@@ -259,6 +254,7 @@ typedef struct InputFilter {
     uint64_t channel_layout;
 
     AVBufferRef *hw_frames_ctx;
+    int32_t *displaymatrix;
 
     int eof;
 } InputFilter;
@@ -281,9 +277,10 @@ typedef struct OutputFilter {
     uint64_t channel_layout;
 
     // those are only set if no format is specified and the encoder gives us multiple options
-    int *formats;
-    uint64_t *channel_layouts;
-    int *sample_rates;
+    // They point directly to the relevant lists of the encoder.
+    const int *formats;
+    const uint64_t *channel_layouts;
+    const int *sample_rates;
 } OutputFilter;
 
 typedef struct FilterGraph {
@@ -292,6 +289,9 @@ typedef struct FilterGraph {
 
     AVFilterGraph *graph;
     int reconfiguration;
+    // true when the filtergraph contains only meta filters
+    // that do not modify the frame data
+    int is_meta;
 
     InputFilter   **inputs;
     int          nb_inputs;
@@ -309,14 +309,16 @@ typedef struct InputStream {
 #define DECODING_FOR_FILTER 2
 
     AVCodecContext *dec_ctx;
-    AVCodec *dec;
+    const AVCodec *dec;
     AVFrame *decoded_frame;
-    AVFrame *filter_frame; /* a ref of decoded_frame, to be sent to filters */
+    AVPacket *pkt;
 
+    int64_t       prev_pkt_pts;
     int64_t       start;     /* time when read started */
     /* predicted dts of the next packet read for this stream or (when there are
      * several frames in a packet) of the next frame in current packet (in AV_TIME_BASE units) */
     int64_t       next_dts;
+    int64_t first_dts;       ///< dts of the first packet read for this stream (in AV_TIME_BASE units)
     int64_t       dts;       ///< dts of the last packet read for this stream (in AV_TIME_BASE units)
 
     int64_t       next_pts;  ///< synthetic pts for the next decode frame (in AV_TIME_BASE units)
@@ -353,12 +355,11 @@ typedef struct InputStream {
     struct sub2video {
         int64_t last_pts;
         int64_t end_pts;
-        AVFifoBuffer *sub_queue;    ///< queue of AVSubtitle* before filter init
+        AVFifo *sub_queue;    ///< queue of AVSubtitle* before filter init
         AVFrame *frame;
         int w, h;
+        unsigned int initialize; ///< marks if sub2video_update should force an initialization
     } sub2video;
-
-    int dr1;
 
     /* decoded data from this stream goes into all those filters
      * currently video and audio only */
@@ -369,18 +370,16 @@ typedef struct InputStream {
 
     /* hwaccel options */
     enum HWAccelID hwaccel_id;
+    enum AVHWDeviceType hwaccel_device_type;
     char  *hwaccel_device;
     enum AVPixelFormat hwaccel_output_format;
 
     /* hwaccel context */
-    enum HWAccelID active_hwaccel_id;
     void  *hwaccel_ctx;
     void (*hwaccel_uninit)(AVCodecContext *s);
-    int  (*hwaccel_get_buffer)(AVCodecContext *s, AVFrame *frame, int flags);
     int  (*hwaccel_retrieve_data)(AVCodecContext *s, AVFrame *frame);
     enum AVPixelFormat hwaccel_pix_fmt;
     enum AVPixelFormat hwaccel_retrieved_pix_fmt;
-    AVBufferRef *hw_frames_ctx;
 
     /* stats */
     // combined size of all the packets read
@@ -411,15 +410,17 @@ typedef struct InputFile {
     int64_t ts_offset;
     int64_t last_ts;
     int64_t start_time;   /* user-specified start time in AV_TIME_BASE or AV_NOPTS_VALUE */
-    int seek_timestamp;
     int64_t recording_time;
     int nb_streams;       /* number of stream that ffmpeg is aware of; may be different
                              from ctx.nb_streams if new streams appear during av_read_frame() */
     int nb_streams_warn;  /* number of streams that the user was warned of */
     int rate_emu;
+    float readrate;
     int accurate_seek;
 
-#if HAVE_PTHREADS
+    AVPacket *pkt;
+
+#if HAVE_THREADS
     AVThreadMessageQueue *in_thread_queue;
     pthread_t thread;           /* thread reading from this file */
     int non_blocking;           /* reading packets from the thread should not block */
@@ -437,7 +438,8 @@ enum forced_keyframes_const {
     FKF_NB
 };
 
-#define ABORT_ON_FLAG_EMPTY_OUTPUT (1 <<  0)
+#define ABORT_ON_FLAG_EMPTY_OUTPUT        (1 <<  0)
+#define ABORT_ON_FLAG_EMPTY_OUTPUT_STREAM (1 <<  1)
 
 extern const char *const forced_keyframes_const_names[];
 
@@ -466,15 +468,15 @@ typedef struct OutputStream {
     AVRational mux_timebase;
     AVRational enc_timebase;
 
-    int                    nb_bitstream_filters;
-    AVBSFContext            **bsf_ctx;
+    AVBSFContext            *bsf_ctx;
 
     AVCodecContext *enc_ctx;
     AVCodecParameters *ref_par; /* associated input codec parameters with encoders options applied */
-    AVCodec *enc;
+    const AVCodec *enc;
     int64_t max_frames;
     AVFrame *filtered_frame;
     AVFrame *last_frame;
+    AVPacket *pkt;
     int last_dropped;
     int last_nb0_frames[3];
 
@@ -482,21 +484,27 @@ typedef struct OutputStream {
 
     /* video only */
     AVRational frame_rate;
+    AVRational max_frame_rate;
+    enum VideoSyncMethod vsync_method;
     int is_cfr;
     int force_fps;
     int top_field_first;
     int rotate_overridden;
+    int autoscale;
+    int bits_per_raw_sample;
     double rotate_override_value;
 
     AVRational frame_aspect_ratio;
 
     /* forced key frames */
+    int64_t forced_kf_ref_pts;
     int64_t *forced_kf_pts;
     int forced_kf_count;
     int forced_kf_index;
     char *forced_keyframes;
     AVExpr *forced_keyframes_pexpr;
     double forced_keyframes_expr_const_values[FKF_NB];
+    int dropped_keyframe;
 
     /* audio only */
     int *audio_channels_map;             /* list of the channels id to pick from the source stream */
@@ -513,7 +521,6 @@ typedef struct OutputStream {
     AVDictionary *encoder_opts;
     AVDictionary *sws_dict;
     AVDictionary *swr_opts;
-    AVDictionary *resample_opts;
     char *apad;
     OSTFinished finished;        /* no more packets should be written for this stream */
     int unavailable;                     /* true if the steram is unavailable (possibly temporarily) */
@@ -533,9 +540,6 @@ typedef struct OutputStream {
 
     int keep_pix_fmt;
 
-    AVCodecParserContext *parser;
-    AVCodecContext       *parser_avctx;
-
     /* stats */
     // combined size of all the packets written
     uint64_t data_size;
@@ -551,7 +555,16 @@ typedef struct OutputStream {
     int max_muxing_queue_size;
 
     /* the packets are buffered here until the muxer is ready to be initialized */
-    AVFifoBuffer *muxing_queue;
+    AVFifo *muxing_queue;
+
+    /*
+     * The size of the AVPackets' buffers in queue.
+     * Updated when a packet is either pushed or pulled from the queue.
+     */
+    size_t muxing_queue_data_size;
+
+    /* Threshold after which max_muxing_queue_size will be in effect */
+    size_t muxing_queue_data_threshold;
 
     /* packet picture type */
     int pict_type;
@@ -595,7 +608,7 @@ extern float dts_error_threshold;
 
 extern int audio_volume;
 extern int audio_sync_method;
-extern int video_sync_method;
+extern enum VideoSyncMethod video_sync_method;
 extern float frame_drop_threshold;
 extern int do_benchmark;
 extern int do_benchmark_all;
@@ -609,23 +622,21 @@ extern int debug_ts;
 extern int exit_on_error;
 extern int abort_on_flags;
 extern int print_stats;
+extern int64_t stats_period;
 extern int qp_hist;
 extern int stdin_interaction;
 extern int frame_bits_per_raw_sample;
 extern AVIOContext *progress_avio;
 extern float max_error_rate;
-extern char *videotoolbox_pixfmt;
 
-extern int filter_nbthreads;
+extern char *filter_nbthreads;
 extern int filter_complex_nbthreads;
 extern int vstats_version;
+extern int auto_conversion_filters;
 
 extern const AVIOInterruptCB int_cb;
 
 extern const OptionDef options[];
-extern const HWAccel hwaccels[];
-extern int hwaccel_lax_profile_check;
-extern AVBufferRef *hw_device_ctx;
 #if CONFIG_QSV
 extern char *qsv_device;
 #endif
@@ -635,37 +646,27 @@ extern HWDevice *filter_hw_device;
 void term_init(void);
 void term_exit(void);
 
-void reset_options(OptionsContext *o, int is_input);
 void show_usage(void);
-
-void opt_output_file(void *optctx, const char *filename);
 
 void remove_avoptions(AVDictionary **a, AVDictionary *b);
 void assert_avoptions(AVDictionary *m);
 
 int guess_input_channel_layout(InputStream *ist);
 
-enum AVPixelFormat choose_pixel_fmt(AVStream *st, AVCodecContext *avctx, AVCodec *codec, enum AVPixelFormat target);
-void choose_sample_fmt(AVStream *st, AVCodec *codec);
-
 int configure_filtergraph(FilterGraph *fg);
-int configure_output_filter(FilterGraph *fg, OutputFilter *ofilter, AVFilterInOut *out);
 void check_filter_outputs(void);
-int ist_in_filtergraph(FilterGraph *fg, InputStream *ist);
 int filtergraph_is_simple(FilterGraph *fg);
 int init_simple_filtergraph(InputStream *ist, OutputStream *ost);
 int init_complex_filtergraph(FilterGraph *fg);
 
-void sub2video_update(InputStream *ist, AVSubtitle *sub);
+void sub2video_update(InputStream *ist, int64_t heartbeat_pts, AVSubtitle *sub);
 
 int ifilter_parameters_from_frame(InputFilter *ifilter, const AVFrame *frame);
 
 int ffmpeg_parse_options(int argc, char **argv);
 
-int vda_init(AVCodecContext *s);
 int videotoolbox_init(AVCodecContext *s);
 int qsv_init(AVCodecContext *s);
-int cuvid_init(AVCodecContext *s);
 
 HWDevice *hw_device_get_by_name(const char *name);
 int hw_device_init_from_string(const char *arg, HWDevice **dev);
@@ -673,6 +674,7 @@ void hw_device_free_all(void);
 
 int hw_device_setup_for_decode(InputStream *ist);
 int hw_device_setup_for_encode(OutputStream *ost);
+int hw_device_setup_for_filter(FilterGraph *fg);
 
 int hwaccel_decode_init(AVCodecContext *avctx);
 

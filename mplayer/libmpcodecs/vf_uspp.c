@@ -30,7 +30,7 @@
 #include "mp_msg.h"
 #include "cpudetect.h"
 
-#include "libavutil/mem.h"
+#include "mpmem.h"
 #include "libavcodec/avcodec.h"
 
 #include "img_format.h"
@@ -240,7 +240,7 @@ static int config(struct vf_instance *vf,
             avctx_enc->gop_size = 300;
             avctx_enc->max_b_frames= 0;
             avctx_enc->pix_fmt = AV_PIX_FMT_YUV420P;
-            avctx_enc->flags = CODEC_FLAG_QSCALE | CODEC_FLAG_LOW_DELAY;
+            avctx_enc->flags = AV_CODEC_FLAG_QSCALE | AV_CODEC_FLAG_LOW_DELAY;
             avctx_enc->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
             avctx_enc->global_quality= 123;
             av_dict_set(&opts, "no_bitstream", "1", 0);
@@ -275,7 +275,7 @@ static void get_image(struct vf_instance *vf, mp_image_t *mpi){
     mpi->flags|=MP_IMGFLAG_DIRECT;
 }
 
-static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts){
+static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts, double endpts){
     mp_image_t *dmpi;
 
     if(!(mpi->flags&MP_IMGFLAG_DIRECT)){
@@ -307,7 +307,7 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts){
     if(gCpuCaps.hasMMX2) __asm__ volatile ("sfence\n\t");
 #endif
 
-    return vf_next_put_image(vf,dmpi, pts);
+    return vf_next_put_image(vf, dmpi, pts, endpts);
 }
 
 static void uninit(struct vf_instance *vf){

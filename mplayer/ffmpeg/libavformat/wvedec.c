@@ -22,7 +22,7 @@
 #include "internal.h"
 #include "pcm.h"
 
-static int wve_probe(AVProbeData *p)
+static int wve_probe(const AVProbeData *p)
 {
     if (memcmp(p->buf, "ALawSoundFile**\0\017\020", 18) ||
         memcmp(p->buf + 22, "\0\0\0\1\0\0\0\0\0\0", 10))
@@ -52,7 +52,7 @@ static int wve_read_header(AVFormatContext *s)
     return 0;
 }
 
-AVInputFormat ff_wve_demuxer = {
+const AVInputFormat ff_wve_demuxer = {
     .name           = "wve",
     .long_name      = NULL_IF_CONFIG_SMALL("Psion 3 audio"),
     .read_probe     = wve_probe,

@@ -37,7 +37,7 @@
 #include "pcm.h"
 #include "sox.h"
 
-static int sox_probe(AVProbeData *p)
+static int sox_probe(const AVProbeData *p)
 {
     if (AV_RL32(p->buf) == SOX_TAG || AV_RB32(p->buf) == SOX_TAG)
         return AVPROBE_SCORE_MAX;
@@ -124,7 +124,7 @@ static int sox_read_header(AVFormatContext *s)
     return 0;
 }
 
-AVInputFormat ff_sox_demuxer = {
+const AVInputFormat ff_sox_demuxer = {
     .name           = "sox",
     .long_name      = NULL_IF_CONFIG_SMALL("SoX native"),
     .read_probe     = sox_probe,

@@ -20,7 +20,6 @@
 
 #include "libavutil/attributes.h"
 #include "libavutil/cpu.h"
-#include "libavutil/mem.h"
 #include "libavutil/x86/asm.h"
 #include "libavutil/x86/cpu.h"
 #include "libavfilter/bwdif.h"
@@ -53,8 +52,9 @@ void ff_bwdif_filter_line_12bit_ssse3(void *dst, void *prev, void *cur, void *ne
 
 av_cold void ff_bwdif_init_x86(BWDIFContext *bwdif)
 {
+    YADIFContext *yadif = &bwdif->yadif;
     int cpu_flags = av_get_cpu_flags();
-    int bit_depth = (!bwdif->csp) ? 8 : bwdif->csp->comp[0].depth;
+    int bit_depth = (!yadif->csp) ? 8 : yadif->csp->comp[0].depth;
 
     if (bit_depth <= 8) {
 #if ARCH_X86_32

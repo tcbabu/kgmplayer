@@ -25,7 +25,7 @@
 #include "internal.h"
 #include "pcm.h"
 
-static int nist_probe(AVProbeData *p)
+static int nist_probe(const AVProbeData *p)
 {
     if (AV_RL64(p->buf) == AV_RL64("NIST_1A\x0a"))
         return AVPROBE_SCORE_MAX;
@@ -34,7 +34,7 @@ static int nist_probe(AVProbeData *p)
 
 static int nist_read_header(AVFormatContext *s)
 {
-    char buffer[256]= {0}, coding[32] = "pcm", format[32] = "01";
+    char buffer[256], coding[32] = "pcm", format[32] = "01";
     int bps = 0, be = 0;
     int32_t header_size = -1;
     AVStream *st;
@@ -132,7 +132,7 @@ static int nist_read_header(AVFormatContext *s)
     return AVERROR_EOF;
 }
 
-AVInputFormat ff_nistsphere_demuxer = {
+const AVInputFormat ff_nistsphere_demuxer = {
     .name           = "nistsphere",
     .long_name      = NULL_IF_CONFIG_SMALL("NIST SPeech HEader REsources"),
     .read_probe     = nist_probe,

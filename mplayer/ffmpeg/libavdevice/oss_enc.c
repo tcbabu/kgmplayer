@@ -21,21 +21,14 @@
 
 #include "config.h"
 
-#if HAVE_SOUNDCARD_H
-#include <soundcard.h>
-#else
-#include <sys/soundcard.h>
-#endif
-
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <sys/soundcard.h>
 
 #include "libavutil/internal.h"
-
-#include "libavcodec/avcodec.h"
 
 #include "avdevice.h"
 #include "libavformat/internal.h"
@@ -51,7 +44,7 @@ static int audio_write_header(AVFormatContext *s1)
     st = s1->streams[0];
     s->sample_rate = st->codecpar->sample_rate;
     s->channels = st->codecpar->channels;
-    ret = ff_oss_audio_open(s1, 1, s1->filename);
+    ret = ff_oss_audio_open(s1, 1, s1->url);
     if (ret < 0) {
         return AVERROR(EIO);
     } else {
@@ -95,13 +88,13 @@ static int audio_write_trailer(AVFormatContext *s1)
 }
 
 static const AVClass oss_muxer_class = {
-    .class_name     = "OSS muxer",
+    .class_name     = "OSS outdev",
     .item_name      = av_default_item_name,
     .version        = LIBAVUTIL_VERSION_INT,
     .category       = AV_CLASS_CATEGORY_DEVICE_AUDIO_OUTPUT,
 };
 
-AVOutputFormat ff_oss_muxer = {
+const AVOutputFormat ff_oss_muxer = {
     .name           = "oss",
     .long_name      = NULL_IF_CONFIG_SMALL("OSS (Open Sound System) playback"),
     .priv_data_size = sizeof(OSSAudioData),

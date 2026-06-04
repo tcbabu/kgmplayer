@@ -21,12 +21,11 @@
  * Libavfilter multithreading support
  */
 
-#include "config.h"
+#include <stddef.h>
 
-#include "libavutil/common.h"
-#include "libavutil/cpu.h"
+#include "libavutil/error.h"
+#include "libavutil/macros.h"
 #include "libavutil/mem.h"
-#include "libavutil/thread.h"
 #include "libavutil/slicethread.h"
 
 #include "avfilter.h"
@@ -84,10 +83,6 @@ static int thread_init_internal(ThreadContext *c, int nb_threads)
 int ff_graph_thread_init(AVFilterGraph *graph)
 {
     int ret;
-
-#if HAVE_W32THREADS
-    w32thread_init();
-#endif
 
     if (graph->nb_threads == 1) {
         graph->thread_type = 0;

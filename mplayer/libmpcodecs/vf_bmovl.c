@@ -151,8 +151,11 @@ config(struct vf_instance *vf,
 	}
 
 	// Set default to black...
+	memset( vf->priv->bitmap.y,   0, width*height );
 	memset( vf->priv->bitmap.u, 128, width*height/4 );
 	memset( vf->priv->bitmap.v, 128, width*height/4 );
+	memset( vf->priv->bitmap.a,   0, width*height );
+	memset( vf->priv->bitmap.oa,  0, width*height );
 
     vf->priv->w  = vf->priv->x1 = width;
     vf->priv->h  = vf->priv->y1 = height;
@@ -214,7 +217,7 @@ _read_cmd(int fd, char *cmd, char *args) {
 
 
 static int
-put_image(struct vf_instance *vf, mp_image_t* mpi, double pts){
+put_image(struct vf_instance *vf, mp_image_t* mpi, double pts, double endpts){
 	int buf_x=0, buf_y=0, buf_pos=0;
 	int have, got, want;
 	int xpos=0, ypos=0, pos=0;
@@ -226,9 +229,9 @@ put_image(struct vf_instance *vf, mp_image_t* mpi, double pts){
 						MP_IMGFLAG_ACCEPT_STRIDE | MP_IMGFLAG_PREFER_ALIGNED_STRIDE,
 						mpi->w, mpi->h);
 
-    memcpy_pic( dmpi->planes[0], mpi->planes[0], mpi->width, mpi->height, dmpi->stride[0], mpi->stride[0] );
-    memcpy_pic( dmpi->planes[1], mpi->planes[1], mpi->chroma_width, mpi->chroma_height, dmpi->stride[1], mpi->stride[1] );
-    memcpy_pic( dmpi->planes[2], mpi->planes[2], mpi->chroma_width, mpi->chroma_height, dmpi->stride[2], mpi->stride[2] );
+    memcpy_pic( dmpi->planes[0], mpi->planes[0], mpi->w,   mpi->h,   dmpi->stride[0], mpi->stride[0] );
+    memcpy_pic( dmpi->planes[1], mpi->planes[1], mpi->w/2, mpi->h/2, dmpi->stride[1], mpi->stride[1] );
+    memcpy_pic( dmpi->planes[2], mpi->planes[2], mpi->w/2, mpi->h/2, dmpi->stride[2], mpi->stride[2] );
 
     if(vf->priv->stream_fd >= 0) {
 		struct timeval tv;
@@ -261,10 +264,10 @@ put_image(struct vf_instance *vf, mp_image_t* mpi, double pts){
 			else if( strncmp(cmd,"OPAQUE",6)==0 ) vf->priv->opaque=TRUE;
 			else if( strncmp(cmd,"SHOW",  4)==0 ) vf->priv->hidden=FALSE;
 			else if( strncmp(cmd,"HIDE",  4)==0 ) vf->priv->hidden=TRUE;
-			else if( strncmp(cmd,"FLUSH" ,5)==0 ) return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE);
+			else if( strncmp(cmd,"FLUSH" ,5)==0 ) return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE, MP_NOPTS_VALUE);
 			else {
 			    mp_msg(MSGT_VFILTER, MSGL_WARN, "\nvf_bmovl: Unknown command: '%s'. Ignoring.\n", cmd);
-			    return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE);
+			    return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE, MP_NOPTS_VALUE);
 			}
 
 			if(command == CMD_ALPHA) {
@@ -283,7 +286,7 @@ put_image(struct vf_instance *vf, mp_image_t* mpi, double pts){
 			    buffer = malloc(imgw*imgh*pxsz);
 			    if(!buffer) {
 			    	mp_msg(MSGT_VFILTER, MSGL_WARN, "\nvf_bmovl: Couldn't allocate temporary buffer! Skipping...\n\n");
-					return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE);
+					return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE, MP_NOPTS_VALUE);
 			    }
   				/* pipes/sockets might need multiple calls to read(): */
 			    want = (imgw*imgh*pxsz);
@@ -328,8 +331,8 @@ put_image(struct vf_instance *vf, mp_image_t* mpi, double pts){
 					memset( vf->priv->bitmap.a  + (ypos*vf->priv->w) + imgx, 0, imgw );
 					memset( vf->priv->bitmap.oa + (ypos*vf->priv->w) + imgx, 0, imgw );
 					if(ypos%2) {
-						memset( vf->priv->bitmap.u + ((ypos/2)*dmpi->stride[1]) + (imgx/2), 128, imgw/2 );
-						memset( vf->priv->bitmap.v + ((ypos/2)*dmpi->stride[2]) + (imgx/2), 128, imgw/2 );
+						memset( vf->priv->bitmap.u + ((ypos/2)*(vf->priv->w/2)) + (imgx/2), 128, imgw/2 );
+						memset( vf->priv->bitmap.v + ((ypos/2)*(vf->priv->w/2)) + (imgx/2), 128, imgw/2 );
 					}
 				}	// Recalculate area that contains graphics
 				if( (imgx <= vf->priv->x1) && ( (imgw+imgx) >= vf->priv->x2) ) {
@@ -344,7 +347,7 @@ put_image(struct vf_instance *vf, mp_image_t* mpi, double pts){
 					if( (imgx <= vf->priv->x2) && ( (imgx+imgw) >= vf->priv->x2) )
 						vf->priv->x2 = imgx;
 				}
-				return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE);
+				return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE, MP_NOPTS_VALUE);
 			}
 
 			for( buf_y=0 ; (buf_y < imgh) && (buf_y < (vf->priv->h-imgy)) ; buf_y++ ) {
@@ -389,7 +392,7 @@ put_image(struct vf_instance *vf, mp_image_t* mpi, double pts){
 						vf->priv->bitmap.oa[pos] = alpha;
 						vf->priv->bitmap.a[pos]  = INRANGE((alpha+imgalpha),0,255);
 						if((buf_y%2) && ((buf_x/pxsz)%2)) {
-							pos = ( ((buf_y+imgy)/2) * dmpi->stride[1] ) + (((buf_x/pxsz)+imgx)/2);
+							pos = ( ((buf_y+imgy)/2) * (vf->priv->w/2) ) + (((buf_x/pxsz)+imgx)/2);
 							vf->priv->bitmap.u[pos] = rgb2u(red,green,blue);
 							vf->priv->bitmap.v[pos] = rgb2v(red,green,blue);
 						}
@@ -402,7 +405,7 @@ put_image(struct vf_instance *vf, mp_image_t* mpi, double pts){
 		}
     }
 
-	if(vf->priv->hidden) return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE);
+	if(vf->priv->hidden) return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE, MP_NOPTS_VALUE);
 
 	if(vf->priv->opaque) {	// Just copy buffer memory to screen
 		for( ypos=vf->priv->y1 ; ypos < vf->priv->y2 ; ypos++ ) {
@@ -421,40 +424,43 @@ put_image(struct vf_instance *vf, mp_image_t* mpi, double pts){
 	} else { // Blit the bitmap to the videoscreen, pixel for pixel
 	    for( ypos=vf->priv->y1 ; ypos < vf->priv->y2 ; ypos++ ) {
 	        for ( xpos=vf->priv->x1 ; xpos < vf->priv->x2 ; xpos++ ) {
+				int pos_bm = ypos * vf->priv->w + xpos;
 				pos = (ypos * dmpi->stride[0]) + xpos;
 
-				alpha = vf->priv->bitmap.a[pos];
+				alpha = vf->priv->bitmap.a[pos_bm];
 
 				if (alpha == 0) continue; // Completly transparent pixel
 
 				if (alpha == 255) {	// Opaque pixel
-					dmpi->planes[0][pos] = vf->priv->bitmap.y[pos];
+					dmpi->planes[0][pos] = vf->priv->bitmap.y[pos_bm];
 					if ((ypos%2) && (xpos%2)) {
 						pos = ( (ypos/2) * dmpi->stride[1] ) + (xpos/2);
-						dmpi->planes[1][pos] = vf->priv->bitmap.u[pos];
-						dmpi->planes[2][pos] = vf->priv->bitmap.v[pos];
+						pos_bm = (ypos/2) * (vf->priv->w/2) + (xpos/2);
+						dmpi->planes[1][pos] = vf->priv->bitmap.u[pos_bm];
+						dmpi->planes[2][pos] = vf->priv->bitmap.v[pos_bm];
 					}
 				} else { // Alphablended pixel
 					dmpi->planes[0][pos] =
 						((255 - alpha) * (int)dmpi->planes[0][pos] +
-						alpha * (int)vf->priv->bitmap.y[pos]) >> 8;
+						alpha * (int)vf->priv->bitmap.y[pos_bm]) >> 8;
 
 					if ((ypos%2) && (xpos%2)) {
 						pos = ( (ypos/2) * dmpi->stride[1] ) + (xpos/2);
+						pos_bm = (ypos/2) * (vf->priv->w/2) + (xpos/2);
 
 						dmpi->planes[1][pos] =
 							((255 - alpha) * (int)dmpi->planes[1][pos] +
-							alpha * (int)vf->priv->bitmap.u[pos]) >> 8;
+							alpha * (int)vf->priv->bitmap.u[pos_bm]) >> 8;
 
 						dmpi->planes[2][pos] =
 							((255 - alpha) * (int)dmpi->planes[2][pos] +
-							alpha * (int)vf->priv->bitmap.v[pos]) >> 8;
+							alpha * (int)vf->priv->bitmap.v[pos_bm]) >> 8;
 					}
 			    }
 			} // for xpos
 		} // for ypos
 	} // if !opaque
-    return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE);
+    return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE, MP_NOPTS_VALUE);
 } // put_image
 
 static int

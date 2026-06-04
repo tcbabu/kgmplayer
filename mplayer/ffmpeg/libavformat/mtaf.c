@@ -24,7 +24,7 @@
 #include "avformat.h"
 #include "internal.h"
 
-static int mtaf_probe(AVProbeData *p)
+static int mtaf_probe(const AVProbeData *p)
 {
     if (p->buf_size < 0x44)
         return 0;
@@ -71,7 +71,7 @@ static int mtaf_read_packet(AVFormatContext *s, AVPacket *pkt)
     return av_get_packet(s->pb, pkt, par->block_align);
 }
 
-AVInputFormat ff_mtaf_demuxer = {
+const AVInputFormat ff_mtaf_demuxer = {
     .name           = "mtaf",
     .long_name      = NULL_IF_CONFIG_SMALL("Konami PS2 MTAF"),
     .read_probe     = mtaf_probe,

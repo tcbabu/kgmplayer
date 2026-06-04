@@ -1,2 +1,1 @@
-libavcodec/mqc.o: libavcodec/mqc.c libavutil/attributes.h \
- libavcodec/mqc.h
+libavcodec/mqc.o: libavcodec/mqc.c libavcodec/mqc.h

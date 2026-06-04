@@ -20,8 +20,6 @@
 
 /**
  * @todo
- * - SIMD for compute_safe_ssd_integral_image
- * - SIMD for final weighted averaging
  * - better automatic defaults? see "Parameters" @ http://www.ipol.im/pub/art/2011/bcm_nlm/
  * - temporal support (probably doesn't need any displacement according to
  *   "Denoising image sequences does not require motion estimation")
@@ -37,15 +35,8 @@
 #include "avfilter.h"
 #include "formats.h"
 #include "internal.h"
+#include "vf_nlmeans.h"
 #include "video.h"
-
-struct weighted_avg {
-    double total_weight;
-    double sum;
-};
-
-#define WEIGHT_LUT_NBITS 9
-#define WEIGHT_LUT_SIZE  (1<<WEIGHT_LUT_NBITS)
 
 typedef struct NLMeansContext {
     const AVClass *class;
@@ -60,12 +51,13 @@ typedef struct NLMeansContext {
     uint32_t *ii_orig;                          // integral image
     uint32_t *ii;                               // integral image starting after the 0-line and 0-column
     int ii_w, ii_h;                             // width and height of the integral image
-    int ii_lz_32;                               // linesize in 32-bit units of the integral image
-    struct weighted_avg *wa;                    // weighted average of every pixel
-    int wa_linesize;                            // linesize for wa in struct size unit
-    double weight_lut[WEIGHT_LUT_SIZE];         // lookup table mapping (scaled) patch differences to their associated weights
-    double pdiff_lut_scale;                     // scale factor for patch differences before looking into the LUT
-    int max_meaningful_diff;                    // maximum difference considered (if the patch difference is too high we ignore the pixel)
+    ptrdiff_t ii_lz_32;                         // linesize in 32-bit units of the integral image
+    float *total_weight;                        // total weight for every pixel
+    float *sum;                                 // weighted sum for every pixel
+    int linesize;                               // sum and total_weight linesize
+    float *weight_lut;                          // lookup table mapping (scaled) patch differences to their associated weights
+    uint32_t max_meaningful_diff;               // maximum difference considered (if the patch difference is too high we ignore the pixel)
+    NLMeansDSPContext dsp;
 } NLMeansContext;
 
 #define OFFSET(x) offsetof(NLMeansContext, x)
@@ -81,62 +73,16 @@ static const AVOption nlmeans_options[] = {
 
 AVFILTER_DEFINE_CLASS(nlmeans);
 
-static int query_formats(AVFilterContext *ctx)
-{
-    static const enum AVPixelFormat pix_fmts[] = {
-        AV_PIX_FMT_YUV410P, AV_PIX_FMT_YUV411P,
-        AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV422P,
-        AV_PIX_FMT_YUV440P, AV_PIX_FMT_YUV444P,
-        AV_PIX_FMT_YUVJ444P, AV_PIX_FMT_YUVJ440P,
-        AV_PIX_FMT_YUVJ422P, AV_PIX_FMT_YUVJ420P,
-        AV_PIX_FMT_YUVJ411P,
-        AV_PIX_FMT_GRAY8, AV_PIX_FMT_GBRP,
-        AV_PIX_FMT_NONE
-    };
-
-    AVFilterFormats *fmts_list = ff_make_format_list(pix_fmts);
-    if (!fmts_list)
-        return AVERROR(ENOMEM);
-    return ff_set_common_formats(ctx, fmts_list);
-}
-
-/*
- * M is a discrete map where every entry contains the sum of all the entries
- * in the rectangle from the top-left origin of M to its coordinate. In the
- * following schema, "i" contains the sum of the whole map:
- *
- * M = +----------+-----------------+----+
- *     |          |                 |    |
- *     |          |                 |    |
- *     |         a|                b|   c|
- *     +----------+-----------------+----+
- *     |          |                 |    |
- *     |          |                 |    |
- *     |          |        X        |    |
- *     |          |                 |    |
- *     |         d|                e|   f|
- *     +----------+-----------------+----+
- *     |          |                 |    |
- *     |         g|                h|   i|
- *     +----------+-----------------+----+
- *
- * The sum of the X box can be calculated with:
- *    X = e-d-b+a
- *
- * See https://en.wikipedia.org/wiki/Summed_area_table
- *
- * The compute*_ssd functions compute the integral image M where every entry
- * contains the sum of the squared difference of every corresponding pixels of
- * two input planes of the same size as M.
- */
-static inline int get_integral_patch_value(const uint32_t *ii, int ii_lz_32, int x, int y, int p)
-{
-    const int e = ii[(y + p    ) * ii_lz_32 + (x + p    )];
-    const int d = ii[(y + p    ) * ii_lz_32 + (x - p - 1)];
-    const int b = ii[(y - p - 1) * ii_lz_32 + (x + p    )];
-    const int a = ii[(y - p - 1) * ii_lz_32 + (x - p - 1)];
-    return e - d - b + a;
-}
+static const enum AVPixelFormat pix_fmts[] = {
+    AV_PIX_FMT_YUV410P, AV_PIX_FMT_YUV411P,
+    AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV422P,
+    AV_PIX_FMT_YUV440P, AV_PIX_FMT_YUV444P,
+    AV_PIX_FMT_YUVJ444P, AV_PIX_FMT_YUVJ440P,
+    AV_PIX_FMT_YUVJ422P, AV_PIX_FMT_YUVJ420P,
+    AV_PIX_FMT_YUVJ411P,
+    AV_PIX_FMT_GRAY8, AV_PIX_FMT_GBRP,
+    AV_PIX_FMT_NONE
+};
 
 /**
  * Compute squared difference of the safe area (the zone where s1 and s2
@@ -145,29 +91,38 @@ static inline int get_integral_patch_value(const uint32_t *ii, int ii_lz_32, int
  * function, we do not need any clipping here.
  *
  * The line above dst and the column to its left are always readable.
- *
- * This C version computes the SSD integral image using a scalar accumulator,
- * while for SIMD implementation it is likely more interesting to use the
- * two-loops algorithm variant.
  */
-static void compute_safe_ssd_integral_image_c(uint32_t *dst, int dst_linesize_32,
-                                              const uint8_t *s1, int linesize1,
-                                              const uint8_t *s2, int linesize2,
+static void compute_safe_ssd_integral_image_c(uint32_t *dst, ptrdiff_t dst_linesize_32,
+                                              const uint8_t *s1, ptrdiff_t linesize1,
+                                              const uint8_t *s2, ptrdiff_t linesize2,
                                               int w, int h)
 {
-    int x, y;
+    const uint32_t *dst_top = dst - dst_linesize_32;
 
-    for (y = 0; y < h; y++) {
-        uint32_t acc = dst[-1] - dst[-dst_linesize_32 - 1];
+    /* SIMD-friendly assumptions allowed here */
+    av_assert2(!(w & 0xf) && w >= 16 && h >= 1);
 
-        for (x = 0; x < w; x++) {
-            const int d  = s1[x] - s2[x];
-            acc += d * d;
-            dst[x] = dst[-dst_linesize_32 + x] + acc;
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x += 4) {
+            const int d0 = s1[x    ] - s2[x    ];
+            const int d1 = s1[x + 1] - s2[x + 1];
+            const int d2 = s1[x + 2] - s2[x + 2];
+            const int d3 = s1[x + 3] - s2[x + 3];
+
+            dst[x    ] = dst_top[x    ] - dst_top[x - 1] + d0*d0;
+            dst[x + 1] = dst_top[x + 1] - dst_top[x    ] + d1*d1;
+            dst[x + 2] = dst_top[x + 2] - dst_top[x + 1] + d2*d2;
+            dst[x + 3] = dst_top[x + 3] - dst_top[x + 2] + d3*d3;
+
+            dst[x    ] += dst[x - 1];
+            dst[x + 1] += dst[x    ];
+            dst[x + 2] += dst[x + 1];
+            dst[x + 3] += dst[x + 2];
         }
         s1  += linesize1;
         s2  += linesize2;
         dst += dst_linesize_32;
+        dst_top += dst_linesize_32;
     }
 }
 
@@ -195,20 +150,18 @@ static void compute_safe_ssd_integral_image_c(uint32_t *dst, int dst_linesize_32
  * @param w                 width to compute
  * @param h                 height to compute
  */
-static inline void compute_unsafe_ssd_integral_image(uint32_t *dst, int dst_linesize_32,
+static inline void compute_unsafe_ssd_integral_image(uint32_t *dst, ptrdiff_t dst_linesize_32,
                                                      int startx, int starty,
-                                                     const uint8_t *src, int linesize,
+                                                     const uint8_t *src, ptrdiff_t linesize,
                                                      int offx, int offy, int r, int sw, int sh,
                                                      int w, int h)
 {
-    int x, y;
-
-    for (y = starty; y < starty + h; y++) {
+    for (int y = starty; y < starty + h; y++) {
         uint32_t acc = dst[y*dst_linesize_32 + startx - 1] - dst[(y-1)*dst_linesize_32 + startx - 1];
         const int s1y = av_clip(y -  r,         0, sh - 1);
         const int s2y = av_clip(y - (r + offy), 0, sh - 1);
 
-        for (x = startx; x < startx + w; x++) {
+        for (int x = startx; x < startx + w; x++) {
             const int s1x = av_clip(x -  r,         0, sw - 1);
             const int s2x = av_clip(x - (r + offx), 0, sw - 1);
             const uint8_t v1 = src[s1y*linesize + s1x];
@@ -237,8 +190,9 @@ static inline void compute_unsafe_ssd_integral_image(uint32_t *dst, int dst_line
  * @param h                 source height
  * @param e                 research padding edge
  */
-static void compute_ssd_integral_image(uint32_t *ii, int ii_linesize_32,
-                                       const uint8_t *src, int linesize, int offx, int offy,
+static void compute_ssd_integral_image(const NLMeansDSPContext *dsp,
+                                       uint32_t *ii, ptrdiff_t ii_linesize_32,
+                                       const uint8_t *src, ptrdiff_t linesize, int offx, int offy,
                                        int e, int w, int h)
 {
     // ii has a surrounding padding of thickness "e"
@@ -257,8 +211,15 @@ static void compute_ssd_integral_image(uint32_t *ii, int ii_linesize_32,
     // to compare the 2 sources pixels
     const int startx_safe = FFMAX(s1x, s2x);
     const int starty_safe = FFMAX(s1y, s2y);
-    const int endx_safe   = FFMIN(s1x + w, s2x + w);
+    const int u_endx_safe = FFMIN(s1x + w, s2x + w); // unaligned
     const int endy_safe   = FFMIN(s1y + h, s2y + h);
+
+    // deduce the safe area width and height
+    const int safe_pw = (u_endx_safe - startx_safe) & ~0xf;
+    const int safe_ph = endy_safe - starty_safe;
+
+    // adjusted end x position of the safe area after width of the safe area gets aligned
+    const int endx_safe = startx_safe + safe_pw;
 
     // top part where only one of s1 and s2 is still readable, or none at all
     compute_unsafe_ssd_integral_image(ii, ii_linesize_32,
@@ -273,24 +234,25 @@ static void compute_ssd_integral_image(uint32_t *ii, int ii_linesize_32,
                                       0, starty_safe,
                                       src, linesize,
                                       offx, offy, e, w, h,
-                                      startx_safe, endy_safe - starty_safe);
+                                      startx_safe, safe_ph);
 
     // main and safe part of the integral
     av_assert1(startx_safe - s1x >= 0); av_assert1(startx_safe - s1x < w);
     av_assert1(starty_safe - s1y >= 0); av_assert1(starty_safe - s1y < h);
     av_assert1(startx_safe - s2x >= 0); av_assert1(startx_safe - s2x < w);
     av_assert1(starty_safe - s2y >= 0); av_assert1(starty_safe - s2y < h);
-    compute_safe_ssd_integral_image_c(ii + starty_safe*ii_linesize_32 + startx_safe, ii_linesize_32,
-                                      src + (starty_safe - s1y) * linesize + (startx_safe - s1x), linesize,
-                                      src + (starty_safe - s2y) * linesize + (startx_safe - s2x), linesize,
-                                      endx_safe - startx_safe, endy_safe - starty_safe);
+    if (safe_pw && safe_ph)
+        dsp->compute_safe_ssd_integral_image(ii + starty_safe*ii_linesize_32 + startx_safe, ii_linesize_32,
+                                             src + (starty_safe - s1y) * linesize + (startx_safe - s1x), linesize,
+                                             src + (starty_safe - s2y) * linesize + (startx_safe - s2x), linesize,
+                                             safe_pw, safe_ph);
 
     // right part of the integral
     compute_unsafe_ssd_integral_image(ii, ii_linesize_32,
                                       endx_safe, starty_safe,
                                       src, linesize,
                                       offx, offy, e, w, h,
-                                      ii_w - endx_safe, endy_safe - starty_safe);
+                                      ii_w - endx_safe, safe_ph);
 
     // bottom part where only one of s1 and s2 is still readable, or none at all
     compute_unsafe_ssd_integral_image(ii, ii_linesize_32,
@@ -308,8 +270,8 @@ static int config_input(AVFilterLink *inlink)
     const int e = FFMAX(s->research_hsize, s->research_hsize_uv)
                 + FFMAX(s->patch_hsize,    s->patch_hsize_uv);
 
-    s->chroma_w = FF_CEIL_RSHIFT(inlink->w, desc->log2_chroma_w);
-    s->chroma_h = FF_CEIL_RSHIFT(inlink->h, desc->log2_chroma_h);
+    s->chroma_w = AV_CEIL_RSHIFT(inlink->w, desc->log2_chroma_w);
+    s->chroma_h = AV_CEIL_RSHIFT(inlink->h, desc->log2_chroma_h);
     s->nb_planes = av_pix_fmt_count_planes(inlink->format);
 
     /* Allocate the integral image with extra edges of thickness "e"
@@ -338,7 +300,7 @@ static int config_input(AVFilterLink *inlink)
     s->ii_lz_32 = FFALIGN(s->ii_w + 1, 4);
 
     // "+1" is for the space of the top 0-line
-    s->ii_orig = av_mallocz_array(s->ii_h + 1, s->ii_lz_32 * sizeof(*s->ii_orig));
+    s->ii_orig = av_calloc(s->ii_h + 1, s->ii_lz_32 * sizeof(*s->ii_orig));
     if (!s->ii_orig)
         return AVERROR(ENOMEM);
 
@@ -346,9 +308,10 @@ static int config_input(AVFilterLink *inlink)
     s->ii = s->ii_orig + s->ii_lz_32 + 1;
 
     // allocate weighted average for every pixel
-    s->wa_linesize = inlink->w;
-    s->wa = av_malloc_array(s->wa_linesize, inlink->h * sizeof(*s->wa));
-    if (!s->wa)
+    s->linesize = inlink->w + 100;
+    s->total_weight = av_malloc_array(s->linesize, inlink->h * sizeof(*s->total_weight));
+    s->sum = av_malloc_array(s->linesize, inlink->h * sizeof(*s->sum));
+    if (!s->total_weight || !s->sum)
         return AVERROR(ENOMEM);
 
     return 0;
@@ -356,47 +319,125 @@ static int config_input(AVFilterLink *inlink)
 
 struct thread_data {
     const uint8_t *src;
-    int src_linesize;
+    ptrdiff_t src_linesize;
     int startx, starty;
     int endx, endy;
     const uint32_t *ii_start;
     int p;
 };
 
+static void compute_weights_line_c(const uint32_t *const iia,
+                                   const uint32_t *const iib,
+                                   const uint32_t *const iid,
+                                   const uint32_t *const iie,
+                                   const uint8_t *const src,
+                                   float *total_weight,
+                                   float *sum,
+                                   const float *const weight_lut,
+                                   int max_meaningful_diff,
+                                   int startx, int endx)
+{
+    for (int x = startx; x < endx; x++) {
+        /*
+         * M is a discrete map where every entry contains the sum of all the entries
+         * in the rectangle from the top-left origin of M to its coordinate. In the
+         * following schema, "i" contains the sum of the whole map:
+         *
+         * M = +----------+-----------------+----+
+         *     |          |                 |    |
+         *     |          |                 |    |
+         *     |         a|                b|   c|
+         *     +----------+-----------------+----+
+         *     |          |                 |    |
+         *     |          |                 |    |
+         *     |          |        X        |    |
+         *     |          |                 |    |
+         *     |         d|                e|   f|
+         *     +----------+-----------------+----+
+         *     |          |                 |    |
+         *     |         g|                h|   i|
+         *     +----------+-----------------+----+
+         *
+         * The sum of the X box can be calculated with:
+         *    X = e-d-b+a
+         *
+         * See https://en.wikipedia.org/wiki/Summed_area_table
+         *
+         * The compute*_ssd functions compute the integral image M where every entry
+         * contains the sum of the squared difference of every corresponding pixels of
+         * two input planes of the same size as M.
+         */
+        const uint32_t a = iia[x];
+        const uint32_t b = iib[x];
+        const uint32_t d = iid[x];
+        const uint32_t e = iie[x];
+        const uint32_t patch_diff_sq = FFMIN(e - d - b + a, max_meaningful_diff);
+        const float weight = weight_lut[patch_diff_sq]; // exp(-patch_diff_sq * s->pdiff_scale)
+
+        total_weight[x] += weight;
+        sum[x] += weight * src[x];
+    }
+}
+
 static int nlmeans_slice(AVFilterContext *ctx, void *arg, int jobnr, int nb_jobs)
 {
-    int x, y;
     NLMeansContext *s = ctx->priv;
+    const uint32_t max_meaningful_diff = s->max_meaningful_diff;
     const struct thread_data *td = arg;
-    const uint8_t *src = td->src;
-    const int src_linesize = td->src_linesize;
+    const ptrdiff_t src_linesize = td->src_linesize;
     const int process_h = td->endy - td->starty;
     const int slice_start = (process_h *  jobnr   ) / nb_jobs;
     const int slice_end   = (process_h * (jobnr+1)) / nb_jobs;
     const int starty = td->starty + slice_start;
     const int endy   = td->starty + slice_end;
+    const int p = td->p;
+    const uint32_t *ii = td->ii_start + (starty - p - 1) * s->ii_lz_32 - p - 1;
+    const int dist_b = 2*p + 1;
+    const int dist_d = dist_b * s->ii_lz_32;
+    const int dist_e = dist_d + dist_b;
+    const float *const weight_lut = s->weight_lut;
+    NLMeansDSPContext *dsp = &s->dsp;
 
-    for (y = starty; y < endy; y++) {
-        for (x = td->startx; x < td->endx; x++) {
-            const int patch_diff_sq = get_integral_patch_value(td->ii_start, s->ii_lz_32, x, y, td->p);
-            if (patch_diff_sq < s->max_meaningful_diff) {
-                struct weighted_avg *wa = &s->wa[y*s->wa_linesize + x];
-                const int weight_lut_idx = patch_diff_sq * s->pdiff_lut_scale;
-                const double weight = s->weight_lut[weight_lut_idx]; // exp(-patch_diff_sq * s->pdiff_scale)
-                wa->total_weight += weight;
-                wa->sum += weight * src[y*src_linesize + x];
-            }
-        }
+    for (int y = starty; y < endy; y++) {
+        const uint8_t *const src = td->src + y*src_linesize;
+        float *total_weight = s->total_weight + y*s->linesize;
+        float *sum = s->sum + y*s->linesize;
+        const uint32_t *const iia = ii;
+        const uint32_t *const iib = ii + dist_b;
+        const uint32_t *const iid = ii + dist_d;
+        const uint32_t *const iie = ii + dist_e;
+
+        dsp->compute_weights_line(iia, iib, iid, iie, src, total_weight, sum,
+                                  weight_lut, max_meaningful_diff,
+                                  td->startx, td->endx);
+        ii += s->ii_lz_32;
     }
     return 0;
 }
 
-static int nlmeans_plane(AVFilterContext *ctx, int w, int h, int p, int r,
-                         uint8_t *dst, int dst_linesize,
-                         const uint8_t *src, int src_linesize)
+static void weight_averages(uint8_t *dst, ptrdiff_t dst_linesize,
+                            const uint8_t *src, ptrdiff_t src_linesize,
+                            float *total_weight, float *sum, ptrdiff_t linesize,
+                            int w, int h)
 {
-    int x, y;
-    int offx, offy;
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
+            // Also weight the centered pixel
+            total_weight[x] += 1.f;
+            sum[x] += 1.f * src[x];
+            dst[x] = av_clip_uint8(sum[x] / total_weight[x] + 0.5f);
+        }
+        dst += dst_linesize;
+        src += src_linesize;
+        total_weight += linesize;
+        sum += linesize;
+    }
+}
+
+static int nlmeans_plane(AVFilterContext *ctx, int w, int h, int p, int r,
+                         uint8_t *dst, ptrdiff_t dst_linesize,
+                         const uint8_t *src, ptrdiff_t src_linesize)
+{
     NLMeansContext *s = ctx->priv;
     /* patches center points cover the whole research window so the patches
      * themselves overflow the research window */
@@ -404,10 +445,11 @@ static int nlmeans_plane(AVFilterContext *ctx, int w, int h, int p, int r,
     /* focus an integral pointer on the centered image (s1) */
     const uint32_t *centered_ii = s->ii + e*s->ii_lz_32 + e;
 
-    memset(s->wa, 0, s->wa_linesize * h * sizeof(*s->wa));
+    memset(s->total_weight, 0, s->linesize * h * sizeof(*s->total_weight));
+    memset(s->sum, 0, s->linesize * h * sizeof(*s->sum));
 
-    for (offy = -r; offy <= r; offy++) {
-        for (offx = -r; offx <= r; offx++) {
+    for (int offy = -r; offy <= r; offy++) {
+        for (int offx = -r; offx <= r; offx++) {
             if (offx || offy) {
                 struct thread_data td = {
                     .src          = src + offy*src_linesize + offx,
@@ -420,31 +462,23 @@ static int nlmeans_plane(AVFilterContext *ctx, int w, int h, int p, int r,
                     .p            = p,
                 };
 
-                compute_ssd_integral_image(s->ii, s->ii_lz_32,
+                compute_ssd_integral_image(&s->dsp, s->ii, s->ii_lz_32,
                                            src, src_linesize,
                                            offx, offy, e, w, h);
-                ctx->internal->execute(ctx, nlmeans_slice, &td, NULL,
-                                       FFMIN(td.endy - td.starty, ff_filter_get_nb_threads(ctx)));
+                ff_filter_execute(ctx, nlmeans_slice, &td, NULL,
+                                  FFMIN(td.endy - td.starty, ff_filter_get_nb_threads(ctx)));
             }
         }
     }
-    for (y = 0; y < h; y++) {
-        for (x = 0; x < w; x++) {
-            struct weighted_avg *wa = &s->wa[y*s->wa_linesize + x];
 
-            // Also weight the centered pixel
-            wa->total_weight += 1.0;
-            wa->sum += 1.0 * src[y*src_linesize + x];
+    weight_averages(dst, dst_linesize, src, src_linesize,
+                    s->total_weight, s->sum, s->linesize, w, h);
 
-            dst[y*dst_linesize + x] = av_clip_uint8(wa->sum / wa->total_weight);
-        }
-    }
     return 0;
 }
 
 static int filter_frame(AVFilterLink *inlink, AVFrame *in)
 {
-    int i;
     AVFilterContext *ctx = inlink->dst;
     NLMeansContext *s = ctx->priv;
     AVFilterLink *outlink = ctx->outputs[0];
@@ -456,7 +490,7 @@ static int filter_frame(AVFilterLink *inlink, AVFrame *in)
     }
     av_frame_copy_props(out, in);
 
-    for (i = 0; i < s->nb_planes; i++) {
+    for (int i = 0; i < s->nb_planes; i++) {
         const int w = i ? s->chroma_w          : inlink->w;
         const int h = i ? s->chroma_h          : inlink->h;
         const int p = i ? s->patch_hsize_uv    : s->patch_hsize;
@@ -478,18 +512,30 @@ static int filter_frame(AVFilterLink *inlink, AVFrame *in)
     }                                                           \
 } while (0)
 
+void ff_nlmeans_init(NLMeansDSPContext *dsp)
+{
+    dsp->compute_safe_ssd_integral_image = compute_safe_ssd_integral_image_c;
+    dsp->compute_weights_line = compute_weights_line_c;
+
+    if (ARCH_AARCH64)
+        ff_nlmeans_init_aarch64(dsp);
+
+    if (ARCH_X86)
+        ff_nlmeans_init_x86(dsp);
+}
+
 static av_cold int init(AVFilterContext *ctx)
 {
-    int i;
     NLMeansContext *s = ctx->priv;
     const double h = s->sigma * 10.;
 
     s->pdiff_scale = 1. / (h * h);
-    s->max_meaningful_diff = -log(1/255.) / s->pdiff_scale;
-    s->pdiff_lut_scale = 1./s->max_meaningful_diff * WEIGHT_LUT_SIZE;
-    av_assert0((s->max_meaningful_diff - 1) * s->pdiff_lut_scale < FF_ARRAY_ELEMS(s->weight_lut));
-    for (i = 0; i < WEIGHT_LUT_SIZE; i++)
-        s->weight_lut[i] = exp(-i / s->pdiff_lut_scale * s->pdiff_scale);
+    s->max_meaningful_diff = log(255.) / s->pdiff_scale;
+    s->weight_lut = av_calloc(s->max_meaningful_diff + 1, sizeof(*s->weight_lut));
+    if (!s->weight_lut)
+        return AVERROR(ENOMEM);
+    for (int i = 0; i < s->max_meaningful_diff; i++)
+        s->weight_lut[i] = exp(-i * s->pdiff_scale);
 
     CHECK_ODD_FIELD(research_size,   "Luma research window");
     CHECK_ODD_FIELD(patch_size,      "Luma patch");
@@ -505,9 +551,11 @@ static av_cold int init(AVFilterContext *ctx)
     s->patch_hsize       = s->patch_size       / 2;
     s->patch_hsize_uv    = s->patch_size_uv    / 2;
 
-    av_log(ctx, AV_LOG_INFO, "Research window: %dx%d / %dx%d, patch size: %dx%d / %dx%d\n",
+    av_log(ctx, AV_LOG_DEBUG, "Research window: %dx%d / %dx%d, patch size: %dx%d / %dx%d\n",
            s->research_size, s->research_size, s->research_size_uv, s->research_size_uv,
            s->patch_size,    s->patch_size,    s->patch_size_uv,    s->patch_size_uv);
+
+    ff_nlmeans_init(&s->dsp);
 
     return 0;
 }
@@ -515,8 +563,10 @@ static av_cold int init(AVFilterContext *ctx)
 static av_cold void uninit(AVFilterContext *ctx)
 {
     NLMeansContext *s = ctx->priv;
+    av_freep(&s->weight_lut);
     av_freep(&s->ii_orig);
-    av_freep(&s->wa);
+    av_freep(&s->total_weight);
+    av_freep(&s->sum);
 }
 
 static const AVFilterPad nlmeans_inputs[] = {
@@ -526,7 +576,6 @@ static const AVFilterPad nlmeans_inputs[] = {
         .config_props = config_input,
         .filter_frame = filter_frame,
     },
-    { NULL }
 };
 
 static const AVFilterPad nlmeans_outputs[] = {
@@ -534,18 +583,17 @@ static const AVFilterPad nlmeans_outputs[] = {
         .name = "default",
         .type = AVMEDIA_TYPE_VIDEO,
     },
-    { NULL }
 };
 
-AVFilter ff_vf_nlmeans = {
+const AVFilter ff_vf_nlmeans = {
     .name          = "nlmeans",
     .description   = NULL_IF_CONFIG_SMALL("Non-local means denoiser."),
     .priv_size     = sizeof(NLMeansContext),
     .init          = init,
     .uninit        = uninit,
-    .query_formats = query_formats,
-    .inputs        = nlmeans_inputs,
-    .outputs       = nlmeans_outputs,
+    FILTER_INPUTS(nlmeans_inputs),
+    FILTER_OUTPUTS(nlmeans_outputs),
+    FILTER_PIXFMTS_ARRAY(pix_fmts),
     .priv_class    = &nlmeans_class,
     .flags         = AVFILTER_FLAG_SUPPORT_TIMELINE_GENERIC | AVFILTER_FLAG_SLICE_THREADS,
 };

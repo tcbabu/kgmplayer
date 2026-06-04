@@ -62,7 +62,7 @@ typedef struct SIFFContext {
     uint8_t gmc[4];
 } SIFFContext;
 
-static int siff_probe(AVProbeData *p)
+static int siff_probe(const AVProbeData *p)
 {
     uint32_t tag = AV_RL32(p->buf + 8);
     /* check file header */
@@ -192,16 +192,14 @@ static int siff_read_header(AVFormatContext *s)
 static int siff_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
     SIFFContext *c = s->priv_data;
+    int ret;
 
     if (c->has_video) {
         unsigned int size;
         if (c->cur_frame >= c->frames)
             return AVERROR_EOF;
         if (c->curstrm == -1) {
-            unsigned pktsize = avio_rl32(s->pb);
-            if (pktsize < 4)
-                return AVERROR_INVALIDDATA;
-            c->pktsize = pktsize - 4;
+            c->pktsize = avio_rl32(s->pb) - 4;
             c->flags   = avio_rl16(s->pb);
             if (c->flags & VB_HAS_AUDIO && !c->has_audio)
                 return AVERROR_INVALIDDATA;
@@ -218,13 +216,12 @@ static int siff_read_packet(AVFormatContext *s, AVPacket *pkt)
 
             size = c->pktsize - c->sndsize - c->gmcsize - 2;
             size = ffio_limit(s->pb, size);
-            if (av_new_packet(pkt, size + c->gmcsize + 2) < 0)
-                return AVERROR(ENOMEM);
+            if ((ret = av_new_packet(pkt, size + c->gmcsize + 2)) < 0)
+                return ret;
             AV_WL16(pkt->data, c->flags);
             if (c->gmcsize)
                 memcpy(pkt->data + 2, c->gmc, c->gmcsize);
             if (avio_read(s->pb, pkt->data + 2 + c->gmcsize, size) != size) {
-                av_packet_unref(pkt);
                 return AVERROR_INVALIDDATA;
             }
             pkt->stream_index = 0;
@@ -252,7 +249,7 @@ static int siff_read_packet(AVFormatContext *s, AVPacket *pkt)
     return pkt->size;
 }
 
-AVInputFormat ff_siff_demuxer = {
+const AVInputFormat ff_siff_demuxer = {
     .name           = "siff",
     .long_name      = NULL_IF_CONFIG_SMALL("Beam Software SIFF"),
     .priv_data_size = sizeof(SIFFContext),

@@ -1,17 +1,13 @@
-libavcodec/dcadata.o: libavcodec/dcadata.c libavutil/mem.h \
- libavutil/attributes.h libavutil/error.h libavutil/avutil.h \
- libavutil/common.h libavutil/macros.h libavutil/version.h \
- libavutil/avconfig.h config.h libavutil/intmath.h libavutil/mem.h \
- libavutil/internal.h libavutil/timer.h libavutil/log.h libavutil/cpu.h \
+libavcodec/dcadata.o: libavcodec/dcadata.c libavutil/mem_internal.h \
+ config.h libavutil/avassert.h libavutil/log.h libavutil/attributes.h \
+ libavutil/version.h libavutil/macros.h libavutil/avconfig.h \
+ libavutil/mem.h libavutil/avutil.h libavutil/common.h \
+ libavutil/intmath.h libavutil/internal.h libavutil/timer.h \
  libavutil/dict.h libavutil/pixfmt.h libavutil/libm.h \
  libavutil/intfloat.h libavutil/mathematics.h libavutil/rational.h \
- libavcodec/dca.h libavutil/common.h libavutil/internal.h \
+ libavutil/error.h libavcodec/dca.h libavutil/common.h \
  libavutil/intreadwrite.h libavutil/bswap.h libavcodec/get_bits.h \
- libavutil/log.h libavutil/avassert.h libavcodec/avcodec.h \
- libavutil/samplefmt.h libavutil/attributes.h libavutil/avutil.h \
- libavutil/buffer.h libavutil/cpu.h libavutil/channel_layout.h \
- libavutil/dict.h libavutil/frame.h libavutil/buffer.h \
- libavutil/samplefmt.h libavutil/pixfmt.h libavutil/rational.h \
- libavcodec/version.h libavutil/version.h libavcodec/mathops.h \
- libavutil/reverse.h libavcodec/vlc.h libavcodec/dcadata.h \
- libavcodec/dcahuff.h libavcodec/put_bits.h
+ libavutil/log.h libavutil/avassert.h libavcodec/defs.h \
+ libavcodec/mathops.h libavutil/reverse.h libavcodec/vlc.h \
+ libavcodec/dcadata.h libavcodec/dcahuff.h libavutil/attributes.h \
+ libavcodec/put_bits.h

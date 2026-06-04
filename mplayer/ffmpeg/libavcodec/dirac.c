@@ -26,12 +26,10 @@
  * @author Marco Gerards <marco@gnu.org>, David Conrad, Jordi Ortiz <nenjordi@gmail.com>
  */
 
-#include "libavutil/imgutils.h"
+#include "libavutil/pixdesc.h"
 
-#include "avcodec.h"
 #include "dirac.h"
 #include "golomb.h"
-#include "internal.h"
 #include "mpeg12data.h"
 
 #if CONFIG_DIRAC_PARSE
@@ -147,6 +145,7 @@ static int parse_source_parameters(AVDiracSeqHeader *dsh, GetBitContext *gb,
     unsigned luma_depth = 8, luma_offset = 16;
     int idx;
     int chroma_x_shift, chroma_y_shift;
+    int ret;
 
     /* [DIRAC_STD] 10.3.2 Frame size. frame_size(video_params) */
     /* [DIRAC_STD] custom_dimensions_flag */
@@ -269,7 +268,10 @@ static int parse_source_parameters(AVDiracSeqHeader *dsh, GetBitContext *gb,
         return AVERROR_INVALIDDATA;
 
     dsh->pix_fmt = dirac_pix_fmt[dsh->chroma_format][dsh->pixel_range_index-2];
-    avcodec_get_chroma_sub_sample(dsh->pix_fmt, &chroma_x_shift, &chroma_y_shift);
+    ret = av_pix_fmt_get_chroma_sub_sample(dsh->pix_fmt, &chroma_x_shift, &chroma_y_shift);
+    if (ret)
+        return ret;
+
     if ((dsh->width % (1<<chroma_x_shift)) || (dsh->height % (1<<chroma_y_shift))) {
         if (log_ctx)
             av_log(log_ctx, AV_LOG_ERROR, "Dimensions must be an integer multiple of the chroma subsampling\n");

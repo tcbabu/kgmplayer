@@ -1,20 +1,16 @@
-libavfilter/af_afftfilt.o: libavfilter/af_afftfilt.c \
- libavutil/audio_fifo.h libavutil/avutil.h libavutil/common.h \
- libavutil/attributes.h libavutil/macros.h libavutil/version.h \
- libavutil/avconfig.h config.h libavutil/intmath.h libavutil/mem.h \
- libavutil/error.h libavutil/internal.h libavutil/timer.h libavutil/log.h \
- libavutil/cpu.h libavutil/dict.h libavutil/pixfmt.h libavutil/libm.h \
- libavutil/intfloat.h libavutil/mathematics.h libavutil/rational.h \
- libavutil/fifo.h libavutil/samplefmt.h libavutil/avstring.h \
- libavfilter/internal.h libavutil/internal.h libavfilter/avfilter.h \
- libavutil/attributes.h libavutil/avutil.h libavutil/buffer.h \
- libavutil/dict.h libavutil/frame.h libavutil/buffer.h libavutil/log.h \
+libavfilter/af_afftfilt.o: libavfilter/af_afftfilt.c libavutil/avstring.h \
+ libavutil/attributes.h libavutil/version.h libavutil/macros.h \
+ libavutil/avconfig.h libavfilter/internal.h libavutil/internal.h \
+ config.h libavutil/timer.h libavutil/common.h libavutil/intmath.h \
+ libavutil/mem.h libavutil/avutil.h libavutil/error.h \
+ libavutil/rational.h libavutil/mathematics.h libavutil/intfloat.h \
+ libavutil/log.h libavutil/pixfmt.h libavutil/internal.h libavutil/dict.h \
+ libavutil/libm.h libavfilter/avfilter.h libavutil/attributes.h \
+ libavutil/avutil.h libavutil/buffer.h libavutil/dict.h libavutil/frame.h \
+ libavutil/buffer.h libavutil/samplefmt.h libavutil/log.h \
  libavutil/samplefmt.h libavutil/pixfmt.h libavutil/rational.h \
  libavfilter/version.h libavutil/version.h libavfilter/formats.h \
- libavfilter/framepool.h libavfilter/framequeue.h libavfilter/thread.h \
- libavfilter/version.h libavfilter/video.h libavcodec/avcodec.h \
- libavutil/cpu.h libavutil/channel_layout.h libavcodec/version.h \
- libavcodec/internal.h libavutil/mathematics.h libavcodec/avcodec.h \
- libavutil/common.h libavutil/opt.h libavcodec/avfft.h libavutil/eval.h \
+ libavfilter/framequeue.h libavfilter/video.h libavutil/common.h \
+ libavutil/cpu.h libavutil/opt.h libavutil/eval.h libavutil/tx.h \
  libavfilter/audio.h libavfilter/avfilter.h libavfilter/internal.h \
- libavfilter/window_func.h libavutil/avassert.h
+ libavfilter/filters.h libavfilter/window_func.h libavutil/avassert.h
