@@ -22,7 +22,7 @@ CFLAGS=$BZFLAG make  install PREFIX=$KULINA
 cd ..
 rm -rf bzip2-1.0.8
 echo "bzip2"
-waitforenter
+#waitforenter
 tar xf libpng-1.6.9.tar.xz
 cd libpng-1.6.9
 ./configure --prefix=$KULINA --enable-static --disable-shared --with-zlib-prefix=$KULINA CFLAGS=-I$KULINA/include LDFLAGS=-L$KULINA/lib >../out
@@ -37,7 +37,7 @@ cd yasm-1.3.0 >../out
 make -j4 >../out
 make -j4 install >../out
 cd ..
-waitforenter
+#waitforenter
 rm -rf yasm-1.3.0
 echo "yasm"
 tar xf jpegsrc.v8c.tar.gz
@@ -204,7 +204,7 @@ cd libuuid-1.0.3
 make -j4
 make install
 cd ..
-waitforenter
+#waitforenter
 rm -rf  libuuid-1.0.3
 tar xf libtool-2.4.7.tar.xz
 cd libtool-2.4.7
@@ -232,7 +232,7 @@ cd freetype-2.11.0
 make 
 make install
 cd ..
-waitforenter "freetype"
+#waitforenter "freetype"
 rm -rf freetype-2.11.0
 
 tar xf harfbuzz-2.9.0.tar.xz
@@ -270,7 +270,7 @@ rm -rf fontconfig-2.13.1
 #./configure --prefix=$KULINA  --enable-static --disable-shared
 #make -j1
 #make install
-waitforenter Fontconfig
+#waitforenter Fontconfig
 #cd ..
 #rm -rf libsndfile-1.0.25
 tar xf libass-0.13.6.tar.xz >../out
@@ -305,7 +305,7 @@ cd BUILD
 cmake -D CMAKE_INSTALL_PREFIX=$KULINA -DINSTALL_MANPAGES=OFF ..
 make
 make install
-waitforenter OPUS
+#waitforenter OPUS
 cd ../..
 rm -rf opus
 tar xf flac.tgz
@@ -319,18 +319,8 @@ make install
 ##waitforenter
 cd ../..
 rm -rf flac
-tar xf sndfile.tgz
-cd sndfile
-rm -rf build
-mkdir build
-cd build
-CFLAGS=$BZFLAGS cmake -D CMAKE_INSTALL_PREFIX=$KULINA -D ENABLE_EXTERNAL_LIBS=OFF ..
-make -j1
-make install
-##waitforenter
-cd ../..
-rm -rf sndfile
 tar xf pulseaudio-12.2.tar.xz
+rm -rf $KULINA/include/pulse
 cd pulseaudio-12.2
  ./configure --prefix=$KULINA --enable-static --disable-openssl \
  --disable-x11 --disable-glib2 --disable-dbus --disable-rpath --disable-tests \
@@ -343,6 +333,17 @@ mkdir $KULINA/include/pulse
 mkdir $KULINA/OpenSource/pulseaudio-12.2/src/pulse/*.h $KULINA/include/pulse/
 cd ..
 rm -rf pulseaudio-12.2
+tar xf sndfile.tgz
+cd sndfile
+rm -rf build
+mkdir build
+cd build
+CFLAGS=$BZFLAGS cmake -D CMAKE_INSTALL_PREFIX=$KULINA -D ENABLE_EXTERNAL_LIBS=OFF ..
+make -j1
+make install
+cd ../..
+rm -rf sndfile
+waitforenter
 echo " Entering Graphic Magic"
 tar xf GraphicsMagick-1.3.21.tar.gz >../out
 cd GraphicsMagick-1.3.21 >../out

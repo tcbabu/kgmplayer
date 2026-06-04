@@ -126,7 +126,7 @@ ffmpegbuildmin	:
 		 cp ffmain.o ffmpeg/fftools
 		 chmod +x ffmpegbuildmin
 x264build	:ffmpegbuildmin 
-		 ./ffmpegbuildmin 
+#		 ./ffmpegbuildmin 
 		 echo "#! /bin/bash" >x264build
 		 echo "export KULINA=$(PWD)" >> x264build
 		 echo "export PKG_CONFIG_PATH=$(PWD)/lib/pkgconfig:$(PKG_CONFIG_PATH_OLD)">>x264build
