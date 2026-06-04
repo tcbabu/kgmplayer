@@ -156,7 +156,7 @@ static af_data_t* play(struct af_instance_s* af, af_data_t* data)
 
   memcpy(s->in[0], in, in_len);
 
-  ret = swr_convert(s->swrctx, &s->tmp[0], out_len/chans/2,(const uint8_t **) &s->in[0], in_len/chans/2);
+  ret = swr_convert(s->swrctx, &s->tmp[0], out_len/chans/2, &s->in[0], in_len/chans/2);
   if (ret < 0) return NULL;
   out_len= ret*chans*2;
 

@@ -38,6 +38,7 @@
   /* audio: last known pts value in output from decoder \
    * video: predicted/interpolated PTS of the current frame */ \
   double pts; \
+  double endpts; \
   /* codec-specific: */ \
   void* context;   /* codec-specific stuff (usually HANDLE or struct pointer) */ \
   char* lang; /* track language */ \
@@ -101,7 +102,8 @@ typedef struct sh_video {
   double i_pts;   // PTS for the _next_ I/P frame
   float next_frame_time;
   double last_pts;
-  double buffered_pts[32];
+  double buffered_pts[64];
+  double buffered_endpts[64];
   int num_buffered_pts;
   // output format: (set by demuxer)
   float fps;              // frames per second (set only if constant fps)
@@ -111,6 +113,7 @@ typedef struct sh_video {
   float stream_aspect;  // aspect ratio stored in the media headers (e.g. in DVD IFO files)
   int i_bps;              // == bitrate  (compressed bytes/sec)
   int disp_w,disp_h;      // display size (filled by fileformat parser)
+  int flipped_input;
   // output driver/filters: (set by libmpcodecs core)
   unsigned int outfmtidx;
   struct vf_instance *vfilter;          // the video filter chain, used for this video stream

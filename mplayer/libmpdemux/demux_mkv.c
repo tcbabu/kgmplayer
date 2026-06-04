@@ -402,7 +402,7 @@ static int demux_mkv_read_info(demuxer_t *demuxer)
     uint64_t length, l;
     int il;
     uint64_t tc_scale = 1000000;
-    long double duration = 0.;
+    double duration = 0.;
 
     length = ebml_read_length(s, NULL);
     while (length > 0) {
@@ -420,11 +420,11 @@ static int demux_mkv_read_info(demuxer_t *demuxer)
 
         case MATROSKA_ID_DURATION:
         {
-            long double num = ebml_read_float(s, &l);
+            double num = ebml_read_float(s, &l);
             if (num == EBML_FLOAT_INVALID)
                 return 1;
             duration = num;
-            mp_msg(MSGT_DEMUX, MSGL_V, "[mkv] | + duration: %.3Lfs\n",
+            mp_msg(MSGT_DEMUX, MSGL_V, "[mkv] | + duration: %.3fs\n",
                    duration * tc_scale / 1000000000.0);
             break;
         }
@@ -615,7 +615,7 @@ static int demux_mkv_read_trackaudio(demuxer_t *demuxer, mkv_track_t *track)
         switch (ebml_read_id(s, &il)) {
         case MATROSKA_ID_AUDIOSAMPLINGFREQ:
         {
-            long double num = ebml_read_float(s, &l);
+            double num = ebml_read_float(s, &l);
             if (num == EBML_FLOAT_INVALID)
                 return 0;
             track->a_sfreq = num;
@@ -667,7 +667,7 @@ static int demux_mkv_read_trackvideo(demuxer_t *demuxer, mkv_track_t *track)
         switch (ebml_read_id(s, &il)) {
         case MATROSKA_ID_VIDEOFRAMERATE:
         {
-            long double num = ebml_read_float(s, &l);
+            double num = ebml_read_float(s, &l);
             if (num == EBML_FLOAT_INVALID)
                 return 0;
             track->v_frate = num;
@@ -1896,36 +1896,39 @@ static int demux_mkv_open_audio(demuxer_t *demuxer, mkv_track_t *track,
 
         switch (track->a_formattag) {
         case mmioFOURCC('a', 't', 'r', 'c'):
-            sh_a->wf->nAvgBytesPerSec = atrc_fl2bps[flavor];
+            if (flavor < FF_ARRAY_ELEMS(atrc_fl2bps))
+                sh_a->wf->nAvgBytesPerSec = atrc_fl2bps[flavor];
             sh_a->wf->nBlockAlign = track->sub_packet_size;
             track->audio_buf =
-                malloc(track->sub_packet_h * track->audiopk_size);
+                calloc(track->sub_packet_h, track->audiopk_size);
             track->audio_timestamp =
-                malloc(track->sub_packet_h * sizeof(float));
+                calloc(track->sub_packet_h, sizeof(float));
             break;
         case mmioFOURCC('c', 'o', 'o', 'k'):
-            sh_a->wf->nAvgBytesPerSec = cook_fl2bps[flavor];
+            if (flavor < FF_ARRAY_ELEMS(cook_fl2bps))
+                sh_a->wf->nAvgBytesPerSec = cook_fl2bps[flavor];
             sh_a->wf->nBlockAlign = track->sub_packet_size;
             track->audio_buf =
-                malloc(track->sub_packet_h * track->audiopk_size);
+                calloc(track->sub_packet_h, track->audiopk_size);
             track->audio_timestamp =
-                malloc(track->sub_packet_h * sizeof(float));
+                calloc(track->sub_packet_h, sizeof(float));
             break;
         case mmioFOURCC('s', 'i', 'p', 'r'):
-            sh_a->wf->nAvgBytesPerSec = sipr_fl2bps[flavor];
+            if (flavor < FF_ARRAY_ELEMS(sipr_fl2bps))
+                sh_a->wf->nAvgBytesPerSec = sipr_fl2bps[flavor];
             sh_a->wf->nBlockAlign = track->coded_framesize;
             track->audio_buf =
-                malloc(track->sub_packet_h * track->audiopk_size);
+                calloc(track->sub_packet_h, track->audiopk_size);
             track->audio_timestamp =
-                malloc(track->sub_packet_h * sizeof(float));
+                calloc(track->sub_packet_h, sizeof(float));
             break;
         case mmioFOURCC('2', '8', '_', '8'):
             sh_a->wf->nAvgBytesPerSec = 3600;
             sh_a->wf->nBlockAlign = track->coded_framesize;
             track->audio_buf =
-                malloc(track->sub_packet_h * track->audiopk_size);
+                calloc(track->sub_packet_h, track->audiopk_size);
             track->audio_timestamp =
-                malloc(track->sub_packet_h * sizeof(float));
+                calloc(track->sub_packet_h, sizeof(float));
             break;
         }
 
@@ -2241,6 +2244,7 @@ static int demux_mkv_read_block_lacing(uint8_t *buffer, uint64_t *size,
     *all_lace_sizes = NULL;
     lace_size = NULL;
     /* lacing flags */
+    if (!*size) goto err_out;
     flags = *buffer++;
     (*size)--;
 
@@ -2254,6 +2258,7 @@ static int demux_mkv_read_block_lacing(uint8_t *buffer, uint64_t *size,
     case 1:                    /* xiph lacing */
     case 2:                    /* fixed-size lacing */
     case 3:                    /* EBML lacing */
+        if (!*size) goto err_out;
         *laces = *buffer++;
         (*size)--;
         (*laces)++;
@@ -2265,10 +2270,12 @@ static int demux_mkv_read_block_lacing(uint8_t *buffer, uint64_t *size,
                 lace_size[i] = 0;
                 do {
                     lace_size[i] += *buffer;
+                    if (!*size) goto err_out;
                     (*size)--;
                 } while (*buffer++ == 0xFF);
                 total += lace_size[i];
             }
+            if (*size < total) goto err_out;
             lace_size[i] = *size - total;
             break;
 
@@ -2281,10 +2288,7 @@ static int demux_mkv_read_block_lacing(uint8_t *buffer, uint64_t *size,
         {
             int l;
             uint64_t num = ebml_read_vlen_uint(buffer, &l);
-            if (num == EBML_UINT_INVALID) {
-                free(lace_size);
-                return 1;
-            }
+            if (num == EBML_UINT_INVALID || *size < l) goto err_out;
             buffer += l;
             *size -= l;
 
@@ -2292,15 +2296,13 @@ static int demux_mkv_read_block_lacing(uint8_t *buffer, uint64_t *size,
             for (i = 1; i < *laces - 1; i++) {
                 int64_t snum;
                 snum = ebml_read_vlen_int(buffer, &l);
-                if (snum == EBML_INT_INVALID) {
-                    free(lace_size);
-                    return 1;
-                }
+                if (snum == EBML_INT_INVALID || *size < l) goto err_out;
                 buffer += l;
                 *size -= l;
                 lace_size[i] = lace_size[i - 1] + snum;
                 total += lace_size[i];
             }
+            if (*size < total) goto err_out;
             lace_size[i] = *size - total;
             break;
         }
@@ -2309,6 +2311,10 @@ static int demux_mkv_read_block_lacing(uint8_t *buffer, uint64_t *size,
     }
     *all_lace_sizes = lace_size;
     return 0;
+
+err_out:
+    free(lace_size);
+    return 1;
 }
 
 static void handle_subtitles(demuxer_t *demuxer, mkv_track_t *track,

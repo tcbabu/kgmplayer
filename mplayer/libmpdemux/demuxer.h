@@ -110,6 +110,7 @@
 #define DEMUXER_CTRL_SWITCH_VIDEO 14
 #define DEMUXER_CTRL_IDENTIFY_PROGRAM 15
 #define DEMUXER_CTRL_CORRECT_PTS 16
+#define DEMUXER_CTRL_GET_REPLAY_GAIN 17    // returns 10x the adjustment
 
 #define SEEK_ABSOLUTE (1 << 0)
 #define SEEK_FACTOR   (1 << 1)
@@ -405,6 +406,7 @@ static inline int demux_getc(demux_stream_t *ds){
 void ds_free_packs(demux_stream_t *ds);
 int ds_get_packet(demux_stream_t *ds,unsigned char **start);
 int ds_get_packet_pts(demux_stream_t *ds, unsigned char **start, double *pts);
+int ds_get_packet_pts_endpts(demux_stream_t *ds, unsigned char **start, double *pts, double *endpts);
 int ds_get_packet_sub(demux_stream_t *ds,unsigned char **start,
                       double *pts, double *endpts);
 double ds_get_next_pts(demux_stream_t *ds);

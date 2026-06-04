@@ -262,6 +262,8 @@ static int edl_seek_type; ///< When non-zero, frames are discarded instead of se
 
 
 /* FIXME */
+
+#ifndef D_KULINA
 static void mencoder_exit(int level, const char *how)
 {
     if (how)
@@ -1756,3 +1758,8 @@ if(stream) free_stream(stream); // kill cache thread
 
 return interrupted;
 }
+#else
+int Mencoder(int argc,char ** argv) {
+  return 1;
+}
+#endif

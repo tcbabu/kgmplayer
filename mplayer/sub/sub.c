@@ -152,14 +152,14 @@ static void alloc_buf(mp_osd_obj_t* obj)
     int len;
     if (obj->bbox.x2 < obj->bbox.x1) obj->bbox.x2 = obj->bbox.x1;
     if (obj->bbox.y2 < obj->bbox.y1) obj->bbox.y2 = obj->bbox.y1;
-    obj->stride = ((obj->bbox.x2-obj->bbox.x1)+7)&(~7);
+    obj->stride = ((obj->bbox.x2-obj->bbox.x1)+15)&(~15);
     len = obj->stride*(obj->bbox.y2-obj->bbox.y1);
     if (obj->allocated<len) {
 	obj->allocated = len;
-	free(obj->bitmap_buffer);
-	free(obj->alpha_buffer);
-	obj->bitmap_buffer = memalign(16, len);
-	obj->alpha_buffer  = memalign(16, len);
+	av_freep(&obj->bitmap_buffer);
+	av_freep(&obj->alpha_buffer);
+	obj->bitmap_buffer = av_malloc(len);
+	obj->alpha_buffer  = av_malloc(len);
     }
     memset(obj->bitmap_buffer, sub_bg_color, len);
     memset(obj->alpha_buffer, sub_bg_alpha, len);
@@ -727,7 +727,7 @@ static inline void vo_update_text_sub(mp_osd_obj_t *obj, int dxs, int dys)
 	    // reading the subtitle words from vo_sub->text[]
           while (*t) {
             if (sub_utf8)
-              c = utf8_get_char((const char **)&t);
+              c = utf8_get_char(&t);
             else if ((c = *t++) >= 0x80 && sub_unicode)
               c = (c<<8) + *t++;
 	      if (k==MAX_UCS){
@@ -1101,8 +1101,8 @@ void free_osd_list(void){
     mp_osd_obj_t* obj=vo_osd_list;
     while(obj){
 	mp_osd_obj_t* next=obj->next;
-	free(obj->alpha_buffer);
-	free(obj->bitmap_buffer);
+	av_freep(&obj->alpha_buffer);
+	av_freep(&obj->bitmap_buffer);
 	free(obj);
 	obj=next;
     }

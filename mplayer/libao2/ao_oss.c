@@ -29,19 +29,15 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <string.h>
-#include <strings.h>
 
 #include "config.h"
+#include "libavutil/avstring.h"
 #include "mp_msg.h"
 #include "mixer.h"
 #include "help_mp.h"
 
 #ifdef HAVE_SYS_SOUNDCARD_H
 #include <sys/soundcard.h>
-#else
-#ifdef HAVE_SOUNDCARD_H
-#include <soundcard.h>
-#endif
 #endif
 
 #include "libaf/af_format.h"
@@ -185,19 +181,22 @@ static int control(int cmd,void *arg){
 
 	    if ((fd = open(oss_mixer_device, O_RDONLY)) != -1)
 	    {
-		ioctl(fd, SOUND_MIXER_READ_DEVMASK, &devs);
+		if (ioctl(fd, SOUND_MIXER_READ_DEVMASK, &devs) == -1)
+		    return CONTROL_ERROR;
 		if (devs & (1 << oss_mixer_channel))
 		{
 		    if (cmd == AOCONTROL_GET_VOLUME)
 		    {
-		        ioctl(fd, MIXER_READ(oss_mixer_channel), &v);
+		        if (ioctl(fd, MIXER_READ(oss_mixer_channel), &v) == -1)
+			    return CONTROL_ERROR;
 			vol->right = (v & 0xFF00) >> 8;
 			vol->left = v & 0x00FF;
 		    }
 		    else
 		    {
 		        v = ((int)vol->right << 8) | (int)vol->left;
-			ioctl(fd, MIXER_WRITE(oss_mixer_channel), &v);
+			if (ioctl(fd, MIXER_WRITE(oss_mixer_channel), &v) == -1)
+			    return CONTROL_ERROR;
 		    }
 		}
 		else
@@ -251,11 +250,12 @@ static int init(int rate,int channels,int format,int flags){
       mp_msg(MSGT_AO,MSGL_ERR,MSGTR_AO_OSS_CantOpenMixer,
         oss_mixer_device, strerror(errno));
     }else{
-      ioctl(fd, SOUND_MIXER_READ_DEVMASK, &devs);
+      if (ioctl(fd, SOUND_MIXER_READ_DEVMASK, &devs) == -1)
+        devs = 0;
       close(fd);
 
       for (i=0; i<SOUND_MIXER_NRDEVICES; i++){
-        if(!strcasecmp(mixer_channels[i], mchan)){
+        if(!av_strcasecmp(mixer_channels[i], mchan)){
           if(!(devs & (1 << i))){
             mp_msg(MSGT_AO,MSGL_ERR,MSGTR_AO_OSS_ChanNotFound,mchan);
             i = SOUND_MIXER_NRDEVICES+1;
@@ -300,7 +300,8 @@ static int init(int rate,int channels,int format,int flags){
 
   if(AF_FORMAT_IS_AC3(format)) {
     ao_data.samplerate=rate;
-    ioctl (audio_fd, SNDCTL_DSP_SPEED, &ao_data.samplerate);
+    if (ioctl (audio_fd, SNDCTL_DSP_SPEED, &ao_data.samplerate) == -1)
+      mp_msg(MSGT_AO,MSGL_WARN, "OSS: Failed setting AC3 sample-rate %i %s\n", rate, strerror(errno));
   }
 
 ac3_retry:
@@ -355,7 +356,8 @@ ac3_retry:
     mp_msg(MSGT_AO,MSGL_V,"audio_setup: using %d channels (requested: %d)\n", ao_data.channels, channels);
     // set rate
     ao_data.samplerate=rate;
-    ioctl (audio_fd, SNDCTL_DSP_SPEED, &ao_data.samplerate);
+    if (ioctl (audio_fd, SNDCTL_DSP_SPEED, &ao_data.samplerate) == -1)
+      mp_msg(MSGT_AO,MSGL_WARN, "OSS: Failed setting sample-rate %i %s\n", rate, strerror(errno));
     mp_msg(MSGT_AO,MSGL_V,"audio_setup: using %d Hz samplerate (requested: %d)\n",ao_data.samplerate,rate);
   }
 
@@ -437,6 +439,7 @@ static void uninit(int immed){
 
 // stop playing and empty buffers (for seeking/pause)
 static void reset(void){
+  int fail = 0;
   int oss_format;
     uninit(1);
     audio_fd=open(dsp, O_WRONLY);
@@ -451,17 +454,19 @@ static void reset(void){
 
   oss_format = format2oss(ao_data.format);
   if(AF_FORMAT_IS_AC3(ao_data.format))
-    ioctl (audio_fd, SNDCTL_DSP_SPEED, &ao_data.samplerate);
-  ioctl (audio_fd, SNDCTL_DSP_SETFMT, &oss_format);
+    fail |= ioctl (audio_fd, SNDCTL_DSP_SPEED, &ao_data.samplerate) == -1;
+  fail |= ioctl (audio_fd, SNDCTL_DSP_SETFMT, &oss_format) == -1;
   if(!AF_FORMAT_IS_AC3(ao_data.format)) {
     if (ao_data.channels > 2)
-      ioctl (audio_fd, SNDCTL_DSP_CHANNELS, &ao_data.channels);
+      fail |= ioctl (audio_fd, SNDCTL_DSP_CHANNELS, &ao_data.channels) == -1;
     else {
       int c = ao_data.channels-1;
-      ioctl (audio_fd, SNDCTL_DSP_STEREO, &c);
+      fail |= ioctl (audio_fd, SNDCTL_DSP_STEREO, &c) == -1;
     }
-    ioctl (audio_fd, SNDCTL_DSP_SPEED, &ao_data.samplerate);
+    fail |= ioctl (audio_fd, SNDCTL_DSP_SPEED, &ao_data.samplerate) == -1;
   }
+  if (fail)
+    mp_msg(MSGT_AO,MSGL_WARN, "OSS: Reset failed\n");
 }
 
 // stop playing, keep buffers (for pause)

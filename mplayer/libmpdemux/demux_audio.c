@@ -33,7 +33,6 @@
 #include "libavutil/intreadwrite.h"
 
 #include <string.h>
-#include <strings.h>
 
 #define MP3 1
 #define WAV 2
@@ -45,6 +44,7 @@
 typedef struct da_priv {
   int frmt;
   double next_pts;
+  int r_gain;
 } da_priv_t;
 
 //! rather arbitrary value for maximum length of wav-format headers
@@ -219,19 +219,19 @@ get_flac_metadata (demuxer_t* demuxer)
           c = comment[length];
           comment[length] = 0;
 
-          if (!strncasecmp ("TITLE=", comment, 6) && (length - 6 > 0))
+          if (!av_strncasecmp ("TITLE=", comment, 6) && (length - 6 > 0))
             demux_info_add (demuxer, "Title", comment + 6);
-          else if (!strncasecmp ("ARTIST=", comment, 7) && (length - 7 > 0))
+          else if (!av_strncasecmp ("ARTIST=", comment, 7) && (length - 7 > 0))
             demux_info_add (demuxer, "Artist", comment + 7);
-          else if (!strncasecmp ("ALBUM=", comment, 6) && (length - 6 > 0))
+          else if (!av_strncasecmp ("ALBUM=", comment, 6) && (length - 6 > 0))
             demux_info_add (demuxer, "Album", comment + 6);
-          else if (!strncasecmp ("DATE=", comment, 5) && (length - 5 > 0))
+          else if (!av_strncasecmp ("DATE=", comment, 5) && (length - 5 > 0))
             demux_info_add (demuxer, "Year", comment + 5);
-          else if (!strncasecmp ("GENRE=", comment, 6) && (length - 6 > 0))
+          else if (!av_strncasecmp ("GENRE=", comment, 6) && (length - 6 > 0))
             demux_info_add (demuxer, "Genre", comment + 6);
-          else if (!strncasecmp ("Comment=", comment, 8) && (length - 8 > 0))
+          else if (!av_strncasecmp ("Comment=", comment, 8) && (length - 8 > 0))
             demux_info_add (demuxer, "Comment", comment + 8);
-          else if (!strncasecmp ("TRACKNUMBER=", comment, 12)
+          else if (!av_strncasecmp ("TRACKNUMBER=", comment, 12)
                    && (length - 12 > 0))
           {
             char buf[31];
@@ -285,7 +285,7 @@ static void skip_flac_metadata(demuxer_t *demuxer)
  *
  * @return 0 (error or no variable bitrate mode) or number of frames
  */
-static unsigned int mp3_vbr_frames(stream_t *s, off_t off) {
+static unsigned int mp3_vbr_frames(stream_t *s, off_t off, da_priv_t *priv) {
   static const int xing_offset[2][2] = {{32, 17}, {17, 9}};
   unsigned int data;
   unsigned char hdr[4];
@@ -317,7 +317,21 @@ static unsigned int mp3_vbr_frames(stream_t *s, off_t off) {
       data = stream_read_dword(s);
 
       if (data & 0x1)                   // frames field is present
-        return stream_read_dword(s);    // frames
+        data = stream_read_dword(s);    // frames
+
+      if (stream_skip(s, 123)) {
+        uint16_t word = stream_read_word(s);
+
+        /* Radio ReplayGain */
+        if ((word >> 13) == 1) {
+          priv->r_gain = word & 0x1ff;
+
+          if ((word >> 9) & 1)
+            priv->r_gain = -priv->r_gain;
+        }
+      }
+
+      return data;
     }
 
     /* VBRI (at fixed position: 32 bytes after header) */
@@ -436,6 +450,9 @@ static int demux_audio_open(demuxer_t* demuxer) {
 
   sh_audio = new_sh_audio(demuxer,0, NULL);
 
+  priv = malloc(sizeof(da_priv_t));
+  priv->r_gain = INT32_MIN;
+
   switch(frmt) {
   case MP3:
     sh_audio->format = (mp3_found->mpa_layer < 3 ? 0x50 : 0x55);
@@ -453,7 +470,7 @@ static int demux_audio_open(demuxer_t* demuxer) {
     sh_audio->wf->nBlockAlign = mp3_found->mpa_spf;
     sh_audio->wf->wBitsPerSample = 16;
     sh_audio->wf->cbSize = 0;
-    duration = (double) mp3_vbr_frames(s, demuxer->movi_start) * mp3_found->mpa_spf / mp3_found->mp3_freq;
+    duration = (double) mp3_vbr_frames(s, demuxer->movi_start, priv) * mp3_found->mpa_spf / mp3_found->mp3_freq;
     free(mp3_found);
     mp3_found = NULL;
     if(demuxer->movi_end && (s->flags & MP_STREAM_SEEK) == MP_STREAM_SEEK) {
@@ -645,7 +662,6 @@ static int demux_audio_open(demuxer_t* demuxer) {
 	    } break;
   }
 
-  priv = malloc(sizeof(da_priv_t));
   priv->frmt = frmt;
   priv->next_pts = 0;
   demuxer->priv = priv;
@@ -831,9 +847,14 @@ static int demux_audio_control(demuxer_t *demuxer,int cmd, void *arg){
 	    return DEMUXER_CTRL_GUESS;
 
 	case DEMUXER_CTRL_GET_PERCENT_POS:
-	    if (audio_length<=0)
+	    if (audio_length<=0 || priv->next_pts==MP_NOPTS_VALUE)
     		return DEMUXER_CTRL_DONTKNOW;
     	    *((int *)arg)=(int)( (priv->next_pts*100)  / audio_length);
+	    return DEMUXER_CTRL_OK;
+
+	case DEMUXER_CTRL_GET_REPLAY_GAIN:
+	    if (priv->r_gain == INT32_MIN) return DEMUXER_CTRL_DONTKNOW;
+	    *((int *)arg) = priv->r_gain;
 	    return DEMUXER_CTRL_OK;
 
 	default:

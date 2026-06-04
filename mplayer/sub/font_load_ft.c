@@ -29,7 +29,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <strings.h>
 
 #ifdef CONFIG_ICONV
 #include <iconv.h>
@@ -44,6 +43,7 @@
 #endif
 
 #include "libavutil/common.h"
+#include "libavutil/avstring.h"
 #include "mpbswap.h"
 #include "font_load.h"
 #include "mp_msg.h"
@@ -107,7 +107,7 @@ static const FT_ULong osd_charcodes[OSD_CHARSET_SIZE] =
 #define f1616ToInt(x)		(((x)+0x8000)>>16)	// 16.16
 #define floatTof266(x)		((int)((x)*(1<<6)+0.5))
 
-#define ALIGN(x)                (((x)+7)&~7)    // 8 byte align
+#define ALIGN(x)                (((x)+15)&~15)    // 16 byte align
 
 #define WARNING(msg, args...)      mp_msg(MSGT_OSD, MSGL_WARN, msg "\n", ## args)
 
@@ -349,7 +349,7 @@ static void outline0(
 }
 
 // gaussian blur
-void blur(
+static void blur(
 	unsigned char *buffer,
 	unsigned short *tmp2,
 	int width,
@@ -938,7 +938,7 @@ int kerning(font_desc_t *desc, int prevc, int c)
     return f266ToInt(kern.x);
 }
 
-font_desc_t* read_font_desc_ft(const char *fname, int face_index, int movie_width, int movie_height, float font_scale_factor)
+static font_desc_t* read_font_desc_ft(const char *fname, int face_index, int movie_width, int movie_height, float font_scale_factor)
 {
     font_desc_t *desc = NULL;
 
@@ -986,7 +986,7 @@ font_desc_t* read_font_desc_ft(const char *fname, int face_index, int movie_widt
     if (subtitle_font_ppem > 128) subtitle_font_ppem = 128;
     if (osd_font_ppem > 128) osd_font_ppem = 128;
 
-    unicode = !subtitle_font_encoding || strcasecmp(subtitle_font_encoding, "unicode") == 0;
+    unicode = !subtitle_font_encoding || av_strcasecmp(subtitle_font_encoding, "unicode") == 0;
 
     desc = init_font_desc();
     if(!desc) goto err_out;
@@ -1137,8 +1137,8 @@ void load_font_ft(int width, int height, font_desc_t** fontp, const char *font_n
         fc_pattern = FcFontMatch(0, fc_pattern, &result);
         if (fc_pattern) {
             FcPatternDestroy(fc_pattern2);
-            FcPatternGetBool(fc_pattern, FC_SCALABLE, 0, &scalable);
-            if (scalable != FcTrue) {
+            if (FcPatternGetBool(fc_pattern, FC_SCALABLE, 0, &scalable) == FcResultMatch &&
+                scalable != FcTrue) {
                 FcPatternDestroy(fc_pattern);
                 fc_pattern = FcNameParse("sans-serif");
                 FcConfigSubstitute(0, fc_pattern, FcMatchPattern);
@@ -1148,11 +1148,13 @@ void load_font_ft(int width, int height, font_desc_t** fontp, const char *font_n
                 FcPatternDestroy(fc_pattern2);
             }
             // s doesn't need to be freed according to fontconfig docs
-            FcPatternGetString(fc_pattern, FC_FILE, 0, &s);
-            FcPatternGetInteger(fc_pattern, FC_INDEX, 0, &face_index);
-            *fontp=read_font_desc_ft(s, face_index, width, height, font_scale_factor);
+            if (FcPatternGetString(fc_pattern, FC_FILE, 0, &s) == FcResultMatch &&
+                FcPatternGetInteger(fc_pattern, FC_INDEX, 0, &face_index) == FcResultMatch) {
+                *fontp=read_font_desc_ft(s, face_index, width, height, font_scale_factor);
+                FcPatternDestroy(fc_pattern);
+                return;
+            }
             FcPatternDestroy(fc_pattern);
-            return;
         }
         // Failed to match any font, try without fontconfig
         mp_msg(MSGT_OSD, MSGL_ERR, MSGTR_LIBVO_FONT_LOAD_FT_FontconfigNoMatch);

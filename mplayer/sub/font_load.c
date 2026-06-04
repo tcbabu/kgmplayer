@@ -23,10 +23,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include "libavutil/intreadwrite.h"
+#include "libavutil/avstring.h"
 
 #include "font_load.h"
 #include "sub.h"
@@ -35,33 +37,33 @@
 raw_file* load_raw(char *name,int verbose){
     int bpp;
     unsigned size;
-    raw_file* raw=malloc(sizeof(raw_file));
+    raw_file* raw=calloc(1, sizeof(*raw));
     unsigned char head[32];
     FILE *f=fopen(name,"rb");
     if(!f) goto err_out;                        // can't open
     if(fread(head,32,1,f)<1) goto err_out;        // too small
     if(memcmp(head,"mhwanh",6)) goto err_out;        // not raw file
-    raw->w=head[8]*256+head[9];
-    raw->h=head[10]*256+head[11];
-    raw->c=head[12]*256+head[13];
+    raw->w=AV_RB16(head + 8);
+    raw->h=AV_RB16(head + 10);
+    raw->c=AV_RB16(head + 12);
     if(raw->w == 0) // 2 bytes were not enough for the width... read 4 bytes from the end of the header
-    	raw->w = ((head[28]*0x100 + head[29])*0x100 + head[30])*0x100 + head[31];
+    	raw->w = AV_RB32(head + 28);
     if(raw->c>256) goto err_out;                 // too many colors!?
-    if (raw->w > INT_MAX / 4 || (uint64_t)raw->w * raw->h > INT_MAX / 4)
+    if (!raw->w || !raw->h ||
+        raw->w > INT_MAX / 4 || raw->h > INT_MAX / 4 / raw->w)
         goto err_out;
     mp_msg(MSGT_OSD, MSGL_DBG2, "RAW: %s  %d x %d, %d colors\n",name,raw->w,raw->h,raw->c);
     if(raw->c){
-        raw->pal=malloc(raw->c*3);
-        fread(raw->pal,3,raw->c,f);
+        raw->pal=calloc(raw->c, 3);
+        if (fread(raw->pal,3,raw->c,f) != raw->c)
+          goto err_out;
         bpp=1;
     } else {
-        raw->pal=NULL;
         bpp=3;
     }
     size = raw->h*raw->w*bpp;
     raw->bmp=malloc(size);
-    if (fread(raw->bmp,size,1,f) != size) {
-        free(raw->bmp);
+    if (fread(raw->bmp,1,size,f) != size) {
         goto err_out;
     }
     fclose(f);
@@ -70,6 +72,10 @@ raw_file* load_raw(char *name,int verbose){
 err_out:
     if (f)
       fclose(f);
+    if (raw) {
+      free(raw->pal);
+      free(raw->bmp);
+    }
     free(raw);
     return NULL;
 }
@@ -114,7 +120,7 @@ for(i=0;i<65536;i++) desc->start[i]=desc->width[i]=desc->font[i]=-1;
 
 section[0]=0;
 
-unicode = !subtitle_font_encoding || strcasecmp(subtitle_font_encoding, "unicode") == 0;
+unicode = !subtitle_font_encoding || av_strcasecmp(subtitle_font_encoding, "unicode") == 0;
 
 while(fgets(sor,1020,f)){
   unsigned char* p[8];

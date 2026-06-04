@@ -70,7 +70,7 @@ void mixer_setvolume(mixer_t *mixer, float l, float r)
   ao_control_vol_t vol;
   vol.right=r; vol.left=l;
 #ifdef D_KULINA
-  kgVolume=(int)l;
+  kgVolume = (int)l;
 #endif
   if(mixer->audio_out){
     if(soft_vol ||

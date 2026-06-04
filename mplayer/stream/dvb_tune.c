@@ -4,7 +4,7 @@
 
    Modified for use with MPlayer, for details see the changelog at
    http://svn.mplayerhq.hu/mplayer/trunk/
-   $Id: dvb_tune.c 30818 2010-03-02 19:57:17Z diego $
+   $Id: dvb_tune.c 38108 2018-05-06 17:12:31Z reimar $
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -386,7 +386,7 @@ static int tune_it(int fd_frontend, int fd_sec, unsigned int freq, unsigned int 
       mp_msg(MSGT_DEMUX, MSGL_V, "tuning DVB-S to Freq: %u, Pol: %c Srate: %d, 22kHz: %s, LNB:  %d\n",freq,pol,srate,hi_lo ? "on" : "off", diseqc);
 
       if(do_diseqc(dfd, diseqc, (pol == 'V' ? 1 : 0), hi_lo) == 0)
-          mp_msg(MSGT_DEMUX, MSGL_V, "DISEQC SETTING SUCCEDED\n");
+          mp_msg(MSGT_DEMUX, MSGL_V, "DISEQC SETTING SUCCEEDED\n");
       else
       {
           mp_msg(MSGT_DEMUX, MSGL_ERR, "DISEQC SETTING FAILED\n");

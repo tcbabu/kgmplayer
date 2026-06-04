@@ -21,7 +21,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 #include <unistd.h>
 
 #include <sys/types.h>
@@ -50,7 +49,7 @@
 
 #ifdef CONFIG_FFMPEG
 #include "libavcodec/avcodec.h"
-#if MP_INPUT_BUFFER_PADDING_SIZE < FF_INPUT_BUFFER_PADDING_SIZE
+#if MP_INPUT_BUFFER_PADDING_SIZE < AV_INPUT_BUFFER_PADDING_SIZE
 #error MP_INPUT_BUFFER_PADDING_SIZE is too small!
 #endif
 #include "av_helpers.h"
@@ -722,18 +721,25 @@ int ds_fill_buffer(demux_stream_t *ds)
         // This needs to be enough for at least 1 second of packets
         // since libavformat mov demuxer does not try to interleave
         // with more than 1s precision.
-        if (!force_ni && ds->fill_count > 80)
+        if (!force_ni && ds->fill_count > 80) {
+            static int once;
+            if (!once) {
+                mp_msg(MSGT_DEMUXER, MSGL_WARN, "Possibly bad interleaving detected.\n"
+                       "Use -ni option if this causes playback issues and avoid or fix the program that created the file.\n");
+                once = 1;
+            }
             break;
+        }
         // avoid printing the "too many ..." message over and over
         if (ds->eof)
             break;
-        if (apacks >= MAX_PACKS || abytes >= MAX_PACK_BYTES) {
+        if (!force_ni && (apacks >= MAX_PACKS || abytes >= MAX_PACK_BYTES)) {
             mp_msg(MSGT_DEMUXER, MSGL_ERR, MSGTR_TooManyAudioInBuffer,
                    apacks, abytes);
             mp_msg(MSGT_DEMUXER, MSGL_HINT, MSGTR_MaybeNI);
             break;
         }
-        if (vpacks >= MAX_PACKS || vbytes >= MAX_PACK_BYTES) {
+        if (!force_ni && (vpacks >= MAX_PACKS || vbytes >= MAX_PACK_BYTES)) {
             mp_msg(MSGT_DEMUXER, MSGL_ERR, MSGTR_TooManyVideoInBuffer,
                    vpacks, vbytes);
             mp_msg(MSGT_DEMUXER, MSGL_HINT, MSGTR_MaybeNI);
@@ -879,14 +885,23 @@ int ds_get_packet(demux_stream_t *ds, unsigned char **start)
 
 int ds_get_packet_pts(demux_stream_t *ds, unsigned char **start, double *pts)
 {
+    double dummy;
+    return ds_get_packet_pts_endpts(ds, start, pts, &dummy);
+}
+
+int ds_get_packet_pts_endpts(demux_stream_t *ds, unsigned char **start, double *pts, double *endpts)
+{
     int len;
     *pts = MP_NOPTS_VALUE;
+    *endpts = MP_NOPTS_VALUE;
     len = ds_get_packet(ds, start);
     if (len < 0)
         return len;
     // Return pts unless this read starts from the middle of a packet
     if (len == ds->buffer_pos)
         *pts = ds->current->pts;
+    if (len == ds->buffer_size)
+        *endpts = ds->current->endpts;
     return len;
 }
 
@@ -941,15 +956,15 @@ double ds_get_next_pts(demux_stream_t *ds)
     // if we have not read from the "current" packet, consider it
     // as the next, otherwise we never get the pts for the first packet.
     while (!ds->first && (!ds->current || ds->buffer_pos)) {
-        if (demux->audio->packs >= MAX_PACKS
-            || demux->audio->bytes >= MAX_PACK_BYTES) {
+        if (!force_ni && (demux->audio->packs >= MAX_PACKS
+            || demux->audio->bytes >= MAX_PACK_BYTES)) {
             mp_msg(MSGT_DEMUXER, MSGL_ERR, MSGTR_TooManyAudioInBuffer,
                    demux->audio->packs, demux->audio->bytes);
             mp_msg(MSGT_DEMUXER, MSGL_HINT, MSGTR_MaybeNI);
             return MP_NOPTS_VALUE;
         }
-        if (demux->video->packs >= MAX_PACKS
-            || demux->video->bytes >= MAX_PACK_BYTES) {
+        if (!force_ni && (demux->video->packs >= MAX_PACKS
+            || demux->video->bytes >= MAX_PACK_BYTES)) {
             mp_msg(MSGT_DEMUXER, MSGL_ERR, MSGTR_TooManyVideoInBuffer,
                    demux->video->packs, demux->video->bytes);
             mp_msg(MSGT_DEMUXER, MSGL_HINT, MSGTR_MaybeNI);
@@ -1421,7 +1436,7 @@ int demux_info_add(demuxer_t *demuxer, const char *opt, const char *param)
 
 
     for (n = 0; info && info[2 * n] != NULL; n++) {
-        if (!strcasecmp(opt, info[2 * n])) {
+        if (!av_strcasecmp(opt, info[2 * n])) {
             if (!strcmp(param, info[2 * n + 1])) {
                 mp_msg(MSGT_DEMUX, MSGL_V, "Demuxer info %s set to unchanged value %s\n", opt, param);
                 return 0;
@@ -1470,7 +1485,7 @@ char *demux_info_get(demuxer_t *demuxer, const char *opt)
     char **info = demuxer->info;
 
     for (i = 0; info && info[2 * i] != NULL; i++) {
-        if (!strcasecmp(opt, info[2 * i]))
+        if (!av_strcasecmp(opt, info[2 * i]))
             return info[2 * i + 1];
     }
 
@@ -1524,10 +1539,13 @@ double demuxer_get_current_time(demuxer_t *demuxer)
 {
     double get_time_ans = 0;
     sh_video_t *sh_video = demuxer->video->sh;
+    sh_audio_t *sh_audio = demuxer->audio->sh;
     if (demuxer->stream_pts != MP_NOPTS_VALUE)
         get_time_ans = demuxer->stream_pts;
-    else if (sh_video)
+    else if (sh_video && sh_video->pts != MP_NOPTS_VALUE)
         get_time_ans = sh_video->pts;
+    else if (sh_audio && sh_audio->pts != MP_NOPTS_VALUE)
+        get_time_ans = sh_audio->pts;
     return get_time_ans;
 }
 

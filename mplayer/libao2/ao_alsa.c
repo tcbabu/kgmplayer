@@ -27,7 +27,6 @@
  */
 
 #include <errno.h>
-#include <sys/time.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <ctype.h>
@@ -717,6 +716,7 @@ static void uninit(int immed)
   else {
     mp_msg(MSGT_AO,MSGL_ERR,MSGTR_AO_ALSA_NoHandlerDefined);
   }
+  snd_config_update_free_global();
 }
 
 static void audio_pause(void)

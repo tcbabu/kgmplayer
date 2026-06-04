@@ -277,8 +277,9 @@ static int demux_gif_fill_buffer(demuxer_t *demuxer, demux_stream_t *ds)
 
 static demuxer_t* demux_open_gif(demuxer_t* demuxer)
 {
-  gif_priv_t *priv = calloc(1, sizeof(gif_priv_t));
+  gif_priv_t *priv = calloc(1, sizeof(*priv));
   sh_video_t *sh_video = NULL;
+  int bih_size = sizeof(*sh_video->bih) + (256 * 4);
   GifFileType *gif = NULL;
 
   priv->current_pts = 0;
@@ -304,6 +305,17 @@ static demuxer_t* demux_open_gif(demuxer_t* demuxer)
     return NULL;
   }
 
+  // Validate image size, most code in this demuxer assumes w*h <= INT_MAX
+  if ((int64_t)gif->SWidth * gif->SHeight > INT_MAX) {
+    mp_msg(MSGT_DEMUX, MSGL_ERR,
+           "[demux_gif] Unsupported picture size %dx%d.\n", gif->SWidth,
+           gif->SHeight);
+    if (DGifCloseFile(gif) == GIF_ERROR)
+      print_gif_error(NULL);
+    free(priv);
+    return NULL;
+  }
+
   // create a new video stream header
   sh_video = new_sh_video(demuxer, 0);
 
@@ -317,7 +329,8 @@ static demuxer_t* demux_open_gif(demuxer_t* demuxer)
   sh_video->fps = 5.0f;
   sh_video->frametime = 1.0f / sh_video->fps;
 
-  sh_video->bih = malloc(sizeof(*sh_video->bih) + (256 * 4));
+  sh_video->bih = calloc(1, bih_size);
+  sh_video->bih->biSize = bih_size;
   sh_video->bih->biCompression = sh_video->format;
   sh_video->bih->biWidth = priv->w = (uint16_t)gif->SWidth;
   sh_video->bih->biHeight = priv->h = (uint16_t)gif->SHeight;
