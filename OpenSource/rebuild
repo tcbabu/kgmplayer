@@ -7,6 +7,8 @@ echo $CFLAGS
 echo $PKG_CONFIG_PATH
 echo "$X11_LIBS"
 echo "$X11_CFLAGS"
+cc -o waitforenter waitforenter.c
+cp waitforenter $KULINA/bin 
 tar xf zlib-1.2.8.tar.gz
 cd zlib-1.2.8
 ./configure --prefix=$KULINA --static
@@ -332,6 +334,7 @@ cp $KULINA/lib/pulseaudio/*.a $KULINA/lib/
 mkdir $KULINA/include/pulse
 mkdir $KULINA/OpenSource/pulseaudio-12.2/src/pulse/*.h $KULINA/include/pulse/
 cd ..
+waitforenter libpulse.a
 rm -rf pulseaudio-12.2
 tar xf sndfile.tgz
 cd sndfile

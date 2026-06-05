@@ -3,7 +3,7 @@ PREFIX=/home/kulina/BUILD/kgmplayer
 KULINA=/home/kulina/BUILD/kgmplayer
 export CFLAGS="-fPIC -fpic -fPIC  -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -Wno-int-conversion"
 export CPPFLAGS="-fPIC -fpic -fPIC  -I/home/kulina/BUILD/kgmplayer/include -I/home/kulina/BUILD/kgmplayer/include/freetype2 -I/home/kulina/BUILD/kgmplayer/include/ncursesw  -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -Wno-int-conversion"
-export LDFLAGS="-L/home/kulina/BUILD/kgmplayer/lib -L/home/kulina/BUILD/kgmplayer/lib "
+export LDFLAGS="-L/lib -L/home/kulina/BUILD/kgmplayer/lib "
 export X11_CFLAGS="-I/home/kulina/BUILD/kgmplayer/include "
 export X11_LIBS="-lX11 "
 export PKG_CONFIG_PATH=/home/kulina/BUILD/kgmplayer/lib/pkgconfig:/usr/X11R76/lib/pkgconfig:/home/kulina/BUILD/kgmplayer/lib/pkgconfig:/usr/X11R76/lib/pkgconfig
@@ -18,6 +18,8 @@ echo $CFLAGS
 echo $PKG_CONFIG_PATH
 echo "$X11_LIBS"
 echo "$X11_CFLAGS"
+cc -o waitforenter waitforenter.c
+cp waitforenter $KULINA/bin 
 tar xf zlib-1.2.8.tar.gz
 cd zlib-1.2.8
 ./configure --prefix=$KULINA --static
@@ -343,6 +345,7 @@ cp $KULINA/lib/pulseaudio/*.a $KULINA/lib/
 mkdir $KULINA/include/pulse
 mkdir $KULINA/OpenSource/pulseaudio-12.2/src/pulse/*.h $KULINA/include/pulse/
 cd ..
+waitforenter libpulse.a
 rm -rf pulseaudio-12.2
 tar xf sndfile.tgz
 cd sndfile
