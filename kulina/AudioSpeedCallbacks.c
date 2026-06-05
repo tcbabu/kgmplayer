@@ -1,4 +1,18 @@
 #include <kulina.h>
+#include "mediainfo.h"
+#include "AudioSpeedCallbacks.h"
+extern MEDIAINFO Minfo;
+static void *Args=NULL,*Rets=NULL;
+
+static DIAINTR *It = NULL;
+
+
+static MODINTERFACE ModFuns[] = { 
+    (MODINTERFACE) NULL 
+};
+
+static Dlink *ModuleList=NULL;
+
 #include "ConvertData.h"
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
@@ -30,7 +44,7 @@ static int FolderBrowser(char *FileName) {
 	return ret;
 }
 
-int  AudioSpeedtextbox1callback(int cellno,int i,void *Tmp) {
+int  AudioSpeedATinputcallback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -45,7 +59,7 @@ int  AudioSpeedtextbox1callback(int cellno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   T = (DIT *)kgGetWidget(Tmp,i);
   e = T->elmt;
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATOutput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"AToutput");
   strcpy(FileName,kgGetString(T,0));
   strcpy(OutFile,kgGetString(TO,0));
   GetFolderName(FileName,OutFile);
@@ -56,7 +70,7 @@ int  AudioSpeedtextbox1callback(int cellno,int i,void *Tmp) {
   kgUpdateOn(Tmp);
   return ret;
 }
-int  AudioSpeedbutton1callback(int butno,int i,void *Tmp) {
+int  AudioSpeedATbrowsecallback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -71,8 +85,8 @@ int  AudioSpeedbutton1callback(int butno,int i,void *Tmp) {
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
   DIT *T,*TO;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATInput");
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATOutput");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATinput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"AToutput");
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
@@ -99,13 +113,13 @@ int  AudioSpeedbutton1callback(int butno,int i,void *Tmp) {
   }
   return ret;
 }
-void  AudioSpeedbutton1init(DIN *B,void *ptmp) {
+void  AudioSpeedATbrowseinit(DIN *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
-int  AudioSpeedtextbox2callback(int cellno,int i,void *Tmp) {
+int  AudioSpeedAToutputcallback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -119,11 +133,11 @@ int  AudioSpeedtextbox2callback(int cellno,int i,void *Tmp) {
 // pt[0] is args passed as inputs; pt[1] is output pointer
   D = (DIALOG *)Tmp;
   TO = (DIT *)kgGetWidget(Tmp,i);
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATInput");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATinput");
   e = T->elmt;
   return ret;
 }
-int  AudioSpeedtextbox3callback(int cellno,int i,void *Tmp) {
+int  AudioSpeedATspeedcallback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -140,7 +154,7 @@ int  AudioSpeedtextbox3callback(int cellno,int i,void *Tmp) {
   SpeedFac = (double)kgGetDouble(T,0);
   return ret;
 }
-int  AudioSpeedsplbutton1callback(int butno,int i,void *Tmp) {
+int  AudioSpeedATdocallback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -163,11 +177,13 @@ int  AudioSpeedsplbutton1callback(int butno,int i,void *Tmp) {
   ToolsBox = (DIRA *)kgGetNamedWidget(Tmp,"ToolsBox");
   Busyid = kgOpenBusy(Tmp,400,400);
   vstr = (VOLSTR *)malloc(sizeof(VOLSTR));
-  TI = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATInput");
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATOutput");
-  TS = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATSpeed");
+  TI = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATinput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"AToutput");
+  TS = (DIT *)kgGetNamedWidget(Tmp,(char *)"ATspeed");
   
   SpeedFac = (double)kgGetDouble(TS,0);
+  if(SpeedFac < 0.5 ) SpeedFac=0.5;
+  if(SpeedFac > 2.0 ) SpeedFac=2.0;
   strcpy(vstr->Infile,kgGetString(TI,0));
   strcpy(vstr->Outfile,kgGetString(TO,0));
   vstr->corval =SpeedFac;  
@@ -186,11 +202,107 @@ int  AudioSpeedsplbutton1callback(int butno,int i,void *Tmp) {
   }
   return ret;
 }
-void  AudioSpeedsplbutton1init(DIL *B,void *ptmp) {
+void  AudioSpeedATdoinit(DIL *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
+}
+int AudioSpeedASOutcallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  char FileName[500];
+  FileName[0]='\0';
+  if(!kgFolderBrowser(Tmp,10,10,FileName,"*"))return 0;
+  DIT *TO;
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"AToutput");
+  kgSetString(TO,0,FileName);
+  kgUpdateWidget(TO);
+  kgUpdateOn(Tmp);
+  return ret;
+}
+void  AudioSpeedASOutinit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
+}
+int AudioSpeedSetup(void *Tmp,void *args) {
+  /*********************************** 
+    args :  Pointer to args  
+   ***********************************/ 
+  /* you add any initialisation here */
+  /* useful for setting is used as MakeGroup */
+  void **pt = (void **)args;
+  double *Spt = (double *)(pt[2]);
+  *Spt = 1.0;
+  return 1;
+}
+void * AudioSpeedCleanDia(void *args) {
+  /*********************************** 
+    args :  Pointer to args  
+   ***********************************/ 
+  
+/* you add any cleaning  here */
+
+  return NULL;
+}
+void *  AudioSpeedAction(void *Tmp,void *Args) {
+  return NULL;
+} 
+int   AudioSpeedOn(void *itmp) {
+  DIAINTR * Dt = (DIAINTR *) itmp;
+  if(Dt == NULL ) Dt = (DIAINTR *)It;
+  if(Dt != NULL) {
+    if(Dt->Dtmp != NULL)kgSetGrpVisibility(Dt->Dtmp,Dt->GrpId,1);
+    else return 0;
+    return 1;
+  } 
+  return 0;
+} 
+int   AudioSpeedOff(void *itmp) {
+  DIAINTR * Dt = (DIAINTR *) itmp;
+  if(Dt == NULL ) Dt = (DIAINTR *)It;
+  if(Dt != NULL) {
+    if(Dt->Dtmp != NULL)kgSetGrpVisibility(Dt->Dtmp,Dt->GrpId,0);
+    else return 0;
+    return 1;
+  } 
+  return 0;
+} 
+void * AudioSpeedInterface(void *args,void *rets) {
+  /*********************************** 
+   ***********************************/ 
+  DIAINTR *it= (DIAINTR *)malloc(sizeof(DIAINTR));
+  it->GrpId=0;
+  // filled by MakeGroup  it->xsh=0;
+  it->ysh=0;
+  it->RunDia = RunAudioSpeed;
+  it->MakeGroup = MakeAudioSpeedGroup;
+  it->Title = GetPointer((char *)"AudioSpeed");
+  it->Help = GetPointer( (char *)"No help yet, request");
+  it->Action = AudioSpeedAction;
+  it->Settings = AudioSpeedSetup;
+  it->Cleanup  = AudioSpeedCleanDia;
+  if(args != NULL) Args=args;
+  if(rets != NULL) Rets=rets;
+  it->args = Args;
+  it->rets = Rets;
+  it->SwitchOn = AudioSpeedOn;
+  it->SwitchOff = AudioSpeedOff;
+  it->Dtmp = NULL; // fiiled by MakeGroup 
+  It = it;
+  return it;
 }
 int AudioSpeedinit(void *Tmp) {
   /*********************************** 

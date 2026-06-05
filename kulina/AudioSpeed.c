@@ -1,7 +1,6 @@
 #include <kulina.h>
 #include "AudioSpeedCallbacks.h"
 #include "GclrAudioSpeed.c"
-extern double SpeedFac;
 int AudioSpeedGroup( DIALOG *D,void **v,void *pt) {
   int GrpId=0,oitems=0,i,j;
   DIA *d=NULL,*dtmp;
@@ -21,9 +20,10 @@ int AudioSpeedGroup( DIALOG *D,void **v,void *pt) {
     1,1, 
     e0,
     1,1,
-    NULL,AudioSpeedtextbox1callback,0,0,18,9 /* args,Call back */
+    NULL,AudioSpeedATinputcallback ,0 ,0,18,9 
   };
-  strcpy(t0.Wid,(char *)"ATInput");
+    /* *args,Callback,border,hide,font,fontsize */
+  strcpy(t0.Wid,(char *)"ATinput");
   t0.pt=NULL;
   t0.type = 1;
   t0.item = -1;
@@ -44,11 +44,10 @@ int AudioSpeedGroup( DIALOG *D,void **v,void *pt) {
     72, 
     24, 
     1,1, 
-    5,0.150000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
- 
+    5,0.150000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
     butn1, 
-    AudioSpeedbutton1callback, /*  Callbak */
-      NULL  /* any args */
+    AudioSpeedATbrowsecallback , /* *args, Callback */
+    NULL  /* any args */
   };
   strcpy(b1.Wid,(char *)"ATbrowse");
   b1.item = -1;
@@ -68,9 +67,10 @@ int AudioSpeedGroup( DIALOG *D,void **v,void *pt) {
     1,1, 
     e2,
     1,1,
-    NULL,AudioSpeedtextbox2callback,0,0,18,9 /* args,Call back */
+    NULL,AudioSpeedAToutputcallback ,0 ,0,18,9 
   };
-  strcpy(t2.Wid,(char *)"ATOutput");
+    /* *args,Callback,border,hide,font,fontsize */
+  strcpy(t2.Wid,(char *)"AToutput");
   t2.pt=NULL;
   t2.type = 1;
   t2.item = -1;
@@ -84,22 +84,23 @@ int AudioSpeedGroup( DIALOG *D,void **v,void *pt) {
   e3[0].img=NULL;
   DIT t3 = { 
     't',
-    133,133,  
-    339,167,
+    136,193,  
+    342,227,
     20, 
     1,1, 
     e3,
     1,1,
-    NULL,AudioSpeedtextbox3callback,0,0,18,9 /* args,Call back */
+    NULL,AudioSpeedATspeedcallback ,0 ,0,18,9 
   };
-  strcpy(t3.Wid,(char *)"ATSpeed");
+    /* *args,Callback,border,hide,font,fontsize */
+  strcpy(t3.Wid,(char *)"ATspeed");
   t3.pt=NULL;
   t3.type = 0;
   t3.item = -1;
   BUT_STR  *butn4=NULL; 
   butn4= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn4[0].sw=1;
-  strcpy(butn4[0].title,(char *)"!c01Change Speed");
+  strcpy(butn4[0].title,(char *)"Change Speed");
   butn4[0].xpmn=NULL;
   butn4[0].xpmp=NULL;
   butn4[0].xpmh=NULL;
@@ -107,33 +108,74 @@ int AudioSpeedGroup( DIALOG *D,void **v,void *pt) {
   butn4[0].butncode=31;
   DIL h4 = { 
     'h',
-    183,205,  
-    286,234,
+    182,245,  
+    313,278,
     2,0,  
-    96, 
+    120, 
     25, 
     1,1, 
-    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
- 
+    4,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
     butn4, 
-    AudioSpeedsplbutton1callback, /*  Callbak */
-      NULL  /* any args */
+    AudioSpeedATdocallback ,  /* *args, Callback */
+    NULL  /* any args */
   };
   strcpy(h4.Wid,(char *)"ATdo");
   h4.item = -1;
+  BUT_STR  *butn5=NULL; 
+  butn5= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn5[0].sw=1;
+  strcpy(butn5[0].title,(char *)"Browse");
+  butn5[0].xpmn=NULL;
+  butn5[0].xpmp=NULL;
+  butn5[0].xpmh=NULL;
+  butn5[0].bkgr=-1;
+  butn5[0].butncode=126;
+  DIN b5 = { 
+    'n',
+    379,56,  
+    456,87,
+    2,2,  
+    72, 
+    24, 
+    1,1, 
+    5,0.150000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    butn5, 
+    AudioSpeedASOutcallback , /* *args, Callback */
+    NULL  /* any args */
+  };
+  strcpy(b5.Wid,(char *)"ASOut");
+  b5.item = -1;
+  DIM m6 = { 
+    'm',
+    89,162,  
+    389,186,  
+    0,0  
+  };
+  strncpy(m6.msg,(char *)"Speed factor must be in range (0.5,2.0)",499);
+  strcpy(m6.Wid,(char *)"ASMsg");
+  m6.item = -1;
+  DIM m7 = { 
+    'B',
+    34,100,  
+    434,124,  
+    0,0  
+  };
+  strncpy(m7.msg,(char *)"File externsion decide output format; PL NOTE",499);
+  strcpy(m7.Wid,(char *)"ATomsg");
+  m7.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+6));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+9));
   d =dtmp+i; 
-  d[5].t=NULL;
+  d[8].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
   d[1].t = (DIT *)malloc(sizeof(DIN));
   *d[1].N = b1;
   d[1].N->item = -1;
-  AudioSpeedbutton1init(d[1].N,pt) ;
+  AudioSpeedATbrowseinit(d[1].N,pt) ;
   d[2].t = (DIT *)malloc(sizeof(DIT));
   *d[2].t = t2;
   d[2].t->item = -1;
@@ -143,8 +185,18 @@ int AudioSpeedGroup( DIALOG *D,void **v,void *pt) {
   d[4].t = (DIT *)malloc(sizeof(DIL));
   *d[4].h = h4;
   d[4].h->item = -1;
-  AudioSpeedsplbutton1init(d[4].h,pt) ;
-  d[5].t = NULL;
+  AudioSpeedATdoinit(d[4].h,pt) ;
+  d[5].t = (DIT *)malloc(sizeof(DIN));
+  *d[5].N = b5;
+  d[5].N->item = -1;
+  AudioSpeedASOutinit(d[5].N,pt) ;
+  d[6].t = (DIT *)malloc(sizeof(DIM));
+  *d[6].m = m6;
+  d[6].m->item = -1;
+  d[7].t = (DIT *)malloc(sizeof(DIM));
+  *d[7].m = m7;
+  d[7].m->item = -1;
+  d[8].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -172,7 +224,7 @@ int MakeAudioSpeedGroup(DIALOG *D,void *arg) {
    v1[0] = '\0';
    double *v2 ;
    v2 = (double *)malloc(sizeof(double));
-   *v2 = SpeedFac;
+   *v2 = 0.0;
    void** v=(void **)malloc(sizeof(void*)*4);
    v[3]=NULL;
    v[0]=(void *)(v0);
@@ -183,6 +235,7 @@ int MakeAudioSpeedGroup(DIALOG *D,void *arg) {
    GrpId = AudioSpeedGroup(D,v,pt);
    Gpt = kgGetWidgetGrp(D,GrpId);
    Gpt->arg= v; // kulina will double free this; you may modify
+   AudioSpeedSetup(D,Gpt->arg);
    return GrpId;
 }
 
@@ -202,7 +255,7 @@ int AudioSpeed( void *parent,void **v,void *pt) {
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 4;
+  D.df = 5;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
@@ -212,7 +265,7 @@ int AudioSpeed( void *parent,void **v,void *pt) {
   D.xl = 463;    /*  Length of Dialog */
   D.yl = 363;    /*  Width  of Dialog */
   D.Initfun = AudioSpeedinit;    /*   init fuction for Dialog */
-  D.Cleanupfun = AudioSpeedcleanup;    /*   init fuction for Dialog */
+  D.Cleanupfun = AudioSpeedcleanup;    /*   cleanup fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
   D.butattn = 0;    /*  1 for drawing button attention */
   D.fullscreen = 0;    /*  1 for for fullscreen mode */
@@ -227,7 +280,7 @@ int AudioSpeed( void *parent,void **v,void *pt) {
   D.MinWidth = 100;    /*   for Resize option */
   D.MinHeight = 100;    /*   for Resize option */
 #if 1 
-  D.Callback = AudioSpeedCallBack;    /*  default callback */
+  D.Callback = AudioSpeedCallBack;    /*  default Callback  */
 #else 
   D.Callback = NULL;    
 #endif
@@ -244,7 +297,7 @@ int AudioSpeed( void *parent,void **v,void *pt) {
   D.Shapexpm = NULL;    /*  PNG/jpeg file for window shape;Black color will not be drawn */
   D.parent = parent;    /*  1 for not showing in task bar*/
   D.pt = pt;    /*  any data to be passed by user*/
-//  strcpy(D.name,"Kulina Designer ver 2.0");    /*  Dialog name you may change */
+//  strcpy(D.name,"Kulina Designer ver 3.0");    /*  Dialog name you may change */
   if(D.fullscreen!=1) {    /*  if not fullscreen mode */
      int xres,yres; 
      kgDisplaySize(&xres,&yres); 
@@ -256,9 +309,8 @@ int AudioSpeed( void *parent,void **v,void *pt) {
      D.xo=D.yo=0; D.xl = xres; D.yl=yres;
 //     D.StackPos = 1; // you may need it
   }    /*  end of fullscreen mode */
-  ModifyAudioSpeed(&D,GrpId);    /*  add extras to  gui*/
   ModifyAudioSpeedGc(&D);    /*  set colors for gui if do not like default*/
-//  Print_gui_data(&D,"AudioSpeed.rc");
+  ModifyAudioSpeed(&D,GrpId);    /*  add extras to  gui*/
   ret= kgUi(&D);
   kgCleanUi(&D);
   return ret;
