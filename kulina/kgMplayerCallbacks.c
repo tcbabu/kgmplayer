@@ -3662,7 +3662,7 @@ void *logo(int l,int w){
   kgChangeColor(fid,40,70,70,70);
 //  kgRoundedRectangleFill(fid,l*0.5,w*0.5,(float)l-1.,(float)w-1.,0,40,0.1);
   kgTextAngle(fid,90.);
-  kgTextSize(fid,l*0.5,l*0.45,0.0);
+  kgTextSize(fid,l*0.5,l*0.35,0.0);
   kgTextFont(fid,23);
   kgTextColor(fid,0);
   kgMove2f(fid,l*0.55+1,(float)l*0.5+1);
@@ -3674,13 +3674,13 @@ void *logo(int l,int w){
   kgTextColor(fid,30);
   kgMove2f(fid,l*0.55,(float)l*0.5);
   kgWriteText(fid,(char *)"kgMplayer");
-  kgTextSize(fid,l*0.15,l*0.2,0.0);
+  kgTextSize(fid,l*0.2,l*0.16,0.0);
   kgMove2f(fid,l*0.90,(float)l*0.05);
-  kgTextFont(fid,8);
+  kgTextFont(fid,36);
   kgChangeColor(fid,6,0,190,190);
   kgChangeColor(fid,9,20,25,15);
   kgTextColor(fid,Kuclr);
-  kgWriteText(fid,(char *)"a KULINA frontend for Mplayer");
+  kgWriteText(fid,(char *)"a KULINA player & media ToolBox");
   logoimg = kgGetResizedImage(fid);
   kgCloseImage(fid);
   return logoimg;

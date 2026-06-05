@@ -177,6 +177,7 @@ int VideoSpeedVSdocallback( int butno,int i,void *Tmp) {
   DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"VSinput");
   DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"VSoutput");
   DIT *TS = (DIT *)kgGetNamedWidget(Tmp,(char *)"VSspeed");
+  DII *I  = (DII *)kgGetNamedWidget(Tmp,(char *)"VSinfo");
   MEDIAINFO *Mi= GetMediaInfo(kgGetString(T,0));
   fs = (int)(Mi->fps+0.5);
   free(Mi);
@@ -188,15 +189,25 @@ int VideoSpeedVSdocallback( int butno,int i,void *Tmp) {
   ret =0;
   if(SpeedFac < 1.0) {
     // Slow Motion
+       sprintf(buff,"Slow Motion: %-.2f %d\n",SpeedFac, fs);
+       kgWrite(I,buff);
+       sprintf(buff,"!c01VERY SLOW PROCESS as frames are created");
+       kgWrite(I,buff);
        sprintf(buff,"ffmpegfun -y -i %s   -filter:v  \"setpts=%-.2f*PTS,minterpolate=fps=%-d\" -an %s",
        kgGetString(T,0),Cfac,fs,kgGetString(TO,0));
+       kgWrite(I,buff);
   }
   else {
     // Speed increase
+       sprintf(buff,"Fast Motion: %-.2f %d\n",SpeedFac, fs);
+       kgWrite(I,buff);
        sprintf(buff,"ffmpegfun -y -i %s   -filter:v  \"setpts=%-.2f*PTS,fps=fps=%-d\" -an %s",
        kgGetString(T,0),Cfac,fs,kgGetString(TO,0));
+       kgWrite(I,buff);
   }
   RunAndMonitor(buff);
+  sprintf(buff,"SUBMITTED JOB... SLOW MOTION IS A SLOW PROCESS\n");
+  kgWrite(I,buff);
   return ret;
 }
 void  VideoSpeedVSdoinit (DIL *B,void *ptmp) {

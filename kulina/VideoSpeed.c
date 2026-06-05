@@ -108,8 +108,8 @@ int VideoSpeedGroup( DIALOG *D,void **v,void *pt) {
   butn4[0].butncode=31;
   DIL h4 = { 
     'h',
-    182,245,  
-    313,278,
+    187,344,  
+    318,377,
     2,0,  
     120, 
     25, 
@@ -163,12 +163,20 @@ int VideoSpeedGroup( DIALOG *D,void **v,void *pt) {
   strncpy(m7.msg,(char *)"File externsion decide output format",499);
   strcpy(m7.Wid,(char *)"VSOmsg");
   m7.item = -1;
+  DII i8 = { 
+    'i',
+    21,231,  
+    444,337,  
+    45,4,0   
+  };
+  strcpy(i8.Wid,(char *)"VSinfo");
+  i8.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+9));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+10));
   d =dtmp+i; 
-  d[8].t=NULL;
+  d[9].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
@@ -196,7 +204,10 @@ int VideoSpeedGroup( DIALOG *D,void **v,void *pt) {
   d[7].t = (DIT *)malloc(sizeof(DIM));
   *d[7].m = m7;
   d[7].m->item = -1;
-  d[8].t = NULL;
+  d[8].t = (DIT *)malloc(sizeof(DII));
+  *d[8].i = i8;
+  d[8].i->item = -1;
+  d[9].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -263,7 +274,7 @@ int VideoSpeed( void *parent,void **v,void *pt) {
   D.xo = 828;   /* Position of Dialog */ 
   D.yo = 148;
   D.xl = 463;    /*  Length of Dialog */
-  D.yl = 363;    /*  Width  of Dialog */
+  D.yl = 391;    /*  Width  of Dialog */
   D.Initfun = VideoSpeedinit;    /*   init fuction for Dialog */
   D.Cleanupfun = VideoSpeedcleanup;    /*   cleanup fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
