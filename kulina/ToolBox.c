@@ -62,6 +62,7 @@ int MakeOverlayGroup(DIALOG *D,void *arg);
 int MakeCropGroup(DIALOG *D,void *arg);
 int MakePicFrameGroup(DIALOG *D,void *arg);
 int MakeAddStillGroup(DIALOG *D,void *arg);
+int MakeVideoSpeedGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -288,6 +289,13 @@ TOOLGRP ToolList[ ] = {
   { 0, MakeAddStillGroup,"!f23Add Still to Video at start ", 346,40,RunHelper,0,
        "Adds a still in video for a given time in seconds\n"
        "Probably useful in arraging multiple videos together.\n"
+  },
+  { 0, MakeVideoSpeedGroup,"!f23Changes Video Speed ", 346,40,RunHelper,0,
+       "Changes Video Speed as per given factor\n"
+       "Audio wiil be ignored. One need to process Audio\n"
+       "separately and mix with the output video\n"
+       "FILE EXTENSION decides the output format,\n"
+       " so give a valid extension\n"
   },
 #if 0
 #endif
