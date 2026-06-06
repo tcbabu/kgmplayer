@@ -7,6 +7,8 @@ int VideoSpeedVSdocallback(int butno,int i,void *Tmp) ;
 void  VideoSpeedVSdoinit (DIL *B,void *pt) ;
 int VideoSpeedVSObrowsecallback(int butno,int i,void *Tmp) ;
 void  VideoSpeedVSObrowseinit (DIN *B,void *pt) ;
+int VideoSpeedVSradiocallback(int item,int i,void *Tmp) ;
+void  VideoSpeedVSradioinit (DIRA *R,void *pt) ;
 int VideoSpeedinit(void *Tmp) ;
 int VideoSpeedcleanup(void *Tmp) ;
 void *RunVideoSpeed(void *,void *) ;

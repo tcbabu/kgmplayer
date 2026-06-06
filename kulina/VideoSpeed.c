@@ -61,8 +61,8 @@ int VideoSpeedGroup( DIALOG *D,void **v,void *pt) {
   e2[0].img=NULL;
   DIT t2 = { 
     't',
-    28,58,  
-    378,92,
+    28,82,  
+    378,116,
     20, 
     1,1, 
     e2,
@@ -84,8 +84,8 @@ int VideoSpeedGroup( DIALOG *D,void **v,void *pt) {
   e3[0].img=NULL;
   DIT t3 = { 
     't',
-    131,187,  
-    337,221,
+    135,217,  
+    341,251,
     20, 
     1,1, 
     e3,
@@ -104,14 +104,14 @@ int VideoSpeedGroup( DIALOG *D,void **v,void *pt) {
   butn4[0].xpmn=NULL;
   butn4[0].xpmp=NULL;
   butn4[0].xpmh=NULL;
-  butn4[0].bkgr=-1;
+  butn4[0].bkgr=-142142142;
   butn4[0].butncode=31;
   DIL h4 = { 
     'h',
-    187,344,  
-    318,377,
+    165,386,  
+    324,417,
     2,0,  
-    120, 
+    150, 
     25, 
     1,1, 
     4,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
@@ -132,8 +132,8 @@ int VideoSpeedGroup( DIALOG *D,void **v,void *pt) {
   butn5[0].butncode=31;
   DIN b5 = { 
     'n',
-    379,56,  
-    456,87,
+    379,80,  
+    456,111,
     2,2,  
     72, 
     24, 
@@ -147,36 +147,76 @@ int VideoSpeedGroup( DIALOG *D,void **v,void *pt) {
   b5.item = -1;
   DIM m6 = { 
     'm',
-    10,162,  
-    460,186,  
+    5,194,  
+    455,218,  
     0,0  
   };
-  strncpy(m6.msg,(char *)"Speed factor must be >0.0 and reasonable: Audio ignored to be processed and mixed",499);
+  strncpy(m6.msg,(char *)"Speed factor must be >0.0 and reasonable: Audio ignored; to be processed and mixed",499);
   strcpy(m6.Wid,(char *)"VSMsg");
   m6.item = -1;
   DIM m7 = { 
     'B',
-    86,94,  
-    386,118,  
+    79,54,  
+    379,78,  
     0,0  
   };
-  strncpy(m7.msg,(char *)"File externsion decide output format",499);
+  strncpy(m7.msg,(char *)"File externsion decides output format",499);
   strcpy(m7.Wid,(char *)"VSOmsg");
   m7.item = -1;
   DII i8 = { 
     'i',
-    21,231,  
-    444,337,  
+    21,255,  
+    444,361,  
     45,4,0   
   };
   strcpy(i8.Wid,(char *)"VSinfo");
   i8.item = -1;
+  char *menu9[]  = { 
+    (char *)"No",
+    (char *)"Yes",
+    NULL 
+  };
+  ThumbNail **th0 ;
+  DIRA r9 = { 
+    'r',
+    238,143,  
+    406,171,   
+    8,0,  
+    70, 
+    24, 
+    1,2, 
+    0,1, 
+    (int *)v[3], 
+    NULL, 
+    NULL ,
+    NULL,VideoSpeedVSradiocallback , /* *args, Callback  */
+    1,  /* Border Offset  */
+     5,  /* Scroll width  */
+     0,  /* Type  */
+     0, /* item highlight */
+    0, /* bordr */
+    0, /* bkgr */
+    0  /*=1 hide  */
+   };
+  th0 = (ThumbNail **)kgStringToThumbNails((char **)menu9);
+  r9.list=(void **)th0;
+  strcpy(r9.Wid,(char *)"VSradio");
+  r9.item = -1;
+  DIM m10 = { 
+    'm',
+    56,145,  
+    236,169,  
+    1,0  
+  };
+  strncpy(m10.msg,(char *)"Create/Drop Frames",499);
+  strcpy(m10.Wid,(char *)"VSrmsg");
+  m10.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+10));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+12));
   d =dtmp+i; 
-  d[9].t=NULL;
+  d[11].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
@@ -207,7 +247,14 @@ int VideoSpeedGroup( DIALOG *D,void **v,void *pt) {
   d[8].t = (DIT *)malloc(sizeof(DII));
   *d[8].i = i8;
   d[8].i->item = -1;
-  d[9].t = NULL;
+  d[9].t = (DIT *)malloc(sizeof(DIRA));
+  *d[9].r = r9;
+  d[9].r->item = -1;
+  VideoSpeedVSradioinit(d[9].r,pt) ;
+  d[10].t = (DIT *)malloc(sizeof(DIM));
+  *d[10].m = m10;
+  d[10].m->item = -1;
+  d[11].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -225,6 +272,7 @@ int MakeVideoSpeedGroup(DIALOG *D,void *arg) {
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  1 data values
+    RadioButtons1  1 data value
 
 *************************************************/
    char  *v0 ;
@@ -236,11 +284,15 @@ int MakeVideoSpeedGroup(DIALOG *D,void *arg) {
    double *v2 ;
    v2 = (double *)malloc(sizeof(double));
    *v2 = 0.0;
-   void** v=(void **)malloc(sizeof(void*)*4);
-   v[3]=NULL;
+   int  *v3 ;
+   v3 = (int *)malloc(sizeof(int));
+   *v3 = 1;
+   void** v=(void **)malloc(sizeof(void*)*5);
+   v[4]=NULL;
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
+   v[3]=(void *)(v3);
    void *pt=NULL; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    GrpId = VideoSpeedGroup(D,v,pt);
@@ -266,15 +318,15 @@ int VideoSpeed( void *parent,void **v,void *pt) {
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 5;
+  D.df = 9;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
   D.rw = 4;
   D.xo = 828;   /* Position of Dialog */ 
   D.yo = 148;
-  D.xl = 463;    /*  Length of Dialog */
-  D.yl = 391;    /*  Width  of Dialog */
+  D.xl = 462;    /*  Length of Dialog */
+  D.yl = 442;    /*  Width  of Dialog */
   D.Initfun = VideoSpeedinit;    /*   init fuction for Dialog */
   D.Cleanupfun = VideoSpeedcleanup;    /*   cleanup fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
@@ -332,15 +384,18 @@ void *RunVideoSpeed(void *parent ,void *args) {
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  1 data values
+    RadioButtons1  1 data value
 
 *************************************************/
    char  v0[500]="" ;
    char  v1[500]="" ;
    double v2 = 0.0;
-   void* v[3];
+   int   v3 = 1;
+   void* v[4];
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(&v2);
+   v[3]=(void *)(&v3);
    void *pt[2]={NULL,NULL}; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    pt[0]=args;

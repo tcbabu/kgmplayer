@@ -290,10 +290,11 @@ TOOLGRP ToolList[ ] = {
        "Adds a still in video for a given time in seconds\n"
        "Probably useful in arraging multiple videos together.\n"
   },
-  { 0, MakeVideoSpeedGroup,"!f23Changes Video Speed ", 346,40,RunHelper,0,
+  { 0, MakeVideoSpeedGroup,"!f23Changes Video Speed ", 346,10,RunHelper,0,
        "Changes Video Speed as per given factor\n"
-       "Audio wiil be ignored. One need to process Audio\n"
+       "Audio will be ignored. One need to process Audio\n"
        "separately and mix with the output video\n"
+       "\n"
        "FILE EXTENSION decides the output format,\n"
        " so give a valid extension\n"
   },

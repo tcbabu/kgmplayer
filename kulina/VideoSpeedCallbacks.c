@@ -15,7 +15,7 @@ static Dlink *ModuleList=NULL;
 static double SpeedFac=1.0;
  /* Callback for  VSinput   */ 
 extern MEDIAINFO Minfo;
-
+static int DrCr = 0;
 
 #include "ConvertData.h"
 int MakeOutputFile(char *Infile,char *Outfile,char *ext);
@@ -187,6 +187,7 @@ int VideoSpeedVSdocallback( int butno,int i,void *Tmp) {
 
   char buff[500];
   ret =0;
+  if(DrCr) {
   if(SpeedFac < 1.0) {
     // Slow Motion
        sprintf(buff,"Slow Motion: %-.2f %d\n",SpeedFac, fs);
@@ -205,8 +206,16 @@ int VideoSpeedVSdocallback( int butno,int i,void *Tmp) {
        kgGetString(T,0),Cfac,fs,kgGetString(TO,0));
        kgWrite(I,buff);
   }
+  }
+  else {
+       sprintf(buff,"Changing Video Spped: %-.2f \n",SpeedFac);
+       kgWrite(I,buff);
+       sprintf(buff,"ffmpegfun -y -i %s   -filter:v  \"setpts=%-.2f*PTS\" -an %s",
+       kgGetString(T,0),Cfac,kgGetString(TO,0));
+       kgWrite(I,buff);
+  }
   RunAndMonitor(buff);
-  sprintf(buff,"SUBMITTED JOB... SLOW MOTION IS A SLOW PROCESS\n");
+  sprintf(buff,"SUBMITTED JOB... SLOW MOTION IS A SLOW PROCESS (if frame rate to be Maintained)\n");
   kgWrite(I,buff);
   return ret;
 }
@@ -332,6 +341,26 @@ void * VideoSpeedInterface(void *args,void *rets) {
 }
  
  
+int VideoSpeedVSradiocallback(int item,int i,void *Tmp) {
+  /*********************************** 
+    item : selected item (1 to max_item)  not any specific relevence
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIRA *R;DIALOG *D; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  ThumbNail **th; 
+  int ret=1; 
+  D = (DIALOG *)Tmp;
+  R = (DIRA *)kgGetWidget(Tmp,i);
+  th = (ThumbNail **) R->list;
+  DrCr = item -1;
+  return ret;
+}
+void  VideoSpeedVSradioinit (DIRA *R,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+}
 int VideoSpeedinit(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
