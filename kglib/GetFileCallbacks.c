@@ -150,6 +150,12 @@ static   char *kgCheckMediaFile ( char *name ) {
           if ( ret != NULL ) {pclose ( pp ) ;return ret;}
           ret = MakeFileToken ( tmp , " MP4" , "Video" ) ;
           if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " movie" , "Video" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " Matroska" , "Video" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " AVI" , "Video" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
           ret = MakeFileToken ( tmp , " WAVE" , "Music" ) ;
           if ( ret != NULL ) {pclose ( pp ) ;return ret;}
           ret = MakeFileToken ( tmp , " Stereo" , "Music" ) ;
@@ -180,6 +186,20 @@ static   char *kgCheckVideoFile ( char *name ) {
           pt = strstr ( tmp , "cannot open" ) ;
           if ( ret != NULL ) {pclose ( pp ) ;return ret;}
           ret = MakeFileToken ( tmp , " MP4" , "Video" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " avi" , "Video" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " mpeg" , "Video" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " mov" , "Video" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " mkv" , "Video" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " movie" , "Video" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " Matroska" , "Video" ) ;
+          if ( ret != NULL ) {pclose ( pp ) ;return ret;}
+          ret = MakeFileToken ( tmp , " AVI" , "Video" ) ;
           if ( ret != NULL ) {pclose ( pp ) ;return ret;}
           pclose ( pp ) ;
           return ret;

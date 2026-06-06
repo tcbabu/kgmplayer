@@ -63,6 +63,7 @@ int MakeCropGroup(DIALOG *D,void *arg);
 int MakePicFrameGroup(DIALOG *D,void *arg);
 int MakeAddStillGroup(DIALOG *D,void *arg);
 int MakeVideoSpeedGroup(DIALOG *D,void *arg);
+int MakeVideoReverseGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -294,6 +295,13 @@ TOOLGRP ToolList[ ] = {
        "Changes Video Speed as per given factor\n"
        "Audio will be ignored. One need to process Audio\n"
        "separately and mix with the output video\n"
+       "\n"
+       "FILE EXTENSION decides the output format,\n"
+       " so give a valid extension\n"
+  },
+  { 0, MakeVideoReverseGroup,"!f23Reverse Video  ", 346,10,RunHelper,0,
+       "Reverses Video as per the salected way\n"
+       "Professional is good for big files \n"
        "\n"
        "FILE EXTENSION decides the output format,\n"
        " so give a valid extension\n"

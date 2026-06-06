@@ -61,6 +61,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Rotate90.o Rotate90Callbacks.o \
 	 SidebySide.o SidebySideCallbacks.o \
 	 VideoSpeed.o VideoSpeedCallbacks.o \
+	 VideoReverse.o VideoReverseCallbacks.o \
 	 topandbottom.o topandbottomCallbacks.o \
 	 Overlay.o OverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \
@@ -138,6 +139,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Rotate90.o Rotate90Callbacks.o \
 	 SidebySide.o SidebySideCallbacks.o \
 	 VideoSpeed.o VideoSpeedCallbacks.o \
+	 VideoReverse.o VideoReverseCallbacks.o \
 	 topandbottom.o topandbottomCallbacks.o \
 	 Overlay.o OverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \
@@ -282,6 +284,10 @@ VideoSpeed.o		: VideoSpeed.c
 	 	$(CC) -c VideoSpeed.c
 VideoSpeedCallbacks.o		: VideoSpeedCallbacks.c
 		$(CC) -c VideoSpeedCallbacks.c
+VideoReverse.o		: VideoReverse.c
+	 	$(CC) -c VideoReverse.c
+VideoReverseCallbacks.o		: VideoReverseCallbacks.c
+		$(CC) -c VideoReverseCallbacks.c
 EnhanceAudio.o		: EnhanceAudio.c
 	 	$(CC) -c EnhanceAudio.c
 EnhanceAudioCallbacks.o		: EnhanceAudioCallbacks.c
