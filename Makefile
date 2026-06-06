@@ -185,6 +185,7 @@ lib/libx264.a	:  x264build
 		 make -C x264 install
 lib/libx265.a	:  x265build
 		 ./x265build
+		 tar czf OpenSourcebin.tgz lib include
 ffmpeg/libavdevice/libavdevice.a	:  lib/libmp3lame.a \
 		 lib/libx264.a lib/libx265.a ffmpegbuild
 		 ./ffmpegbuild
@@ -208,10 +209,10 @@ install	: bin/kgmplayer
 	 tar xzvf fonts.tar -C /usr/share/fonts
 
 tarball		: bin/kgmplayer
-		  mv TARBALL kgmplayer-5.4
-		  cp bin/kgmplayer kgmplayer-5.4
-		  tar czf kgmplayer-5.4.bin.tar kgmplayer-5.4
-		  mv kgmplayer-5.4 TARBALL
+		  mv TARBALL kgMplayer
+		  cp bin/kgmplayer kgMplayer
+		  tar czf kgMplayer.bin.tgz kgMplayer
+		  mv kgMplayer  TARBALL
 		  rm -f TARBALL/kgmplayer
 
 clean	:

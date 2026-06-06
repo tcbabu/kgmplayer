@@ -64,6 +64,7 @@ int MakePicFrameGroup(DIALOG *D,void *arg);
 int MakeAddStillGroup(DIALOG *D,void *arg);
 int MakeVideoSpeedGroup(DIALOG *D,void *arg);
 int MakeVideoReverseGroup(DIALOG *D,void *arg);
+int MakeAudioReverseGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -213,6 +214,12 @@ TOOLGRP ToolList[ ] = {
   { 0, MakeCaptureAudioGroup,"!f23Capture Audio",346,0,RunHelper,0,
        "\n\n\nTo capture playing audio\noutput should be saved as Wav file\n"
        "May change it as required.\nTo copy the output press the Save button.\n"
+  },
+  { 0, MakeAudioReverseGroup,"!f23Reverse Audio  ", 346,10,RunHelper,0,
+       "Reverses  Audio\n"
+       "\n"
+       "FILE EXTENSION decides the output format,\n"
+       " so give a valid extension\n"
   },
   { 0, MakeVideoInfoGroup,"!f23Show Video Information",346,40,RunHelper,0,
        "Displays information about Video file.\n"

@@ -1,20 +1,30 @@
+Present Realease is Ver 6.0.0
+More than a player, "kgmplayer" is a media toolbox, and it depends
+heavily on ffmpeg.
+
 This is full source code for 'kgmplayer' and includes all necessary
 dependencies including 'kglib' and OpenSource components including the
 necessary CD libraries and tools.
 
-Though it includes the 'Mplayer' source also, some modifications are
-there.
+Though it includes the 'Mplayer' source also, some modifications are there.
 Hence copying another version of 'Mplayer' source may not work unless
-corresponding modifications are made in the new 'Mplayer' source. All the 
-modifications are marked with '#ifdef D_KULINA'.
+corresponding modifications are made in the new 'Mplayer' source. Most 
+modifications are marked with '#ifdef D_KULINA',but not all..
 
-Just a make will build a statically linked 'kgmplayer'. 
+Just a make will build  'kgmplayer' linked with most libraries statically. 
+
+There is also a OpenSource binary which may help in quicker make, 
+so untar it for a quicker made.
+
 'make install' (as superuser or with sudo) will install 'kgmplayer'
 under /usr/bin. It will also create a link to 'kgMplayer' (note the
 uppercase 'M' in kgMplayer). In case you face any problem in the
 on-screen
 menu in the fullscreen mode (due to Window Manager issues) one can
 use 'kgMplayer'.
+
+Presently a binary tar ball is also included, it may work, may not also
+and depends on your distribution.
 
 'kgmplayer' identifies any HDMI connections and try to use it. Please
 remember to restart 'kgmplayer' (or kgMplayer) after making any HDMI

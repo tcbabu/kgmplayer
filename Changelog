@@ -1,3 +1,16 @@
+Ver 6.0.0 Dated 6th June 2026
+This is major release since important opensouce components
+are updated.
+Presently kgmplayer is a media tool kit than a media player.
+With this Version the following tools are also added
+1. Audio Reverse
+2. Video Speed Change
+3. Video Reverse
+Also added is a binary tall ball for most open source libraries.
+One just untar it to avoid a build of such libraries.
+Any Case a "make clean;make" give a clean build for evrything.
+
+
 Version 5.3.0 Dated 20th Sept 2025
 Added few Audio tools
 Added pipewire support as most distributions are coming with PipeWire
