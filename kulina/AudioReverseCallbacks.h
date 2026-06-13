@@ -1,0 +1,18 @@
+int AudioReverseAREVinputcallback(int cellno,int i,void *Tmp) ;
+int AudioReverseAREVIbrowsecallback(int butno,int i,void *Tmp) ;
+void  AudioReverseAREVIbrowseinit (DIN *B,void *pt) ;
+int AudioReverseAREVoutputcallback(int cellno,int i,void *Tmp) ;
+int AudioReverseAREVdocallback(int butno,int i,void *Tmp) ;
+void  AudioReverseAREVdoinit (DIL *B,void *pt) ;
+int AudioReverseAREVObrowsecallback(int butno,int i,void *Tmp) ;
+void  AudioReverseAREVObrowseinit (DIN *B,void *pt) ;
+int AudioReverseinit(void *Tmp) ;
+int AudioReversecleanup(void *Tmp) ;
+void *RunAudioReverse(void *,void *) ;
+int MakeAudioReverseGroup(DIALOG *,void *) ;
+void * AudioReverseAction(void *,void *) ;
+int AudioReverseSetup(void *Tmp,void *args) ;
+int ModifyAudioReverse(void *Tmp,int GrpId) ;
+int AudioReverseCallBack(void *Tmp,void *tmp) ;
+int AudioReverseResizeCallBack(void *Tmp) ;
+int AudioReverseWaitCallBack(void *Tmp) ;
