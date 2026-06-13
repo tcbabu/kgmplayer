@@ -30,6 +30,12 @@ typedef struct _volstr {
 	double duration;
 } VOLSTR;
 void *RunAudioExtraTool(void *);
+static char *GetPointer(char *str) { 
+  char *pt; 
+  pt = (char *)malloc(strlen(str)+1); 
+  strcpy(pt,str); 
+  return pt; 
+} 
 static int FolderBrowser(char *FileName) {
 	char *Str=NULL;
 	int ret=0,ln;

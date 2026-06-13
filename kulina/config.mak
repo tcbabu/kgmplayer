@@ -1,5 +1,5 @@
 #! /bin/bash 
-export KULINA=/home/kulina/BUILD/kgmplayer
-export PATH=/home/kulina/BUILD/kgmplayer/bin:/home/kulina/GPES/bin:/home/kulina/.local/bin:/opt/rustc/bin:/bin:/usr/Kulina/bin:/opt/qt5/bin:/usr/bin
-export X11_CFLAGS="-I/home/kulina/BUILD/kgmplayer/include "
+export KULINA=
+export PATH=/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export X11_CFLAGS="-I/include "
 export X11_LIBS="-lX11 "
