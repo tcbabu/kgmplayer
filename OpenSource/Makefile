@@ -1,6 +1,6 @@
 include config.mak
 libgm.a	: rebuild config.mak
-	 mkdir -p $(KULINA)/lib
+	 mkdir -p $(KULINA)/bin
 	 cat config.mak rebuild > build
 	 chmod +x build
 	 ./build 
