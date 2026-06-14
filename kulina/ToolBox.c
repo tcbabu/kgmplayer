@@ -284,8 +284,8 @@ TOOLGRP ToolList[ ] = {
        "It is better to extract and process audios and\n"
        "  add to the procssed video later.\n"
   },
-  { 0, MakePicFrameGroup,"!f23Pic one Frame Video ", 346,40,RunHelper,0,
-       "Pic a frome from the time position(float).\n"
+  { 0, MakePicFrameGroup,"!f23Pick one Frame from Video ", 346,40,RunHelper,0,
+       "Pick a frome from the time position(float).\n"
   },
   { 0, Makeimgs2vGroup,"!f23Images to Video",346,10,RunHelper,0,
        "Useful in creating a video from a set of photographs or images\n"
