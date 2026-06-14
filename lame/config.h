@@ -65,7 +65,7 @@
 #endif
 
 /* system has 80 bit floats */
-/* #undef HAVE_IEEE854_FLOAT80 */
+#define HAVE_IEEE854_FLOAT80 1
 
 /* add ieee854_float80_t type */
 /* #undef HAVE_IEEE854_FLOAT80_T */
