@@ -6,6 +6,7 @@
 int main(int argc ,char **argv){
 if(argc == 1) { printf("Waiting for enter\n");getchar();return 1;}
   char flname[100];
+  if(getenv("KULINA")==NULL){printf("KULINA not set\n"); return 0;}
   strcpy(flname,getenv("KULINA"));
   strcat(flname,"/lib/");
   strcat(flname,argv[1]);
