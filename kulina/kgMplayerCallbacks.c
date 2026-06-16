@@ -3854,6 +3854,8 @@ int RunAndMonitor(char * job)  {
     close(Jstat[1]);
      sprintf(buff,"Executing... PLEASE WAIT\n");
      write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"!c01Sorry... Progress Bar may not be correct\n");
+     write(Jpipe[1],buff,strlen(buff));
      sprintf(buff,"PLEASE WAIT till the window closes\n");
      write(Jpipe[1],buff,strlen(buff));
      sprintf(buff,"You can cancel job if you wish\n");
@@ -3888,6 +3890,8 @@ int RunMonitorAndWait(char * job)  {
     close(Jpipe[0]);
     close(Jstat[1]);
      sprintf(buff,"Executing... PLEASE WAIT\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"!c01Sorry... Progress Bar may not be correct\n");
      write(Jpipe[1],buff,strlen(buff));
      sprintf(buff,"PLEASE WAIT till the window closes\n");
      write(Jpipe[1],buff,strlen(buff));
