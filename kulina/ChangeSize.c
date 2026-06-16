@@ -59,14 +59,14 @@ int ChangeSizeGroup( DIALOG *D,void **v,void *pt) {
   butn2[0].xpmp=NULL;
   butn2[0].xpmh=NULL;
   butn2[0].bkgr=-1;
-  butn2[0].butncode=2174;
+  butn2[0].butncode=8618878;
   butn2[1].sw=0;
   strcpy(butn2[1].title,(char *)"Okay");
   butn2[1].xpmn=NULL;
   butn2[1].xpmp=NULL;
   butn2[1].xpmh=NULL;
   butn2[1].bkgr=-1;
-  butn2[1].butncode=126;
+  butn2[1].butncode=13092734;
   DIL h2 = { 
     'h',
     151,325,  
@@ -166,12 +166,44 @@ int ChangeSizeGroup( DIALOG *D,void **v,void *pt) {
   t6.pt=NULL;
   t6.type = 0;
   t6.item = -1;
+  DIM m7 = { 
+    'm',
+    3,152,  
+    489,176,  
+    1,0  
+  };
+  strncpy(m7.msg,(char *)"(select resoluution as divisible by 2; may maintain anyone as -2 to maintain aspect ratio)",499);
+  strcpy(m7.Wid,(char *)"CSmsg");
+  m7.item = -1;
+  T_ELMT *e8  ; 
+  e8 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
+  e8[0].fmt = (char *)malloc(14);
+  strcpy(e8[0].fmt,(char *)"Frame Rate%5d");
+  e8[0].v=(void *)v[4];
+  e8[0].sw=1;
+  e8[0].noecho=0;
+  e8[0].img=NULL;
+  DIT t8 = { 
+    't',
+    144,190,  
+    332,224,
+    20, 
+    1,1, 
+    e8,
+    1,1,
+    NULL,ChangeSizeCSFpscallback ,0 ,0,18,9 
+  };
+    /* *args,Callback,border,hide,font,fontsize */
+  strcpy(t8.Wid,(char *)"CSFps");
+  t8.pt=NULL;
+  t8.type = 0;
+  t8.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+8));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+10));
   d =dtmp+i; 
-  d[7].t=NULL;
+  d[9].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
@@ -196,7 +228,13 @@ int ChangeSizeGroup( DIALOG *D,void **v,void *pt) {
   d[6].t = (DIT *)malloc(sizeof(DIT));
   *d[6].t = t6;
   d[6].t->item = -1;
-  d[7].t = NULL;
+  d[7].t = (DIT *)malloc(sizeof(DIM));
+  *d[7].m = m7;
+  d[7].m->item = -1;
+  d[8].t = (DIT *)malloc(sizeof(DIT));
+  *d[8].t = t8;
+  d[8].t->item = -1;
+  d[9].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -214,6 +252,7 @@ int MakeChangeSizeGroup(DIALOG *D,void *arg) {
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  2 data values
+    Text_Box4  1 data values
 
 *************************************************/
    char  *v0 ;
@@ -228,17 +267,22 @@ int MakeChangeSizeGroup(DIALOG *D,void *arg) {
    int  *v3 ;
    v3 = (int *)malloc(sizeof(int));
    *v3 = 1;
-   void** v=(void **)malloc(sizeof(void*)*5);
-   v[4]=NULL;
+   int  *v4 ;
+   v4 = (int *)malloc(sizeof(int));
+   *v4 = 1;
+   void** v=(void **)malloc(sizeof(void*)*6);
+   v[5]=NULL;
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
    v[3]=(void *)(v3);
+   v[4]=(void *)(v4);
    void *pt=NULL; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    GrpId = ChangeSizeGroup(D,v,pt);
    Gpt = kgGetWidgetGrp(D,GrpId);
    Gpt->arg= v; // kulina will double free this; you may modify
+   ChangeSizeSetup(D,Gpt->arg);
    return GrpId;
 }
 
@@ -258,7 +302,7 @@ int ChangeSize( void *parent,void **v,void *pt) {
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 6;
+  D.df = 8;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
@@ -324,17 +368,20 @@ void *RunChangeSize(void *parent ,void *args) {
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  2 data values
+    Text_Box4  1 data values
 
 *************************************************/
    char  v0[500]="" ;
    char  v1[500]="" ;
    int   v2 = 1;
    int   v3 = 1;
-   void* v[4];
+   int   v4 = 1;
+   void* v[5];
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(&v2);
    v[3]=(void *)(&v3);
+   v[4]=(void *)(&v4);
    void *pt[2]={NULL,NULL}; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    pt[0]=args;

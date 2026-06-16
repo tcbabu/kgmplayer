@@ -20,4 +20,7 @@ typedef struct _mediainfo {
   float rotation;
   float start;
 } MEDIAINFO;
+
+MEDIAINFO * GetMediaInfo(char *flname);
+
 #endif

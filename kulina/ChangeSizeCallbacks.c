@@ -1,4 +1,5 @@
 #include <kulina.h>
+#include "mediainfo.h"
 #include "ChangeSizeCallbacks.h"
 
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
@@ -15,6 +16,7 @@ static void *Args=NULL,*Rets=NULL;
 int RunAndMonitor(char *);
 
 static DIAINTR *It = NULL;
+extern MEDIAINFO Minfo;
 
 
 static MODINTERFACE ModFuns[] = { 
@@ -65,21 +67,36 @@ int ChangeSizeCSinputbrowsecallback(int butno,int i,void *Tmp) {
   DIALOG *D;DIN *B; 
   int n,ret =0; 
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+  MEDIAINFO *Mi=NULL;
 // pt[0] is args passed as inputs; pt[1] is output pointer
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
-  DIT *T,*TO;
+  DIT *T,*TO,*TR,*TF;;
   char FileName[500],OutFile[500];;
+  int fs=25,Xres=1,Yres=1;
   T = (DIT *)kgGetNamedWidget(Tmp,(char *)"CSinput");
   FileName[0]='\0';
   if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
   kgUpdateWidget(T);
+  Mi = GetMediaInfo(FileName);
+  fs = (int)(Mi->fps+0.5);
+  Xres = Mi->Axres;
+  Yres = Mi->Ayres;
+  free(Mi);
+  
   TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"CSout");
+  TR = (DIT *)kgGetNamedWidget(Tmp,(char *)"CSRes");
+  TF = (DIT *)kgGetNamedWidget(Tmp,(char *)"CSFps");
+  kgSetInt(TR,0,Xres);
+  kgSetInt(TR,1,Yres);
+  kgSetInt(TF,0,fs);
   MakeNewFileName(FileName,OutFile);
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(TO);
+  kgUpdateWidget(TR);
+  kgUpdateWidget(TF);
   kgUpdateOn(Tmp);
   switch(butno) {
     case 1: //  Browse 
@@ -112,16 +129,18 @@ int ChangeSizeCSgocallback( int butno,int i,void *Tmp) {
   DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"CSRes");
   DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"CSinput");
   DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"CSout");
+  DIT *TF = (DIT *)kgGetNamedWidget(Tmp,(char *)"CSFps");
   char buff[500];
-  int Xres,Yres;
+  int Xres,Yres,fs;
   Xres = kgGetInt(T,0);
   Yres = kgGetInt(T,1);
+  fs = kgGetInt(TF,0);
   DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"CSIbox");
   sprintf (buff,"Xres : %d Yres :%d\n",Xres,Yres);
   kgWrite(I,buff);
   ret =0;
-  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos\" %s",
-       kgGetString(TI,0),(Xres/2)*2,(Yres/2)*2,kgGetString(TO,0));
+  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,fps=%-d\" %s",
+       kgGetString(TI,0),(Xres/2)*2,(Yres/2)*2,fs,kgGetString(TO,0));
   kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);
   RunAndMonitor(buff);
@@ -294,6 +313,22 @@ void * ChangeSizeInterface(void *args,void *rets) {
 }
  
  
+int ChangeSizeCSFpscallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  return ret;
+}
 int ChangeSizeinit(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  

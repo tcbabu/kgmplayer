@@ -242,7 +242,7 @@ TOOLGRP ToolList[ ] = {
        "to keep the audio separate and add later, since it\n"
        "is better to keep it in a lossless format like wav or flac.\n"
   },
-  { 0, MakeChangeSizeGroup,"!f23Change Video Size", 346,40,RunHelper,0,
+  { 0, MakeChangeSizeGroup,"!f23Change Video Size/Framerate", 346,40,RunHelper,0,
        "Resize Video.\n"
        "Convert/Extract video to mp4 got better options.\n"
   },
