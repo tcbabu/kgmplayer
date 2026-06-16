@@ -139,7 +139,7 @@ int ChangeSizeCSgocallback( int butno,int i,void *Tmp) {
   sprintf (buff,"Xres : %d Yres :%d\n",Xres,Yres);
   kgWrite(I,buff);
   ret =0;
-  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,fps=%-d\" %s",
+  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,fps=%-d\" -c:v libx265 %s",
        kgGetString(TI,0),(Xres/2)*2,(Yres/2)*2,fs,kgGetString(TO,0));
   kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);
