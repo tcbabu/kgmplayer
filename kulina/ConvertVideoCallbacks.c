@@ -403,7 +403,7 @@ int ConvertToMp4( CONVDATA *cn) {
         float frac;
         if(Cn.VEndSec > 0) {
           sprintf(options," -ss %-lf  -t %-lf ",
-              Cn.VStartSec,(Cn.VEndSec-Cn.VStartSec));
+              Cn.VStartSec,(Cn.VEndSec-Cn.VStartSec-0.001));
         }
         else {
           sprintf(options," -ss %-lf ",

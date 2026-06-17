@@ -277,9 +277,14 @@ int JoinToMp4( CONVDATA *cn)  {
   Dlink *L;
   CONVDATA Cn;
   MEDIAINFO *mpt;
+  char Vtype[50];
   Cn= *cn;
   Audio =1;
   L = (Dlink *)Cn.Vlist;
+  Resetlink(L);
+  if ( (mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
+      strcpy(Vtype,mpt->vcodectype);
+  }
   Resetlink(L);
   while( (mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
     if(mpt->Audio==0) Audio=0;
@@ -331,14 +336,19 @@ int JoinToMp4( CONVDATA *cn)  {
             " so NO AUDIO in output\n");
       write(Jpipe[1],options,strlen(options));
     }
+    Resetlink(L);
     while( (mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
       Esec = mpt->TotSec;
       sprintf(options,"Esec: %f\n",mpt->TotSec);
       write(Jpipe[1],options,strlen(options));
       sprintf(options,"fps = %f Xres: %d Yres: %d\n",Cn.fps,Cn.Xsize,Cn.Ysize);
       write(Jpipe[1],options,strlen(options));
-        printf ("mpt->Process = %d %s  fps=%f\n", mpt->Process,mpt->Flname,mpt->fps);
-	mpt->Process =1;
+      sprintf (options,"mpt->Process = %d %s  fps=%f vcodec:< %s >\n",
+            mpt->Process,mpt->Flname,mpt->fps,mpt->vcodectype);
+      write(Jpipe[1],options,strlen(options));
+      sprintf (options,"%dx%d %d\n",
+            mpt->Axres,mpt->Ayres,strcmp(Vtype,mpt->vcodectype));
+      write(Jpipe[1],options,strlen(options));
 	if(mpt->Process) {
           if(Audio) {
 //           sprintf(command,"ffmegfun -probesize 50M  -analyzeduration 10000000 -r %-7.3f -i \"%s\" -f mp4 "
@@ -358,6 +368,160 @@ int JoinToMp4( CONVDATA *cn)  {
 	else {
 	 if(Audio) {
           sprintf(command,"ffmegfun  -analyzeduration 10000000 -i \"%s\" -f mp4  -c:a aac  -video_track_timescale 90k -c:v copy "
+           " -y %s/F%-4.4d.mp4 ", mpt->Flname, Folder,id);
+	 }
+	 else {
+          sprintf(command,"ffmegfun   -analyzeduration 10000000 -i \"%s\" -f mp4  -an -video_track_timescale 90k -c:v copy "
+           " -y %s/F%-4.4d.mp4 ", mpt->Flname, Folder,id);
+	 }
+	}  // else mpt->process
+        printf("%s\n",command);
+        sprintf(options,"Processing %-s\n",mpt->Flname);
+        write(Jpipe[1],options,strlen(options));
+        runfunction(command,ProcessToPipe,kgffmpeg);
+//        runjob(command,ProcessToPipe);
+//        system(command);
+        fprintf(myl,"file \'%-s/F%-4.4d.mp4\'\n",Folder,id);
+//        printf("file \'%-s/F%-4.4d\'\n",Folder,id);
+        fflush(myl);
+//     printf("%s\n",command);
+      id++;
+    }
+    fclose(myl);
+    if(id==0) exit(0);
+     Esec= Cn.EndSec;
+     sprintf(options,"Esec: %lf\n",Cn.EndSec);
+     write(Jpipe[1],options,strlen(options));
+     sprintf(options,"Joining and Converting to mp4\n");
+     write(Jpipe[1],options,strlen(options));
+#if 0
+     if(Audio) {
+       sprintf(command,"ffmpegfun -f concat -safe 0 -i \"%-s/mylist.txt\" "
+        " -y  -f mp4  -video_track_timescale 90k -c:a libmp3lame  -c:v libx265  "
+        " \"%-s\" ", Folder ,Cn.outfile);
+     }
+     else {
+       sprintf(command,"ffmpegfun -f concat -safe 0 -i \"%-s/mylist.txt\" "
+        " -y  -f mp4  -video_track_timescale 90k -an  -c:v libx265  "
+        " \"%-s\" ", Folder ,Cn.outfile);
+     }
+#else
+     if(Audio) {
+       sprintf(command,"ffmpegfun -f concat -safe 0 -i \"%-s/mylist.txt\" "
+        " -y  -f mp4  -video_track_timescale 90k -c:a copy  -c:v copy  "
+        " \"%-s\" ", Folder ,Cn.outfile);
+     }
+     else {
+       sprintf(command,"ffmpegfun -f concat -safe 0 -i \"%-s/mylist.txt\" "
+        " -y  -f mp4  -video_track_timescale 90k -an  -c:v copy  "
+        " \"%-s\" ", Folder ,Cn.outfile);
+     }
+#endif
+        printf("\n\n\n\n%s\n\n\n",command);
+     runfunction(command,ProcessToPipe,ffmpegfun);
+//     runfunction(command,ProcessPrint,ffmpegfun);
+     kgCleanDir(Folder);
+     strcpy(options,"Joinded Video Files\n");
+     write(Jpipe[1],options,strlen(options));
+     close(Jpipe[1]);
+     exit(0);
+  }
+  else {
+     waitpid(pid,&status,0);
+     sprintf(Folder,"%-s/%-d",getenv("HOME"),pid);
+     if(FileStat(Folder)) kgCleanDir(Folder);
+  }
+}
+int JoinToMp4_new( CONVDATA *cn)  {
+  int Process =0;
+  int pid,status,id,Qty;
+  char Folder[500];
+  int Audio=1;
+  FILE *myl=NULL;
+  Dlink *L;
+  CONVDATA Cn;
+  MEDIAINFO *mpt;
+  Cn= *cn;
+  Audio =1;
+  L = (Dlink *)Cn.Vlist;
+  Resetlink(L);
+  while( (mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
+    if(mpt->Audio==0) Audio=0;
+  }
+  if ((pid=fork())==0) {
+    char command[10000],File[500],options[5000],Fifo[500],Qstr[100];
+    sprintf(Folder,"%-s/%-d",getenv("HOME"),getpid());
+    if(FileStat(Folder)) kgCleanDir(Folder);
+    mkdir(Folder,0700);
+    if(pipe(Jpipe) < 0) exit(0);
+    if(pipe(Jstat) < 0) exit(0);
+    sprintf(GrabFileName,"Joining Videos to : %-s\n",Cn.outfile);
+    MonPipe = Jpipe[0];
+    if( fork()==0) {
+      close(Jpipe[1]);
+      close(Jstat[0]);
+      RunMonitorJoin(NULL);
+      exit(0);
+    }
+    close(Jpipe[0]);
+    close(Jstat[1]);
+    sprintf(options,"%-s/mylist.txt",Folder);
+    myl = fopen(options,"w");
+    switch(Cn.Quality) {
+      case 1:
+        sprintf(Qstr,"3000K -crf 20  -preset medium -vcodec %s ","libx265");
+        break;
+      case 2:
+        sprintf(Qstr,"2000K -crf 28 -preset fast -vcodec %s ","libx264");
+        break;
+      default:
+      case 3:
+        sprintf(Qstr,"1000K -crf 40 -preset superfast -vcodec %s ","libx264");
+        break;
+    }
+    strcpy(Qstr," -vcodec copy ");
+    L = (Dlink *)Cn.Vlist;
+    Process=0;
+    Resetlink(L);
+    while ((mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
+      if(mpt->Process != 0 ) Process=1;
+    }
+    Resetlink(L);
+    id=0;
+    sprintf(options,"!c01Importance is for QUALITY,"
+      " Video joining is a slow Process!! Pl. be patient...\n");
+    write(Jpipe[1],options,strlen(options));
+    if(!Audio) {
+      sprintf(options,"!c01Atleast one media is without audio"
+            " so NO AUDIO in output\n");
+      write(Jpipe[1],options,strlen(options));
+    }
+    while( (mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
+      Esec = mpt->TotSec;
+      sprintf(options,"Esec: %f\n",mpt->TotSec);
+      write(Jpipe[1],options,strlen(options));
+      sprintf(options,"fps = %f Xres: %d Yres: %d\n",Cn.fps,Cn.Xsize,Cn.Ysize);
+      write(Jpipe[1],options,strlen(options));
+        printf ("mpt->Process = %d %s  fps=%f\n", mpt->Process,mpt->Flname,mpt->fps);
+	if(mpt->Process) {
+          if(Audio) {
+//           sprintf(command,"ffmegfun -probesize 50M  -analyzeduration 10000000 -r %-7.3f -i \"%s\" -f mp4 "
+           sprintf(command,"ffmegfun   -analyzeduration 10000000  -i \"%s\" -f mp4 "
+           " -video_track_timescale 90k -c:a copy  %-s "
+           " -s %-dx%-d -y %s/F%-4.4d.mp4 ",
+            mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize, Folder,id);
+	  }
+	  else {
+//           sprintf(command,"ffmegfun -probesize 50M  -analyzeduration 10000000 -r %-7.3f -i \"%s\" -f mp4 "
+           sprintf(command,"ffmegfun   -analyzeduration 10000000  -i \"%s\" -f mp4 "
+           " -video_track_timescale 90k -an  %-s "
+           " -s %-dx%-d -y %s/F%-4.4d.mp4 ",
+            mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize, Folder,id);
+	  }
+	} // if mpt->Process
+	else {
+	 if(Audio) {
+          sprintf(command,"ffmegfun  -analyzeduration 10000000 -i \"%s\" -f mp4  -c:a copy  -video_track_timescale 90k -c:v copy "
            " -y %s/F%-4.4d.mp4 ", mpt->Flname, Folder,id);
 	 }
 	 else {
@@ -486,13 +650,15 @@ ThumbNail **AddItemstoVlist(char **newitems) {
   if(newitems != NULL) {
     j=0;
     while(newitems[j] != NULL) {
-      CheckMedia(newitems[j]);
-      if(Minfo.Video !=0 ) {
-        pt = (MEDIAINFO *)malloc(sizeof(MEDIAINFO));
-        *pt = Minfo;
+//      CheckMedia(newitems[j]);
+      pt = GetMediaInfo(newitems[j]);
+      if( (pt != NULL)&&(pt->Video)) {
+//        pt = (MEDIAINFO *)malloc(sizeof(MEDIAINFO));
+//        *pt = Minfo;
         strcpy(pt->Flname,newitems[j]);
         Dappend(L,(void *)pt);
       }
+      else free(pt);
       j++;
     }
   }
@@ -600,7 +766,8 @@ int VideoJoinVideoJoinWidget2callback(int butno,int i,void *Tmp) {
 #if 0
 //      if(kgFolderBrowser(NULL,100,100,filename,(char *)"*")) {
       if(FolderBrowser(filename) {
-        CheckMedia(filename);
+//        CheckMedia(filename);
+      GetMediaInfo(newitems[j]);
         if(Minfo.Video !=0 ) {
           th = AddItemtoVlist(filename);
           kgFreeThumbNails((ThumbNail **)kgGetList(VX2));
@@ -675,6 +842,8 @@ int VideoJoinJoinVideoscallback( int butno,int i,void *Tmp) {
   DIT *T;
   Dlink *L;
   MEDIAINFO *mpt;
+  char Vtype[50];
+  int Process=0;
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
@@ -685,6 +854,7 @@ int VideoJoinJoinVideoscallback( int butno,int i,void *Tmp) {
   cndata.Xsize = 0;
   cndata.Ysize = 0;
   cndata.fps=0.0;
+  
   n=0;
   Qty = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"VJQuality"));
   cndata.Quality = Qty;
@@ -717,16 +887,23 @@ int VideoJoinJoinVideoscallback( int butno,int i,void *Tmp) {
   }
   n=0;
   Resetlink(L);
+  mpt = (MEDIAINFO *)Getrecord(L);
+  if(mpt!= NULL) strcpy(Vtype,mpt->vcodectype);
+  Resetlink(L);
+  Process=0;
   while ((mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
     n++;
     mpt->Process=0;
     if( mpt->Axres != cndata.Xsize) {mpt->Process=1;}
     if( mpt->Ayres != cndata.Ysize) {mpt->Process=1;}
-  //  if( mpt->Rxres != cndata.Xsize) {mpt->Process=1;}
-//    if( mpt->Ryres != cndata.Ysize) {mpt->Process=1;}
-    if( (int)(mpt->fps*1000)!= (int)(cndata.fps*1000)) mpt->Process=1;
-    if(mpt->vcodec != 1) mpt->Process=1;
+//    if( (int)(mpt->fps*1000)!= (int)(cndata.fps*1000)) mpt->Process=1;
+//    if(mpt->vcodec != 1) mpt->Process=1;
+    if(strcmp(Vtype,mpt->vcodectype)!=0) {mpt->Process=1;}
+    if (mpt->Process == 1 ) Process=1;
   }
+  Resetlink(L);
+  mpt = (MEDIAINFO *)Getrecord(L);
+  mpt->Process= Process;
 //  printf("fps = %f\n",cndata.fps);
   cndata.Fcount=n;
   cndata.EndSec=TotSec;
@@ -748,18 +925,7 @@ int VideoJoinJoinVideoscallback( int butno,int i,void *Tmp) {
   sprintf(buff,"%d \"%-s\" %d %d %d %f %d %f\n",
        cndata.code, cndata.outfile,cndata.Xsize,
        cndata.Ysize,cndata.Fcount,cndata.fps,Qty,TotSec);
-#if 0
-  write(ToTools[1],buff,strlen(buff));
-  n=0;
-  Resetlink(L);
-  while ((mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
-    sprintf(buff,"\"%-s\" %d %f %d\n",
-       mpt->Flname,mpt->Process,mpt->TotSec,mpt->Audio);
-    write(StatusTools[1],buff,strlen(buff));
-  }
-#else
   JoinToMp4(&cndata);
-#endif
  
   switch(butno) {
     case 1: 

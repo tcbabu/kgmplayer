@@ -42,18 +42,21 @@ int DirPlayinit(void *Tmp);
 int subtitleinit(void *Tmp);
 int imgs2vinit(void *Tmp);
 int cd_info(int,char **);
+int ProcessSkip(int pip0,int pip1,int Pid);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int RunFunction(char *job,int (*ProcessOut)(void *,int,int,int),int
 (*function)(int,char **),void *);
 int kgffmpeg(int,char **);
 int ffmpegfun(int,char **);
 void * RunControls(void *);
+void * RunMonitorJoin(void *);
 int runjob(char *job,int (*ProcessOut)(int,int,int));
 extern int BRK;
 extern Dlink *Plink;
 extern int WMErr;
 int PULSE=0;
 int PIPEWIRE=0;
+char PulseMsg[100];
 int LOOP=0;
 int RANDOM=1;
 int Three2Two=0;
@@ -967,8 +970,10 @@ int ProcessXrandr(int pip0,int pip1,int Pid) {
      if( (Cyres!=Hyres)&&(Cyres !=Pyres)) Hpos=1;
      else Hpos=0;
 //  WriteMessage("!c04!z54 Press 'Esc' to clear Input Box");
-     sprintf(buff,"!z54 Press 'Esc' to clear Input Boxes");
-     WriteMessage(buff);
+    sprintf(buff,"!z54 Press 'Esc' to clear Input Boxes");
+//     WriteMessage(buff);
+     if(PulseMsg[0]!= '\0' )  WriteMessage(PulseMsg);
+     else      WriteMessage(buff);
      return 1;
 }
 int ProcessAplay(int pip0,int pip1,int Pid) {
@@ -1021,6 +1026,7 @@ int ProcessPulse(int pip0,int pip1,int Pid) {
      char buff[1000],device[20],connection[20],reso[30];
      int ch,i=0,j;
      PULSE=0;
+     PIPEWIRE = 0;
 //     close(pip1);
      Card=0;
      Device=0;
@@ -1768,6 +1774,7 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
      Minfo.Rxres=Minfo.Ryres=1;
      Minfo.fps=0;
      Minfo.rotation =0.0;
+     Minfo.vcodectype[0]='\0';
      while((ch=GetLine(pip0,buff)) ) {
 //         printf("%s\n",buff);
 //         fflush(stdout);
@@ -1785,12 +1792,16 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
          if( (pos=SearchString(buff,(char *)"Video:"))>=0) {
 	       
 		 int i=0;
-	       pt= buff+pos+6;
+	       pt= buff+pos+7;
 	       Minfo.Video=1;
 	       Minfo.vcodec =0;
+               Minfo.vcodectype[0]='\0';
 	       if( (pos=SearchString(buff,(char *)"hevc"))>=0) Minfo.vcodec =1;
 	       if( (pos=SearchString(buff,(char *)"h264"))>=0) Minfo.vcodec =2;
+              
+               sscanf(pt,"%s",Minfo.vcodectype);
                  pos = SearchString(pt,(char *)"yuv");
+                 if(pos <= 0)pos = SearchString(pt,(char *)",");
 		 pt = pt+pos+1;
 //		 printf("%s\n",pt);
                  pos = SearchString(pt,(char *)"),");
@@ -1815,6 +1826,7 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
 //		 printf("%s\n",pt);
                  sscanf(pt,"%f",&fps);
                  Minfo.fps = fps;
+                 Minfo.Video =1;
 
          }
          if( (pos=SearchString(buff,(char *)"rotate"))>=0) {
@@ -1943,7 +1955,12 @@ int CheckPulse(void){
           WriteMessage(buff);
      }
    }
-   printf("PULSE= %d\n",PULSE);
+   PulseMsg[0]='\0';
+   if( (PULSE==1)&&(PIPEWIRE==0) ) sprintf(PulseMsg,"PULSE yes : PIPEWIRE no..\n");
+   if( (PULSE==1)&&(PIPEWIRE==1) ) sprintf(PulseMsg,"PULSE yes : PIPEWIRE yes ..\n");
+   if( (PULSE==0)&&(PIPEWIRE==1) ) sprintf(PulseMsg," PIPEWIRE with pipewire-pulse  yes..\n");
+   
+
    return PULSE;
 }
 int CheckCdrom(void){
@@ -1968,6 +1985,7 @@ int CheckCdrom(void){
 int CheckVideo(char *flname) {
    char buff[500];
    int i;
+#if 0
    i=0; while(flname[i]==' ')i++;
    if(flname[i]=='\"') 
     sprintf(buff,"Mplayer  -endpos 0 -vo null -ao null %s",flname);
@@ -1976,28 +1994,16 @@ int CheckVideo(char *flname) {
 //   runjob(buff,ProcessCheckVideo);
 //   runmplayer(buff,ProcessCheckVideo);
    runfunction(buff,ProcessMediaInfo_o,Mplayer);
+#else
+   GetMediaInfo(flname);
+#endif
    VIDEO=Minfo.Video;
    Vxres = Minfo.Axres;
    Vyres = Minfo.Ayres;
    return VIDEO;
 }
 int CheckMedia(char *flname) {
-#if 0
-   char buff[500];
-   int i;
-   i=0; while(flname[i]==' ')i++;
-   if(flname[i]=='\"') 
-    sprintf(buff,"Mplayer  -endpos 0 -vo null -ao null %s",flname);
-   else sprintf(buff,"Mplayer  -endpos 0 -vo null -ao null \"%s\"",flname);
-//   printf("%s\n",buff);
-   runfunction(buff,ProcessMediaInfo_o,Mplayer);
-   VIDEO=Minfo.Video;
-   Vxres = Minfo.Axres;
-   Vyres = Minfo.Ayres;
-//   printf("%s:  %d %d \n",flname,Minfo.Video,Minfo.Audio);
-   if((!Minfo.Audio)&&(!Minfo.Video)) return 0;
-   else return 1;
-#else
+#if 1
    char buff[500];
    MEDIAINFO *mpt,mtmp;
    int i;
@@ -2016,6 +2022,10 @@ int CheckMedia(char *flname) {
    Vxres = Minfo.Axres;
    Vyres = Minfo.Ayres;
  printf("%s: %f %f  %d %d %f %d %d\n",flname,Minfo.start,Minfo.TotSec,Minfo.Video,Minfo.Audio,Minfo.fps,Minfo.Axres,Minfo.Ayres);
+   if((!Minfo.Audio)&&(!Minfo.Video)) return 0;
+   else return 1;
+#else
+   GetVideoInfo(flname);
    if((!Minfo.Audio)&&(!Minfo.Video)) return 0;
    else return 1;
 #endif 
@@ -3651,7 +3661,7 @@ void *logo(int l,int w){
   kgChangeColor(fid,40,70,70,70);
 //  kgRoundedRectangleFill(fid,l*0.5,w*0.5,(float)l-1.,(float)w-1.,0,40,0.1);
   kgTextAngle(fid,90.);
-  kgTextSize(fid,l*0.5,l*0.45,0.0);
+  kgTextSize(fid,l*0.5,l*0.35,0.0);
   kgTextFont(fid,23);
   kgTextColor(fid,0);
   kgMove2f(fid,l*0.55+1,(float)l*0.5+1);
@@ -3663,14 +3673,253 @@ void *logo(int l,int w){
   kgTextColor(fid,30);
   kgMove2f(fid,l*0.55,(float)l*0.5);
   kgWriteText(fid,(char *)"kgMplayer");
-  kgTextSize(fid,l*0.15,l*0.2,0.0);
+  kgTextSize(fid,l*0.2,l*0.16,0.0);
   kgMove2f(fid,l*0.90,(float)l*0.05);
-  kgTextFont(fid,8);
+  kgTextFont(fid,36);
   kgChangeColor(fid,6,0,190,190);
   kgChangeColor(fid,9,20,25,15);
   kgTextColor(fid,Kuclr);
-  kgWriteText(fid,(char *)"a KULINA frontend for Mplayer");
+  kgWriteText(fid,(char *)"a KULINA player & media ToolBox");
   logoimg = kgGetResizedImage(fid);
   kgCloseImage(fid);
   return logoimg;
+}
+  int ProcessVinfo (  int pip0,int pip1,int Pid ) {
+      char ch ;
+      char line [ 1024 ] ;
+      Minfo.TotSec = 0;
+      Minfo.Axres = -1;
+      Minfo.Ayres = -1;
+      Minfo.vcodectype[0]='\0';
+      while((ch=GetLine(pip0,line)) ) {
+         if(ch< 0) continue;
+          char *video = strstr ( line , "Video:" ) ;
+          if ( video ) {
+              int width=-1 , height=-1;
+              char *fld1 = strstr ( video , ", " ) ;
+              char *fld2 = strstr ( fld1+2 , ", " ) ;
+              sscanf(video+7,"%s",Minfo.vcodectype);
+              if(strcmp(Minfo.vcodectype,(char *)"hvec")==0 ) Minfo.vcodec = 1;
+              if(strcmp(Minfo.vcodectype,(char *)"h264")==0 ) Minfo.vcodec = 2;
+//              printf ( "FLD2: %s\n" , fld2+1 ) ;
+            /* Search for pattern like 1920x1080 */
+              if ( sscanf ( fld2+1 , "%*[^0-9]%dx%d" , & width , & height ) == 2 ) {
+//                  printf ( "Resolution: xres: %d yres: %d\n" , width , height ) ;
+              }
+              else {
+            /* Backup scan anywhere in line */
+                  char *fld3 = strstr ( fld2+2 , ", " ) ;
+                  char *p = fld3+1;;
+                  while ( *p ) {
+                      if ( sscanf ( p , "%dx%d" , & width , & height ) == 2 ) {
+//                          printf ( "Resolution: %dx%d\n" , width , height ) ;
+                            break;
+                      }
+                      p++;
+                  }
+              }
+              Minfo.Axres = width;
+              Minfo.Ayres = height;
+              Minfo.Video = 1;
+          }
+          video = strstr ( line , "Duration:" ) ;
+          if ( video ) {
+              int hour , minute;
+              float secs = 0;
+              char *fld1 = strstr ( video , ": " ) ;
+//              printf("%s\n",fld1+1);
+              if ( sscanf ( fld1+1 , "%d:%d:%f" , & hour , & minute , & secs ) == 3 ) {
+                  secs = hour*3600+minute*60+secs;
+//                  printf ( "Duration: %.2f \n" , secs ) ;
+              }
+              Minfo.TotSec = secs;
+          }
+          video = strstr ( line , "Duration:" ) ;
+          if ( video ) {
+	       Minfo.Audio=1;
+	  }
+      }
+//    printf("Could not determine resolution.\n");
+      return 0;
+  }
+  int GetVideoInfo(char *Vfile) {
+      char command [ 512 ] ;
+      snprintf ( command , sizeof ( command ) , "ffmpegfun -i \"%s\" " , \
+           Vfile ) ;
+      runfunction(command,ProcessVinfo,ffmpegfun);
+      return 1;
+  }
+#include <stdio.h>
+#include <malloc.h>
+#include <string.h>
+#include <sys/stat.h>
+
+static int FileStat(char *flname) {
+  int ret;
+  struct stat buff;
+  ret = stat(flname,&buff);
+  if(ret < 0) return 0;
+  else return 1;
+}
+int MakeNewFileName(char *Infile,char *OutFile) {
+   int index,i;
+   char buff[500],*pt,*ext=NULL;
+   int id=0;
+   strcpy(buff,Infile);
+   i=strlen(Infile)-1;
+   while (buff[i]!='.') {
+     if(buff[i]< ' ') break;
+     if(buff[i]==' ') buff[i]='_';
+     if(i<= 0) break;
+     i--;
+   }
+   ext = Infile+i+1;
+   buff[i]='\0';
+   pt= buff+i;
+   while(1) {
+     sprintf(pt,"_%-4.4d.%-s",id,ext);
+     if (!FileStat(buff)) break;
+     id++;
+   }
+//   OutFile= (char *)malloc(strlen(buff)+1);
+   strcpy(OutFile,buff);
+//   printf("New File = %s\n",OutFile);
+   return 1;
+}
+int GetFolderName(char *Infile,char *Folder) {
+   int index,i;
+   char buff[500],*pt,*ext=NULL;
+   int id=0;
+   strcpy(buff,Infile);
+   i=strlen(Infile)-1;
+   while (buff[i]!='/') {
+     if(buff[i]< ' ') break;
+     if(i<= 0) break;
+     i--;
+   }
+   buff[i]='\0';
+   strcpy(Folder,buff);
+   return 1;
+}
+
+extern int Jpipe[2];
+extern int Jstat[2];
+extern int MonPipe;
+
+int ProcessOutput(int pip0,int pip1,int Pid) {
+     char buff[1000],work[1000];
+     int ret =0;
+     int ch,i=0,j,pos,len,OK=0,line=0;
+     float per=0.0,csec,m,h,s,totsec;
+     char *pt;
+     while((ch=GetLine(pip0,buff)) ) {
+         line++;
+         if(ch< 0) continue;
+         if(SearchString(buff,(char *)"frame=")>=0)  {
+             pos = SearchString(buff,(char *)"time=");
+             if(pos>=0) {
+               pt = buff+pos+5;
+               per = GetTimeval(pt);
+               sprintf(work,"Cur: %f \n",per);
+               write(Jpipe[1],work,strlen(work));
+               sprintf(work," %f %s",per,pt);
+               write(Jpipe[1],work,strlen(work));
+               continue;
+             }
+         }
+         if(SearchString(buff,(char *)"size=")>=0)  {
+             pos = SearchString(buff,(char *)"time=");
+             if(pos>=0) {
+               pt = buff+pos+5;
+               s = GetTimeval(pt);
+               per = s;
+               sprintf(work,"Cur: %f \n",per);
+               write(Jpipe[1],work,strlen(work));
+               continue;
+             }
+         }
+     }
+     printf("Got %d \n",line);
+     printf("Exiting ProcessTo Pipe\n");
+     fflush(stdout);
+     return ret;
+}
+int RunAndMonitor(char * job)  {
+
+  int pid=0,id;
+  int status;
+  if(fork() != 0)return 1;
+  id = getpid();
+  if(pipe(Jpipe) < 0) exit(0);
+  if(pipe(Jstat) < 0) exit(0);
+  MonPipe = Jpipe[0];
+  char buff[500];
+  
+  if ((pid=fork())==0) {
+    fflush(stdout);
+    fflush(stderr);
+    close(Jpipe[0]);
+    close(Jstat[1]);
+     sprintf(buff,"Executing... PLEASE WAIT\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"!c01Sorry... Progress Bar may not be correct\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"PLEASE WAIT till the window closes\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"You can cancel job if you wish\n");
+     write(Jpipe[1],buff,strlen(buff));
+     runfunction(job,ProcessOutput,ffmpegfun);
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     exit(0);
+  }  //fork
+  else {
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     RunMonitorJoin(NULL);
+     kill(pid,9);
+     waitpid(pid,&status,0);
+     exit(0);
+  }
+}
+int RunMonitorAndWait(char * job)  {
+
+  int pid=0,id;
+  int status;
+  id = getpid();
+  if(pipe(Jpipe) < 0) exit(0);
+  if(pipe(Jstat) < 0) exit(0);
+  MonPipe = Jpipe[0];
+  char buff[500];
+  
+  if ((pid=fork())==0) {
+    fflush(stdout);
+    fflush(stderr);
+    close(Jpipe[0]);
+    close(Jstat[1]);
+     sprintf(buff,"Executing... PLEASE WAIT\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"!c01Sorry... Progress Bar may not be correct\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"PLEASE WAIT till the window closes\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"You can cancel job if you wish\n");
+     write(Jpipe[1],buff,strlen(buff));
+     runfunction(job,ProcessOutput,ffmpegfun);
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     exit(0);
+  }  //fork
+  else {
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     RunMonitorJoin(NULL);
+     kill(pid,9);
+     waitpid(pid,&status,0);
+  }
+  return 1;
+}
+int RunAndWait(char * job)  {
+   runfunction(job,NULL,ffmpegfun);
+   return 1;
 }

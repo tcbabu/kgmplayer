@@ -19,6 +19,7 @@ typedef struct _mediainfo {
   int vcodec;
   float rotation;
   float start;
+  char vcodectype[50];
 } MEDIAINFO;
 
 MEDIAINFO * GetMediaInfo(char *flname);

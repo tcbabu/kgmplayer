@@ -88,13 +88,13 @@ int MakeFolder(char *Infile,char *Folder,char *Outfile) {
    return 1;
 }
 
-int MakeVideoSlices(char * flname,char *folder,int tslice) {
+int MakeVideoSlices_org(char * flname,char *folder,int tslice) {
 
   int pid=0,id;
   int status;
   char buff[5000];
   int totsec=0;
-  float  ssec,esec,crr=0.00;
+  float  ssec,esec,crr=-0.001;
   int n;
   float per=0;
   char outfile[500];
@@ -158,13 +158,13 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
         sprintf(buff,"ffmpegfun  -accurate_seek -ss %-f   -i \"%-s\" -ss 0   -to %-f  "
            "  -y -f mp4 -video_track_timescale 90k    -aq 0 -preset medium -crf 18 -c:v libx264  "
            " -c:a copy  \"%-s/Frm%-5.5d.mp4\"",
-           ssec+crr,flname,(float)tslice,folder,n);
+           ssec,flname,(float)tslice+crr,folder,n);
        }
        else {
         sprintf(buff,"ffmpegfun  -accurate_seek -ss %-f -i \"%-s\" -ss 0 "
            "  -y -f mp4 -video_track_timescale 90k  -aq 0 -preset medium -crf 18 -c:v libx264  "
            " -c:a copy  \"%-s/Frm%-5.5d.mp4\"",
-           ssec+crr,flname,folder,n);
+           ssec,flname,folder,n);
        }
 #endif
        runfunction(buff,ProcessData,ffmpegfun);
@@ -173,13 +173,101 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
 //       crr=0.00;
        sprintf(buff,"info:  %f %f %f %f\n",ssec,esec,Minfo.start,Minfo.TotSec);
        write(Jpipe[1],buff,strlen(buff));
-       ssec +=Minfo.TotSec;
+       ssec +=tslice;
        esec = ssec + tslice;
        if(Minfo.TotSec < 1 ) break;
        n++;
 
      } //while
 #endif
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     exit(0);
+  }  //fork
+  else {
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     RunMonitorJoin(NULL);
+     kill(pid,9);
+     waitpid(pid,&status,0);
+     exit(0);
+  }
+}
+int MakeVideoSlices(char * flname,char *folder,int tslice) {
+
+  int pid=0,id;
+  int status;
+  char buff[5000];
+  int totsec=0;
+  float  ssec,esec,crr=-0.001;
+  int n;
+  float per=0;
+  char outfile[500];
+
+  if( CheckMedia(flname) == 0 ) {
+    kgSplashMessage(NULL,100,100,300,40,(char *)"Error: Not Video",1,0,15);
+    return 0;
+  }
+  if( (pid =fork())!= 0) {
+    kgSplashMessage(NULL,100,100,300,40,(char *)"Send for Processing",1,0,15);
+    sleep(2);
+    return pid;
+  }
+  totsec = Minfo.TotSec+0.1;
+  id = getpid();
+  if(pipe(Jpipe) < 0) exit(0);
+  if(pipe(Jstat) < 0) exit(0);
+  MonPipe = Jpipe[0];
+  
+  if ((pid=fork())==0) {
+    fflush(stdout);
+    fflush(stderr);
+    close(Jpipe[0]);
+    close(Jstat[1]);
+     sprintf(buff,"Executing... PLEASE WAIT\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"PLEASE WAIT till the window closes\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"You can cancel job if you wish\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"slice : %d\n",tslice);
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"Esec: %d\n",tslice);
+     write(Jpipe[1],buff,strlen(buff));
+     ssec=0;
+     esec = tslice;
+     n=1;
+     while (ssec < totsec) {
+       sprintf(buff,"  %-s/Frm%-5.5d\n",folder,n);
+       write(Jpipe[1],buff,strlen(buff));
+       per = ssec*100.0/totsec;
+       sprintf(buff,"Per: %f \n",per);
+       write(Jpipe[1],buff,strlen(buff));
+       sprintf(outfile,"%-s/Slice%-5.5d.mp4",folder,n);
+       if(esec < totsec) {
+        sprintf(buff,"ffmpegfun -accurate_seek -ss %-f  -i \"%-s\" -ss 0 -t %-f"
+           " -y  -f mp4 -vcodec copy -c:a copy  "
+           "  \"%-s/Slice%-5.5d\"",
+           ssec,flname,tslice+crr,folder,n);
+       }
+       else {
+        sprintf(buff,"ffmpegfun -accurate_seek -ss %-f  -i \"%-s\" -ss 0 "
+           " -y -f mp4 -vcodec copy  "
+           " -c:a copy \"%-s/Slice%-5.5d\"",
+           ssec,flname,folder,n);
+       }
+       runfunction(buff,ProcessData,ffmpegfun);
+       CheckMedia(outfile);
+//       ssec += tslice;
+//       crr=0.00;
+       sprintf(buff,"info:  %f %f %f %f\n",ssec,esec,Minfo.start,Minfo.TotSec);
+       write(Jpipe[1],buff,strlen(buff));
+       ssec +=tslice;
+       esec = ssec + tslice;
+//       if(Minfo.TotSec < 1 ) break;
+       n++;
+
+     } //while
      close(Jpipe[1]);
      close(Jstat[0]);
      exit(0);

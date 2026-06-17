@@ -1774,6 +1774,7 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
      Minfo.Rxres=Minfo.Ryres=1;
      Minfo.fps=0;
      Minfo.rotation =0.0;
+     Minfo.vcodectype[0]='\0';
      while((ch=GetLine(pip0,buff)) ) {
 //         printf("%s\n",buff);
 //         fflush(stdout);
@@ -1791,12 +1792,16 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
          if( (pos=SearchString(buff,(char *)"Video:"))>=0) {
 	       
 		 int i=0;
-	       pt= buff+pos+6;
+	       pt= buff+pos+7;
 	       Minfo.Video=1;
 	       Minfo.vcodec =0;
+               Minfo.vcodectype[0]='\0';
 	       if( (pos=SearchString(buff,(char *)"hevc"))>=0) Minfo.vcodec =1;
 	       if( (pos=SearchString(buff,(char *)"h264"))>=0) Minfo.vcodec =2;
+              
+               sscanf(pt,"%s",Minfo.vcodectype);
                  pos = SearchString(pt,(char *)"yuv");
+                 if(pos <= 0)pos = SearchString(pt,(char *)",");
 		 pt = pt+pos+1;
 //		 printf("%s\n",pt);
                  pos = SearchString(pt,(char *)"),");
@@ -1821,6 +1826,7 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
 //		 printf("%s\n",pt);
                  sscanf(pt,"%f",&fps);
                  Minfo.fps = fps;
+                 Minfo.Video =1;
 
          }
          if( (pos=SearchString(buff,(char *)"rotate"))>=0) {
@@ -1979,6 +1985,7 @@ int CheckCdrom(void){
 int CheckVideo(char *flname) {
    char buff[500];
    int i;
+#if 0
    i=0; while(flname[i]==' ')i++;
    if(flname[i]=='\"') 
     sprintf(buff,"Mplayer  -endpos 0 -vo null -ao null %s",flname);
@@ -1987,28 +1994,16 @@ int CheckVideo(char *flname) {
 //   runjob(buff,ProcessCheckVideo);
 //   runmplayer(buff,ProcessCheckVideo);
    runfunction(buff,ProcessMediaInfo_o,Mplayer);
+#else
+   GetMediaInfo(flname);
+#endif
    VIDEO=Minfo.Video;
    Vxres = Minfo.Axres;
    Vyres = Minfo.Ayres;
    return VIDEO;
 }
 int CheckMedia(char *flname) {
-#if 0
-   char buff[500];
-   int i;
-   i=0; while(flname[i]==' ')i++;
-   if(flname[i]=='\"') 
-    sprintf(buff,"Mplayer  -endpos 0 -vo null -ao null %s",flname);
-   else sprintf(buff,"Mplayer  -endpos 0 -vo null -ao null \"%s\"",flname);
-//   printf("%s\n",buff);
-   runfunction(buff,ProcessMediaInfo_o,Mplayer);
-   VIDEO=Minfo.Video;
-   Vxres = Minfo.Axres;
-   Vyres = Minfo.Ayres;
-//   printf("%s:  %d %d \n",flname,Minfo.Video,Minfo.Audio);
-   if((!Minfo.Audio)&&(!Minfo.Video)) return 0;
-   else return 1;
-#else
+#if 1
    char buff[500];
    MEDIAINFO *mpt,mtmp;
    int i;
@@ -2027,6 +2022,10 @@ int CheckMedia(char *flname) {
    Vxres = Minfo.Axres;
    Vyres = Minfo.Ayres;
  printf("%s: %f %f  %d %d %f %d %d\n",flname,Minfo.start,Minfo.TotSec,Minfo.Video,Minfo.Audio,Minfo.fps,Minfo.Axres,Minfo.Ayres);
+   if((!Minfo.Audio)&&(!Minfo.Video)) return 0;
+   else return 1;
+#else
+   GetVideoInfo(flname);
    if((!Minfo.Audio)&&(!Minfo.Video)) return 0;
    else return 1;
 #endif 
@@ -3691,6 +3690,7 @@ void *logo(int l,int w){
       Minfo.TotSec = 0;
       Minfo.Axres = -1;
       Minfo.Ayres = -1;
+      Minfo.vcodectype[0]='\0';
       while((ch=GetLine(pip0,line)) ) {
          if(ch< 0) continue;
           char *video = strstr ( line , "Video:" ) ;
@@ -3698,6 +3698,9 @@ void *logo(int l,int w){
               int width=-1 , height=-1;
               char *fld1 = strstr ( video , ", " ) ;
               char *fld2 = strstr ( fld1+2 , ", " ) ;
+              sscanf(video+7,"%s",Minfo.vcodectype);
+              if(strcmp(Minfo.vcodectype,(char *)"hvec")==0 ) Minfo.vcodec = 1;
+              if(strcmp(Minfo.vcodectype,(char *)"h264")==0 ) Minfo.vcodec = 2;
 //              printf ( "FLD2: %s\n" , fld2+1 ) ;
             /* Search for pattern like 1920x1080 */
               if ( sscanf ( fld2+1 , "%*[^0-9]%dx%d" , & width , & height ) == 2 ) {
@@ -3717,6 +3720,7 @@ void *logo(int l,int w){
               }
               Minfo.Axres = width;
               Minfo.Ayres = height;
+              Minfo.Video = 1;
           }
           video = strstr ( line , "Duration:" ) ;
           if ( video ) {
@@ -3730,6 +3734,10 @@ void *logo(int l,int w){
               }
               Minfo.TotSec = secs;
           }
+          video = strstr ( line , "Duration:" ) ;
+          if ( video ) {
+	       Minfo.Audio=1;
+	  }
       }
 //    printf("Could not determine resolution.\n");
       return 0;

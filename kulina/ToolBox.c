@@ -85,7 +85,7 @@ TOOLGRP ToolList[ ] = {
        "a lossless "
        "format like wav or flac\n"
   },
-  { 0, MakeConvertVideoGroup,"!f23Convert Video to mp4",340,0,RunHelper,0,
+  { 0, MakeConvertVideoGroup,"!f23Conver/Extractt Video to mp4",340,0,RunHelper,0,
       "\n\n\nConverting video to mp4 can reduce "
 	      "the file size substantially\n"
       "without much loss of quality. One can opt \n"
