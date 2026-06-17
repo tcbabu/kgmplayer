@@ -29,6 +29,17 @@ int MakeOutputFile(char *Infile,char *Outfile,char *ext);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int GetFolderName(char *file,char *folder);
 int MakeNewFileName(char *infile,char *outfile);
+
+static void *Args=NULL,*Rets=NULL;
+
+static DIAINTR *It = NULL;
+
+
+static MODINTERFACE ModFuns[] = { 
+    (MODINTERFACE) NULL 
+};
+static Dlink *ModuleList=NULL;
+
 static int FolderBrowser(char *FileName) {
 	char *Str=NULL;
 	int ret=0,ln;
@@ -72,7 +83,32 @@ int MakeMp4File(char *Infile,char *Outfile,int id) {
    strcpy(Outfile,buff);
    return 1;
 }
-int  ConvertVideotextbox1callback(int cellno,int i,void *Tmp) {
+int SetExtraVisibility(void *Tmp) {
+#if 0
+    if(cndata.ChngAsp) kgSetGrpVisibility(D,VaspGrp,1);
+    if(cndata.Scale) kgSetGrpVisibility(D,VsizeGrp,1);
+    if(cndata.VFullRange!=1) {
+      kgSetGrpVisibility(D,VrangeGrp,1);
+    }
+#endif
+   DIT *TA = (DIT *) kgGetNamedWidget(Tmp,(char *)"CVasp");
+   DIT *TX = (DIT *) kgGetNamedWidget(Tmp,(char *)"CVxres");
+   DIT *TR = (DIT *) kgGetNamedWidget(Tmp,(char *)"CVrange");
+   if(cndata.ChngAsp) kgSetWidgetVisibility(TA,1);
+   else kgSetWidgetVisibility(TA,0);
+//   kgUpdateWidget (TA);
+   if(cndata.Scale)kgSetWidgetVisibility(TX,1);
+   else kgSetWidgetVisibility(TX,0);
+//   kgUpdateWidget (TX);
+   if(cndata.VFullRange!=1)kgSetWidgetVisibility(TR,1);
+   else kgSetWidgetVisibility(TR,0);
+//   kgUpdateWidget (TR);
+   kgUpdateOn(Tmp);
+   return 1;
+}
+ /* Callback for  VCinbox   */ 
+
+int ConvertVideoVCinboxcallback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -85,7 +121,7 @@ int  ConvertVideotextbox1callback(int cellno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   DIT *TO;
   T = (DIT *)kgGetWidget(Tmp,i);
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VOutputWidget");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VCoutbox");
   strcpy(FileName,kgGetString(T,0));
   if(CheckMedia(FileName) == 0) {
     return 0;
@@ -113,7 +149,9 @@ int  ConvertVideotextbox1callback(int cellno,int i,void *Tmp) {
   e = T->elmt;
   return ret;
 }
-int  ConvertVideobutton1callback(int butno,int i,void *Tmp) {
+ /* Callback for  VCinbr   */ 
+
+int ConvertVideoVCinbrcallback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -125,8 +163,8 @@ int  ConvertVideobutton1callback(int butno,int i,void *Tmp) {
   DIM *Msg;
   D = (DIALOG *)Tmp;
   DIT *T,*TO;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VInputWidget");
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VOutputWidget");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VCinbox");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VCoutbox");
   B = (DIN *)kgGetWidget(Tmp,i);
   Msg = (DIM *) kgGetNamedWidget(Tmp,(char *) "ConvertMsg");
   if( Msg == NULL) printf("=============> Failed to get Message Box\n");
@@ -172,9 +210,16 @@ int  ConvertVideobutton1callback(int butno,int i,void *Tmp) {
   strcpy(cndata.outfile,OutFile);
   return ret;
 }
-void  ConvertVideobutton1init(DIN *B,void *pt) {
+void  ConvertVideoVCinbrinit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
 }
-int  ConvertVideotextbox2callback(int cellno,int i,void *Tmp) {
+
+ /* Callback for  VCoutbox   */ 
+
+int ConvertVideoVCoutboxcallback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -186,13 +231,15 @@ int  ConvertVideotextbox2callback(int cellno,int i,void *Tmp) {
   int ret=1;
   D = (DIALOG *)Tmp;
   DIT *T,*TO;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VInputWidget");
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VOutputWidget");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VCinbox");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VCoutbox");
   strcpy(OutFile,kgGetString(TO,0));
   strcpy(cndata.outfile,OutFile);
   return ret;
 }
-int  ConvertVideobrowser1callback(int item,int i,void *Tmp) {
+ /* Callback for  VCradio1   */ 
+
+int ConvertVideoVCradio1callback(int item,int i,void *Tmp) {
   /*********************************** 
     item : selected item (1 to max_item)  not any specific relevence
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -208,9 +255,12 @@ int  ConvertVideobrowser1callback(int item,int i,void *Tmp) {
   cndata.VQuality=item;
   return ret;
 }
-void  ConvertVideobrowser1init(DIRA *R,void *pt) {
+void  ConvertVideoVCradio1init (DIRA *R,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
 }
-int  ConvertVideobrowser2callback(int item,int i,void *Tmp) {
+ /* Callback for  VCradio2   */ 
+
+int ConvertVideoVCradio2callback(int item,int i,void *Tmp) {
   /*********************************** 
     item : selected item (1 to max_item)  not any specific relevence
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -223,20 +273,26 @@ int  ConvertVideobrowser2callback(int item,int i,void *Tmp) {
   pt = D->pt;
   R = (DIRA *)kgGetWidget(Tmp,i);
   th = (ThumbNail **) R->list;
+  DIT *TA=(DIT *)kgGetNamedWidget(Tmp,(char *)"CVasp");
   if(item==1) {
     cndata.ChngAsp=0;
-    kgSetGrpVisibility(Tmp,VaspGrp,0);
+//    kgSetGrpVisibility(Tmp,VaspGrp,0);
+      kgSetWidgetVisibility(TA,0);
   }
   else {
     cndata.ChngAsp=1;
-    kgSetGrpVisibility(Tmp,VaspGrp,1);
+//    kgSetGrpVisibility(Tmp,VaspGrp,1);
+      kgSetWidgetVisibility(TA,1);
   }
   kgUpdateOn(Tmp);
   return ret;
 }
-void  ConvertVideobrowser2init(DIRA *R,void *pt) {
+void  ConvertVideoVCradio2init (DIRA *R,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
 }
-int  ConvertVideobrowser3callback(int item,int i,void *Tmp) {
+ /* Callback for  VCradio3   */ 
+
+int ConvertVideoVCradio3callback(int item,int i,void *Tmp) {
   /*********************************** 
     item : selected item (1 to max_item)  not any specific relevence
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -249,20 +305,25 @@ int  ConvertVideobrowser3callback(int item,int i,void *Tmp) {
   pt = D->pt;
   R = (DIRA *)kgGetWidget(Tmp,i);
   th = (ThumbNail **) R->list;
+  DIT *TX=(DIT *)kgGetNamedWidget(Tmp,(char *)"CVxres");
   if(item==1) {
     cndata.Scale=0;
-    kgSetGrpVisibility(Tmp,VsizeGrp,0);
+//    kgSetGrpVisibility(Tmp,VsizeGrp,0);
+      kgSetWidgetVisibility(TX,0);
   }
   else {
     cndata.Scale=1;
-    kgSetGrpVisibility(Tmp,VsizeGrp,1);
+//    kgSetGrpVisibility(Tmp,VsizeGrp,1);
+      kgSetWidgetVisibility(TX,1);
   }
   kgUpdateOn(Tmp);
 
   return ret;
 }
-void  ConvertVideobrowser3init(DIRA *R,void *pt) {
+void  ConvertVideoVCradio3init (DIRA *R,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
 }
+
 static int CheckString(char *s1,char *s2) {
    int ch,ln,ret=0;
    ln = strlen(s2);
@@ -342,7 +403,7 @@ int ConvertToMp4( CONVDATA *cn) {
         float frac;
         if(Cn.VEndSec > 0) {
           sprintf(options," -ss %-lf  -t %-lf ",
-              Cn.VStartSec,(Cn.VEndSec-Cn.VStartSec));
+              Cn.VStartSec,(Cn.VEndSec-Cn.VStartSec-0.001));
         }
         else {
           sprintf(options," -ss %-lf ",
@@ -400,7 +461,15 @@ int ConvertToMp4( CONVDATA *cn) {
   }
 }
  
-int  ConvertVideosplbutton1callback(int butno,int i,void *Tmp) {
+void  ConvertVideoVconvertinit (DIL *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
+}
+ /* Callback for  Vconvert   */ 
+
+int ConvertVideoVconvertcallback( int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -412,12 +481,12 @@ int  ConvertVideosplbutton1callback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   DIT *T,*TO,*TR1,*TR2,*TA,*TS;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VInputWidget");
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VOutputWidget");
-  TR1 = (DIT *)kgGetNamedWidget(Tmp,(char *)"VRangeWidget1");
-  TR2 = (DIT *)kgGetNamedWidget(Tmp,(char *)"VRangeWidget2");
-  TA = (DIT *)kgGetNamedWidget(Tmp,(char *)"VaspWidget");
-  TS = (DIT *)kgGetNamedWidget(Tmp,(char *)"VsizeWidget");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VCinbox");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VCoutbox");
+  TR1 = (DIT *)kgGetNamedWidget(Tmp,(char *)"CVrange");
+  TR2 = (DIT *)kgGetNamedWidget(Tmp,(char *)"CVrange");
+  TA = (DIT *)kgGetNamedWidget(Tmp,(char *)"CVasp");
+  TS = (DIT *)kgGetNamedWidget(Tmp,(char *)"CVxres");
   strcpy(cndata.outfile,kgGetString(TO,0));
   strcpy(cndata.infile,kgGetString(T,0));
   n=0;
@@ -435,7 +504,7 @@ int  ConvertVideosplbutton1callback(int butno,int i,void *Tmp) {
   }
   n = B->nx;
   cndata.VStartSec= kgGetDouble(TR1,0);
-  cndata.VEndSec= kgGetDouble(TR2,0);
+  cndata.VEndSec= kgGetDouble(TR2,1);
   cndata.NewAsp= kgGetDouble(TA,0);
   cndata.Xsize= kgGetInt(TS,0);
   cndata.code=2;
@@ -452,9 +521,9 @@ int  ConvertVideosplbutton1callback(int butno,int i,void *Tmp) {
   ResetGrpVis(Tmp);
   return ret;
 }
-void  ConvertVideosplbutton1init(DIL *B,void *pt) {
-}
-int  ConvertVideobrowser4callback(int item,int i,void *Tmp) {
+ /* Callback for  VCradio4   */ 
+
+int ConvertVideoVCradio4callback(int item,int i,void *Tmp) {
   /*********************************** 
     item : selected item (1 to max_item)  not any specific relevence
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -469,16 +538,96 @@ int  ConvertVideobrowser4callback(int item,int i,void *Tmp) {
   th = (ThumbNail **) R->list;
   if(item==1) cndata.VFullRange=1;
   else cndata.VFullRange=0;
+  DIT *TR=(DIT *)kgGetNamedWidget(Tmp,(char *)"CVrange");
   if(item==2) {
-    kgSetGrpVisibility(Tmp,VrangeGrp,1);
+//    kgSetGrpVisibility(Tmp,VrangeGrp,1);
+      kgSetWidgetVisibility(TR,1);
   }
   else {
-    kgSetGrpVisibility(Tmp,VrangeGrp,0);
+//    kgSetGrpVisibility(Tmp,VrangeGrp,0);
+      kgSetWidgetVisibility(TR,0);
   }
   kgUpdateOn(Tmp);
   return ret;
 }
-void  ConvertVideobrowser4init(DIRA *R,void *pt) {
+void  ConvertVideoVCradio4init (DIRA *R,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+}
+ /* Callback for  VCoutbr   */ 
+
+int ConvertVideoVCoutbrcallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  switch(butno) {
+    case 1: //  Browse 
+      break;
+  }
+  return ret;
+}
+void  ConvertVideoVCoutbrinit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
+}
+
+int ConvertVideoCVaspcallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  return ret;
+}
+int ConvertVideoCVxrescallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  return ret;
+}
+int ConvertVideoCVrangecallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  return ret;
 }
 int ConvertVideoinit(void *Tmp) {
   /*********************************** 
@@ -543,4 +692,47 @@ int ConvertVideoWaitCallBack(void *Tmp) {
    ***********************************/ 
   int ret = 0;
   return ret;
+}
+int ModifyConvertVideo(void *Tmp,int GrpId) {
+  DIALOG *D;
+  D = (DIALOG *)Tmp;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+ /* pt[0] is inputs given by caller */
+  DIA *d;
+  int i,n;
+  kgCheckParentPosition(Tmp);
+  d = D->d;
+
+  if( ModuleList == NULL) ModuleList = kgGetModuleList((void **)ModFuns);
+  i=0;
+  void *args=NULL;
+  DIAINTR *Dt;
+  Resetlink(ModuleList);
+  while ( (Dt=(DIAINTR *)Getrecord(ModuleList)) != NULL) {
+    Dt->GrpId = Dt->MakeGroup(Tmp,NULL);
+    kgShiftGrp(Tmp,Dt->GrpId,Dt->xsh,Dt->ysh);
+    Dt->Settings(Tmp,args);
+    i++;
+  };
+
+  i=0;while(d[i].t!= NULL) {;
+     i++;
+  };
+  n=1;
+//  strcpy(D->name,"Kulina Designer ver 3.0");    /*  Dialog name you may change */
+#if 0
+  if(D->fullscreen!=1) {    /*  if not fullscreen mode */
+     int xres,yres; 
+     kgDisplaySize(&xres,&yres); 
+      // D->xo=D->yo=0; D->xl = xres-10; D->yl=yres-80;
+  }
+  else {    // for fullscreen
+     int xres,yres; 
+     kgDisplaySize(&xres,&yres); 
+     D->xo=D->yo=0; D->xl = xres; D->yl=yres;
+//     D->StackPos = 1; // you may need it
+  }    /*  end of fullscreen mode */
+#endif
+  return GrpId;
 }
