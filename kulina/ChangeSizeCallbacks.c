@@ -38,6 +38,30 @@ static int FolderBrowser(char *FileName) {
 	}
 	return ret;
 }
+int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs){
+  char buff[500];
+  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,fps=%-d\" "
+       " -c:v libx265 %s",
+       infile,(Xres/2)*2,(Yres/2)*2,fs,outfile);
+  runfunction(buff,NULL,ffmpegfun);
+  return 1;
+}
+int ChangeVideoSize(char *infile,char *outfile,int Xres,int Yres){
+  char buff[500];
+  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos\" "
+       " -c:v libx265 %s",
+       infile,(Xres/2)*2,(Yres/2)*2,outfile);
+  runfunction(buff,NULL,ffmpegfun);
+  return 1;
+}
+int ChangeVideoFrate(char *infile,char *outfile,int fs){
+  char buff[500];
+  sprintf(buff,"ffmpegfun -y  -i %s -vf \"fps=%-d\" "
+       " -c:v libx265 %s",
+       infile,fs,outfile);
+  runfunction(buff,NULL,ffmpegfun);
+  return 1;
+}
  /* Callback for  CSinput   */ 
 int ChangeSizeCSinputcallback(int cellno,int i,void *Tmp) {
   /************************************************* 

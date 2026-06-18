@@ -353,7 +353,7 @@ int JoinToMp4( CONVDATA *cn)  {
           if(Audio) {
 //           sprintf(command,"ffmegfun -probesize 50M  -analyzeduration 10000000 -r %-7.3f -i \"%s\" -f mp4 "
            sprintf(command,"ffmegfun   -analyzeduration 10000000  -i \"%s\" -f mp4 "
-           " -video_track_timescale 90k -c:a aac  -b:v %-s "
+           " -video_track_timescale 90k -af aresample=44100 -c:a aac  -b:v %-s "
            " -s %-dx%-d -y %s/F%-4.4d.mp4 ",
             mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize, Folder,id);
 	  }
@@ -896,14 +896,14 @@ int VideoJoinJoinVideoscallback( int butno,int i,void *Tmp) {
     mpt->Process=0;
     if( mpt->Axres != cndata.Xsize) {mpt->Process=1;}
     if( mpt->Ayres != cndata.Ysize) {mpt->Process=1;}
-//    if( (int)(mpt->fps*1000)!= (int)(cndata.fps*1000)) mpt->Process=1;
+    if( (int)(mpt->fps*1000)!= (int)(cndata.fps*1000)) mpt->Process=1;
 //    if(mpt->vcodec != 1) mpt->Process=1;
     if(strcmp(Vtype,mpt->vcodectype)!=0) {mpt->Process=1;}
     if (mpt->Process == 1 ) Process=1;
   }
   Resetlink(L);
-  mpt = (MEDIAINFO *)Getrecord(L);
-  mpt->Process= Process;
+//  mpt = (MEDIAINFO *)Getrecord(L);
+//  mpt->Process= Process;
 //  printf("fps = %f\n",cndata.fps);
   cndata.Fcount=n;
   cndata.EndSec=TotSec;

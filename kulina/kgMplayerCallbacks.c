@@ -3746,8 +3746,8 @@ void *logo(int l,int w){
       char command [ 512 ] ;
       snprintf ( command , sizeof ( command ) , "ffmpegfun -i \"%s\" " , \
            Vfile ) ;
-      runfunction(command,ProcessVinfo,ffmpegfun);
-      return 1;
+      runfunction(command,ProcessMediaInfo,ffmpegfun);
+      return Minfo.Video;
   }
 #include <stdio.h>
 #include <malloc.h>
@@ -3922,4 +3922,18 @@ int RunMonitorAndWait(char * job)  {
 int RunAndWait(char * job)  {
    runfunction(job,NULL,ffmpegfun);
    return 1;
+}
+char *MakeTmpFolder(void) {
+    char Folder[500];
+    char *pt;
+    int id=1;
+    sprintf(Folder,"%-s/%-d_%-3d",getenv("HOME"),getpid());
+    while(FileStat(Folder)) {
+      id++;
+      sprintf(Folder,"%-s/%-d_%-3d",getenv("HOME"),getpid());
+    }
+    mkdir(Folder,0700);
+    pt = (char *)malloc(strlen(Folder)+1);
+    strcpy(pt,Folder);
+    return pt;
 }

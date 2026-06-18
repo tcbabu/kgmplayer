@@ -1,5 +1,5 @@
 #ifndef D_MINFO
-#define M_INFO
+#define D_MINFO
 typedef struct _mediainfo {
   char Flname[500];
   int Video,Audio;
@@ -22,6 +22,6 @@ typedef struct _mediainfo {
   char vcodectype[50];
 } MEDIAINFO;
 
-MEDIAINFO * GetMediaInfo(char *flname);
+MEDIAINFO * GetMediaInfo(char *flname); //in kgutils.h
 
 #endif

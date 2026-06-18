@@ -144,13 +144,13 @@ int MakeVideoSlices_org(char * flname,char *folder,int tslice) {
        if(esec < totsec) {
         sprintf(buff,"ffmpegfun -accurate_seek -ss %-f  -i \"%-s\" -ss 0 -t %-f"
            " -y -video_track_timescale 90k -f mp4 -vcodec libx264  -b:v 3000K -aq 0 "
-           " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
+           " -c:a aac \"%-s/Frm%-5.5d\"",
            ssec,flname,tslice+crr,folder,n);
        }
        else {
         sprintf(buff,"ffmpegfun -accurate_seek -ss %-f  -i \"%-s\" -ss 0 "
            " -y -video_track_timescale 90k -f mp4 -vcodec libx264  -b:v 3000K -aq 0 "
-           " -c:a libmp3lame \"%-s/Frm%-5.5d\"",
+           " -c:a aac \"%-s/Frm%-5.5d\"",
            ssec,flname,folder,n);
        }
 #else
@@ -203,8 +203,11 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
   int n;
   float per=0;
   char outfile[500];
+  char *Tfolder = MakeTmpFolder();
+  char Tfile[500];
+  int ofs;
 
-  if( CheckMedia(flname) == 0 ) {
+  if( GetVideoInfo(flname) == 0 ) {
     kgSplashMessage(NULL,100,100,300,40,(char *)"Error: Not Video",1,0,15);
     return 0;
   }
@@ -213,7 +216,8 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
     sleep(2);
     return pid;
   }
-  totsec = Minfo.TotSec+0.1;
+  totsec = Minfo.TotSec+0.01;
+  ofs = (int)(Minfo.fps+0.5);
   id = getpid();
   if(pipe(Jpipe) < 0) exit(0);
   if(pipe(Jstat) < 0) exit(0);
@@ -238,7 +242,7 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
      esec = tslice;
      n=1;
      while (ssec < totsec) {
-       sprintf(buff,"  %-s/Frm%-5.5d\n",folder,n);
+       sprintf(buff,"  %-s/Slice%-5.5d.mp4 ofs=%d\n",folder,n,ofs);
        write(Jpipe[1],buff,strlen(buff));
        per = ssec*100.0/totsec;
        sprintf(buff,"Per: %f \n",per);
@@ -246,28 +250,36 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
        sprintf(outfile,"%-s/Slice%-5.5d.mp4",folder,n);
        if(esec < totsec) {
         sprintf(buff,"ffmpegfun -accurate_seek -ss %-f  -i \"%-s\" -ss 0 -t %-f"
-           " -y  -f mp4 -vcodec copy -c:a copy  "
-           "  \"%-s/Slice%-5.5d\"",
-           ssec,flname,tslice+crr,folder,n);
+           " -y  -f mp4 -vf  fps=%-d -vcodec libx264 -crf 18 -preset faster  -af aresample=44100 -c:a aac  "
+           "  \"%-s\"",
+           ssec,flname,(tslice)+crr,ofs, outfile);
        }
        else {
         sprintf(buff,"ffmpegfun -accurate_seek -ss %-f  -i \"%-s\" -ss 0 "
-           " -y -f mp4 -vcodec copy  "
-           " -c:a copy \"%-s/Slice%-5.5d\"",
-           ssec,flname,folder,n);
+           " -y -f mp4 -vfx fps=%-d  -vcodec libx264  -crf 18 -preset faster  "
+           " -af aresample=44100 -c:a aac \"%-s\"",
+           ssec,flname,ofs,outfile);
        }
        runfunction(buff,ProcessData,ffmpegfun);
-       CheckMedia(outfile);
+//       CheckMedia(outfile);
+#if 0 
+//Not Needed
+         MakeFileInFolder(outfile,Tfolder,Tfile,".mp4");
+         ChangeVideoFrate(outfile,Tfile,ofs);
+         rename(Tfile,outfile);
+#endif
+         GetVideoInfo(outfile);
 //       ssec += tslice;
 //       crr=0.00;
        sprintf(buff,"info:  %f %f %f %f\n",ssec,esec,Minfo.start,Minfo.TotSec);
        write(Jpipe[1],buff,strlen(buff));
+       esec = ssec + tslice+tslice;
        ssec +=tslice;
-       esec = ssec + tslice;
 //       if(Minfo.TotSec < 1 ) break;
        n++;
 
      } //while
+     kgCleanDir(Tfolder);
      close(Jpipe[1]);
      close(Jstat[0]);
      exit(0);
