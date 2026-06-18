@@ -310,14 +310,14 @@ int JoinToMp4( CONVDATA *cn)  {
     myl = fopen(options,"w");
     switch(Cn.Quality) {
       case 1:
-        sprintf(Qstr,"3000K -crf 20  -preset medium -vcodec %s ","libx265");
+        sprintf(Qstr," -crf 20  -preset medium -vcodec %s ","libx265");
         break;
       case 2:
-        sprintf(Qstr,"2000K -crf 28 -preset fast -vcodec %s ","libx264");
+        sprintf(Qstr," -crf 20 -preset fast -vcodec %s ","libx264");
         break;
       default:
       case 3:
-        sprintf(Qstr,"1000K -crf 40 -preset superfast -vcodec %s ","libx264");
+        sprintf(Qstr," -crf 22  -preset superfast -vcodec %s ","libx264");
         break;
     }
     L = (Dlink *)Cn.Vlist;
@@ -353,14 +353,14 @@ int JoinToMp4( CONVDATA *cn)  {
           if(Audio) {
 //           sprintf(command,"ffmegfun -probesize 50M  -analyzeduration 10000000 -r %-7.3f -i \"%s\" -f mp4 "
            sprintf(command,"ffmegfun   -analyzeduration 10000000  -i \"%s\" -f mp4 "
-           " -video_track_timescale 90k -af aresample=44100 -c:a aac  -b:v %-s "
+           " -video_track_timescale 90k -af aresample=44100 -c:a aac   %-s "
            " -s %-dx%-d -y %s/F%-4.4d.mp4 ",
             mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize, Folder,id);
 	  }
 	  else {
 //           sprintf(command,"ffmegfun -probesize 50M  -analyzeduration 10000000 -r %-7.3f -i \"%s\" -f mp4 "
            sprintf(command,"ffmegfun   -analyzeduration 10000000  -i \"%s\" -f mp4 "
-           " -video_track_timescale 90k -an -b:v %-s "
+           " -video_track_timescale 90k -an  %-s "
            " -s %-dx%-d -y %s/F%-4.4d.mp4 ",
             mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize, Folder,id);
 	  }
@@ -590,7 +590,7 @@ int JoinToMp4_new( CONVDATA *cn)  {
 char * MakeVjoinFile(void) {
   char buff[500],*pt;
   int id=0,ln;
-  sprintf(buff,"%-s/Video/",getenv("HOME"));
+  sprintf(buff,"%-s/",getenv("HOME"));
   ln = strlen(buff);
   pt = buff+ln;
   while(1) {
@@ -755,7 +755,7 @@ int VideoJoinVideoJoinWidget2callback(int butno,int i,void *Tmp) {
   static char filename[500]="";
   ThumbNail **th;
   char **Str=NULL;
-
+  static int Entry=1;
   int n,ret =0; 
   D = (DIALOG *)Tmp;
   VX2 = (DIX *)kgGetNamedWidget(Tmp,(char *)"VideoList");
@@ -777,6 +777,15 @@ int VideoJoinVideoJoinWidget2callback(int butno,int i,void *Tmp) {
         }
       }
 #else
+       if(Entry) {
+         char *fpt = MakeVjoinFile();
+         DIT *TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"VjoinOut");
+         kgSetString (TO,0,fpt);
+         kgUpdateWidget(TO);
+         kgUpdateOn(Tmp);
+         free(fpt);
+         Entry = 0;
+       }
       Str = kgGetVideoFiles(NULL);
       if(Str != NULL) {
           th = AddItemstoVlist(Str);
@@ -851,9 +860,16 @@ int VideoJoinJoinVideoscallback( int butno,int i,void *Tmp) {
   Of = kgGetString(T,0);
   strcpy(cndata.outfile,Of);
   L = (Dlink *)cndata.Vlist;
+#if 0
   cndata.Xsize = 0;
   cndata.Ysize = 0;
   cndata.fps=0.0;
+#else
+  cndata.Xsize = 100000;
+  cndata.Ysize = 100000;
+  cndata.fps=10000.0;;
+#endif
+  
   
   n=0;
   Qty = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"VJQuality"));
@@ -862,12 +878,17 @@ int VideoJoinJoinVideoscallback( int butno,int i,void *Tmp) {
   while ((mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
     n++;
     TotSec += (mpt->TotSec);
-    if( mpt->fps> cndata.fps) 
+    if( mpt->fps< cndata.fps) 
           {cndata.fps = mpt->fps;}
+#if 0
     if( mpt->Axres> cndata.Xsize) 
           {cndata.Xsize = mpt->Axres;}
     if( mpt->Ayres> cndata.Ysize) 
           {cndata.Ysize = mpt->Ayres;}
+#else
+    if( mpt->Axres< cndata.Xsize) 
+          {cndata.Xsize = mpt->Axres;cndata.Ysize = mpt->Ayres;}
+#endif
   }
   n=0;
   Resetlink(L);
