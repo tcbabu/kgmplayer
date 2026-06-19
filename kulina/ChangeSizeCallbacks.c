@@ -40,7 +40,7 @@ static int FolderBrowser(char *FileName) {
 }
 int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs){
   char buff[500];
-  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,fps=%-d\" "
+  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,setsar=1,fps=%-d\" "
        " -c:v libx265 %s",
        infile,(Xres/2)*2,(Yres/2)*2,fs,outfile);
   runfunction(buff,NULL,ffmpegfun);
@@ -48,7 +48,7 @@ int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs)
 }
 int ChangeVideoSize(char *infile,char *outfile,int Xres,int Yres){
   char buff[500];
-  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos\" "
+  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,setsat=1\" "
        " -c:v libx265 %s",
        infile,(Xres/2)*2,(Yres/2)*2,outfile);
   runfunction(buff,NULL,ffmpegfun);
@@ -163,7 +163,7 @@ int ChangeSizeCSgocallback( int butno,int i,void *Tmp) {
   sprintf (buff,"Xres : %d Yres :%d\n",Xres,Yres);
   kgWrite(I,buff);
   ret =0;
-  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,fps=%-d\" -c:v libx265 %s",
+  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,setsar=1,fps=%-d\" -c:v libx265 %s",
        kgGetString(TI,0),(Xres/2)*2,(Yres/2)*2,fs,kgGetString(TO,0));
   kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);

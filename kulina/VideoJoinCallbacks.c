@@ -317,7 +317,7 @@ int JoinToMp4( CONVDATA *cn)  {
         break;
       default:
       case 3:
-        sprintf(Qstr," -crf 22  -preset superfast -vcodec %s ","libx264");
+        sprintf(Qstr," -crf 22  -preset fast -vcodec %s ","libx264");
         break;
     }
     L = (Dlink *)Cn.Vlist;
@@ -354,15 +354,15 @@ int JoinToMp4( CONVDATA *cn)  {
 //           sprintf(command,"ffmegfun -probesize 50M  -analyzeduration 10000000 -r %-7.3f -i \"%s\" -f mp4 "
            sprintf(command,"ffmegfun   -analyzeduration 10000000  -i \"%s\" -f mp4 "
            " -video_track_timescale 90k -af aresample=44100 -c:a aac   %-s "
-           " -s %-dx%-d -y %s/F%-4.4d.mp4 ",
-            mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize, Folder,id);
+           " -vf \"scale=%-d:%-d:force_original_aspect_ratio=disable,setsar=1,fps=%-.3f\" -y %s/F%-4.4d.mp4 ",
+            mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize,Cn.fps,Folder,id);
 	  }
 	  else {
 //           sprintf(command,"ffmegfun -probesize 50M  -analyzeduration 10000000 -r %-7.3f -i \"%s\" -f mp4 "
            sprintf(command,"ffmegfun   -analyzeduration 10000000  -i \"%s\" -f mp4 "
            " -video_track_timescale 90k -an  %-s "
-           " -s %-dx%-d -y %s/F%-4.4d.mp4 ",
-            mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize, Folder,id);
+           " -vf \"scale=%-d:%-d:force_original_aspect_ratio=disable,setsar=1,fps=%-.3f\" -y %s/F%-4.4d.mp4 ",
+            mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize,Cn.fps, Folder,id);
 	  }
 	} // if mpt->Process
 	else {
@@ -383,6 +383,8 @@ int JoinToMp4( CONVDATA *cn)  {
 //        system(command);
         fprintf(myl,"file \'%-s/F%-4.4d.mp4\'\n",Folder,id);
 //        printf("file \'%-s/F%-4.4d\'\n",Folder,id);
+        sprintf(options,"%-s/F%-4.4d.mp4\n",Folder,id);
+        write(Jpipe[1],options,strlen(options));
         fflush(myl);
 //     printf("%s\n",command);
       id++;

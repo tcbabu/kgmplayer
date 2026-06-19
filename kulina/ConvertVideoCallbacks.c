@@ -420,17 +420,14 @@ int ConvertToMp4( CONVDATA *cn) {
           strcat(options1,"    -aq 0 -af aresample=44100  -c:a aac ");
           break;
         case 2:
-          strcpy(options1,(char *)"-f mp4 -vcodec libx264 -crf 22 -preset medium  -video_track_timescale 90k");
+          strcpy(options1,(char *)"-f mp4 -vcodec libx264 -crf 20  -preset medium  -video_track_timescale 90k");
           strcat(options1,"   -aq 0 -af aresample=44100 -c:a aac  ");
           break;
+	default:
         case 3:
-          strcpy(options1,(char *)"-f mp4 -vcodec libx264 -crf 28 -preset fast  -video_track_timescale 90k");
+          strcpy(options1,(char *)"-f mp4 -vcodec libx264 -crf 22 -preset fast  -video_track_timescale 90k");
           strcat(options1,"   -aq 2 -af aresample=44100 -c:a aac ");
           break;
-	default:
-          strcpy(options1,(char *)"-f mp4 -vcodec libx264 -crf 20  -preset veryfast  -video_track_timescale 90k");
-          strcat(options1,"   -aq 2 -af aresample=44100 -c:a aac ");
-	  break;  
       }
       len = strlen(options1);
       if(Cn.ChngAsp) {

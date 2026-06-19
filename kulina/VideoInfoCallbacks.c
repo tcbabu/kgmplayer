@@ -108,9 +108,10 @@ int VideoInfoVIgetcallback( int butno,int i,void *Tmp) {
   switch(butno) {
     case 1: //  Get Info 
       GetVideoInfo(FileName);      
-      sprintf(buff,"Xres : %d\n",Minfo.Axres);
+      sprintf(buff,"Xres x Yres : %d x %d\n",Minfo.Axres,Minfo.Ayres);
       kgWrite(I,buff);
-      sprintf(buff,"Yres : %d\n",Minfo.Ayres);
+      sprintf(buff,"FPS : %.3f Audio: %d Vcodec: %s\n",
+            Minfo.fps,Minfo.Audio,Minfo.vcodectype);
       kgWrite(I,buff);
       sprintf(buff,"Duration : %.2f\n",Minfo.TotSec);
       kgWrite(I,buff);
