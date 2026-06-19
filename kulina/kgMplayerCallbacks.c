@@ -1762,7 +1762,8 @@ float GetTimeval (char *buff) {
 int ProcessMediaInfo(int pip0,int pip1,int Pid) {
      int ch,Asp;
      char buff[1000],work[100],CODE[10];
-     char *pt;
+     char SAR[25],DAR[25];
+     char *pt,*ptr;
      float fps;
      int pos;
      Asp=0;
@@ -1775,6 +1776,10 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
      Minfo.fps=0;
      Minfo.rotation =0.0;
      Minfo.vcodectype[0]='\0';
+         strcpy(SAR,"???");
+         strcpy(DAR,"???");
+     strcpy(Minfo.SAR,"Unknown");
+     strcpy(Minfo.DAR,"Unknown");
      while((ch=GetLine(pip0,buff)) ) {
 //         printf("%s\n",buff);
 //         fflush(stdout);
@@ -1798,7 +1803,6 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
                Minfo.vcodectype[0]='\0';
 	       if( (pos=SearchString(buff,(char *)"hevc"))>=0) Minfo.vcodec =1;
 	       if( (pos=SearchString(buff,(char *)"h264"))>=0) Minfo.vcodec =2;
-              
                sscanf(pt,"%s",Minfo.vcodectype);
                  pos = SearchString(pt,(char *)"yuv");
                  if(pos <= 0)pos = SearchString(pt,(char *)",");
@@ -1809,11 +1813,14 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
 		 pt = pt+pos+2;
 //		 printf("%s\n",pt);
 		 sscanf(pt,"%s",work);
-		 while( (work[i]!=' ')){
+                 ptr = pt;
+                 i =0;
+		 while( (work[i]>' ')){
 			 if(work[i]=='x') work[i]=' ';
 			 i++;
 		 } 
 		 work[i]='\0';
+                 ptr = ptr + strlen(work);
 		 sscanf(work,"%d%d",&Minfo.Axres,&Minfo.Ayres);
 		 Minfo.Rxres = Minfo.Axres;
 		 Minfo.Ryres = Minfo.Ayres;
@@ -1827,7 +1834,21 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
                  sscanf(pt,"%f",&fps);
                  Minfo.fps = fps;
                  Minfo.Video =1;
-
+                 strcpy(SAR,(char *)"NOTFOUND");
+            if( (pos=SearchString(buff,(char *)"SAR"))>=0) {
+                 pt = buff+pos+4;
+  		 sscanf(pt,"%s",SAR);
+                 strcpy(Minfo.SAR,SAR);
+   	   }
+           else {strcpy(SAR,(char *)"1:1");}
+            if( (pos=SearchString(buff,(char *)"DAR"))>=0) {
+                 pt = buff+pos+4;
+		 sscanf(pt,"%s",DAR);
+                 DAR[strlen(DAR)-2]='\0';
+                 strcpy(Minfo.DAR,DAR);
+            }
+           else {strcpy(DAR,(char *)"?:?");}
+              
          }
          if( (pos=SearchString(buff,(char *)"rotate"))>=0) {
 		 pos=SearchString(buff,(char *)":");
@@ -1838,11 +1859,14 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
 	       Minfo.Audio=1;
 
 	 }
+         
      }
      if(!Asp) {
        Minfo.AspectNu=Minfo.Rxres;
        Minfo.AspectDe=Minfo.Ryres;
      }
+     strcpy(Minfo.SAR,SAR);
+     strcpy(Minfo.DAR,DAR);
      return 1;
 }
 int ProcessCheckVideo(int pip0,int pip1,int Pid) {
@@ -2058,8 +2082,10 @@ MEDIAINFO * GetMediaInfo(char *flname) {
 //   printf("%s\n",buff);
    runfunction(buff,ProcessMediaInfo,ffmpegfun);
    mpt = (MEDIAINFO *)malloc(sizeof(MEDIAINFO));
+    
    *mpt= Minfo;
     Minfo=mtmp;
+    strcpy(Minfo.SAR,(char *)"TESTING");
     return mpt;
 }
 int ProcessTotTime(int pip0,int pip1,int Pid) {

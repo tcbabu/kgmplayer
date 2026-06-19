@@ -63,11 +63,16 @@ int VideoInfoVIbrowsecallback(int butno,int i,void *Tmp) {
   DIT *T;
   char FileName[500];
   T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VIinput");
+  DII *I = (DII *) kgGetNamedWidget(Tmp,(char *)"VIdata");
   n = B->nx*B->ny;
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
   if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
+  strcat(FileName,(char *)"\n");
+  kgWrite(I,FileName);
+  kgWrite(I,(char *)"        \n");
+  kgWrite(I,(char *)"        \n");
   kgUpdateWidget(T);
   kgUpdateOn(Tmp);
   switch(butno) {
@@ -76,6 +81,7 @@ int VideoInfoVIbrowsecallback(int butno,int i,void *Tmp) {
   }
   return ret;
 }
+
 void  VideoInfoVIbrowseinit (DIN *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
@@ -98,6 +104,7 @@ int VideoInfoVIgetcallback( int butno,int i,void *Tmp) {
   DIT *T;
   DII *I;
   char FileName[500],buff[100];;
+  MEDIAINFO *mpt;
   T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VIinput");
   I = (DII *) kgGetNamedWidget(Tmp,(char *)"VIdata");
   FileName[0]='\0';
@@ -107,15 +114,17 @@ int VideoInfoVIgetcallback( int butno,int i,void *Tmp) {
   n = B->nx;
   switch(butno) {
     case 1: //  Get Info 
-      GetVideoInfo(FileName);      
-      sprintf(buff,"Xres x Yres : %d x %d\n",Minfo.Axres,Minfo.Ayres);
+//      GetVideoInfo(FileName);      
+      mpt = GetMediaInfo(FileName);
+      sprintf(buff,"Xres x Yres : %d x %d\n",mpt->Axres,mpt->Ayres);
       kgWrite(I,buff);
-      sprintf(buff,"FPS : %.3f Audio: %d Vcodec: %s\n",
-            Minfo.fps,Minfo.Audio,Minfo.vcodectype);
+      sprintf(buff,"FPS : %.3f Audio: %d Vcodec: %s \n",
+            mpt->fps,mpt->Audio,mpt->vcodectype);
       kgWrite(I,buff);
-      sprintf(buff,"Duration : %.2f\n",Minfo.TotSec);
+      sprintf(buff,"Duration : %.2f SAR: %s DAR: %s\n",mpt->TotSec,mpt->SAR,mpt->DAR);
       kgWrite(I,buff);
       ret = 0;
+      free(mpt);
       break;
     case 2: //  Okay 
       ret =0;

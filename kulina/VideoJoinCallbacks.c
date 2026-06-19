@@ -346,8 +346,8 @@ int JoinToMp4( CONVDATA *cn)  {
       sprintf (options,"mpt->Process = %d %s  fps=%f vcodec:< %s >\n",
             mpt->Process,mpt->Flname,mpt->fps,mpt->vcodectype);
       write(Jpipe[1],options,strlen(options));
-      sprintf (options,"%dx%d %d\n",
-            mpt->Axres,mpt->Ayres,strcmp(Vtype,mpt->vcodectype));
+      sprintf (options,"%dx%d %d SAR %s DAR %s\n",
+            mpt->Axres,mpt->Ayres,strcmp(Vtype,mpt->vcodectype),mpt->SAR,mpt->DAR);
       write(Jpipe[1],options,strlen(options));
 	if(mpt->Process) {
           if(Audio) {
@@ -652,11 +652,8 @@ ThumbNail **AddItemstoVlist(char **newitems) {
   if(newitems != NULL) {
     j=0;
     while(newitems[j] != NULL) {
-//      CheckMedia(newitems[j]);
       pt = GetMediaInfo(newitems[j]);
       if( (pt != NULL)&&(pt->Video)) {
-//        pt = (MEDIAINFO *)malloc(sizeof(MEDIAINFO));
-//        *pt = Minfo;
         strcpy(pt->Flname,newitems[j]);
         Dappend(L,(void *)pt);
       }

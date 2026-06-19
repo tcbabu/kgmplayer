@@ -19,7 +19,9 @@ typedef struct _mediainfo {
   int vcodec;
   float rotation;
   float start;
-  char vcodectype[50];
+  char SAR[32];
+  char DAR[32];
+  char vcodectype[40];
 } MEDIAINFO;
 
 MEDIAINFO * GetMediaInfo(char *flname); //in kgutils.h
