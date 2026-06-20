@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <math.h>
 #include "mediainfo.h"
 #include "kgutils.h"
 
@@ -916,14 +917,19 @@ int VideoJoinJoinVideoscallback( int butno,int i,void *Tmp) {
     mpt->Process=0;
     if( mpt->Axres != cndata.Xsize) {mpt->Process=1;}
     if( mpt->Ayres != cndata.Ysize) {mpt->Process=1;}
-    if( (int)(mpt->fps*1000)!= (int)(cndata.fps*1000)) mpt->Process=1;
+//    if( (int)(mpt->fps*1000)!= (int)(cndata.fps*1000)) mpt->Process=1;
+    if(fabsf(mpt->fps - cndata.fps) > 1 ) mpt->Process =1;
 //    if(mpt->vcodec != 1) mpt->Process=1;
     if(strcmp(Vtype,mpt->vcodectype)!=0) {mpt->Process=1;}
     if (mpt->Process == 1 ) Process=1;
   }
-  Resetlink(L);
-//  mpt = (MEDIAINFO *)Getrecord(L);
-//  mpt->Process= Process;
+  if(Process) {
+   Resetlink(L);
+   while(  (mpt = (MEDIAINFO *)Getrecord(L)) != NULL) {
+      mpt->Process= 1;
+   }
+   Resetlink(L);
+  }
 //  printf("fps = %f\n",cndata.fps);
   cndata.Fcount=n;
   cndata.EndSec=TotSec;
