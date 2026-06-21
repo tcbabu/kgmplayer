@@ -1,3 +1,4 @@
+#define D_DEBUG
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -629,7 +630,7 @@ int main(int argc ,char **argv) {
   chdir(HomeDir);
   mkdir((char *)".kgMplayer",0700);
 #if 1
-#if 0
+#ifndef D_DEBUG
   close(0);
   open("/dev/null",O_RDONLY|O_CREAT|O_TRUNC,0777);
   close(1);

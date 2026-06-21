@@ -1455,7 +1455,10 @@ int RunString(char *job,int (*function)(int,char **)){
 			   args[i]=ptr;
      }
 
-     if(function != NULL) function(argc,args);
+   if(function != NULL) function(argc,args);
+   fprintf(stderr,"FINISHED Job= %s\n",job);
+   fflush(stdout);
+   fflush(stderr);
      return 1;
 }
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **)){
