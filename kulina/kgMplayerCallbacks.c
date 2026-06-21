@@ -10,6 +10,7 @@
 #include <cdio/cdio.h>
 #include <kulina.h>
 #include "mediainfo.h"
+#include "kgutils.h"
 typedef struct _DevRec {
   char device[50];
   int hdmi;
@@ -51,6 +52,7 @@ int ffmpegfun(int,char **);
 void * RunControls(void *);
 void * RunMonitorJoin(void *);
 int runjob(char *job,int (*ProcessOut)(int,int,int));
+int ProcessPrint(int pip0,int pip1,int Pid);
 extern int BRK;
 extern Dlink *Plink;
 extern int WMErr;
@@ -1400,6 +1402,61 @@ int runmplayer(char *job,int (*ProcessOut)(int,int,int)){
      Mplayer(argc,args);
      return 1;
 #endif
+}
+int RunString(char *job,int (*function)(int,char **)){
+   int ret =0;
+   FILE *fp,*fp1;
+   int pip[2],pid,status,pip2[2],argc;
+   char *args[100],buff[1000],pt[300];
+   char *ptr;
+   char *pgrpath=NULL;
+   int i=0,pos=0;
+   if(job==NULL){
+	   fprintf(stderr,"Job: NULL \n");
+           fflush(stdout);
+           fflush(stderr);
+	   return 0;
+   }
+   Mute=0;
+   fprintf(stderr,"Job= %s\n",job);
+   fflush(stdout);
+   fflush(stderr);
+   while(job[i]==' ') i++;
+   strcpy(buff,job+i);
+   i=0;
+   while ( sscanf(buff+pos,"%s",pt) > 0 ) {
+     if(pt[0]=='\"') {
+      pos++;
+      args[i]=buff+pos;
+      while(buff[pos]!='\"')pos++;
+      buff[pos]='\0';
+      i++;
+     }
+     else {
+       args[i]=buff+pos;
+       pos +=strlen(pt);
+       i++;
+       if(buff[pos]< ' ') break;
+       buff[pos]='\0';
+     }
+     pos++;
+     while(buff[pos]==' ') pos++;
+   }
+   args[i]=NULL;
+   if(i==0){
+	   printf("i==0 Exiting\n");
+           fflush(stdout);
+	   return 0;
+   }
+   argc=i;
+     for(i=0;i<argc;i++) {
+	   ptr = (char *)malloc(strlen(args[i])+1);
+			   strcpy(ptr,args[i]);
+			   args[i]=ptr;
+     }
+
+     if(function != NULL) function(argc,args);
+     return 1;
 }
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **)){
    int ret =0;
@@ -3779,7 +3836,7 @@ void *logo(int l,int w){
 #include <malloc.h>
 #include <string.h>
 #include <sys/stat.h>
-
+#if 0
 static int FileStat(char *flname) {
   int ret;
   struct stat buff;
@@ -3787,6 +3844,7 @@ static int FileStat(char *flname) {
   if(ret < 0) return 0;
   else return 1;
 }
+#endif
 int MakeNewFileName(char *Infile,char *OutFile) {
    int index,i;
    char buff[500],*pt,*ext=NULL;
@@ -3946,7 +4004,7 @@ int RunMonitorAndWait(char * job)  {
   return 1;
 }
 int RunAndWait(char * job)  {
-   runfunction(job,NULL,ffmpegfun);
+   runfunction(job,ProcessPrint,ffmpegfun);
    return 1;
 }
 char *MakeTmpFolder(void) {

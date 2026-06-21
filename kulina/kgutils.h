@@ -4,6 +4,7 @@
 #include "mediainfo.h"
 #endif
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
+int RunString(char *job,int (*function)(int,char **));
 int ProcessSkip(int pip0,int pip1,int Pid) ;
 int ProcessToPipe(int pip0,int pip1,int Pid) ;
 void *RunMonitorJoin(void *arg);

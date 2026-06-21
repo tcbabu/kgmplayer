@@ -15,7 +15,6 @@ extern int ToTools[2],FromTools[2],StatusTools[2];
 extern int StatusGrab[2];
 extern int MonPipe;
 extern double Ssec,Esec;
-extern MEDIAINFO Minfo;
 extern int Tools;
 static char libvcodec[20];
 int Jpipe[2];
@@ -435,7 +434,7 @@ int JoinToMp4( CONVDATA *cn)  {
   char Vtype[50];
   char Tmpfile[500];
   char command[10000],File[500],options[5000],Fifo[500],Qstr[100];
-  int Fcover=1;
+  int Fcover=0;
   Cn= *cn;
   Audio =1;
   L = (Dlink *)Cn.Vlist;
@@ -541,6 +540,10 @@ int JoinToMp4( CONVDATA *cn)  {
        }
        else {
         OverlayToSize(Cn.Xsize,Cn.Ysize,(float)Cn.fps,mpt->Flname,Tmpfile);
+        if (!FileStat(Tmpfile)) {
+            sprintf(options,"!c02Failed to create %-s\n",Tmpfile);
+            write(Jpipe[1],options,strlen(options));
+        }
        }
         fprintf(myl,"file \'%-s/F%-4.4d.mp4\'\n",Folder,id);
         sprintf(options,"%-s/F%-4.4d.mp4\n",Folder,id);
