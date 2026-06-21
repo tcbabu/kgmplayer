@@ -629,7 +629,7 @@ int main(int argc ,char **argv) {
   chdir(HomeDir);
   mkdir((char *)".kgMplayer",0700);
 #if 1
-#if 1
+#if 0
   close(0);
   open("/dev/null",O_RDONLY|O_CREAT|O_TRUNC,0777);
   close(1);

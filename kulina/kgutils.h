@@ -8,8 +8,8 @@ int ProcessSkip(int pip0,int pip1,int Pid) ;
 int ProcessToPipe(int pip0,int pip1,int Pid) ;
 void *RunMonitorJoin(void *arg);
 void *Runmonitor(void *arg);
-void *RunAndMonitor(void *arg);
-void *RunMonitorAndWait(void *arg);
+int RunAndMonitor(char  *arg);
+int RunMonitorAndWait(char *arg);
 int RunAndWait(char * job);
 int MakeNewFileName(char *infile,char *outfile);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
@@ -26,5 +26,14 @@ int GetVideoInfo(char *flname); // Info in Minfo
 int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs);
 int ChangeVideoSize(char *infile,char *outfile,int Xres,int Yres);
 int ChangeVideoFrate(char *infile,char *outfile,int fs);
+int ConverToLibx265(char *infile,char *outfile);
+int ConverToLibx264(char *infile,char *outfile);
+int OverlayVideos(char *base,char *olay,char *outfile);
+int OverlayToSize(int Bxres,int Byres,float fps,char *olay,char *outfile) ;
+int CreateStillVideo(char *infile,float duration,float fps,char *outfile);
+int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile);
+int GetFirstFrame(char *infile,char *outfile) ;
+int JoinTwoVideos(char *infile1,char *infile2,char *outfile);
+int AddStillAtStart(char *infile,float  duration,char *outfile);
 #endif
 

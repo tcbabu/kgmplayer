@@ -3953,10 +3953,10 @@ char *MakeTmpFolder(void) {
     char Folder[500];
     char *pt;
     int id=1;
-    sprintf(Folder,"%-s/%-d_%-3d",getenv("HOME"),getpid());
+    sprintf(Folder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
     while(FileStat(Folder)) {
       id++;
-      sprintf(Folder,"%-s/%-d_%-3d",getenv("HOME"),getpid());
+      sprintf(Folder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
     }
     mkdir(Folder,0700);
     pt = (char *)malloc(strlen(Folder)+1);

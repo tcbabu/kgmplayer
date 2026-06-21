@@ -1,5 +1,9 @@
 #include <kulina.h>
+#include "mediainfo.h"
+#include "kgutils.h"
 #include "OverlayCallbacks.h"
+#include <math.h>
+
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int FileStat(char *flname);
 int kgffmpeg(int,char **);
@@ -10,9 +14,9 @@ int ProcessPrint(int pip0,int pip1,int Pid);
 int MakeNewFileName(char *Infile,char *OutFile);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int GetFolderName(char *infile,char *folder);
-int RunAndMonitor(char *);
 int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
 
+extern MEDIAINFO Minfo;
 
 static void *Args=NULL,*Rets=NULL;
 
@@ -37,7 +41,6 @@ static MODINTERFACE ModFuns[] = {
     (MODINTERFACE) NULL 
 };
 static Dlink *ModuleList=NULL;
-
  /* Callback for  OLYinput1   */ 
 
 int OverlayOLYinput1callback(int cellno,int i,void *Tmp) {
