@@ -435,6 +435,7 @@ int JoinToMp4( CONVDATA *cn)  {
   char Vtype[50];
   char Tmpfile[500];
   char command[10000],File[500],options[5000],Fifo[500],Qstr[100];
+  int Fcover=1;
   Cn= *cn;
   Audio =1;
   L = (Dlink *)Cn.Vlist;
@@ -506,7 +507,7 @@ int JoinToMp4( CONVDATA *cn)  {
             mpt->Axres,mpt->Ayres,strcmp(Vtype,mpt->vcodectype),mpt->SAR,mpt->DAR);
       write(Jpipe[1],options,strlen(options));
       sprintf(Tmpfile,"%-s/F%-4.4d.mp4",Folder,id);
-#if 1
+      if(Fcover) {
 	if(mpt->Process) {
           if(Audio) {
 //           sprintf(command,"ffmegfun -probesize 50M  -analyzeduration 10000000 -r %-7.3f -i \"%s\" -f mp4 "
@@ -536,10 +537,11 @@ int JoinToMp4( CONVDATA *cn)  {
 	}  // else mpt->process
         sprintf(options,"Processing %-s\n",mpt->Flname);
         write(Jpipe[1],options,strlen(options));
-        runfunction(command,ProcessToPipe,kgffmpeg);
-#else
+        runfunction(command,ProcessToPipe,ffmpegfun);
+       }
+       else {
         OverlayToSize(Cn.Xsize,Cn.Ysize,(float)Cn.fps,mpt->Flname,Tmpfile);
-#endif
+       }
         fprintf(myl,"file \'%-s/F%-4.4d.mp4\'\n",Folder,id);
         sprintf(options,"%-s/F%-4.4d.mp4\n",Folder,id);
         write(Jpipe[1],options,strlen(options));
@@ -580,7 +582,7 @@ int JoinToMp4( CONVDATA *cn)  {
         printf("\n\n\n\n%s\n\n\n",command);
      runfunction(command,ProcessToPipe,ffmpegfun);
 //     runfunction(command,ProcessPrint,ffmpegfun);
-//     kgCleanDir(Folder);
+     if(Fcover)  kgCleanDir(Folder);
      strcpy(options,"Joinded Video Files\n");
      write(Jpipe[1],options,strlen(options));
      close(Jpipe[1]);
@@ -589,7 +591,7 @@ int JoinToMp4( CONVDATA *cn)  {
   else {
      waitpid(pid,&status,0);
      sprintf(Folder,"%-s/%-d",getenv("HOME"),pid);
-//     if(FileStat(Folder)) kgCleanDir(Folder);
+     if(Fcover)     if(FileStat(Folder)) kgCleanDir(Folder);
   }
 }
  
