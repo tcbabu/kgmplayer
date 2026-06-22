@@ -24,7 +24,11 @@ int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs)
   sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,setsar=1,fps=%-d\" "
        " -crf 18  -preset medium -c:v libx264 %s",
        infile,(Xres/2)*2,(Yres/2)*2,fs,outfile);
-  runfunction(buff,NULL,ffmpegfun);
+  printf("%s\n",buff);
+  fflush(stdout);
+  sleep(20);
+  runfunction(buff,ProcessPrint,ffmpegfun);
+ //  RunString(buff,ffmpegfun);
   return 1;
 }
 int ChangeVideoSize(char *infile,char *outfile,int Xres,int Yres){
@@ -32,7 +36,7 @@ int ChangeVideoSize(char *infile,char *outfile,int Xres,int Yres){
   sprintf(buff,"ffmpegfun -y  -i %s -f mp4 -vf \"scale=%d:%d:flags=lanczos,setsar=1\" "
        " -crf 18  -preset medium -c:v libx264 %s",
        infile,(Xres/2)*2,(Yres/2)*2,outfile);
-  runfunction(buff,NULL,ffmpegfun);
+  runfunction(buff,ProcessPrint,ffmpegfun);
   return 1;
 }
 int ChangeVideoFrate(char *infile,char *outfile,int fs){
@@ -40,7 +44,7 @@ int ChangeVideoFrate(char *infile,char *outfile,int fs){
   sprintf(buff,"ffmpegfun -y  -i %s -vf \"fps=%-d\" "
        " -crf 18   -preset medium -c:v libx264 %s",
        infile,fs,outfile);
-  runfunction(buff,NULL,ffmpegfun);
+  runfunction(buff,ProcessPrint,ffmpegfun);
   return 1;
 }
 int ConvertToLibx265(char *infile,char *outfile){
@@ -48,7 +52,7 @@ int ConvertToLibx265(char *infile,char *outfile){
   sprintf(buff,"ffmpegfun -y  -i %s -f mp4"
        " -crf 20  -preset medium -c:v libx265 %s",
        infile,outfile);
-  runfunction(buff,NULL,ffmpegfun);
+  runfunction(buff,ProcessPrint,ffmpegfun);
   return 1;
 }
 int ConvertToLibx264(char *infile,char *outfile){
@@ -56,7 +60,7 @@ int ConvertToLibx264(char *infile,char *outfile){
   sprintf(buff,"ffmpegfun -y  -i %s -f mp4"
        " -crf 18  -preset medium -c:v libx264 %s",
        infile,outfile);
-  runfunction(buff,NULL,ffmpegfun);
+  runfunction(buff,ProcessPrint,ffmpegfun);
   return 1;
 }
 
@@ -71,13 +75,15 @@ int OverlayVideos(char *base,char *olay,char *outfile) {
   int xloc,yloc;
   MEDIAINFO *mpt;
   char Bvcodec[30],Ovcodec[30];
-  char Tmp1[200],Tmp2[200],Tmp3[200],Otmp[200],Btmp[200];
+  char Tmp1[300],Tmp2[300],Tmp3[300],Otmp[200],Btmp[200];
   char buff[500];
   char Tfolder[300],Err[400];
   int Fstat=1;
   sprintf(Tfolder,"%-s/%-d",getenv("HOME"),getpid());
   if(!FileStat(Tfolder)) {
     mkdir(Tfolder,0700);
+    printf("Created: %s\n",Tfolder);
+    sleep(5);
     Fstat=0;
   }
   printf("Inside OverlayVideos\n");
@@ -95,7 +101,11 @@ int OverlayVideos(char *base,char *olay,char *outfile) {
   mpt= NULL;
   if ((strcmp(Bvcodec,"h264") != 0)) {
      MakeFileInFolder(base,Tfolder,Btmp,"mp4");
+     printf("Calling Libx264 %s %s\n",base,Btmp);
+     fflush(stdout);
      ConvertToLibx264(base,Btmp);
+     printf("Created: %s\n",Btmp);
+     fflush(stdout);
      mpt = GetMediaInfo(Btmp);
      if(mpt->Video != 1) return 0;
      Bxres =mpt->Axres;
@@ -122,6 +132,8 @@ int OverlayVideos(char *base,char *olay,char *outfile) {
   if( (Oxres > Bxres )||( fabsf(Bfps -Ofps)> 1)){
 
      MakeFileInFolder(olay,Tfolder,Tmp1,"mp4");
+     printf("ChangeVideoSizeAndFrate\n");
+     fflush(stdout);
      ChangeVideoSizeAndFrate(Otmp,Tmp1,Bxres,-2,(int)(Bfps+0.5));
      strcpy(Otmp,Tmp1);
      mpt = GetMediaInfo(Otmp);
@@ -170,8 +182,8 @@ int OverlayVideos(char *base,char *olay,char *outfile) {
        Btmp,Otmp,xloc,yloc,outfile);
   printf("buff : %s\n",buff);
   fflush(stdout);
-  runfunction(buff,NULL,ffmpegfun);
-  if(Fstat==0) kgCleanDir(Tfolder);
+  runfunction(buff,ProcessPrint,ffmpegfun);
+//  if(Fstat==0) kgCleanDir(Tfolder);
 #if 0
   if(Tmp1[0] != '\0') remove(Tmp1);
   if(Tmp3[0] != '\0') remove(Tmp2);
@@ -197,6 +209,8 @@ int OverlayToSize(int Bxres,int Byres,float fs,char *olay,char *outfile) {
   sprintf(Tfolder,"%-s/%-d",getenv("HOME"),getpid());
   if(!FileStat(Tfolder)) {
     mkdir(Tfolder,0700);
+    printf ("Created : %s\n",Tfolder);
+    sleep(5);
     Fstat=0;
   }
   MakeFileInFolder("/Blank.mp4",Tfolder,Tmpfile,"mp4");
@@ -217,7 +231,7 @@ int OverlayToSize(int Bxres,int Byres,float fs,char *olay,char *outfile) {
   OverlayVideos(Tmpfile,olay,outfile);
   printf("OverlayVideos: %s\n",outfile);
   fflush(stdout);
-  if(Fstat==0) kgCleanDir(Tfolder);
+//  if(Fstat==0) kgCleanDir(Tfolder);
   return 1;
 }
 int CreateStillVideo(char *infile,float duration,float fps,char *outfile) {
@@ -234,6 +248,8 @@ int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile)
   sprintf(folder,"%-s/%-d",getenv("HOME"),getpid());
   if(!FileStat(folder)) {
     mkdir(folder,0700);
+    printf("Created: %s\n",folder);
+    sleep(5);
     Fstat=0;
   }
     MakeFileInFolder(outfile,folder,Infile,"png");
@@ -247,11 +263,12 @@ int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile)
       Infile,duration,fps,outfile);
     printf("%s\n",buff);
     fflush(stdout);
-    runfunction(buff,NULL,ffmpegfun);
+//    runfunction(buff,NULL,ffmpegfun);
+    RunString(buff,ffmpegfun);
     if(FileStat(outfile))printf("created BLANK VIDEO: %s  sleeping..\n",outfile);
     else printf("Failed tp create %s\n",outfile);
     fflush(stdout);
-    if(Fstat==0) kgCleanDir(folder);
+//    if(Fstat==0) kgCleanDir(folder);
 //    sleep(2);
     return 1;
 }

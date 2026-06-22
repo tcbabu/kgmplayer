@@ -439,6 +439,17 @@ int JoinToMp4( CONVDATA *cn)  {
   Audio =1;
   L = (Dlink *)Cn.Vlist;
   Resetlink(L);
+  if(Fcover==0) {
+    if ( (mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
+        MakeNewFileName(mpt->Flname,Tmpfile);
+        printf("Processing %s to %s\n",mpt->Flname,Tmpfile);
+        OverlayToSize(Cn.Xsize,Cn.Ysize,(float)Cn.fps,mpt->Flname,Tmpfile);
+        GetVideoInfo(Tmpfile);
+        *mpt = Minfo;
+        printf("Processed %s to %s\n",mpt->Flname,Tmpfile);
+    }
+  }
+  Resetlink(L);
   if ( (mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
       strcpy(Vtype,mpt->vcodectype);
   }
@@ -506,8 +517,7 @@ int JoinToMp4( CONVDATA *cn)  {
             mpt->Axres,mpt->Ayres,strcmp(Vtype,mpt->vcodectype),mpt->SAR,mpt->DAR);
       write(Jpipe[1],options,strlen(options));
       sprintf(Tmpfile,"%-s/F%-4.4d.mp4",Folder,id);
-      if(Fcover) {
-	if(mpt->Process) {
+      if(mpt->Process) {
           if(Audio) {
 //           sprintf(command,"ffmegfun -probesize 50M  -analyzeduration 10000000 -r %-7.3f -i \"%s\" -f mp4 "
            sprintf(command,"ffmegfun   -analyzeduration 10000000  -i \"%s\" -f mp4 "
@@ -537,18 +547,6 @@ int JoinToMp4( CONVDATA *cn)  {
         sprintf(options,"Processing %-s\n",mpt->Flname);
         write(Jpipe[1],options,strlen(options));
         runfunction(command,ProcessToPipe,ffmpegfun);
-       }
-       else {
-        OverlayToSize(Cn.Xsize,Cn.Ysize,(float)Cn.fps,mpt->Flname,Tmpfile);
-        if (!FileStat(Tmpfile)) {
-            sprintf(options,"!c02Failed to create %-s\n",Tmpfile);
-            write(Jpipe[1],options,strlen(options));
-        }
-        else {
-            sprintf(options,"!c01created: %-s\n",Tmpfile);
-            write(Jpipe[1],options,strlen(options));
-        }
-       }
         fprintf(myl,"file \'%-s/F%-4.4d.mp4\'\n",Folder,id);
         sprintf(options,"%-s/F%-4.4d.mp4\n",Folder,id);
         write(Jpipe[1],options,strlen(options));
