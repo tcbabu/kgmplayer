@@ -544,6 +544,10 @@ int JoinToMp4( CONVDATA *cn)  {
             sprintf(options,"!c02Failed to create %-s\n",Tmpfile);
             write(Jpipe[1],options,strlen(options));
         }
+        else {
+            sprintf(options,"!c01created: %-s\n",Tmpfile);
+            write(Jpipe[1],options,strlen(options));
+        }
        }
         fprintf(myl,"file \'%-s/F%-4.4d.mp4\'\n",Folder,id);
         sprintf(options,"%-s/F%-4.4d.mp4\n",Folder,id);
@@ -584,17 +588,17 @@ int JoinToMp4( CONVDATA *cn)  {
 #endif
         printf("\n\n\n\n%s\n\n\n",command);
      runfunction(command,ProcessToPipe,ffmpegfun);
-//     runfunction(command,ProcessPrint,ffmpegfun);
-     if(Fcover)  kgCleanDir(Folder);
+     kgCleanDir(Folder);
      strcpy(options,"Joinded Video Files\n");
      write(Jpipe[1],options,strlen(options));
      close(Jpipe[1]);
+     close(Jstat[0]);
      exit(0);
   }
   else {
      waitpid(pid,&status,0);
      sprintf(Folder,"%-s/%-d",getenv("HOME"),pid);
-     if(Fcover)     if(FileStat(Folder)) kgCleanDir(Folder);
+     if(FileStat(Folder)) kgCleanDir(Folder);
   }
 }
  

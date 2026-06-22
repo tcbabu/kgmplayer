@@ -22,7 +22,7 @@ extern MEDIAINFO Minfo;
 int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs){
   char buff[500];
   sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,setsar=1,fps=%-d\" "
-       " -crf 20  -preset medium -c:v libx265 %s",
+       " -crf 18  -preset medium -c:v libx264 %s",
        infile,(Xres/2)*2,(Yres/2)*2,fs,outfile);
   runfunction(buff,NULL,ffmpegfun);
   return 1;
@@ -30,7 +30,7 @@ int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs)
 int ChangeVideoSize(char *infile,char *outfile,int Xres,int Yres){
   char buff[500];
   sprintf(buff,"ffmpegfun -y  -i %s -f mp4 -vf \"scale=%d:%d:flags=lanczos,setsar=1\" "
-       " -crf 20  -preset medium -c:v libx265 %s",
+       " -crf 18  -preset medium -c:v libx264 %s",
        infile,(Xres/2)*2,(Yres/2)*2,outfile);
   runfunction(buff,NULL,ffmpegfun);
   return 1;
@@ -38,7 +38,7 @@ int ChangeVideoSize(char *infile,char *outfile,int Xres,int Yres){
 int ChangeVideoFrate(char *infile,char *outfile,int fs){
   char buff[500];
   sprintf(buff,"ffmpegfun -y  -i %s -vf \"fps=%-d\" "
-       " -crf 20  -preset medium -c:v libx265 %s",
+       " -crf 18   -preset medium -c:v libx264 %s",
        infile,fs,outfile);
   runfunction(buff,NULL,ffmpegfun);
   return 1;
@@ -93,7 +93,7 @@ int OverlayVideos(char *base,char *olay,char *outfile) {
   strcpy(Btmp,base);
   free(mpt);
   mpt= NULL;
-  if ((strcmp(Bvcodec,"h264") != 0)&&(strcmp(Bvcodec,"h265")!= 0)) {
+  if ((strcmp(Bvcodec,"h264") != 0)) {
      MakeFileInFolder(base,Tfolder,Btmp,"mp4");
      ConvertToLibx264(base,Btmp);
      mpt = GetMediaInfo(Btmp);
@@ -148,7 +148,7 @@ int OverlayVideos(char *base,char *olay,char *outfile) {
      mpt = NULL;
   }   
   Tmp3[0]='\0';  
-  if ((strcmp(Ovcodec,"h264") != 0)&&(strcmp(Ovcodec,"h265")!= 0) ){
+  if ((strcmp(Ovcodec,"h264") != 0)){
 //     MakeNewFileName(olay,Tmp3);
      MakeFileInFolder(olay,Tfolder,Tmp3,"mp4");
      ConvertToLibx264(Otmp,Tmp3);
@@ -224,7 +224,6 @@ int CreateStillVideo(char *infile,float duration,float fps,char *outfile) {
     char buff[500];
     sprintf(buff,"ffmpegfun  -y  -loop 1 -i %s  -t %.2f -f mp4  -vf fps=%-.3f -vcodec libx264  %s",
       infile,duration,fps,outfile);
-//    RunMonitorAndWait(buff);
     runfunction(buff,NULL,ffmpegfun);
     return 1;
 }
@@ -248,8 +247,7 @@ int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile)
       Infile,duration,fps,outfile);
     printf("%s\n",buff);
     fflush(stdout);
-    RunMonitorAndWait(buff);
-//    runfunction(buff,NULL,ffmpegfun);
+    runfunction(buff,NULL,ffmpegfun);
     if(FileStat(outfile))printf("created BLANK VIDEO: %s  sleeping..\n",outfile);
     else printf("Failed tp create %s\n",outfile);
     fflush(stdout);
@@ -269,7 +267,7 @@ int JoinTwoVideos(char *infile1,char *infile2,char *outfile){
    sprintf (buff,"ffmpegfun -y -i %s -i %s -filter_complex "
       "\"[0:v][1:v]concat=n=2:v=1[outv]\" -map \"[outv]\" %s",
       infile1,infile2,outfile);
-   RunMonitorAndWait(buff);
+   RunAndWait(buff);
    return 1;
 }
 int AddStillAtStart(char *infile,float  duration,char *outfile) {

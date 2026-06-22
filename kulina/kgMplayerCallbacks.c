@@ -1551,6 +1551,8 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
         kill(pid,9);
      }
      waitpid(pid,&status,0);
+     close(pip[0]);
+     close(pip2[1]);
      return ret;
    }
 }
@@ -1637,6 +1639,8 @@ int RunFunction(char *job,int (*ProcessOut)(void *,int,int,int),
         kill(pid,9);
      }
      waitpid(pid,&status,0);
+     close(pip2[1]);
+     close(pip[0]);
      return ret;
    }
 #else
@@ -3966,6 +3970,8 @@ int RunAndMonitor(char * job)  {
      RunMonitorJoin(NULL);
      kill(pid,9);
      waitpid(pid,&status,0);
+     close(Jpipe[0]);
+     close(Jstat[1]);
      exit(0);
   }
 }
@@ -4003,6 +4009,8 @@ int RunMonitorAndWait(char * job)  {
      RunMonitorJoin(NULL);
      kill(pid,9);
      waitpid(pid,&status,0);
+     close(Jpipe[0]);
+     close(Jstat[1]);
   }
   return 1;
 }
