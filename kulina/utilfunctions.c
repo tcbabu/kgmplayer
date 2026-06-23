@@ -20,11 +20,25 @@ int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
 extern MEDIAINFO Minfo;
 
 
-int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs){
+int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs,int Qty){
   char buff[500];
+  char Qstr[200];
+  switch(Qty) {
+       case 1:
+         sprintf(Qstr," -crf 20 -preset medium ");
+         break;
+       case 2:
+         sprintf(Qstr," -crf 22  -preset fast ");
+         break;
+       case 3:
+       default:
+         sprintf(Qstr," -crf 24  -preset fast ");
+         break;
+   
+  }
   sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,setsar=1,fps=%-d\" "
-       " -crf 18  -preset medium -c:v libx264 %s",
-       infile,(Xres/2)*2,(Yres/2)*2,fs,outfile);
+       " %s  -c:v libx264 %s",
+       infile,(Xres/2)*2,(Yres/2)*2,fs,Qstr,outfile);
   printf("%s\n",buff);
   fflush(stdout);
 //  sleep(20);
@@ -32,40 +46,96 @@ int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs)
  //  RunString(buff,ffmpegfun);
   return 1;
 }
-int ChangeVideoSize(char *infile,char *outfile,int Xres,int Yres){
+int ChangeVideoSize(char *infile,char *outfile,int Xres,int Yres,int Qty){
   char buff[500];
+  char Qstr[200];
+  switch(Qty) {
+       case 1:
+         sprintf(Qstr," -crf 20 -preset medium ");
+         break;
+       case 2:
+         sprintf(Qstr," -crf 22  -preset fast ");
+         break;
+       case 3:
+       default:
+         sprintf(Qstr," -crf 24  -preset fast ");
+         break;
+   
+  }
   sprintf(buff,"ffmpegfun -y  -i %s -f mp4 -vf \"scale=%d:%d:flags=lanczos,setsar=1\" "
-       " -crf 18  -preset medium -c:v libx264 %s",
-       infile,(Xres/2)*2,(Yres/2)*2,outfile);
+       " %s  -c:v libx264 %s",
+       infile,(Xres/2)*2,(Yres/2)*2,Qstr,outfile);
   runfunction(buff,ProcessPrint,ffmpegfun);
   return 1;
 }
-int ChangeVideoFrate(char *infile,char *outfile,int fs){
+int ChangeVideoFrate(char *infile,char *outfile,int fs,int Qty){
   char buff[500];
+  char Qstr[200];
+  switch(Qty) {
+       case 1:
+         sprintf(Qstr," -crf 20 -preset medium ");
+         break;
+       case 2:
+         sprintf(Qstr," -crf 22  -preset fast ");
+         break;
+       case 3:
+       default:
+         sprintf(Qstr," -crf 24  -preset fast ");
+         break;
+   
+  }
   sprintf(buff,"ffmpegfun -y  -i %s -vf \"fps=%-d\" "
-       " -crf 18   -preset medium -c:v libx264 %s",
-       infile,fs,outfile);
+       " %s  -c:v libx264 %s",
+       infile,fs,Qstr,outfile);
   runfunction(buff,ProcessPrint,ffmpegfun);
   return 1;
 }
-int ConvertToLibx265(char *infile,char *outfile){
+int ConvertToLibx265(char *infile,int Qty,char *outfile){
   char buff[500];
+  char Qstr[200];
+  switch(Qty) {
+       case 1:
+         sprintf(Qstr," -crf 20 -preset medium ");
+         break;
+       case 2:
+         sprintf(Qstr," -crf 22  -preset fast ");
+         break;
+       case 3:
+       default:
+         sprintf(Qstr," -crf 24  -preset fast ");
+         break;
+   
+  }
   sprintf(buff,"ffmpegfun -y  -i %s -f mp4"
-       " -crf 20  -preset medium -c:v libx265 %s",
-       infile,outfile);
+       " %s  -c:v libx265 %s",
+       infile,Qstr,outfile);
   runfunction(buff,ProcessPrint,ffmpegfun);
   return 1;
 }
-int ConvertToLibx264(char *infile,char *outfile){
+int ConvertToLibx264(char *infile,int Qty,char *outfile){
   char buff[500];
+  char Qstr[200];
+  switch(Qty) {
+       case 1:
+         sprintf(Qstr," -crf 18 -preset medium ");
+         break;
+       case 2:
+         sprintf(Qstr," -crf 22  -preset medium ");
+         break;
+       case 3:
+       default:
+         sprintf(Qstr," -crf 24  -preset fast ");
+         break;
+   
+  }
   sprintf(buff,"ffmpegfun -y  -i %s -f mp4"
-       " -crf 18  -preset medium -c:v libx264 %s",
-       infile,outfile);
+       " %s  -c:v libx264 %s",
+       infile,Qstr,outfile);
   runfunction(buff,ProcessPrint,ffmpegfun);
   return 1;
 }
 
-int OverlayVideos(char *base,char *olay,char *outfile) {
+int OverlayVideos(char *base,char *olay,int Qty,char *outfile) {
   /*
      Overlays olay over base, in centralised way
      in case olay is bigger in dimension it will be resize to fit
@@ -103,7 +173,7 @@ int OverlayVideos(char *base,char *olay,char *outfile) {
      MakeFileInFolder(base,Tfolder,Btmp,"mp4");
      printf("Calling Libx264 %s %s\n",base,Btmp);
      fflush(stdout);
-     ConvertToLibx264(base,Btmp);
+     ConvertToLibx264(base,Qty,Btmp);
      printf("Created: %s\n",Btmp);
      fflush(stdout);
      mpt = GetMediaInfo(Btmp);
@@ -134,7 +204,7 @@ int OverlayVideos(char *base,char *olay,char *outfile) {
      MakeFileInFolder(olay,Tfolder,Tmp1,"mp4");
      printf("ChangeVideoSizeAndFrate\n");
      fflush(stdout);
-     ChangeVideoSizeAndFrate(Otmp,Tmp1,Bxres,-2,(int)(Bfps+0.5));
+     ChangeVideoSizeAndFrate(Otmp,Tmp1,Bxres,-2,(int)(Bfps+0.5),Qty);
      strcpy(Otmp,Tmp1);
      mpt = GetMediaInfo(Otmp);
      if(mpt->Video != 1) return 0;
@@ -148,7 +218,7 @@ int OverlayVideos(char *base,char *olay,char *outfile) {
   if( Oyres > Byres ){
 //     MakeNewFileName(olay,Tmp2);
      MakeFileInFolder(olay,Tfolder,Tmp2,"mp4");
-     ChangeVideoSize(Otmp,Tmp2,-2,Byres);
+     ChangeVideoSize(Otmp,Tmp2,-2,Byres,Qty);
      strcpy(Otmp,Tmp2);
      mpt = GetMediaInfo(Otmp);
      if(mpt->Video != 1) return 0;
@@ -163,7 +233,7 @@ int OverlayVideos(char *base,char *olay,char *outfile) {
   if ((strcmp(Ovcodec,"h264") != 0)){
 //     MakeNewFileName(olay,Tmp3);
      MakeFileInFolder(olay,Tfolder,Tmp3,"mp4");
-     ConvertToLibx264(Otmp,Tmp3);
+     ConvertToLibx264(Otmp,Qty,Tmp3);
      strcpy(Otmp,Tmp3);
      mpt = GetMediaInfo(Otmp);
      if(mpt->Video != 1) return 0;
@@ -183,7 +253,7 @@ int OverlayVideos(char *base,char *olay,char *outfile) {
   printf("buff : %s\n",buff);
   fflush(stdout);
   runfunction(buff,ProcessPrint,ffmpegfun);
-//  if(Fstat==0) kgCleanDir(Tfolder);
+  if(Fstat==0) kgCleanDir(Tfolder);
 #if 0
   if(Tmp1[0] != '\0') remove(Tmp1);
   if(Tmp3[0] != '\0') remove(Tmp2);
@@ -227,7 +297,7 @@ int OverlayToSize(int Bxres,int Byres,float fs,int Qty,char *olay,char *outfile)
   
   printf("Calling OverlayVideos\n");
   fflush(stdout);
-  OverlayVideos(Tmpfile,olay,outfile);
+  OverlayVideos(Tmpfile,olay,Qty,outfile);
   printf("OverlayVideos: %s\n",outfile);
   fflush(stdout);
 //  if(Fstat==0) kgCleanDir(Tfolder);

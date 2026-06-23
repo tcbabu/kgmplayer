@@ -314,12 +314,12 @@ TOOLGRP ToolList[ ] = {
        "FILE EXTENSION decides the output format,\n"
        " so give a valid extension\n"
   },
-  { 0, MakeBoverlayGroup,"!f23Overlay Video over Blank", 346,40,RunHelper,0,
-       "Boverlays Video on BLANK AREA of specified resolution.\n"
-       "The video will be centralised after resize,"
+  { 0, MakeBoverlayGroup,"!f23Overlay Video over Blank Area", 346,40,RunHelper,0,
+       "Overlays Video on BLANK AREA of specified resolution.\n"
+       "The video will be centralised after resize,\n"
        " keeping the orignal aspectratio \n"
-       "The tool may be useful among other purpose, "
-       " join videos without ant distortion"
+       "The tool may be useful for among other purpose,\n "
+       " for joining  videos without any distortion\n"
        "It may be better to extract and process audios and\n"
        "  add to the procssed video later.\n"
   },

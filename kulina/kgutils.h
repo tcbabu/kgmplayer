@@ -24,12 +24,12 @@ int GetLine(int pip0,char *buff);
 int CheckMedia(char *flname);
 int GetVideoInfo(char *flname); // Info in Minfo
 //MEDIAINFO *GetMediaInfo(char *flname);
-int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs);
-int ChangeVideoSize(char *infile,char *outfile,int Xres,int Yres);
-int ChangeVideoFrate(char *infile,char *outfile,int fs);
-int ConverToLibx265(char *infile,char *outfile);
-int ConverToLibx264(char *infile,char *outfile);
-int OverlayVideos(char *base,char *olay,char *outfile);
+int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs,int Qty);
+int ChangeVideoSize(char *infile,char *outfile,int Xres,int Yres,int Qty);
+int ChangeVideoFrate(char *infile,char *outfile,int fs,int Qty);
+int ConverToLibx265(char *infile,int Qty,char *outfile);
+int ConverToLibx264(char *infile,int Qty,char *outfile);
+int OverlayVideos(char *base,char *olay,int Qty,char *outfile);
 int OverlayToSize(int Bxres,int Byres,float fps,int Qty,char *olay,char *outfile) ;
 int CreateStillVideo(char *infile,float duration,float fps,char *outfile);
 int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile);
