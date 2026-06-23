@@ -117,6 +117,8 @@ int BoverlayOBgocallback( int butno,int i,void *Tmp) {
   DIALOG *D;DIL *B; 
   int n,ret=1; 
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+  int Qty;
+  float fps;
 // pt[0] is args passed as inputs; pt[1] is output pointer
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
@@ -124,18 +126,22 @@ int BoverlayOBgocallback( int butno,int i,void *Tmp) {
   DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"OBRes");
   DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"OBinput");
   DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"OBout");
+  DIT *TR=(DIT *)kgGetNamedWidget(Tmp,(char *)"OBFps");
+  DIRA *RA=(DIRA *)kgGetNamedWidget(Tmp,(char *)"OBQty");
   char buff[500];
   int Xres,Yres;
   Xres = kgGetInt(T,0);
   Yres = kgGetInt(T,1);
+  fps = kgGetDouble(TR,0);
+  Qty = kgGetSelection(RA);
   DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"OBIbox");
-  sprintf (buff,"Xres : %d Yres :%d\n",Xres,Yres);
+  sprintf (buff,"Xres : %d Yres :%d fps=%-.2f \n",Xres,Yres,fps);
   kgWrite(I,buff);
   ret =0;
   sprintf (buff,"Calling OverlayTosize for %s to %s\n",
             kgGetString(TI,0),kgGetString(TO,0));
   kgWrite(I,buff);
-  OverlayToSize(Xres,Yres,24,kgGetString(TI,0),kgGetString(TO,0));
+  OverlayToSize(Xres,Yres,fps,Qty,kgGetString(TI,0),kgGetString(TO,0));
   switch(butno) {
     case 1: //  Go... 
       break;
@@ -230,6 +236,16 @@ int BoverlaySetup(void *Tmp,void *args) {
    ***********************************/ 
   /* you add any initialisation here */
   /* useful for setting is used as MakeGroup */
+  void **Apt= (void **)args;
+  int  *ipt;
+  double *fpt;
+  ipt = (int *)Apt[2];
+  *ipt = 600;
+  ipt = (int *)Apt[3];
+  *ipt = 800;
+  fpt = (double *)Apt[4];
+  *fpt = 24;
+
   return 1;
 }
  
@@ -320,6 +336,25 @@ int BoverlayOBFpscallback(int cellno,int i,void *Tmp) {
   T = (DIT *)kgGetWidget(Tmp,i);
   e = T->elmt;
   return ret;
+}
+int BoverlayOBQtycallback(int item,int i,void *Tmp) {
+  /*********************************** 
+    item : selected item (1 to max_item)  not any specific relevence
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIRA *R;DIALOG *D; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  ThumbNail **th; 
+  int ret=1; 
+  D = (DIALOG *)Tmp;
+  R = (DIRA *)kgGetWidget(Tmp,i);
+  th = (ThumbNail **) R->list;
+  return ret;
+}
+void  BoverlayOBQtyinit (DIRA *R,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
 }
 int Boverlayinit(void *Tmp) {
   /*********************************** 

@@ -30,7 +30,7 @@ int ChangeVideoFrate(char *infile,char *outfile,int fs);
 int ConverToLibx265(char *infile,char *outfile);
 int ConverToLibx264(char *infile,char *outfile);
 int OverlayVideos(char *base,char *olay,char *outfile);
-int OverlayToSize(int Bxres,int Byres,float fps,char *olay,char *outfile) ;
+int OverlayToSize(int Bxres,int Byres,float fps,int Qty,char *olay,char *outfile) ;
 int CreateStillVideo(char *infile,float duration,float fps,char *outfile);
 int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile);
 int GetFirstFrame(char *infile,char *outfile) ;

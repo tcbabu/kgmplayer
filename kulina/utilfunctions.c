@@ -192,7 +192,7 @@ int OverlayVideos(char *base,char *olay,char *outfile) {
 #endif  
   return 1;
 }
-int OverlayToSize(int Bxres,int Byres,float fs,char *olay,char *outfile) {
+int OverlayToSize(int Bxres,int Byres,float fs,int Qty,char *olay,char *outfile) {
   /*
      Overlays olay over base, in centralised way
      in case olay is bigger in dimension it will be resize to fit

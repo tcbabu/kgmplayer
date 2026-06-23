@@ -62,8 +62,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   butn2[0].butncode=31;
   DIL h2 = { 
     'h',
-    176,321,  
-    318,351,
+    174,348,  
+    316,378,
     2,0,  
     132, 
     25, 
@@ -77,9 +77,9 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   h2.item = -1;
   DII i3 = { 
     'i',
-    8,163,  
-    483,310,  
-    51,6,0   
+    9,244,  
+    485,340,  
+    51,4,0   
   };
   strcpy(i3.Wid,(char *)"OBIbox");
   i3.item = -1;
@@ -114,7 +114,7 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
   butn5[0].bkgr=-1;
-  butn5[0].butncode=31;
+  butn5[0].butncode=15198078;
   DIN b5 = { 
     'n',
     385,62,  
@@ -168,12 +168,76 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   strncpy(m7.msg,(char *)"Backgrond Resolution",499);
   strcpy(m7.Wid,(char *)"OBMsg");
   m7.item = -1;
+  T_ELMT *e8  ; 
+  e8 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
+  e8[0].fmt = (char *)malloc(14);
+  strcpy(e8[0].fmt,(char *)"Frame Rate%8F");
+  e8[0].v=(void *)v[4];
+  e8[0].sw=1;
+  e8[0].noecho=0;
+  e8[0].img=NULL;
+  DIT t8 = { 
+    't',
+    140,166,  
+    355,200,
+    20, 
+    1,1, 
+    e8,
+    1,1,
+    NULL,BoverlayOBFpscallback ,0 ,0,18,9 
+  };
+    /* *args,Callback,border,hide,font,fontsize */
+  strcpy(t8.Wid,(char *)"OBFps");
+  t8.pt=NULL;
+  t8.type = 0;
+  t8.item = -1;
+  char *menu9[]  = { 
+    (char *)"Very Good",
+    (char *)"Good",
+    (char *)"Medium",
+    NULL 
+  };
+  ThumbNail **th0 ;
+  DIRA r9 = { 
+    'r',
+    130,210,  
+    473,238,   
+    8,0,  
+    100, 
+    23, 
+    1,3, 
+    0,1, 
+    (int *)v[5], 
+    NULL, 
+    NULL ,
+    NULL,BoverlayOBQtycallback , /* *args, Callback  */
+    1,  /* Border Offset  */
+     2,  /* Scroll width  */
+     0,  /* Type  */
+     0, /* item highlight */
+    0, /* bordr */
+    0, /* bkgr */
+    0  /*=1 hide  */
+   };
+  th0 = (ThumbNail **)kgStringToThumbNails((char **)menu9);
+  r9.list=(void **)th0;
+  strcpy(r9.Wid,(char *)"OBQty");
+  r9.item = -1;
+  DIM m10 = { 
+    'm',
+    26,213,  
+    126,237,  
+    1,0  
+  };
+  strncpy(m10.msg,(char *)"Quality",499);
+  strcpy(m10.Wid,(char *)"OBQty");
+  m10.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+9));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+12));
   d =dtmp+i; 
-  d[8].t=NULL;
+  d[11].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
@@ -201,7 +265,17 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   d[7].t = (DIT *)malloc(sizeof(DIM));
   *d[7].m = m7;
   d[7].m->item = -1;
-  d[8].t = NULL;
+  d[8].t = (DIT *)malloc(sizeof(DIT));
+  *d[8].t = t8;
+  d[8].t->item = -1;
+  d[9].t = (DIT *)malloc(sizeof(DIRA));
+  *d[9].r = r9;
+  d[9].r->item = -1;
+  BoverlayOBQtyinit(d[9].r,pt) ;
+  d[10].t = (DIT *)malloc(sizeof(DIM));
+  *d[10].m = m10;
+  d[10].m->item = -1;
+  d[11].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -219,6 +293,8 @@ int MakeBoverlayGroup(DIALOG *D,void *arg) {
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  2 data values
+    Text_Box4  1 data values
+    RadioButtons1  1 data value
 
 *************************************************/
    char  *v0 ;
@@ -233,12 +309,20 @@ int MakeBoverlayGroup(DIALOG *D,void *arg) {
    int  *v3 ;
    v3 = (int *)malloc(sizeof(int));
    *v3 = 1;
-   void** v=(void **)malloc(sizeof(void*)*5);
-   v[4]=NULL;
+   double *v4 ;
+   v4 = (double *)malloc(sizeof(double));
+   *v4 = 0.0;
+   int  *v5 ;
+   v5 = (int *)malloc(sizeof(int));
+   *v5 = 1;
+   void** v=(void **)malloc(sizeof(void*)*7);
+   v[6]=NULL;
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
    v[3]=(void *)(v3);
+   v[4]=(void *)(v4);
+   v[5]=(void *)(v5);
    void *pt=NULL; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    GrpId = BoverlayGroup(D,v,pt);
@@ -264,15 +348,15 @@ int Boverlay( void *parent,void **v,void *pt) {
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 6;
+  D.df = 9;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
   D.rw = 4;
   D.xo = 828;   /* Position of Dialog */ 
   D.yo = 148;
-  D.xl = 494;    /*  Length of Dialog */
-  D.yl = 374;    /*  Width  of Dialog */
+  D.xl = 490;    /*  Length of Dialog */
+  D.yl = 389;    /*  Width  of Dialog */
   D.Initfun = Boverlayinit;    /*   init fuction for Dialog */
   D.Cleanupfun = Boverlaycleanup;    /*   cleanup fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
@@ -330,17 +414,23 @@ void *RunBoverlay(void *parent ,void *args) {
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  2 data values
+    Text_Box4  1 data values
+    RadioButtons1  1 data value
 
 *************************************************/
    char  v0[500]="" ;
    char  v1[500]="" ;
    int   v2 = 1;
    int   v3 = 1;
-   void* v[4];
+   double v4 = 0.0;
+   int   v5 = 1;
+   void* v[6];
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(&v2);
    v[3]=(void *)(&v3);
+   v[4]=(void *)(&v4);
+   v[5]=(void *)(&v5);
    void *pt[2]={NULL,NULL}; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    pt[0]=args;
