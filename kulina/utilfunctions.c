@@ -254,9 +254,15 @@ int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile)
     MakeFileInFolder(outfile,folder,Infile,"png");
     printf("Image: %s : %s %f %f \n",Infile,outfile,duration,fps);
     fflush(stdout);
+#if 0
     void *img=kgInitImage(Xsize,Ysize,1);
     kgWriteImage(kgGetResizedImage(img),Infile);
     kgCloseImage(img);
+#else
+    void *img= kgCreateImage(Xsize,Ysize);
+    kgWriteImage(img,Infile);
+    kgFreeImage(img);
+#endif
     if(FileStat(Infile))printf("Created Image: %s\n",Infile);
     else printf("Failed to Create %s\n",Infile);
     fflush(stdout);
