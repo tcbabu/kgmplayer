@@ -300,7 +300,7 @@ int OverlayToSize(int Bxres,int Byres,float fs,int Qty,char *olay,char *outfile)
   OverlayVideos(Tmpfile,olay,Qty,outfile);
   printf("OverlayVideos: %s\n",outfile);
   fflush(stdout);
-//  if(Fstat==0) kgCleanDir(Tfolder);
+  if(Fstat==0) kgCleanDir(Tfolder);
   return 1;
 }
 int CreateStillVideo(char *infile,float duration,float fps,char *outfile) {
@@ -345,7 +345,7 @@ int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile)
     if(FileStat(outfile))printf("created BLANK VIDEO: %s  sleeping..\n",outfile);
     else printf("Failed tp create %s\n",outfile);
     fflush(stdout);
-//    if(Fstat==0) kgCleanDir(folder);
+    if(Fstat==0) kgCleanDir(folder);
     return 1;
 }
 int GetFirstFrame(char *infile,char *outfile) {
