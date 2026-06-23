@@ -65,6 +65,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 AudioReverse.o AudioReverseCallbacks.o \
 	 topandbottom.o topandbottomCallbacks.o \
 	 Overlay.o OverlayCallbacks.o \
+	 Boverlay.o BoverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \
 	 PicFrame.o PicFrameCallbacks.o \
 	 VR.o VRCallbacks.o \
@@ -144,6 +145,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 AudioReverse.o AudioReverseCallbacks.o \
 	 topandbottom.o topandbottomCallbacks.o \
 	 Overlay.o OverlayCallbacks.o \
+	 Boverlay.o BoverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \
 	 PicFrame.o PicFrameCallbacks.o \
 	 VR.o VRCallbacks.o \
@@ -380,6 +382,10 @@ topandbottom.o		: topandbottom.c
 		 $(CC) -c topandbottom.c
 Overlay.o		: Overlay.c
 		 $(CC) -c Overlay.c
+Boverlay.o		: Boverlay.c
+		 $(CC) -c Boverlay.c
+BoverlayCallbacks.o		: BoverlayCallbacks.c
+		 $(CC) -c BoverlayCallbacks.c
 Crop.o		: Crop.c
 		 $(CC) -c Crop.c
 PicFrame.o		: PicFrame.c

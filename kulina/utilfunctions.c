@@ -1,5 +1,6 @@
 #include <kulina.h>
 #include <math.h>
+#include <sys/stat.h>
 #include "kgutils.h"
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int FileStat(char *flname);
@@ -26,7 +27,7 @@ int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs)
        infile,(Xres/2)*2,(Yres/2)*2,fs,outfile);
   printf("%s\n",buff);
   fflush(stdout);
-  sleep(20);
+//  sleep(20);
   runfunction(buff,ProcessPrint,ffmpegfun);
  //  RunString(buff,ffmpegfun);
   return 1;
@@ -83,7 +84,6 @@ int OverlayVideos(char *base,char *olay,char *outfile) {
   if(!FileStat(Tfolder)) {
     mkdir(Tfolder,0700);
     printf("Created: %s\n",Tfolder);
-    sleep(5);
     Fstat=0;
   }
   printf("Inside OverlayVideos\n");
@@ -210,10 +210,9 @@ int OverlayToSize(int Bxres,int Byres,float fs,char *olay,char *outfile) {
   if(!FileStat(Tfolder)) {
     mkdir(Tfolder,0700);
     printf ("Created : %s\n",Tfolder);
-    sleep(5);
     Fstat=0;
   }
-  MakeFileInFolder("/Blank.mp4",Tfolder,Tmpfile,"mp4");
+  MakeFileInFolder("/tmp/Blank.mp4",Tfolder,Tmpfile,"mp4");
   printf("Tmpfile: %s: %s\n",Tmpfile,olay);
   fflush(stdout);
   mpt = GetMediaInfo(olay);
@@ -242,34 +241,35 @@ int CreateStillVideo(char *infile,float duration,float fps,char *outfile) {
     return 1;
 }
 int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile) {
-    char buff[500],Infile[300], folder[300],Err[300];
-    void *img=kgCreateImage(Xsize,Ysize);
-  int Fstat=1;
-  sprintf(folder,"%-s/%-d",getenv("HOME"),getpid());
-  if(!FileStat(folder)) {
-    mkdir(folder,0700);
-    printf("Created: %s\n",folder);
-    sleep(5);
-    Fstat=0;
-  }
+    char buff[500],Infile[300], folder[300],Tmpfile[300];
+    int Fstat=1;
+    sprintf(folder,"%-s/%-d",getenv("HOME"),getpid());
+    if(!FileStat(folder)) {
+      mkdir(folder,0700);
+      printf("Created: %s\n",folder);
+      sleep(5);
+      Fstat=0;
+    }
+    else printf("Folder %s exists..\n");
     MakeFileInFolder(outfile,folder,Infile,"png");
     printf("Image: %s : %s %f %f \n",Infile,outfile,duration,fps);
     fflush(stdout);
-    kgWriteImage(img,Infile);
+    void *img=kgInitImage(Xsize,Ysize,1);
+    kgWriteImage(kgGetResizedImage(img),Infile);
     kgCloseImage(img);
-    printf("Image: %s\n",Infile);
+    if(FileStat(Infile))printf("Created Image: %s\n",Infile);
+    else printf("Failed to Create %s\n",Infile);
     fflush(stdout);
     sprintf(buff,"ffmpegfun  -y  -loop 1 -i %s  -t %.2f -f mp4 -vf fps=%-.3f -vcodec libx264  %s",
       Infile,duration,fps,outfile);
     printf("%s\n",buff);
     fflush(stdout);
-//    runfunction(buff,NULL,ffmpegfun);
-    RunString(buff,ffmpegfun);
+    runfunction(buff,ProcessPrint,ffmpegfun);
+//    RunString(buff,ffmpegfun);
     if(FileStat(outfile))printf("created BLANK VIDEO: %s  sleeping..\n",outfile);
     else printf("Failed tp create %s\n",outfile);
     fflush(stdout);
 //    if(Fstat==0) kgCleanDir(folder);
-//    sleep(2);
     return 1;
 }
 int GetFirstFrame(char *infile,char *outfile) {

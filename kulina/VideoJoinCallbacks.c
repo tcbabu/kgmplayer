@@ -434,11 +434,12 @@ int JoinToMp4( CONVDATA *cn)  {
   char Vtype[50];
   char Tmpfile[500];
   char command[10000],File[500],options[5000],Fifo[500],Qstr[100];
-  int Fcover=0;
+  int Fcover=1;
   Cn= *cn;
   Audio =1;
   L = (Dlink *)Cn.Vlist;
   Resetlink(L);
+// presently not useful
   if(Fcover==0) {
     if ( (mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
         MakeNewFileName(mpt->Flname,Tmpfile);

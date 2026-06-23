@@ -59,6 +59,7 @@ int MakeVRGroup(DIALOG *D,void *arg);
 int MakeSidebySideGroup(DIALOG *D,void *arg);
 int MaketopandbottomGroup(DIALOG *D,void *arg);
 int MakeOverlayGroup(DIALOG *D,void *arg);
+int MakeBoverlayGroup(DIALOG *D,void *arg);
 int MakeCropGroup(DIALOG *D,void *arg);
 int MakePicFrameGroup(DIALOG *D,void *arg);
 int MakeAddStillGroup(DIALOG *D,void *arg);
@@ -312,6 +313,15 @@ TOOLGRP ToolList[ ] = {
        "\n"
        "FILE EXTENSION decides the output format,\n"
        " so give a valid extension\n"
+  },
+  { 0, MakeBoverlayGroup,"!f23Overlay Video over Blank", 346,40,RunHelper,0,
+       "Boverlays Video on BLANK AREA of specified resolution.\n"
+       "The video will be centralised after resize,"
+       " keeping the orignal aspectratio \n"
+       "The tool may be useful among other purpose, "
+       " join videos without ant distortion"
+       "It may be better to extract and process audios and\n"
+       "  add to the procssed video later.\n"
   },
 #if 0
 #endif
