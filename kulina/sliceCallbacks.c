@@ -2,21 +2,9 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-
-#include "mediainfo.h"
+#include "sliceCallbacks.h"
 #include "kgutils.h"
 
-int ResetGrpVis(void *);
-int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
-int kgffmpeg(int,char **);
-int ffmpegfun(int,char **);
-int ProcessSkip(int pip0,int pip1,int Pid);
-int ProcessPrint(int pip0,int pip1,int Pid);
-int ProcessData(int pip0,int pip1,int Pid);
-int ProcessToPipe(int pip0,int pip1,int Pid);
-int Mencoder(int,char **);
-void *RunkgGetFiles(void *arg,char *Filter);
-MEDIAINFO * GetMediaInfo(char *flname);
 
 extern MEDIAINFO Minfo;
 
@@ -27,21 +15,26 @@ extern int MonPipe;
 
 static char infile[500]="",outfile[500]="";
 
-int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
-int MakeOutputFile(char *Infile,char *Outfile,char *ext);
-int GetBaseIndex(char *s);
-int GetFolderName(char *infile,char *Folder);
-int GetLine(int pip0,char *buff);
-int SearchString(char *s1,char *s2);
-int runjob(char *job,int (*ProcessOut)(int,int,int));
-int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
-int runfunctionbkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
-int FileStat(char *flname);
-int ProcessSkip(int pip0,int pip1,int Pid);
-int ProcessToPipe(int pip0,int pip1,int Pid);
+static void *Args=NULL,*Rets=NULL;
+
+static DIAINTR *It = NULL;
+
+
+static MODINTERFACE ModFuns[] = { 
+    (MODINTERFACE) NULL 
+};
+static Dlink *ModuleList=NULL;
+
 
 static void *InfoBox=NULL,*Dia=NULL;
 
+
+static char *GetPointer(char *str) { 
+  char *pt; 
+  pt = (char *)malloc(strlen(str)+1); 
+  strcpy(pt,str); 
+  return pt; 
+} 
 
 static int FolderBrowser(char *FileName) {
 	char *Str=NULL;
@@ -293,8 +286,10 @@ int MakeVideoSlices(char * flname,char *folder,int tslice) {
      exit(0);
   }
 }
-#if 1
-int  slicetextbox1callback(int cellno,int i,void *Tmp) {
+
+ /* Callback for  SLCinput   */ 
+
+int sliceSLCinputcallback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -307,8 +302,8 @@ int  slicetextbox1callback(int cellno,int i,void *Tmp) {
   static char FileName[500],OutFile[500];
   D = (DIALOG *)Tmp;
   Dia = D;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"sliceInput");
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"sliceOutput");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"SLCinput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"SLCout");
   strcpy(FileName,kgGetString(T,0));
 #if 0
   sprintf(OutFile,"%-s/Video",getenv("HOME"));
@@ -324,27 +319,10 @@ int  slicetextbox1callback(int cellno,int i,void *Tmp) {
   strcpy(outfile,OutFile);
   return ret;
 }
-int  slicetextbox2callback(int cellno,int i,void *Tmp) {
-  /************************************************* 
-   cellno: current cell counted along column strting with 0 
-           ie 0 to (nx*ny-1) 
-   i     : widget id starting from 0 
-   Tmp   : Pointer to DIALOG 
-   *************************************************/ 
-  DIALOG *D;DIT *T;T_ELMT *e;
-  DIT *TO;
-  char FileName[500],OutFile[500];
-  int ret=1;
-  D = (DIALOG *)Tmp;
-  Dia = D;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"sliceInput");
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"sliceOutput");
-  strcpy(OutFile,kgGetString(TO,0));
-  strcpy(outfile,OutFile);
 
-  return ret;
-}
-int  slicebutton1callback(int butno,int i,void *Tmp) {
+ /* Callback for  SLCinputbrowse   */ 
+
+int sliceSLCinputbrowsecallback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -358,8 +336,8 @@ int  slicebutton1callback(int butno,int i,void *Tmp) {
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
   DIT *T,*TO;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"sliceInput");
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"sliceOutput");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"SLCinput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"SLCout");
   FileName[0]='\0';
   strcpy(FileName,kgGetString(T,0));
 //  kgFolderBrowser(NULL,100,100,FileName,(char *)"*");
@@ -380,9 +358,16 @@ int  slicebutton1callback(int butno,int i,void *Tmp) {
   
   return ret;
 }
-void  slicebutton1init(DIN *B,void *pt) {
+void  sliceSLCinputbrowseinit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
 }
-int  slicesplbutton1callback(int butno,int i,void *Tmp) {
+
+ /* Callback for  SLCgo   */ 
+
+int sliceSLCgocallback( int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -396,7 +381,7 @@ int  slicesplbutton1callback(int butno,int i,void *Tmp) {
   Dia = D;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
-  InfoBox = kgGetNamedWidget(Tmp,(char *)"sliceInfoBox");
+  InfoBox = kgGetNamedWidget(Tmp,(char *)"SLCIbox");
   switch(butno) {
     case 1:
        if((infile==NULL) || (infile[0]=='\0')) {
@@ -406,26 +391,33 @@ int  slicesplbutton1callback(int butno,int i,void *Tmp) {
       else {
         kgWrite(InfoBox,(char *)"send for processing...\n");
         kgUpdateOn(D);
-        strcpy(infile,kgGetString(kgGetNamedWidget(Dia,(char *)"sliceInput"),0));
-        strcpy(outfile,kgGetString(kgGetNamedWidget(Dia,(char *)"sliceOutput"),0));
-        mkdir(outfile,0744);
-        tslice = kgGetInt(kgGetNamedWidget(Dia,(char *)"sliceTime"),0);
+        strcpy(infile,kgGetString(kgGetNamedWidget(Dia,(char *)"SLCinput"),0));
+        strcpy(outfile,kgGetString(kgGetNamedWidget(Dia,(char *)"SLCout"),0));
+        if(!FileStat) mkdir(outfile,0744);
+        tslice = kgGetInt(kgGetNamedWidget(Dia,(char *)"SLCsec"),0);
         MakeVideoSlices(infile,outfile,tslice);
       }
       ret = 0;
       break;
   }
   DIT *T,*TO;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"sliceInput");
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"sliceOutput");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"SLCinput");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"SLCout");
   kgSetString(T,0,(char *)"");
   kgSetString(TO,0,(char *)"");
   ResetGrpVis(Tmp);
   return ret;
 }
-void  slicesplbutton1init(DIL *B,void *pt) {
+void  sliceSLCgoinit (DIL *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
 }
-int  slicetextbox3callback(int cellno,int i,void *Tmp) {
+
+ /* Callback for  SLCout   */ 
+
+int sliceSLCoutcallback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -434,20 +426,154 @@ int  slicetextbox3callback(int cellno,int i,void *Tmp) {
    *************************************************/ 
   DIALOG *D;DIT *T;T_ELMT *e; 
   int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
   D = (DIALOG *)Tmp;
   T = (DIT *)kgGetWidget(Tmp,i);
   e = T->elmt;
   return ret;
 }
+
+ /* Callback for  SLCOutbrowse   */ 
+
+int sliceSLCOutbrowsecallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  char File[200],Folder[200];
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  if(kgFolderBrowser(Tmp,200,200,File,(char *)"*")) {
+    GetFolderName(File,Folder);
+    DIT *TO=(DIT *)kgGetNamedWidget(Tmp,"SLCout");
+    kgSetString(TO,0,Folder);
+    kgUpdateWidget(TO);
+    kgUpdateOn(Tmp);
+  }
+  switch(butno) {
+    case 1: //  Browse 
+      break;
+  }
+  return ret;
+}
+void  sliceSLCOutbrowseinit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
+}
+
+ /* Callback for  SLCsec   */ 
+
+int sliceSLCseccallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  return ret;
+}
+int sliceSetup(void *Tmp,void *args) {
+  /*********************************** 
+    args :  Pointer to args  
+   ***********************************/ 
+  /* you add any initialisation here */
+  /* useful for setting is used as MakeGroup */
+  return 1;
+}
+ 
+void * sliceCleanDia(void *args) {
+  /*********************************** 
+    args :  Pointer to args  
+   ***********************************/ 
+  
+/* you add any cleaning  here */
+
+  return NULL;
+}
+ 
+ 
+void *  sliceAction(void *Tmp,void *Args) {
+  return NULL;
+} 
+ 
+ 
+int   sliceOn(void *itmp) {
+  DIAINTR * Dt = (DIAINTR *) itmp;
+  if(Dt == NULL ) Dt = (DIAINTR *)It;
+  if(Dt != NULL) {
+    if(Dt->Dtmp != NULL)kgSetGrpVisibility(Dt->Dtmp,Dt->GrpId,1);
+    else return 0;
+    return 1;
+  } 
+  return 0;
+} 
+ 
+int   sliceOff(void *itmp) {
+  DIAINTR * Dt = (DIAINTR *) itmp;
+  if(Dt == NULL ) Dt = (DIAINTR *)It;
+  if(Dt != NULL) {
+    if(Dt->Dtmp != NULL)kgSetGrpVisibility(Dt->Dtmp,Dt->GrpId,0);
+    else return 0;
+    return 1;
+  } 
+  return 0;
+} 
+ 
+ 
+ 
+void * sliceInterface(void *args,void *rets) {
+  /*********************************** 
+   ***********************************/ 
+  DIAINTR *it= (DIAINTR *)malloc(sizeof(DIAINTR));
+  it->GrpId=0;
+  // filled by MakeGroup  it->xsh=0;
+  it->ysh=0;
+  it->RunDia = Runslice;
+  it->MakeGroup = MakesliceGroup;
+  it->Title = GetPointer((char *)"slice");
+  it->Help = GetPointer( (char *)"No help yet, request");
+  it->Action = sliceAction;
+  it->Settings = sliceSetup;
+  it->Cleanup  = sliceCleanDia;
+  if(args != NULL) Args=args;
+  if(rets != NULL) Rets=rets;
+  it->args = Args;
+  it->rets = Rets;
+  it->SwitchOn = sliceOn;
+  it->SwitchOff = sliceOff;
+  it->Dtmp = NULL; // fiiled by MakeGroup 
+  It = it;
+  return it;
+}
+ 
+ 
 int sliceinit(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
   /* you add any initialisation here */
   int ret = 1;
-  DIALOG *D;void *pt;
+  DIALOG *D;
   D = (DIALOG *)Tmp;
-  pt = D->pt;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+ /* pt[0] is inputs, given by caller */
   return ret;
 }
 int slicecleanup(void *Tmp) {
@@ -456,11 +582,58 @@ int slicecleanup(void *Tmp) {
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
   int ret = 1;
-  DIALOG *D;void *pt;
+  DIALOG *D;
   D = (DIALOG *)Tmp;
-  pt = D->pt;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+ /* pt[1] is outputs, if any  to be given to caller */
+ /* pt[0] is inputs, given by caller */
   return ret;
 }
+int Modifyslice(void *Tmp,int GrpId) {
+  DIALOG *D;
+  D = (DIALOG *)Tmp;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+ /* pt[0] is inputs given by caller */
+  DIA *d;
+  int i,n;
+  kgCheckParentPosition(Tmp);
+  d = D->d;
+
+  if( ModuleList == NULL) ModuleList = kgGetModuleList((void **)ModFuns);
+  i=0;
+  void *args=NULL;
+  DIAINTR *Dt;
+  Resetlink(ModuleList);
+  while ( (Dt=(DIAINTR *)Getrecord(ModuleList)) != NULL) {
+    Dt->GrpId = Dt->MakeGroup(Tmp,NULL);
+    kgShiftGrp(Tmp,Dt->GrpId,Dt->xsh,Dt->ysh);
+    Dt->Settings(Tmp,args);
+    i++;
+  };
+
+  i=0;while(d[i].t!= NULL) {;
+     i++;
+  };
+  n=1;
+//  strcpy(D->name,"Kulina Designer ver 3.0");    /*  Dialog name you may change */
+#if 0
+  if(D->fullscreen!=1) {    /*  if not fullscreen mode */
+     int xres,yres; 
+     kgDisplaySize(&xres,&yres); 
+      // D->xo=D->yo=0; D->xl = xres-10; D->yl=yres-80;
+  }
+  else {    // for fullscreen
+     int xres,yres; 
+     kgDisplaySize(&xres,&yres); 
+     D->xo=D->yo=0; D->xl = xres; D->yl=yres;
+//     D->StackPos = 1; // you may need it
+  }    /*  end of fullscreen mode */
+#endif
+  return GrpId;
+}
+
 int sliceCallBack(void *Tmp,void *tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
@@ -468,6 +641,8 @@ int sliceCallBack(void *Tmp,void *tmp) {
    ***********************************/ 
   int ret = 0;
   DIALOG *D;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
   KBEVENT *kbe;
   D = (DIALOG *)Tmp;
   kbe = (KBEVENT *)tmp;
@@ -484,6 +659,8 @@ int sliceResizeCallBack(void *Tmp) {
   int ret = 0;
   int xres,yres,dx,dy;
   DIALOG *D;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
   D = (DIALOG *)Tmp;
   kgGetWindowSize(D,&xres,&yres);
   dx = xres - D->xl;
@@ -501,6 +678,7 @@ int sliceWaitCallBack(void *Tmp) {
     return value 1 will close the the UI  
    ***********************************/ 
   int ret = 0;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
   return ret;
 }
-#endif

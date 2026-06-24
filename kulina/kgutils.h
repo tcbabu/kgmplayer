@@ -41,5 +41,14 @@ int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile)
 int GetFirstFrame(char *infile,char *outfile) ;
 int JoinTwoVideos(char *infile1,char *infile2,char *outfile);
 int AddStillAtStart(char *infile,float  duration,char *outfile);
+int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
+int RunFunction(char *job,int (*ProcessOut)(void *,int,int,int),int
+(*function)(int,char **),void *);
+int kgffmpeg(int,char **);
+int ffmpegfun(int,char **);
+int ProcessSkip(int pip0,int pip1,int Pid);
+int ProcessPrint(int pip0,int pip1,int Pid);
+int ProcessData(int pip0,int pip1,int Pid);
+int ResetGrpVis(void *Tmp);
 #endif
 
