@@ -432,9 +432,9 @@ int JoinToMp4( CONVDATA *cn)  {
   CONVDATA Cn;
   MEDIAINFO *mpt;
   char Vtype[50];
-  char Tmpfile[500];
+  char Tmpfile[500],Afile[300];;
   char command[10000],File[500],options[5000],Fifo[500],Qstr[100];
-  int Fcover=0;
+  int Fcover=1;
   Cn= *cn;
   Audio =1;
   L = (Dlink *)Cn.Vlist;
@@ -516,11 +516,16 @@ int JoinToMp4( CONVDATA *cn)  {
             mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize,Cn.fps,Folder,id);
 	  }
 	  else {
+           MakeFileInFolder("/tmp/audio.wav",Folder,Afile,"wav");
+           MakeFileInFolder("/tmp/video.mp4",Folder,File,"mp4");
+           AudioExtract(mpt->Flname,Afile);
+           sprintf(Tmpfile,"%s/F-4.4d.mp4",Folder,id);
 //           sprintf(command,"ffmegfun -probesize 50M  -analyzeduration 10000000 -r %-7.3f -i \"%s\" -f mp4 "
            sprintf(command,"ffmegfun   -analyzeduration 10000000  -i \"%s\" -f mp4 "
            " -video_track_timescale 90k -an  %-s "
-           " -vf \"scale=%-d:%-d:force_original_aspect_ratio=disable,setsar=1,fps=%-.3f\" -y %s/F%-4.4d.mp4 ",
-            mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize,Cn.fps, Folder,id);
+           " -vf \"scale=%-d:%-d:force_original_aspect_ratio=disable,setsar=1,fps=%-.3f\" -y %s ",
+            mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize,Cn.fps, File);
+            AudioChange(File,Afile,Tmpfile);
 	  }
           } //if Fcover
           else {
