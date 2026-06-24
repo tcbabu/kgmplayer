@@ -165,6 +165,8 @@ int OverlayVideos(char *base,char *olay,int Qty,char *outfile) {
   char buff[500];
   char Tfolder[300],Err[400];
   int Fstat=1;
+  int cx =0,cy=0;
+  double cxfact=1.0,cyfact=1.0;
   sprintf(Tfolder,"%-s/%-d",getenv("HOME"),getpid());
   if(!FileStat(Tfolder)) {
     mkdir(Tfolder,0700);
@@ -214,12 +216,29 @@ int OverlayVideos(char *base,char *olay,int Qty,char *outfile) {
   Tmp2[0]='\0';
   printf("Oxres = %d Bxres = %d\n",Oxres,Bxres);
   fflush(stdout);
-  if( (Oxres > Bxres )||( fabsf(Bfps -Ofps)> 1)){
+  cxfact =1;
+  cx =0;
+  if(Bxres< Oxres) {
+    cxfact = (float)Bxres/Oxres;
+    Oxres = ((int)(Oxres*cxfact))/2*2;
+    Oyres  = ((int)(Oyres*cxfact))/2*2;
+    cx =1;
+  }
+  cyfact = 1.0;
+  cy = 0;
+  if(Byres< Oyres) {
+    cyfact = (float)Byres/Oyres;
+    Oxres = ((int)(Oxres*cyfact))/2*2;
+    Oyres  = ((int)(Oyres*cyfact))/2*2;
+    cy =1;
+  }
+//  if( (Oxres > Bxres )||( fabsf(Bfps -Ofps)> 1)){
+  if (cx||cy||( fabsf(Bfps -Ofps)> 1)){
 
      MakeFileInFolder(olay,Tfolder,Tmp1,"mp4");
      printf("ChangeVideoSizeAndFrate\n");
      fflush(stdout);
-     ChangeVideoSizeAndFrate(Otmp,Tmp1,Bxres,-2,(int)(Bfps+0.5),Qty);
+     ChangeVideoSizeAndFrate(Otmp,Tmp1,Oxres,Oyres,(int)(Bfps+0.5),Qty);
      strcpy(Otmp,Tmp1);
      mpt = GetMediaInfo(Otmp);
      if(mpt->Video != 1) return 0;
@@ -230,6 +249,7 @@ int OverlayVideos(char *base,char *olay,int Qty,char *outfile) {
      free(mpt);
      mpt = NULL;
   }   
+#if 0
   if( Oyres > Byres ){
 //     MakeNewFileName(olay,Tmp2);
      MakeFileInFolder(olay,Tfolder,Tmp2,"mp4");
@@ -244,6 +264,7 @@ int OverlayVideos(char *base,char *olay,int Qty,char *outfile) {
      free(mpt);
      mpt = NULL;
   }   
+#endif
   Tmp3[0]='\0';  
   if ((strcmp(Ovcodec,"h264") != 0)){
 //     MakeNewFileName(olay,Tmp3);
