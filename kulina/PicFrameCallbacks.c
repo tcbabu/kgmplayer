@@ -181,6 +181,14 @@ int PicFramePICOutbrowsecallback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
+  char FileName[500];
+  FileName[0]='\0';
+  if(!kgFolderBrowser(Tmp,10,10,FileName,"*"))return 0;
+  DIT *TO;
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"PICout");
+  kgSetString(TO,0,FileName);
+  kgUpdateWidget(TO);
+  kgUpdateOn(Tmp);
   switch(butno) {
     case 1: //  Browse 
       break;
