@@ -52,6 +52,15 @@ static MODINTERFACE ModFuns[] = {
 static Dlink *ModuleList=NULL;
 
 
+int VideoJoinSetup(void *Tmp,void *args) {
+  /*********************************** 
+    args :  Pointer to args  
+   ***********************************/ 
+  /* you add any initialisation here */
+  /* useful for setting is used as MakeGroup */
+  return 1;
+}
+
 static int FolderBrowser(char *FileName) {
 	char *Str=NULL;
 	int ret=0,ln;
@@ -437,6 +446,8 @@ int JoinToMp4( CONVDATA *cn)  {
   int Fcover=1;
   Cn= *cn;
   Audio =1;
+  Fcover =Cn.Fcount;
+  
   L = (Dlink *)Cn.Vlist;
   Resetlink(L);
   if ( (mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
@@ -727,6 +738,26 @@ ThumbNail **DeleteItemsfromVlist(void) {
 }
 
 
+int VideoJoinVJFcovercallback(int item,int i,void *Tmp) {
+  /*********************************** 
+    item : selected item (1 to max_item)  not any specific relevence
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIRA *R;DIALOG *D; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  ThumbNail **th; 
+  int ret=1; 
+  D = (DIALOG *)Tmp;
+  R = (DIRA *)kgGetWidget(Tmp,i);
+  th = (ThumbNail **) R->list;
+  return ret;
+}
+void  VideoJoinVJFcoverinit (DIRA *R,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+}
+
  /* Callback for  VideoList   */ 
 
 int VideoJoinVideoListcallback(int item,int i,void *Tmp) {
@@ -865,6 +896,7 @@ int VideoJoinJoinVideoscallback( int butno,int i,void *Tmp) {
   int Process=0;
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
+  DIRA *RA = (DIRA *)kgGetNamedWidget(Tmp,"VJFcover");
   n = B->nx;
   T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VjoinOut");
   Of = kgGetString(T,0);
@@ -961,6 +993,7 @@ int VideoJoinJoinVideoscallback( int butno,int i,void *Tmp) {
   sprintf(buff,"%d \"%-s\" %d %d %d %f %d %f\n",
        cndata.code, cndata.outfile,cndata.Xsize,
        cndata.Ysize,cndata.Fcount,cndata.fps,Qty,TotSec);
+  cndata.Fcount = kgGetSelection(RA)%2;
   JoinToMp4(&cndata);
  
   switch(butno) {

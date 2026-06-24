@@ -6,8 +6,8 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   DIA *d=NULL,*dtmp;
   DIX x0 = { 
     'x',
-    32,65,  
-    459,233,   
+    32,41,  
+    459,209,   
     10,2,  
     308, 
     25, 
@@ -30,23 +30,23 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn1=NULL; 
   butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
   butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"!w32!f23Add");
+  strcpy(butn1[0].title,(char *)"Add");
   butn1[0].xpmn=NULL;
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-1;
   butn1[0].butncode=31;
   butn1[1].sw=1;
-  strcpy(butn1[1].title,(char *)"!w32!f23Delete");
+  strcpy(butn1[1].title,(char *)"Delete");
   butn1[1].xpmn=NULL;
   butn1[1].xpmp=NULL;
   butn1[1].xpmh=NULL;
   butn1[1].bkgr=-1;
-  butn1[1].butncode=31;
+  butn1[1].butncode=127;
   DIN b1 = { 
     'n',
-    301,31,  
-    457,65,
+    301,6,  
+    457,40,
     2,2,  
     72, 
     24, 
@@ -60,8 +60,8 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   b1.item = -1;
   DIM m2 = { 
     'm',
-    33,33,  
-    215,63,  
+    34,7,  
+    216,37,  
     -1,0  
   };
   strncpy(m2.msg,(char *)"!w32!f21Input Files(Video)",499);
@@ -77,8 +77,8 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   e3[0].img=NULL;
   DIT t3 = { 
     't',
-    3,249,  
-    376,284,
+    12,213,  
+    385,248,
     20, 
     1,1, 
     e3,
@@ -101,8 +101,8 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   butn4[0].butncode=31;
   DIL h4 = { 
     'h',
-    193,359,  
-    287,392,
+    193,409,  
+    287,442,
     2,0,  
     84, 
     25, 
@@ -123,8 +123,8 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   ThumbNail **th0 ;
   DIRA r5 = { 
     'r',
-    82,291,  
-    461,332,   
+    84,250,  
+    463,291,   
     8,0,  
     100, 
     25, 
@@ -148,8 +148,8 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   r5.item = -1;
   DIM m6 = { 
     'm',
-    5,299,  
-    84,323,  
+    5,257,  
+    84,281,  
     1,0  
   };
   strncpy(m6.msg,(char *)"!w32!f21Quality",499);
@@ -166,8 +166,8 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   butn7[0].butncode=31;
   DIN b7 = { 
     'n',
-    375,251,  
-    446,280,
+    389,214,  
+    460,243,
     2,2,  
     64, 
     22, 
@@ -179,12 +179,51 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   };
   strcpy(b7.Wid,(char *)"VJObrowse");
   b7.item = -1;
+  char *menu8[]  = { 
+    (char *)"Resize to Full Area",
+    (char *)"Keep Aspectratio",
+    NULL 
+  };
+  ThumbNail **th1 ;
+  DIRA r8 = { 
+    'r',
+    58,300,  
+    417,327,   
+    8,0,  
+    165, 
+    25, 
+    1,2, 
+    1,1, 
+    (int *)v[3], 
+    NULL, 
+    NULL ,
+    NULL,VideoJoinVJFcovercallback , /* *args, Callback  */
+    1,  /* Border Offset  */
+     2,  /* Scroll width  */
+     0,  /* Type  */
+     0, /* item highlight */
+    0, /* bordr */
+    0, /* bkgr */
+    0  /*=1 hide  */
+   };
+  th1 = (ThumbNail **)kgStringToThumbNails((char **)menu8);
+  r8.list=(void **)th1;
+  strcpy(r8.Wid,(char *)"VJFcover");
+  r8.item = -1;
+  DII i9 = { 
+    'i',
+    8,330,  
+    460,402,  
+    49,3,0   
+  };
+  strcpy(i9.Wid,(char *)"VJInfo");
+  i9.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+9));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+11));
   d =dtmp+i; 
-  d[8].t=NULL;
+  d[10].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIX));
   *d[0].x = x0;
   d[0].x->item = -1;
@@ -214,7 +253,14 @@ int VideoJoinGroup( DIALOG *D,void **v,void *pt) {
   *d[7].N = b7;
   d[7].N->item = -1;
   VideoJoinVJObrowseinit(d[7].N,pt) ;
-  d[8].t = NULL;
+  d[8].t = (DIT *)malloc(sizeof(DIRA));
+  *d[8].r = r8;
+  d[8].r->item = -1;
+  VideoJoinVJFcoverinit(d[8].r,pt) ;
+  d[9].t = (DIT *)malloc(sizeof(DII));
+  *d[9].i = i9;
+  d[9].i->item = -1;
+  d[10].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -232,6 +278,7 @@ int MakeVideoJoinGroup(DIALOG *D,void *arg) {
     Selectmenu1  1 data value
     Text_Box1  1 data values
     RadioButtons2  1 data value
+    RadioButtons3  1 data value
 
 *************************************************/
    int  *v0 ;
@@ -243,16 +290,21 @@ int MakeVideoJoinGroup(DIALOG *D,void *arg) {
    int  *v2 ;
    v2 = (int *)malloc(sizeof(int));
    *v2 = 1;
-   void** v=(void **)malloc(sizeof(void*)*4);
-   v[3]=NULL;
+   int  *v3 ;
+   v3 = (int *)malloc(sizeof(int));
+   *v3 = 1;
+   void** v=(void **)malloc(sizeof(void*)*5);
+   v[4]=NULL;
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
+   v[3]=(void *)(v3);
    void *pt=NULL; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    GrpId = VideoJoinGroup(D,v,pt);
    Gpt = kgGetWidgetGrp(D,GrpId);
    Gpt->arg= v; // kulina will double free this; you may modify
+   VideoJoinSetup(D,Gpt->arg);
    return GrpId;
 }
 
@@ -272,15 +324,15 @@ int VideoJoin( void *parent,void **v,void *pt) {
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 7;
+  D.df = 8;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
   D.rw = 4;
   D.xo = 10;   /* Position of Dialog */ 
   D.yo = 10;
-  D.xl = 471;    /*  Length of Dialog */
-  D.yl = 410;    /*  Width  of Dialog */
+  D.xl = 474;    /*  Length of Dialog */
+  D.yl = 448;    /*  Width  of Dialog */
   D.Initfun = VideoJoininit;    /*   init fuction for Dialog */
   D.Cleanupfun = VideoJoincleanup;    /*   cleanup fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
@@ -338,15 +390,18 @@ void *RunVideoJoin(void *parent ,void *args) {
     Selectmenu1  1 data value
     Text_Box1  1 data values
     RadioButtons2  1 data value
+    RadioButtons3  1 data value
 
 *************************************************/
    int   v0 = 1;
    char  v1[500]="" ;
    int   v2 = 1;
-   void* v[3];
+   int   v3 = 1;
+   void* v[4];
    v[0]=(void *)(&v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(&v2);
+   v[3]=(void *)(&v3);
    void *pt[2]={NULL,NULL}; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    pt[0]=args;

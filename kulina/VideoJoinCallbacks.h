@@ -1,4 +1,7 @@
 int VideoJoinVideoListcallback(int item,int i,void *Tmp) ;
+int VideoJoinVJFcovercallback(int item,int i,void *Tmp);
+void  VideoJoinVJFcoverinit (DIRA *R,void *ptmp);
+int VideoJoinSetup(void *Tmp,void *args);
 void  VideoJoinVideoListinit (DIX *X,void *pt) ;
 int VideoJoinVideoJoinWidget2callback(int butno,int i,void *Tmp) ;
 void  VideoJoinVideoJoinWidget2init (DIN *B,void *pt) ;
