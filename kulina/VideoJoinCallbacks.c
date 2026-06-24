@@ -897,6 +897,7 @@ int VideoJoinJoinVideoscallback( int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   DIRA *RA = (DIRA *)kgGetNamedWidget(Tmp,"VJFcover");
+  DII  *I  = (DII *) kgGetNamedWidget(Tmp,"VJInfo");
   n = B->nx;
   T = (DIT *)kgGetNamedWidget(Tmp,(char *)"VjoinOut");
   Of = kgGetString(T,0);
@@ -994,7 +995,13 @@ int VideoJoinJoinVideoscallback( int butno,int i,void *Tmp) {
        cndata.code, cndata.outfile,cndata.Xsize,
        cndata.Ysize,cndata.Fcount,cndata.fps,Qty,TotSec);
   cndata.Fcount = kgGetSelection(RA)%2;
+  sprintf(buff,"Processing files to Join");
+  kgWrite(I,buff);
+  sprintf(buff,"Processing may be slow");
+  kgWrite(I,buff);
   JoinToMp4(&cndata);
+  sprintf(buff,"!c02 FINISHED JOB...");
+  kgWrite(I,buff);
  
   switch(butno) {
     case 1: 
