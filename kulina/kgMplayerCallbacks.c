@@ -3975,6 +3975,85 @@ int RunAndMonitor(char * job)  {
      exit(0);
   }
 }
+int RunFunctionAndMonitor(char * job,int (*function)(int,char **))  {
+
+  int pid=0,id;
+  int status;
+  if(fork() != 0)return 1;
+  id = getpid();
+  if(pipe(Jpipe) < 0) exit(0);
+  if(pipe(Jstat) < 0) exit(0);
+  MonPipe = Jpipe[0];
+  char buff[500];
+  
+  if ((pid=fork())==0) {
+    fflush(stdout);
+    fflush(stderr);
+    close(Jpipe[0]);
+    close(Jstat[1]);
+     sprintf(buff,"Executing... PLEASE WAIT\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"!c01Sorry... Progress Bar may not be correct\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"PLEASE WAIT till the window closes\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"You can cancel job if you wish\n");
+     write(Jpipe[1],buff,strlen(buff));
+     runfunction(job,ProcessOutput,function);
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     exit(0);
+  }  //fork
+  else {
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     RunMonitorJoin(NULL);
+     kill(pid,9);
+     waitpid(pid,&status,0);
+     close(Jpipe[0]);
+     close(Jstat[1]);
+     exit(0);
+  }
+}
+int RunFunctionAndWait(char * job,int (*function)(int,char **))  {
+
+  int pid=0,id;
+  int status;
+  id = getpid();
+  if(pipe(Jpipe) < 0) exit(0);
+  if(pipe(Jstat) < 0) exit(0);
+  MonPipe = Jpipe[0];
+  char buff[500];
+  
+  if ((pid=fork())==0) {
+    fflush(stdout);
+    fflush(stderr);
+    close(Jpipe[0]);
+    close(Jstat[1]);
+     sprintf(buff,"Executing... PLEASE WAIT\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"!c01Sorry... Progress Bar may not be correct\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"PLEASE WAIT till the window closes\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"You can cancel job if you wish\n");
+     write(Jpipe[1],buff,strlen(buff));
+     runfunction(job,ProcessOutput,function);
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     exit(0);
+  }  //fork
+  else {
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     RunMonitorJoin(NULL);
+     kill(pid,9);
+     waitpid(pid,&status,0);
+     close(Jpipe[0]);
+     close(Jstat[1]);
+  }
+  return 1;
+}
 int RunMonitorAndWait(char * job)  {
 
   int pid=0,id;

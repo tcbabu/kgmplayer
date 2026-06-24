@@ -20,6 +20,19 @@ int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
 extern MEDIAINFO Minfo;
 
 
+int AudioExtract(char *infile,char *outfile) {
+   char buff[500];
+   sprintf(buff,"ffmpegfun -y -i %s -vn -ac 2 %s", infile,outfile);
+   runfunction(buff,NULL,ffmpegfun);
+   return 1;
+}
+int AudioChange(char *media,char *audio,char *outfile) {
+   char buff[500];
+   sprintf(buff,"ffmpegfun -y -vn -i %s -an -i %s -f mp4  -c:v copy -c:a copy  -aq 0  -ar 44100 "
+     "  -acodec aac   %s",audio,media,outfile);
+   runfunction(buff,NULL,ffmpegfun);
+   return 1;
+}
 int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs,int Qty){
   char buff[500];
   char Qstr[200];
@@ -37,7 +50,7 @@ int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs,
    
   }
   sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,setsar=1,fps=%-d\" "
-       " %s  -c:v libx264 %s",
+       " %s  -c:v libx264 %s -af aresample=44100 -c:a aac  ",
        infile,(Xres/2)*2,(Yres/2)*2,fs,Qstr,outfile);
   printf("%s\n",buff);
   fflush(stdout);
@@ -63,7 +76,7 @@ int ChangeVideoSize(char *infile,char *outfile,int Xres,int Yres,int Qty){
    
   }
   sprintf(buff,"ffmpegfun -y  -i %s -f mp4 -vf \"scale=%d:%d:flags=lanczos,setsar=1\" "
-       " %s  -c:v libx264 %s",
+       " %s  -c:v libx264 %s -af aresample=44100 -c:a aac ",
        infile,(Xres/2)*2,(Yres/2)*2,Qstr,outfile);
   runfunction(buff,ProcessPrint,ffmpegfun);
   return 1;
@@ -85,7 +98,7 @@ int ChangeVideoFrate(char *infile,char *outfile,int fs,int Qty){
    
   }
   sprintf(buff,"ffmpegfun -y  -i %s -vf \"fps=%-d\" "
-       " %s  -c:v libx264 %s",
+       " %s  -c:v libx264 %s -af aresample=44100 -c:a aac ",
        infile,fs,Qstr,outfile);
   runfunction(buff,ProcessPrint,ffmpegfun);
   return 1;
@@ -93,6 +106,8 @@ int ChangeVideoFrate(char *infile,char *outfile,int fs,int Qty){
 int ConvertToLibx265(char *infile,int Qty,char *outfile){
   char buff[500];
   char Qstr[200];
+  char Astr[100];
+  strcpy(Astr," -af aresample=44100 -c:a aac ");
   switch(Qty) {
        case 1:
          sprintf(Qstr," -crf 20 -preset medium ");
@@ -107,7 +122,7 @@ int ConvertToLibx265(char *infile,int Qty,char *outfile){
    
   }
   sprintf(buff,"ffmpegfun -y  -i %s -f mp4"
-       " %s  -c:v libx265 %s",
+       " %s  -c:v libx265 %s -af aresample=44100 -c:a aac ",
        infile,Qstr,outfile);
   runfunction(buff,ProcessPrint,ffmpegfun);
   return 1;
@@ -129,7 +144,7 @@ int ConvertToLibx264(char *infile,int Qty,char *outfile){
    
   }
   sprintf(buff,"ffmpegfun -y  -i %s -f mp4"
-       " %s  -c:v libx264 %s",
+       " %s  -c:v libx264 %s -af aresample=44100 -c:a aac ",
        infile,Qstr,outfile);
   runfunction(buff,ProcessPrint,ffmpegfun);
   return 1;
@@ -274,8 +289,8 @@ int OverlayToSize(int Bxres,int Byres,float fs,int Qty,char *olay,char *outfile)
   char Bvcodec[30],Ovcodec[30];
   char Tmp1[200],Tmp2[200],Tmp3[200],Otmp[200],Btmp[200];
   char buff[500],Tmpbase[300],base[300];
-  char Tfolder[300],Tmpfile[300];
-  int Fstat=1;
+  char Tfolder[300],Tmpfile[300],Afile[300];;
+  int Fstat=1,Audio=1;
   sprintf(Tfolder,"%-s/%-d",getenv("HOME"),getpid());
   if(!FileStat(Tfolder)) {
     mkdir(Tfolder,0700);
@@ -287,6 +302,11 @@ int OverlayToSize(int Bxres,int Byres,float fs,int Qty,char *olay,char *outfile)
   fflush(stdout);
   mpt = GetMediaInfo(olay);
   if(mpt->Video != 1) return 0;
+  if(mpt->Audio ) {
+     MakeFileInFolder("/tmp/Audio.mp4",Tfolder,Afile,"wav");
+     AudioExtract(olay,Afile);       
+  }
+  else Audio=0;;
   printf("Calling CreateBlankVideo: %-.3f\n",mpt->TotSec);
   fflush(stdout);
   CreateBlankVideo(Bxres,Byres,(float)mpt->TotSec,fs,Tmpfile);
@@ -297,11 +317,33 @@ int OverlayToSize(int Bxres,int Byres,float fs,int Qty,char *olay,char *outfile)
   
   printf("Calling OverlayVideos\n");
   fflush(stdout);
-  OverlayVideos(Tmpfile,olay,Qty,outfile);
+  if(!Audio) OverlayVideos(Tmpfile,olay,Qty,outfile);
+  else {
+     MakeFileInFolder("/tmp/Video.mp4",Tfolder,Tmp3,"mp4");
+     OverlayVideos(Tmpfile,olay,Qty,Tmp3);
+     AudioChange(Tmp3,Afile,outfile);
+  }
   printf("OverlayVideos: %s\n",outfile);
   fflush(stdout);
-  if(Fstat==0) kgCleanDir(Tfolder);
+//  if(Fstat==0) kgCleanDir(Tfolder);
   return 1;
+}
+
+//int RunOverlayToSize(int Bxres,int Byres,float fs,int Qty,char *olay,char *outfile) {
+int RunOverlayToSize(int argc,char **argv) {
+    int Bxres,Byres,Qty;
+    float fs;
+    char olay[300];
+    char outfile[300];
+    int i=1;
+    sscanf(argv[1],"%d",&Bxres);
+    sscanf(argv[2],"%d",&Byres);
+    sscanf(argv[3],"%f",&fs);
+    sscanf(argv[4],"%d",&Qty);
+    sscanf(argv[5],"%s",olay);
+    sscanf(argv[6],"%s",outfile);
+    return OverlayToSize(Bxres,Byres,(float)((int)(fs+0.5)),Qty,olay,outfile);
+    
 }
 int CreateStillVideo(char *infile,float duration,float fps,char *outfile) {
     char buff[500];

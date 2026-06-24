@@ -424,7 +424,7 @@ int JoinToMp4_vold( CONVDATA *cn)  {
 }
 int JoinToMp4( CONVDATA *cn)  {
   int Process =0;
-  int pid,status,id,Qty;
+  int pid,status,id,Qty=2;
   char Folder[500];
   int Audio=1;
   FILE *myl=NULL;
@@ -434,22 +434,10 @@ int JoinToMp4( CONVDATA *cn)  {
   char Vtype[50];
   char Tmpfile[500];
   char command[10000],File[500],options[5000],Fifo[500],Qstr[100];
-  int Fcover=1;
+  int Fcover=0;
   Cn= *cn;
   Audio =1;
   L = (Dlink *)Cn.Vlist;
-  Resetlink(L);
-// presently not useful
-  if(Fcover==0) {
-    if ( (mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
-        MakeNewFileName(mpt->Flname,Tmpfile);
-        printf("Processing %s to %s\n",mpt->Flname,Tmpfile);
-        OverlayToSize(Cn.Xsize,Cn.Ysize,(float)Cn.fps,mpt->Flname,Tmpfile);
-        GetVideoInfo(Tmpfile);
-        *mpt = Minfo;
-        printf("Processed %s to %s\n",mpt->Flname,Tmpfile);
-    }
-  }
   Resetlink(L);
   if ( (mpt=(MEDIAINFO *)Getrecord(L))!= NULL) {
       strcpy(Vtype,mpt->vcodectype);
@@ -519,6 +507,7 @@ int JoinToMp4( CONVDATA *cn)  {
       write(Jpipe[1],options,strlen(options));
       sprintf(Tmpfile,"%-s/F%-4.4d.mp4",Folder,id);
       if(mpt->Process) {
+        if(Fcover) {
           if(Audio) {
 //           sprintf(command,"ffmegfun -probesize 50M  -analyzeduration 10000000 -r %-7.3f -i \"%s\" -f mp4 "
            sprintf(command,"ffmegfun   -analyzeduration 10000000  -i \"%s\" -f mp4 "
@@ -533,6 +522,11 @@ int JoinToMp4( CONVDATA *cn)  {
            " -vf \"scale=%-d:%-d:force_original_aspect_ratio=disable,setsar=1,fps=%-.3f\" -y %s/F%-4.4d.mp4 ",
             mpt->Flname,Qstr,Cn.Xsize,Cn.Ysize,Cn.fps, Folder,id);
 	  }
+          } //if Fcover
+          else {
+                sprintf(Tmpfile,"%s/F%-4.4d.mp4",Folder,id);
+                OverlayToSize( Cn.Xsize,Cn.Ysize,(float)Cn.fps,Cn.Quality,mpt->Flname,Tmpfile);
+          }  // else Fcover
           
 	} // if mpt->Process
 	else {

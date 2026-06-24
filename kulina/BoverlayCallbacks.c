@@ -141,7 +141,12 @@ int BoverlayOBgocallback( int butno,int i,void *Tmp) {
   sprintf (buff,"Calling OverlayTosize for %s to %s\n",
             kgGetString(TI,0),kgGetString(TO,0));
   kgWrite(I,buff);
-  OverlayToSize(Xres,Yres,fps,Qty,kgGetString(TI,0),kgGetString(TO,0));
+//  OverlayToSize(Xres,Yres,fps,Qty,kgGetString(TI,0),kgGetString(TO,0));
+  sprintf(buff,"RunOverlayToSize %d %d %-.3f %d %s %s ",
+               Xres,Yres,fps,Qty,kgGetString(TI,0),kgGetString(TO,0));
+  RunFunctionAndWait(buff,RunOverlayToSize);
+  sprintf (buff,"!c02FINISHED JOB....");
+  kgWrite(I,buff);
   switch(butno) {
     case 1: //  Go... 
       break;
