@@ -263,7 +263,10 @@ int CropCRPselectcallback(int butno,int i,void *Tmp) {
     strcpy(infile,(char *)kgGetString(TI,0));
     if(infile[0]=='\0') return 0;
     sprintf(frame1,"/tmp/%-d.png",getpid());
-    sprintf(buff,"kgffmpeg -y  -ss 00:00:%-4.2f -i %s -frames:v 1 %s" ,duration/2,infile,frame1);
+    if(duration >= 60){
+      sprintf(buff,"ffmpegfun -y  -ss 00:00:10 -i %s -frames:v 1 %s" ,infile,frame1);
+    }
+    else sprintf(buff,"ffmpegfun -y  -ss 00:00:%-4.2f -i %s -frames:v 1 %s" ,duration/2,infile,frame1);
 //    runfunction(buff,ProcessPrint,ffmpegfun);
     RunAndWait(buff);
 //    system(buff);
