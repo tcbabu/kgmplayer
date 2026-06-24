@@ -346,7 +346,7 @@ int OverlayToSize(int Bxres,int Byres,float fs,int Qty,char *olay,char *outfile)
   }
   printf("OverlayVideos: %s\n",outfile);
   fflush(stdout);
-//  if(Fstat==0) kgCleanDir(Tfolder);
+  if(Fstat==0) kgCleanDir(Tfolder);
   return 1;
 }
 
