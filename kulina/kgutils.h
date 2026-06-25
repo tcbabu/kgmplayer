@@ -40,6 +40,7 @@ int RunOverlayToSize(int argc,char **argv);
 int CreateStillVideo(char *infile,float duration,float fps,char *outfile);
 int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile);
 int GetFirstFrame(char *infile,char *outfile) ;
+int GetLastFrame(char *infile,char *outfile) ;
 int JoinTwoVideos(char *infile1,char *infile2,char *outfile);
 int AddStillAtStart(char *infile,float  duration,char *outfile);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
@@ -51,5 +52,8 @@ int ProcessSkip(int pip0,int pip1,int Pid);
 int ProcessPrint(int pip0,int pip1,int Pid);
 int ProcessData(int pip0,int pip1,int Pid);
 int ResetGrpVis(void *Tmp);
+int MakeTmpFolderInHome(char *Tfolder);
+int GetWavHeaderLength(char *flname);
+int JoinWavFiles(char *infile1,char *infile2,char *outfile);
 #endif
 

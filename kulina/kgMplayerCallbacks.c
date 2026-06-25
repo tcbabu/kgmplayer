@@ -4125,3 +4125,13 @@ char *MakeTmpFolder(void) {
     strcpy(pt,Folder);
     return pt;
 }
+int MakeTmpFolderInHome(char *Tfolder) {
+  int Fstat = 0;
+  sprintf(Tfolder,"%-s/%-d",getenv("HOME"),getpid());
+  if(!FileStat(Tfolder)) {
+    mkdir(Tfolder,0700);
+    printf("Created: %s\n",Tfolder);
+    Fstat=1;
+  }
+  return Fstat;
+}

@@ -19,10 +19,63 @@ int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
 
 extern MEDIAINFO Minfo;
 
+int JoinWavFiles(char *infile1,char *infile2,char *outfile) {
+  char buff[4098];
+  union HEADER {char raw[256];int data[64];} header1,header2;
+  FILE *fp,*fp2,*of;
+  char *dpt;
+  int ir,i,j,ln,ln2;
+  int *ipt;
+  int data,chnk1;
+  ln = GetWavHeaderLength(infile1);
+  if(ln==0) return 0;
+  fp = fopen(infile1,"r");
+  if(fp==NULL) return 0;
+  fread(header1.raw,1,ln,fp);
+  ipt = (int *)(header1.raw+ln-4);
+  data = *ipt;
+  chnk1 = header1.data[1];
+    ln2 = GetWavHeaderLength(infile2);
+    if(ln2==0) return 0;
+    fp2 = fopen(infile2,"r");
+    if(fp2==NULL) return 0;
+    fread(header2.raw,1,ln2,fp2);
+    ipt = (int *)(header2.raw+ln2-4);
+    data += (*ipt);
+    chnk1 += (*ipt);
+    fclose(fp2);
+  ipt = (int *)(header1.raw+ln-4);
+  *ipt= data;
+  header1.data[1]=chnk1;
+  of = fopen(outfile,"w");
+  fwrite(header1.raw,1,ln,of);
+  while( (ir=fread(buff,1,4098,fp))==4098) {
+    fwrite(buff,1,4098,of);
+  }
+  if(ir> 0) fwrite(buff,1,ir,of);
+  fclose(fp);
+  fclose(of);
+  return 1;
+}
 
+int AddSilenceAtStart(char *infile,float duration,char *outfile) {
+  char command[500],Tfolder[300],Atmp1[200],Atmp2[200];
+  int Fstat=0;
+  Fstat = MakeTmpFolderInHome(Tfolder);
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Atmp1,"wav");
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Atmp2,"wav");
+  sprintf(command,"ffmpegfun -ar 44100  -f s32le -acodec pcm_s32le "
+        " -ac 2 -i /dev/zero -acodec pcm_s32le -t %f  %s",
+         duration,Atmp1);
+  runfunction(command,ProcessPrint,ffmpegfun);
+  JoinWavFiles(Atmp1,infile,outfile);
+//  if(Fstat) kgCleanDir(Tfolder);
+  return 1;
+}
 int AudioExtract(char *infile,char *outfile) {
    char buff[500];
-   sprintf(buff,"ffmpegfun -y -i %s -vn -ac 2 %s", infile,outfile);
+//   sprintf(buff,"ffmpegfun -y -i %s -vn -ac 2 -ar 44100 -acodec aac %s", infile,outfile);
+   sprintf(buff,"ffmpegfun -y -i %s -vn -ac 2 -ar 44100 -f s32le -acodec pcm_s32le  %s", infile,outfile);
    runfunction(buff,NULL,ffmpegfun);
    return 1;
 }
@@ -417,6 +470,23 @@ int GetFirstFrame(char *infile,char *outfile) {
    RunAndWait(buff);
    return 1;
 }
+int GetLastFrame(char *infile,char *outfile) {
+   char buff[500],tbuff[30];;
+   int hr=0,mi=0;
+   float sec;
+   MEDIAINFO *mt = GetMediaInfo(infile);
+   if(mt->Video != 1) {free(mt);return 0;}
+   free(mt);
+   sec = mt->TotSec;
+   mi = (int)(sec)/60;
+   sec = sec - mi*60;
+   hr = mi/60;
+   mi = mi - hr*60;
+   sprintf(tbuff,"%-d:%-d:%-.3f",hr,mi,sec-0.1);
+   sprintf(buff,"ffmpegfun  -y  -ss %s  -i %s -frames:v 1 %s",tbuff,infile,outfile);
+   RunAndWait(buff);
+   return 1;
+}
 int JoinTwoVideos(char *infile1,char *infile2,char *outfile){
    char buff[500],Tmp[100],Txt[100];
    strcpy(Tmp,(char *)"/tmp");
@@ -427,19 +497,34 @@ int JoinTwoVideos(char *infile1,char *infile2,char *outfile){
    return 1;
 }
 int AddStillAtStart(char *infile,float  duration,char *outfile) {
-   char buff[500],Tmp[100],Ffile[200],Sfile[500];
-   MEDIAINFO *mpt;
+   char buff[500],Tmp[100],Ffile[200],Sfile[500],
+              Afile[300],NAfile[300],Tfolder[300];
+   MEDIAINFO *mpt,*mtmp;
+   int Fstat=1;
    mpt = GetMediaInfo(infile);
-   if(mpt->Video != 1) return 0;
-   strcpy(Tmp,(char *)"/tmp");
-   MakeFileInFolder(infile,Tmp,Ffile,(char *)"png");
+   if(mpt->Video != 1){free(mpt); return 0;}
+   sprintf(Tfolder,"%-s/%-d",getenv("HOME"),getpid());
+   if(!FileStat(Tfolder)) {
+    mkdir(Tfolder,0700);
+    printf("Created: %s\n",Tfolder);
+    Fstat=0;
+   }
+   MakeFileInFolder("/tmp/Audio.wav",Tfolder,Afile,(char *)"wav");
+   MakeFileInFolder("/tmp/Audio.wav",Tfolder,NAfile,(char *)"wav");
+   MakeFileInFolder(infile,Tfolder,Ffile,(char *)"png");
    GetFirstFrame(infile,Ffile);  
-   MakeFileInFolder(infile,Tmp,Sfile,(char *)"mp4");
+   MakeFileInFolder(infile,Tfolder,Sfile,(char *)"mp4");
    CreateStillVideo(Ffile,duration,mpt->fps,Sfile);
-   JoinTwoVideos(Sfile,infile,outfile);   
-   remove(Ffile);
-   remove(Sfile);
-  free(mpt);
-  mpt = NULL;
-  return 1;
+   mtmp = GetMediaInfo(Sfile);
+   AddSilenceAtStart(Afile,mtmp->TotSec,NAfile);
+   free(mtmp);   
+   MakeFileInFolder(infile,Tfolder,Ffile,(char *)"mp4");
+   JoinTwoVideos(Sfile,infile,Ffile);   
+   AudioChange(Ffile,NAfile,outfile);
+//   remove(Ffile);
+//   remove(Sfile);
+   free(mpt);
+   mpt = NULL;
+//   if(!Fstat)kgCleanDir(Tfolder);
+   return 1;
 }
