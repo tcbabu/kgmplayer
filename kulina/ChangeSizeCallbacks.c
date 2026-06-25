@@ -155,6 +155,7 @@ int ChangeSizeCSgocallback( int butno,int i,void *Tmp) {
       sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,setsar=1,fps=%-d\" -c:v libx265 %s",
          Infile,(Xres/2)*2,(Yres/2)*2,fs,Vfile);
       kgWrite(I,buff);
+      kgWrite(I,"!c01Processing.. PL WAIT\n");
       RunMonitorAndWait(buff);
       kgWrite(I,"Changing  Audio...\n");
       AudioChange(Vfile,Afile,kgGetString(TO,0));
@@ -162,12 +163,13 @@ int ChangeSizeCSgocallback( int butno,int i,void *Tmp) {
       kgWrite(I,"!c02JOB FINISHED...\n");
   }
   else {
-     sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,setsar=1,fps=%-d\" -c:v libx265 %s",
-       kgGetString(TI,0),(Xres/2)*2,(Yres/2)*2,fs,kgGetString(TO,0));
-     kgWrite(I,buff);
-     RunMonitorAndWait(buff);
- //  runfunction(buff,ProcessPrint,ffmpegfun);
-     kgWrite(I,"!c02JOB FINISHED...\n");
+      sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,setsar=1,fps=%-d\" -c:v libx265 %s",
+         kgGetString(TI,0),(Xres/2)*2,(Yres/2)*2,fs,kgGetString(TO,0));
+      kgWrite(I,buff);
+      kgWrite(I,"!c01Processing.. PL WAIT\n");
+      RunMonitorAndWait(buff);
+ //   runfunction(buff,ProcessPrint,ffmpegfun);
+      kgWrite(I,"!c02JOB FINISHED...\n");
   }
   return ret;
 }
