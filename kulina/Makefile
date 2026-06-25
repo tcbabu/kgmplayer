@@ -49,9 +49,9 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Silence.o SilenceCallbacks.o \
 	 acap.o acapCallbacks.o \
 	 CaptureAudio.o CaptureAudioCallbacks.o \
-	 vtobw.o vtobwCallbacks.o \
-	 vflip.o vflipCallbacks.o \
-	 hflip.o hflipCallbacks.o \
+	 Vtobw.o VtobwCallbacks.o \
+	 Vflip.o VflipCallbacks.o \
+	 Hflip.o HflipCallbacks.o \
 	 slice.o sliceCallbacks.o \
 	 ToolHelp.o ToolHelpCallbacks.o \
 	 HelpButn.o HelpButnCallbacks.o \
@@ -125,9 +125,9 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Silence.o SilenceCallbacks.o \
 	 acap.o acapCallbacks.o \
 	 CaptureAudio.o CaptureAudioCallbacks.o \
-	 vtobw.o vtobwCallbacks.o \
-	 vflip.o vflipCallbacks.o \
-	 hflip.o hflipCallbacks.o \
+	 Vtobw.o VtobwCallbacks.o \
+	 Vflip.o VflipCallbacks.o \
+	 Hflip.o HflipCallbacks.o \
 	 slice.o sliceCallbacks.o \
 	 ToolHelp.o ToolHelpCallbacks.o \
 	 HelpButn.o HelpButnCallbacks.o \
@@ -332,18 +332,18 @@ CaptureAudio.o		: CaptureAudio.c
 	 	$(CC) -c CaptureAudio.c
 CaptureAudoCallbacks.o		: CaptureAudoCallbacks.c
 	 	$(CC) -c CaptureAudoCallbacks.c
-vtobw.o		: vtobw.c
-		 $(CC) -c vtobw.c
-vtobwCallbacks.o	: vtobwCallbacks.c
-		$(CC) -c vtobwCallbacks.c
-vflip.o		: vflip.c
-		 $(CC) -c vflip.c
-vflipCallbacks.o	: vflipCallbacks.c
-		$(CC) -c vflipCallbacks.c
-hflip.o		: hflip.c
-		 $(CC) -c hflip.c
-hflipCallbacks.o	: hflipCallbacks.c
-		$(CC) -c hflipCallbacks.c
+Vtobw.o		: Vtobw.c
+		 $(CC) -c Vtobw.c
+VtobwCallbacks.o	: VtobwCallbacks.c
+		$(CC) -c VtobwCallbacks.c
+Vflip.o		: Vflip.c
+		 $(CC) -c Vflip.c
+VflipCallbacks.o	: VflipCallbacks.c
+		$(CC) -c VflipCallbacks.c
+Hflip.o		: Hflip.c
+		 $(CC) -c Hflip.c
+HflipCallbacks.o	: HflipCallbacks.c
+		$(CC) -c HflipCallbacks.c
 slice.o		: slice.c
 		 $(CC) -c slice.c
 sliceCallbacks.o	: sliceCallbacks.c

@@ -1,0 +1,18 @@
+int HflipHFLIPinputcallback(int cellno,int i,void *Tmp) ;
+int HflipHFLIPinputbrowsecallback(int butno,int i,void *Tmp) ;
+void  HflipHFLIPinputbrowseinit (DIN *B,void *pt) ;
+int HflipHFLIPgocallback(int butno,int i,void *Tmp) ;
+void  HflipHFLIPgoinit (DIL *B,void *pt) ;
+int HflipHFLIPoutcallback(int cellno,int i,void *Tmp) ;
+int HflipHFLIPOutbrowsecallback(int butno,int i,void *Tmp) ;
+void  HflipHFLIPOutbrowseinit (DIN *B,void *pt) ;
+int Hflipinit(void *Tmp) ;
+int Hflipcleanup(void *Tmp) ;
+void *RunHflip(void *,void *) ;
+int MakeHflipGroup(DIALOG *,void *) ;
+void * HflipAction(void *,void *) ;
+int HflipSetup(void *Tmp,void *args) ;
+int ModifyHflip(void *Tmp,int GrpId) ;
+int HflipCallBack(void *Tmp,void *tmp) ;
+int HflipResizeCallBack(void *Tmp) ;
+int HflipWaitCallBack(void *Tmp) ;

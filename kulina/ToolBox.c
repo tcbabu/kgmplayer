@@ -38,9 +38,9 @@ int MakeCaptureAudioGroup(DIALOG *D,void *arg);
 int MakeMakeCutsGroup(DIALOG *D,void *arg);
 int Makeimgs2vGroup(DIALOG *D,void *arg);
 int MakenormalizeGroup(DIALOG *D,void *arg);
-int MakevtobwGroup(DIALOG *D,void *arg);
-int MakevflipGroup(DIALOG *D,void *arg);
-int MakehflipGroup(DIALOG *D,void *arg);
+int MakeVtobwGroup(DIALOG *D,void *arg);
+int MakeVflipGroup(DIALOG *D,void *arg);
+int MakeHflipGroup(DIALOG *D,void *arg);
 int MakesliceGroup(DIALOG *D,void *arg);
 int MakeNormaliseGroup(DIALOG *D,void *arg);
 int MakeLoudnormGroup(DIALOG *D,void *arg);
@@ -225,13 +225,13 @@ TOOLGRP ToolList[ ] = {
   { 0, MakeVideoInfoGroup,"!f23Show Video Information",346,40,RunHelper,0,
        "Displays information about Video file.\n"
   },
-  { 0, MakevtobwGroup,"!f23Convert Video to Black&White", 346,40 ,RunHelper,0,
+  { 0, MakeVtobwGroup,"!f23Convert Video to Black&White", 346,40 ,RunHelper,0,
        "\n\n\nConverts a video to gray scale or Balck&White.\n"
   },
-  { 0, MakevflipGroup,"!f23Vertically flip Video", 346,40,RunHelper,0,
+  { 0, MakeVflipGroup,"!f23Vertically flip Video", 346,40,RunHelper,0,
        "\n\n\nFlips each frame vertically.\n"
   },
-  { 0, MakehflipGroup,"!f23Horizontaly flip Video", 346,40,RunHelper,0,
+  { 0, MakeHflipGroup,"!f23Horizontaly flip Video", 346,40,RunHelper,0,
        "\n\n\nFlips each frame Horizontally.\n"
   },
   { 0, MakesliceGroup,"!f23Make slices of Video", 346,40,RunHelper,0,

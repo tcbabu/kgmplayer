@@ -1,0 +1,18 @@
+int VflipVFLIPinputcallback(int cellno,int i,void *Tmp) ;
+int VflipVFLIPinputbrowsecallback(int butno,int i,void *Tmp) ;
+void  VflipVFLIPinputbrowseinit (DIN *B,void *pt) ;
+int VflipVFLIPgocallback(int butno,int i,void *Tmp) ;
+void  VflipVFLIPgoinit (DIL *B,void *pt) ;
+int VflipVFLIPoutcallback(int cellno,int i,void *Tmp) ;
+int VflipVFLIPOutbrowsecallback(int butno,int i,void *Tmp) ;
+void  VflipVFLIPOutbrowseinit (DIN *B,void *pt) ;
+int Vflipinit(void *Tmp) ;
+int Vflipcleanup(void *Tmp) ;
+void *RunVflip(void *,void *) ;
+int MakeVflipGroup(DIALOG *,void *) ;
+void * VflipAction(void *,void *) ;
+int VflipSetup(void *Tmp,void *args) ;
+int ModifyVflip(void *Tmp,int GrpId) ;
+int VflipCallBack(void *Tmp,void *tmp) ;
+int VflipResizeCallBack(void *Tmp) ;
+int VflipWaitCallBack(void *Tmp) ;

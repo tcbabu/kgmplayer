@@ -1,0 +1,18 @@
+int VtobwVBWinputcallback(int cellno,int i,void *Tmp) ;
+int VtobwVBWinputbrowsecallback(int butno,int i,void *Tmp) ;
+void  VtobwVBWinputbrowseinit (DIN *B,void *pt) ;
+int VtobwVBWgocallback(int butno,int i,void *Tmp) ;
+void  VtobwVBWgoinit (DIL *B,void *pt) ;
+int VtobwVBWoutcallback(int cellno,int i,void *Tmp) ;
+int VtobwVBWOutbrowsecallback(int butno,int i,void *Tmp) ;
+void  VtobwVBWOutbrowseinit (DIN *B,void *pt) ;
+int Vtobwinit(void *Tmp) ;
+int Vtobwcleanup(void *Tmp) ;
+void *RunVtobw(void *,void *) ;
+int MakeVtobwGroup(DIALOG *,void *) ;
+void * VtobwAction(void *,void *) ;
+int VtobwSetup(void *Tmp,void *args) ;
+int ModifyVtobw(void *Tmp,int GrpId) ;
+int VtobwCallBack(void *Tmp,void *tmp) ;
+int VtobwResizeCallBack(void *Tmp) ;
+int VtobwWaitCallBack(void *Tmp) ;
