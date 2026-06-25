@@ -132,23 +132,42 @@ int ChangeSizeCSgocallback( int butno,int i,void *Tmp) {
   DIT *TF = (DIT *)kgGetNamedWidget(Tmp,(char *)"CSFps");
   char buff[500];
   int Xres,Yres,fs;
+  char Infile[300],Afile[300],Vfile[300];
   Xres = kgGetInt(T,0);
   Yres = kgGetInt(T,1);
   fs = kgGetInt(TF,0);
   DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"CSIbox");
   sprintf (buff,"Xres : %d Yres :%d\n",Xres,Yres);
   kgWrite(I,buff);
+  strcpy(Infile,kgGetString(TI,0));
+  GetVideoInfo(Infile);
+  if(Minfo.Video==0) return 0;
   ret =0;
-  sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,setsar=1,fps=%-d\" -c:v libx265 %s",
+  if(Minfo.Audio) {
+      int Fstat=1;
+      char Folder[300];
+      sprintf(Folder,"%-s/%-d",getenv("HOME"),getpid());
+      if(FileStat(Folder) == 0) { mkdir(Folder,0700);Fstat=0;}
+      MakeFileInFolder("/tmp/Audio.wav",Folder,Afile,"wav");
+      MakeFileInFolder("/tmp/Video.mp4",Folder,Vfile,"mp4");
+      kgWrite(I,"Extracting Audio...\n");
+      AudioExtract(Infile,Afile);
+      sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,setsar=1,fps=%-d\" -c:v libx265 %s",
+         Infile,(Xres/2)*2,(Yres/2)*2,fs,Vfile);
+      kgWrite(I,buff);
+      RunMonitorAndWait(buff);
+      kgWrite(I,"Changing  Audio...\n");
+      AudioChange(Vfile,Afile,kgGetString(TO,0));
+      if(!Fstat) kgCleanDir(Folder);
+      kgWrite(I,"!c02JOB FINISHED...\n");
+  }
+  else {
+     sprintf(buff,"ffmpegfun -y  -i %s -vf \"scale=%d:%d:flags=lanczos,setsar=1,fps=%-d\" -c:v libx265 %s",
        kgGetString(TI,0),(Xres/2)*2,(Yres/2)*2,fs,kgGetString(TO,0));
-  kgWrite(I,buff);
-//  runfunction(buff,ProcessPrint,ffmpegfun);
-  RunAndMonitor(buff);
-  switch(butno) {
-    case 1: //  Go... 
-      break;
-    case 2: //  Okay 
-      break;
+     kgWrite(I,buff);
+     RunMonitorAndWait(buff);
+ //  runfunction(buff,ProcessPrint,ffmpegfun);
+     kgWrite(I,"!c02JOB FINISHED...\n");
   }
   return ret;
 }
