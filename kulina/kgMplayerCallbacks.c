@@ -1830,6 +1830,7 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
      char *pt,*ptr;
      float fps;
      int pos;
+     int Angle=0;
      Asp=0;
      Minfo.Video=Minfo.Audio=0;
      Minfo.TotSec=0;
@@ -1914,6 +1915,11 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
            else {strcpy(DAR,(char *)"?:?");}
               
          }
+         if( (pos=SearchString(buff,(char *)"rotation of"))>=0) {
+		 pos= pos+11;
+		 sscanf(buff+pos+1,"%f",&Minfo.rotation);
+		 printf("========>Rotation  %f\n",Minfo.rotation);
+	 }
          if( (pos=SearchString(buff,(char *)"rotate"))>=0) {
 		 pos=SearchString(buff,(char *)":");
 		 sscanf(buff+pos+1,"%f",&Minfo.rotation);
@@ -1925,6 +1931,14 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
 	 }
          
      }
+     Angle = fabsf(Minfo.rotation)+0.5;
+     if(Angle == 90 ) {
+       int rtmp;
+       rtmp = Minfo.Axres;
+       Minfo.Axres = Minfo.Ayres;
+       Minfo.Ayres = rtmp;
+     }
+       
      if(!Asp) {
        Minfo.AspectNu=Minfo.Rxres;
        Minfo.AspectDe=Minfo.Ryres;

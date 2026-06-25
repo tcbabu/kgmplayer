@@ -1,6 +1,7 @@
 #include <kulina.h>
 #include "VideoInfoCallbacks.h"
 #include "mediainfo.h"
+#include <math.h>
 
 static void *Args=NULL,*Rets=NULL;
 
@@ -116,12 +117,15 @@ int VideoInfoVIgetcallback( int butno,int i,void *Tmp) {
     case 1: //  Get Info 
 //      GetVideoInfo(FileName);      
       mpt = GetMediaInfo(FileName);
-      sprintf(buff,"Xres x Yres : %d x %d\n",mpt->Axres,mpt->Ayres);
+      if((int)(fabsf(mpt->rotation)+0.5) ==90 ) 
+         sprintf(buff,"Xres x Yres : %d x %d (rotated)\n",mpt->Axres,mpt->Ayres);
+      else sprintf(buff,"Xres x Yres : %d x %d\n",mpt->Axres,mpt->Ayres); 
       kgWrite(I,buff);
       sprintf(buff,"FPS : %.3f Audio: %d Vcodec: %s \n",
             mpt->fps,mpt->Audio,mpt->vcodectype);
       kgWrite(I,buff);
-      sprintf(buff,"Duration : %.2f SAR: %s DAR: %s\n",mpt->TotSec,mpt->SAR,mpt->DAR);
+      sprintf(buff,"Duration : %.2f SAR: %s DAR: %s Rotation: %.2f \n",
+           mpt->TotSec,mpt->SAR,mpt->DAR,mpt->rotation);
       kgWrite(I,buff);
       ret = 0;
       free(mpt);
