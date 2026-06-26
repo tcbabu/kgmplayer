@@ -54,6 +54,12 @@ int ProcessData(int pip0,int pip1,int Pid);
 int ResetGrpVis(void *Tmp);
 int MakeTmpFolderInHome(char *Tfolder);
 int GetWavHeaderLength(char *flname);
-int JoinWavFiles(char *infile1,char *infile2,char *outfile);
+int AudioToWav(char *infile,char *outfile) ;
+int AudioReformat(char *infile,char *outfile) ;
+int CreateSilentAudio(float duration,char *outfile) ;
+int JoinTwoAudio(char *infile1,char *infile2,char *outfile) ;
+int AddSilenceAtStart(char *infile,float duration,char *outfile) ;
+int GetTimeString(float duration,char *Tstring);
+ int RunAddStillAtStart(int argc,char **argv);
 #endif
 

@@ -19,25 +19,157 @@ int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
 
 extern MEDIAINFO Minfo;
 
-int JoinWavFiles(char *infile1,char *infile2,char *outfile) {
+
+int AudioToWav(char *infile,char *outfile) {
+  char command[500];
+  fprintf(stderr,"Inside AudioToWav: %s %s\n",infile,outfile); 
+  sprintf(command,"ffmpegfun -i \"%s\" -vn -aq 2 -ac 2 -ar 44100 "
+         "-acodec pcm_s32le -y %s",
+         infile, outfile);
+//  printf("%s\n",command);
+  runfunction(command,ProcessPrint,ffmpegfun);
+  return 1;
+}
+
+
+int AudioReformat(char *infile,char *outfile) {
+     char command[500];
+     char Qstr[50];
+     Qstr[0]='\0';
+
+     if(kgSearchString(outfile,(char *)".aac")>=0) {
+       sprintf(Qstr," -c:a libfdk_aac ");
+     }
+     if(kgSearchString(outfile,(char *)".mp3")>=0) {
+       sprintf(Qstr," -c:a libmp3lame -aq 0  ");
+     }
+     sprintf(command,"ffmpegfun -y   -i %-s -vn "
+        " -ac 2 %s  \"%-s\" ", infile ,Qstr,outfile);
+//        printf("%s\n",command);
+     runfunction(command,ProcessPrint,ffmpegfun);
+     return 1;
+}
+int GetTimeString(float duration,char *Tstring){
+  int hr,mi;
+  float sec;
+   sec = duration;
+   mi = (int)(sec)/60;
+   sec = sec - mi*60;
+   hr = mi/60;
+   mi = mi - hr*60;
+  sprintf(Tstring," %-d:%-d:%-.3f ",hr,mi,sec);
+  return 1;
+}
+int CreateSilentAudio(float duration,char *outfile) {
+  char command[500];
+  char Tstring[30];
+  GetTimeString(duration,Tstring);
+  sprintf(command,"ffmpegfun -y -ar 44100  -f s32le -acodec pcm_s32le "
+        " -ac 2 -i /dev/zero -acodec pcm_s32le -t %s  %s",
+         Tstring,outfile);
+  runfunction(command,ProcessPrint,ffmpegfun);
+  return 1;
+}
+
+
+
+int JoinTwoAudio(char *infile1,char *infile2,char *outfile) {
   char buff[4098];
+  char Tfolder[300],Afile1[300],Afile2[300],Afile3[300];
+  int count =2;
+  int Fstat =0;
+  Fstat = MakeTmpFolderInHome(Tfolder);
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Afile1,"wav");
   union HEADER {char raw[256];int data[64];} header1,header2;
   FILE *fp,*fp2,*of;
   char *dpt;
   int ir,i,j,ln,ln2;
   int *ipt;
   int data,chnk1;
-  ln = GetWavHeaderLength(infile1);
+  AudioToWav(infile1,Afile1);
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Afile2,"wav");
+  AudioToWav(infile2,Afile2);
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Afile3,"wav");
+  sprintf(buff,"%-s",Afile1);
+  ln = GetWavHeaderLength(buff);
   if(ln==0) return 0;
-  fp = fopen(infile1,"r");
+  fp = fopen(buff,"r");
   if(fp==NULL) return 0;
   fread(header1.raw,1,ln,fp);
   ipt = (int *)(header1.raw+ln-4);
   data = *ipt;
   chnk1 = header1.data[1];
-    ln2 = GetWavHeaderLength(infile2);
+  for(i=1;i<count;i++) {
+    sprintf(buff,"%-s",Afile2);
+    ln2 = GetWavHeaderLength(buff);
+    if(ln2==0) continue;
+    fp2 = fopen(buff,"r");
+    if(fp2==NULL) return 0;
+    fread(header2.raw,1,ln2,fp2);
+    ipt = (int *)(header2.raw+ln2-4);
+    data += (*ipt);
+    chnk1 += (*ipt);
+    fclose(fp2);
+//    for(j=0;j<11;j++) printf("%d ",header1.data[j]);
+//    printf("\n");
+  }
+  ipt = (int *)(header1.raw+ln-4);
+  *ipt= data;
+  header1.data[1]=chnk1;
+  sprintf(buff,"%-s",Afile3);
+  of = fopen(buff,"w");
+  fwrite(header1.raw,1,ln,of);
+  while( (ir=fread(buff,1,4098,fp))==4098) {
+    fwrite(buff,1,4098,of);
+  }
+  if(ir> 0) fwrite(buff,1,ir,of);
+  for(i=1;i<count;i++) {
+    sprintf(buff,"%-s",Afile2);
+    ln2 = GetWavHeaderLength(buff);
+    if(ln2==0) continue;
+    fp2 = fopen(buff,"r");
+    if(fp2==NULL) return 0;
+    fread(header2.raw,1,ln2,fp2);
+    while( (ir=fread(buff,1,4098,fp2))==4098) {
+      fwrite(buff,1,4098,of);
+    }
+    if(ir> 0) fwrite(buff,1,ir,of);
+    fclose(fp2);
+  }
+  fclose(fp);
+  fclose(of);
+  AudioReformat(Afile3,outfile);
+  if(Fstat)kgCleanDir(Tfolder);
+  return 1;
+}
+
+int JoinWavFiles_bak(char *infile1,char *infile2,char *outfile) {
+  char buff[4098];
+  union HEADER {char raw[256];int data[64];} header1,header2;
+  FILE *fp,*fp2,*of;
+  char *dpt;
+  char Tfolder[300],Afile1[300],Afile2[300],Afile3[300];
+  int Fstat=0;
+  Fstat = MakeTmpFolderInHome(Tfolder);
+  int ir,i,j,ln,ln2;
+  int *ipt;
+  int data,chnk1;
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Afile1,"wav");
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Afile2,"wav");
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Afile3,"wav");
+  AudioToWav(infile1,Afile1);
+  AudioToWav(infile2,Afile2);
+  ln = GetWavHeaderLength(Afile1);
+  if(ln==0) return 0;
+  fp = fopen(Afile1,"r");
+  if(fp==NULL) return 0;
+  fread(header1.raw,1,ln,fp);
+  ipt = (int *)(header1.raw+ln-4);
+  data = *ipt;
+  chnk1 = header1.data[1];
+    ln2 = GetWavHeaderLength(Afile2);
     if(ln2==0) return 0;
-    fp2 = fopen(infile2,"r");
+    fp2 = fopen(Afile2,"r");
     if(fp2==NULL) return 0;
     fread(header2.raw,1,ln2,fp2);
     ipt = (int *)(header2.raw+ln2-4);
@@ -47,7 +179,7 @@ int JoinWavFiles(char *infile1,char *infile2,char *outfile) {
   ipt = (int *)(header1.raw+ln-4);
   *ipt= data;
   header1.data[1]=chnk1;
-  of = fopen(outfile,"w");
+  of = fopen(Afile3,"w");
   fwrite(header1.raw,1,ln,of);
   while( (ir=fread(buff,1,4098,fp))==4098) {
     fwrite(buff,1,4098,of);
@@ -55,28 +187,31 @@ int JoinWavFiles(char *infile1,char *infile2,char *outfile) {
   if(ir> 0) fwrite(buff,1,ir,of);
   fclose(fp);
   fclose(of);
+  AudioReformat(Afile3,outfile);
+  if(Fstat)kgCleanDir(Tfolder);
   return 1;
 }
 
 int AddSilenceAtStart(char *infile,float duration,char *outfile) {
-  char command[500],Tfolder[300],Atmp1[200],Atmp2[200];
+  char command[500],Tfolder[300],Atmp1[200];
   int Fstat=0;
+  char Tstring[50];
+  GetTimeString(duration,Tstring);
   Fstat = MakeTmpFolderInHome(Tfolder);
   MakeFileInFolder("/tmp/Audio.wav",Tfolder,Atmp1,"wav");
-  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Atmp2,"wav");
-  sprintf(command,"ffmpegfun -ar 44100  -f s32le -acodec pcm_s32le "
-        " -ac 2 -i /dev/zero -acodec pcm_s32le -t %f  %s",
-         duration,Atmp1);
+  sprintf(command,"ffmpegfun -y -ar 44100 -f s32le  -acodec pcm_s32le "
+        " -ac 2 -i /dev/zero -acodec pcm_s32le -t %s  %s",
+         Tstring,Atmp1);
   runfunction(command,ProcessPrint,ffmpegfun);
-  JoinWavFiles(Atmp1,infile,outfile);
-//  if(Fstat) kgCleanDir(Tfolder);
+  JoinTwoAudio(Atmp1,infile,outfile);
+  if(Fstat) kgCleanDir(Tfolder);
   return 1;
 }
 int AudioExtract(char *infile,char *outfile) {
    char buff[500];
-//   sprintf(buff,"ffmpegfun -y -i %s -vn -ac 2 -ar 44100 -acodec aac %s", infile,outfile);
-   sprintf(buff,"ffmpegfun -y -i %s -vn -ac 2 -ar 44100 -f s32le -acodec pcm_s32le  %s", infile,outfile);
-   runfunction(buff,NULL,ffmpegfun);
+ //  sprintf(buff,"ffmpegfun -y -i %s -vn -ac 2 -ar 44100 -acodec aac %s", infile,outfile);
+   sprintf(buff,"ffmpegfun -y -i %s -vn -ac 2 -ar 44100 -acodec pcm_s32le  %s", infile,outfile);
+   runfunction(buff,ProcessPrint,ffmpegfun);
    return 1;
 }
 int AudioChange(char *media,char *audio,char *outfile) {
@@ -220,12 +355,7 @@ int OverlayVideos(char *base,char *olay,int Qty,char *outfile) {
   int Fstat=1;
   int cx =0,cy=0;
   double cxfact=1.0,cyfact=1.0;
-  sprintf(Tfolder,"%-s/%-d",getenv("HOME"),getpid());
-  if(!FileStat(Tfolder)) {
-    mkdir(Tfolder,0700);
-    printf("Created: %s\n",Tfolder);
-    Fstat=0;
-  }
+  Fstat = MakeTmpFolderInHome(Tfolder);
   printf("Inside OverlayVideos\n");
   fflush(stdout);
   strcpy(Otmp,olay);
@@ -342,7 +472,7 @@ int OverlayVideos(char *base,char *olay,int Qty,char *outfile) {
   printf("buff : %s\n",buff);
   fflush(stdout);
   runfunction(buff,ProcessPrint,ffmpegfun);
-  if(Fstat==0) kgCleanDir(Tfolder);
+  if(Fstat) kgCleanDir(Tfolder);
 #if 0
   if(Tmp1[0] != '\0') remove(Tmp1);
   if(Tmp3[0] != '\0') remove(Tmp2);
@@ -365,12 +495,7 @@ int OverlayToSize(int Bxres,int Byres,float fs,int Qty,char *olay,char *outfile)
   char buff[500],Tmpbase[300],base[300];
   char Tfolder[300],Tmpfile[300],Afile[300];;
   int Fstat=1,Audio=1;
-  sprintf(Tfolder,"%-s/%-d",getenv("HOME"),getpid());
-  if(!FileStat(Tfolder)) {
-    mkdir(Tfolder,0700);
-    printf ("Created : %s\n",Tfolder);
-    Fstat=0;
-  }
+  Fstat = MakeTmpFolderInHome(Tfolder);
   MakeFileInFolder("/tmp/Blank.mp4",Tfolder,Tmpfile,"mp4");
   printf("Tmpfile: %s: %s\n",Tmpfile,olay);
   fflush(stdout);
@@ -399,7 +524,7 @@ int OverlayToSize(int Bxres,int Byres,float fs,int Qty,char *olay,char *outfile)
   }
   printf("OverlayVideos: %s\n",outfile);
   fflush(stdout);
-  if(Fstat==0) kgCleanDir(Tfolder);
+  if(Fstat) kgCleanDir(Tfolder);
   return 1;
 }
 
@@ -421,22 +546,19 @@ int RunOverlayToSize(int argc,char **argv) {
 }
 int CreateStillVideo(char *infile,float duration,float fps,char *outfile) {
     char buff[500];
-    sprintf(buff,"ffmpegfun  -y  -loop 1 -i %s  -t %.2f -f mp4  -vf fps=%-.3f -vcodec libx264  %s",
-      infile,duration,fps,outfile);
+  char Tstring[50];
+  GetTimeString(duration,Tstring);
+    sprintf(buff,"ffmpegfun  -y  -loop 1 -i %s  -t %s -f mp4  -vf fps=%-.3f -vcodec libx264  %s",
+      infile,Tstring,fps,outfile);
     runfunction(buff,NULL,ffmpegfun);
     return 1;
 }
 int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile) {
     char buff[500],Infile[300], folder[300],Tmpfile[300];
     int Fstat=1;
-    sprintf(folder,"%-s/%-d",getenv("HOME"),getpid());
-    if(!FileStat(folder)) {
-      mkdir(folder,0700);
-      printf("Created: %s\n",folder);
-      sleep(5);
-      Fstat=0;
-    }
-    else printf("Folder %s exists..\n");
+  char Tstring[50];
+  GetTimeString(duration,Tstring);
+  Fstat = MakeTmpFolderInHome(folder);
     MakeFileInFolder(outfile,folder,Infile,"png");
     printf("Image: %s : %s %f %f \n",Infile,outfile,duration,fps);
     fflush(stdout);
@@ -452,8 +574,8 @@ int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile)
     if(FileStat(Infile))printf("Created Image: %s\n",Infile);
     else printf("Failed to Create %s\n",Infile);
     fflush(stdout);
-    sprintf(buff,"ffmpegfun  -y  -loop 1 -i %s  -t %.2f -f mp4 -vf fps=%-.3f -vcodec libx264  %s",
-      Infile,duration,fps,outfile);
+    sprintf(buff,"ffmpegfun  -y  -loop 1 -i %s  -t %s -f mp4 -vf fps=%-.3f -vcodec libx264  %s",
+      Infile,Tstring,fps,outfile);
     printf("%s\n",buff);
     fflush(stdout);
     runfunction(buff,ProcessPrint,ffmpegfun);
@@ -461,12 +583,12 @@ int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile)
     if(FileStat(outfile))printf("created BLANK VIDEO: %s  sleeping..\n",outfile);
     else printf("Failed tp create %s\n",outfile);
     fflush(stdout);
-    if(Fstat==0) kgCleanDir(folder);
+    if(Fstat) kgCleanDir(folder);
     return 1;
 }
 int GetFirstFrame(char *infile,char *outfile) {
    char buff[500];
-   sprintf(buff,"ffmpegfun  -y  -ss 00:00:0.1 -i %s -frames:v 1 %s",infile,outfile);
+   sprintf(buff,"ffmpegfun  -y  -ss 00:00:0.01 -i %s -frames:v 1 %s",infile,outfile);
    RunAndWait(buff);
    return 1;
 }
@@ -503,19 +625,15 @@ int AddStillAtStart(char *infile,float  duration,char *outfile) {
    int Fstat=1;
    mpt = GetMediaInfo(infile);
    if(mpt->Video != 1){free(mpt); return 0;}
-   sprintf(Tfolder,"%-s/%-d",getenv("HOME"),getpid());
-   if(!FileStat(Tfolder)) {
-    mkdir(Tfolder,0700);
-    printf("Created: %s\n",Tfolder);
-    Fstat=0;
-   }
-   MakeFileInFolder("/tmp/Audio.wav",Tfolder,Afile,(char *)"wav");
-   MakeFileInFolder("/tmp/Audio.wav",Tfolder,NAfile,(char *)"wav");
+  Fstat = MakeTmpFolderInHome(Tfolder);
    MakeFileInFolder(infile,Tfolder,Ffile,(char *)"png");
    GetFirstFrame(infile,Ffile);  
    MakeFileInFolder(infile,Tfolder,Sfile,(char *)"mp4");
    CreateStillVideo(Ffile,duration,mpt->fps,Sfile);
    mtmp = GetMediaInfo(Sfile);
+   MakeFileInFolder("/tmp/Audio.wav",Tfolder,Afile,(char *)"wav");
+   AudioExtract(infile,Afile);
+   MakeFileInFolder("/tmp/Audio.wav",Tfolder,NAfile,(char *)"wav");
    AddSilenceAtStart(Afile,mtmp->TotSec,NAfile);
    free(mtmp);   
    MakeFileInFolder(infile,Tfolder,Ffile,(char *)"mp4");
@@ -525,6 +643,11 @@ int AddStillAtStart(char *infile,float  duration,char *outfile) {
 //   remove(Sfile);
    free(mpt);
    mpt = NULL;
-//   if(!Fstat)kgCleanDir(Tfolder);
+   if(Fstat)kgCleanDir(Tfolder);
    return 1;
 }
+ int RunAddStillAtStart(int argc,char **argv) {
+    float duration;
+    sscanf(argv[2],"%f",&duration);
+    return AddStillAtStart(argv[1],duration,argv[3]);
+ }

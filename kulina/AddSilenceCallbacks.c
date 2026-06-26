@@ -458,6 +458,8 @@ int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext) {
    strcat(buff,ext);
 #endif
    strcpy(Outfile,buff);
+   FILE *fp = fopen(Outfile,"w");
+   fclose(fp);
    return 1;
 }
 int  AddSilencebutton2callback(int butno,int i,void *Tmp) {

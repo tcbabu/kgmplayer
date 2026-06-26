@@ -1,5 +1,6 @@
 #include <kulina.h>
 #include "AddStillCallbacks.h"
+#include "kgutils.h"
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int FileStat(char *flname);
 int kgffmpeg(int,char **);
@@ -117,7 +118,10 @@ int AddStillASVgocallback( int butno,int i,void *Tmp) {
   sprintf (buff,"Adding Still Video..\n");
   kgWrite(I,buff);
   ret =0;
-  AddStillAtStart(kgGetString(T,0),(float)kgGetDouble(TD,0),kgGetString(TO,0));
+//  AddStillAtStart(kgGetString(T,0),(float)kgGetDouble(TD,0),kgGetString(TO,0));
+  sprintf(buff,"RunAddStillAtStart %s %-.3f %s",
+      kgGetString(T,0),(float)kgGetDouble(TD,0),kgGetString(TO,0));
+  RunFunctionAndWait(buff,RunAddStillAtStart);
   return ret;
 }
 void  AddStillASVgoinit (DIL *B,void *ptmp) {
