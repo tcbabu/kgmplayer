@@ -295,7 +295,7 @@ TOOLGRP ToolList[ ] = {
        "quality video for cartoons\n"
        "Another tool is there for making video from frames.\n"
   },
-  { 0, MakeAddStillGroup,"!f23Add Still to Video at start ", 346,40,RunHelper,0,
+  { 0, MakeAddStillGroup,"!f23Add Still to Video at Start/End ", 346,40,RunHelper,0,
        "Adds a still in video for a given time in seconds\n"
        "Probably useful in arraging multiple videos together.\n"
   },

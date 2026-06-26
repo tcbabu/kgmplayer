@@ -59,14 +59,14 @@ int AddStillGroup( DIALOG *D,void **v,void *pt) {
   butn2[0].xpmp=NULL;
   butn2[0].xpmh=NULL;
   butn2[0].bkgr=-1;
-  butn2[0].butncode=-1077952642;
+  butn2[0].butncode=126;
   butn2[1].sw=0;
   strcpy(butn2[1].title,(char *)"Okay");
   butn2[1].xpmn=NULL;
   butn2[1].xpmp=NULL;
   butn2[1].xpmh=NULL;
   butn2[1].bkgr=-1;
-  butn2[1].butncode=-2302850;
+  butn2[1].butncode=126;
   DIL h2 = { 
     'h',
     151,325,  
@@ -160,12 +160,43 @@ int AddStillGroup( DIALOG *D,void **v,void *pt) {
   t6.pt=NULL;
   t6.type = 0;
   t6.item = -1;
+  char *menu7[]  = { 
+    (char *)"Add at START",
+    (char *)"Add at END",
+    NULL 
+  };
+  ThumbNail **th0 ;
+  DIRA r7 = { 
+    'r',
+    93,175,  
+    443,202,   
+    8,0,  
+    160, 
+    25, 
+    1,2, 
+    1,1, 
+    (int *)v[3], 
+    NULL, 
+    NULL ,
+    NULL,AddStillASVradiocallback , /* *args, Callback  */
+    1,  /* Border Offset  */
+     2,  /* Scroll width  */
+     0,  /* Type  */
+     0, /* item highlight */
+    0, /* bordr */
+    0, /* bkgr */
+    0  /*=1 hide  */
+   };
+  th0 = (ThumbNail **)kgStringToThumbNails((char **)menu7);
+  r7.list=(void **)th0;
+  strcpy(r7.Wid,(char *)"ASVradio");
+  r7.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+8));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+9));
   d =dtmp+i; 
-  d[7].t=NULL;
+  d[8].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
@@ -190,7 +221,11 @@ int AddStillGroup( DIALOG *D,void **v,void *pt) {
   d[6].t = (DIT *)malloc(sizeof(DIT));
   *d[6].t = t6;
   d[6].t->item = -1;
-  d[7].t = NULL;
+  d[7].t = (DIT *)malloc(sizeof(DIRA));
+  *d[7].r = r7;
+  d[7].r->item = -1;
+  AddStillASVradioinit(d[7].r,pt) ;
+  d[8].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -208,6 +243,7 @@ int MakeAddStillGroup(DIALOG *D,void *arg) {
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  1 data values
+    RadioButtons1  1 data value
 
 *************************************************/
    char  *v0 ;
@@ -219,16 +255,21 @@ int MakeAddStillGroup(DIALOG *D,void *arg) {
    double *v2 ;
    v2 = (double *)malloc(sizeof(double));
    *v2 = 0.0;
-   void** v=(void **)malloc(sizeof(void*)*4);
-   v[3]=NULL;
+   int  *v3 ;
+   v3 = (int *)malloc(sizeof(int));
+   *v3 = 1;
+   void** v=(void **)malloc(sizeof(void*)*5);
+   v[4]=NULL;
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
+   v[3]=(void *)(v3);
    void *pt=NULL; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    GrpId = AddStillGroup(D,v,pt);
    Gpt = kgGetWidgetGrp(D,GrpId);
    Gpt->arg= v; // kulina will double free this; you may modify
+   AddStillSetup(D,Gpt->arg);
    return GrpId;
 }
 
@@ -248,7 +289,7 @@ int AddStill( void *parent,void **v,void *pt) {
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 6;
+  D.df = 7;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
@@ -314,15 +355,18 @@ void *RunAddStill(void *parent ,void *args) {
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  1 data values
+    RadioButtons1  1 data value
 
 *************************************************/
    char  v0[500]="" ;
    char  v1[500]="" ;
    double v2 = 0.0;
-   void* v[3];
+   int   v3 = 1;
+   void* v[4];
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(&v2);
+   v[3]=(void *)(&v3);
    void *pt[2]={NULL,NULL}; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    pt[0]=args;

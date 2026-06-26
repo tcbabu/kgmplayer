@@ -107,6 +107,7 @@ int AddStillASVgocallback( int butno,int i,void *Tmp) {
   int n,ret=1; 
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
+  int StartPos=kgGetSelection(kgGetNamedWidget(Tmp,"ASVradio"))%2;
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
@@ -119,9 +120,16 @@ int AddStillASVgocallback( int butno,int i,void *Tmp) {
   kgWrite(I,buff);
   ret =0;
 //  AddStillAtStart(kgGetString(T,0),(float)kgGetDouble(TD,0),kgGetString(TO,0));
+  if(StartPos) {
   sprintf(buff,"RunAddStillAtStart %s %-.3f %s",
       kgGetString(T,0),(float)kgGetDouble(TD,0),kgGetString(TO,0));
   RunFunctionAndWait(buff,RunAddStillAtStart);
+  }
+  else {
+  sprintf(buff,"RunAddStillAtEnd %s %-.3f %s",
+      kgGetString(T,0),(float)kgGetDouble(TD,0),kgGetString(TO,0));
+      RunFunctionAndWait(buff,RunAddStillAtEnd);
+  }
   return ret;
 }
 void  AddStillASVgoinit (DIL *B,void *ptmp) {
@@ -285,6 +293,25 @@ void * AddStillInterface(void *args,void *rets) {
 }
  
  
+int AddStillASVradiocallback(int item,int i,void *Tmp) {
+  /*********************************** 
+    item : selected item (1 to max_item)  not any specific relevence
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIRA *R;DIALOG *D; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  ThumbNail **th; 
+  int ret=1; 
+  D = (DIALOG *)Tmp;
+  R = (DIRA *)kgGetWidget(Tmp,i);
+  th = (ThumbNail **) R->list;
+  return ret;
+}
+void  AddStillASVradioinit (DIRA *R,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+}
 int AddStillinit(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
