@@ -43,6 +43,7 @@ int GetFirstFrame(char *infile,char *outfile) ;
 int GetLastFrame(char *infile,char *outfile) ;
 int JoinTwoVideos(char *infile1,char *infile2,char *outfile);
 int AddStillAtStart(char *infile,float  duration,char *outfile);
+int AddStillAtEnd(char *infile,float  duration,char *outfile);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int RunFunction(char *job,int (*ProcessOut)(void *,int,int,int),int
 (*function)(int,char **),void *);
@@ -59,7 +60,11 @@ int AudioReformat(char *infile,char *outfile) ;
 int CreateSilentAudio(float duration,char *outfile) ;
 int JoinTwoAudio(char *infile1,char *infile2,char *outfile) ;
 int AddSilenceAtStart(char *infile,float duration,char *outfile) ;
+int AddSilenceAtEnd(char *infile,float duration,char *outfile) ;
 int GetTimeString(float duration,char *Tstring);
+int GetFirstFrame(char *infile,char *outfile);
+int GetlastFrame(char *infile,char *outfile);
  int RunAddStillAtStart(int argc,char **argv);
+ int RunAddStillAtEnd(int argc,char **argv);
 #endif
 

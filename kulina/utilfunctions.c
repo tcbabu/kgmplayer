@@ -207,6 +207,21 @@ int AddSilenceAtStart(char *infile,float duration,char *outfile) {
   if(Fstat) kgCleanDir(Tfolder);
   return 1;
 }
+int AddSilenceAtEnd(char *infile,float duration,char *outfile) {
+  char command[500],Tfolder[300],Atmp1[200];
+  int Fstat=0;
+  char Tstring[50];
+  GetTimeString(duration,Tstring);
+  Fstat = MakeTmpFolderInHome(Tfolder);
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Atmp1,"wav");
+  sprintf(command,"ffmpegfun -y -ar 44100 -f s32le  -acodec pcm_s32le "
+        " -ac 2 -i /dev/zero -acodec pcm_s32le -t %s  %s",
+         Tstring,Atmp1);
+  runfunction(command,ProcessPrint,ffmpegfun);
+  JoinTwoAudio(infile,Atmp1,outfile);
+  if(Fstat) kgCleanDir(Tfolder);
+  return 1;
+}
 int AudioExtract(char *infile,char *outfile) {
    char buff[500];
  //  sprintf(buff,"ffmpegfun -y -i %s -vn -ac 2 -ar 44100 -acodec aac %s", infile,outfile);
@@ -593,7 +608,7 @@ int GetFirstFrame(char *infile,char *outfile) {
    return 1;
 }
 int GetLastFrame(char *infile,char *outfile) {
-   char buff[500],tbuff[30];;
+   char buff[500],tbuff[30];
    int hr=0,mi=0;
    float sec;
    MEDIAINFO *mt = GetMediaInfo(infile);
@@ -650,4 +665,37 @@ int AddStillAtStart(char *infile,float  duration,char *outfile) {
     float duration;
     sscanf(argv[2],"%f",&duration);
     return AddStillAtStart(argv[1],duration,argv[3]);
+ }
+int AddStillAtEnd(char *infile,float  duration,char *outfile) {
+   char buff[500],Tmp[100],Ffile[200],Sfile[500],
+              Afile[300],NAfile[300],Tfolder[300];
+   MEDIAINFO *mpt,*mtmp;
+   int Fstat=1;
+   mpt = GetMediaInfo(infile);
+   if(mpt->Video != 1){free(mpt); return 0;}
+   Fstat = MakeTmpFolderInHome(Tfolder);
+   MakeFileInFolder(infile,Tfolder,Ffile,(char *)"png");
+   GetLastFrame(infile,Ffile);  
+   MakeFileInFolder(infile,Tfolder,Sfile,(char *)"mp4");
+   CreateStillVideo(Ffile,duration,mpt->fps,Sfile);
+   mtmp = GetMediaInfo(Sfile);
+   MakeFileInFolder("/tmp/Audio.wav",Tfolder,Afile,(char *)"wav");
+   AudioExtract(infile,Afile);
+   MakeFileInFolder("/tmp/Audio.wav",Tfolder,NAfile,(char *)"wav");
+   AddSilenceAtEnd(Afile,mtmp->TotSec,NAfile);
+   free(mtmp);   
+   MakeFileInFolder(infile,Tfolder,Ffile,(char *)"mp4");
+   JoinTwoVideos(infile,Sfile,Ffile);   
+   AudioChange(Ffile,NAfile,outfile);
+//   remove(Ffile);
+//   remove(Sfile);
+   free(mpt);
+   mpt = NULL;
+   if(Fstat)kgCleanDir(Tfolder);
+   return 1;
+}
+ int RunAddStillAtEnd(int argc,char **argv) {
+    float duration;
+    sscanf(argv[2],"%f",&duration);
+    return AddStillAtEnd(argv[1],duration,argv[3]);
  }
