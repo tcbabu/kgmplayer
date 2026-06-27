@@ -1,5 +1,6 @@
 #include <kulina.h>
 #include "SidebySideCallbacks.h"
+#include "mediainfo.h"
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int FileStat(char *flname);
 int kgffmpeg(int,char **);
@@ -154,6 +155,9 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
    ***********************************/ 
   DIALOG *D;DIL *B; 
   int n,ret=1; 
+  int Resize=0;
+  char infile1[300],infile2[30],outfile[300];
+  MEDIAINFO *mt1,*mt2;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
   D = (DIALOG *)Tmp;
@@ -162,17 +166,73 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
   DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"SBSinput1");
   DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"SBSinput2");
   DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"SBSout");
-  char buff[500];
   DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"SBSIbox");
+  int Xres1,Yres1,Xres2,Yres2,Mx,My;
+  char buff[500];
+  strcpy(infile1,kgGetString(T,0));
+  strcpy(infile2,kgGetString(TI,0));
+  strcpy(outfile,kgGetString(TO,0));
+  mt1 = GetMediaInfo(infile1);
+  Xres1= mt1->Axres;
+  Yres1= mt1->Ayres;
+  sprintf(buff,"Inside go: %d %d %d %f\n",mt1->Axres,mt1->Ayres,mt1->Video,mt1->fps);
+  kgWrite(I,buff);
+  if(mt1->Video==0) {free(mt1); return 0;}
+  mt2 = GetMediaInfo(infile2);
+  sprintf(buff,"Inside go: %d %d %d %f\n",mt2->Axres,mt2->Ayres,mt2->Video,mt2->fps);
+  kgWrite(I,buff);
+  if(mt2->Video==0) {free(mt2); free(mt1);return 0;}
+  Xres2= mt2->Axres;
+  Yres2= mt2->Ayres;
+  if ( Yres2 > Yres1 ) {
+     Resize=2;
+     Mx = Xres1;
+     My = Yres1;
+  }
+  if ( Yres2 < Yres1 ) {
+     Resize=1;
+     Mx = Xres2;
+     My = Yres2;
+  }
   sprintf (buff,"Processing Side by Side..\n");
   kgWrite(I,buff);
   ret =0;
+  if(Resize==0) {
   sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
        kgGetString(T,0),kgGetString(TI,0),kgGetString(TO,0));
   remove(kgGetString(TO,0));
   kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);
-  RunAndMonitor(buff);
+  RunMonitorAndWait(buff);
+  }
+  char Tfolder[300],Vfile[300];
+  MakeTmpFolderInHome(Tfolder);
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vfile,"mp4");
+  if(Resize == 1) {
+    sprintf(buff,"!c01Processing %s\n",infile1);
+    kgWrite(I,buff);
+    kgUpdateOn(Tmp);
+    ChangeVideoSizeAndFrate(infile1,Vfile,-2,My,(int)mt2->fps,1);
+    sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
+       Vfile,infile2,kgGetString(TO,0));
+       remove(kgGetString(TO,0));
+       kgWrite(I,buff);
+       RunMonitorAndWait(buff);
+  }
+  if(Resize == 2) {
+    sprintf(buff,"!c05Processing %s\n",infile2);
+    kgWrite(I,buff);
+    kgUpdateOn(Tmp);
+    ChangeVideoSizeAndFrate(infile2,Vfile,-2,My,(int)mt1->fps,1);
+    sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
+       infile1,Vfile,kgGetString(TO,0));
+    remove(kgGetString(TO,0));
+    kgWrite(I,buff);
+    RunMonitorAndWait(buff);
+  }
+  free(mt1);
+  free(mt2);
+  kgCleanDir(Tfolder);
   return ret;
 }
 void  SidebySideSBSgoinit (DIL *B,void *ptmp) {

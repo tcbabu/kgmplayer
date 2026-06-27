@@ -8,6 +8,8 @@ int runfunctionbkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(int
 int RunString(char *job,int (*function)(int,char **));
 int ProcessSkip(int pip0,int pip1,int Pid) ;
 int ProcessToPipe(int pip0,int pip1,int Pid) ;
+int ProcessOutput(int pip0,int pip1,int Pid) ;
+int ProcessData(int pip0,int pip1,int Pid) ;
 void *RunMonitorJoin(void *arg);
 void *Runmonitor(void *arg);
 int RunAndMonitor(char  *arg);
@@ -17,6 +19,7 @@ int RunFunctionAndMonitor(char * job,int (*function)(int,char **));
 int RunFunctionAndWait(char * job,int (*function)(int,char **));
 int MakeNewFileName(char *infile,char *outfile);
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
+int MakeFileNameInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int GetFolderName(char *infile,char *folder);
 char *MakeTmpFolder(void) ;
 int GetBaseIndex(char *s);

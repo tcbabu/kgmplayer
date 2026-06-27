@@ -3,6 +3,7 @@
 #include "imgs2vCallbacks.h"
 #include "mediainfo.h"
 #include "images2videos.h"
+#include "kgutils.h"
 IMGS2VDATA is2vdata;
 extern MEDIAINFO Minfo;
 static DIX *IX2=NULL;
@@ -380,6 +381,7 @@ void  imgs2vObrowseinit (DIN *B,void *ptmp) {
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
+
 }
 int imgs2vSetup(void *Tmp,void *args) {
   /*********************************** 
@@ -392,8 +394,9 @@ int imgs2vSetup(void *Tmp,void *args) {
    char Infile[500],Folder[500];
    sprintf(Infile,"%-s/Images.mp4",getenv("HOME"));
    sprintf(Folder,"%-s",getenv("HOME"));
-   MakeFileInFolder(Infile,Folder,Folder,(char *)"mp4");
+   MakeFileNameInFolder(Infile,Folder,Folder,(char *)"mp4");
    strcpy(v1,Folder);
+//   remove(Folder); //MakeFileInFolder Touched it
    int *v2 = (int *)pt[2];
    int *v3 = (int *)pt[3];
    double *v4 = (double *)pt[4];
@@ -490,7 +493,7 @@ int imgs2vinit(void *Tmp) {
   DIT *TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"imgs2vVideo");
   sprintf(Infile,"%-s/Images.mp4",getenv("HOME"));
   sprintf(Folder,"%-s",getenv("HOME"));
-  MakeFileInFolder(Infile,Folder,Folder,(char *)"mp4");
+  MakeFileNameInFolder(Infile,Folder,Folder,(char *)"mp4");
   if (TO != NULL){
     kgSetString(TO,0,Infile);
     kgUpdateWidget(TO);

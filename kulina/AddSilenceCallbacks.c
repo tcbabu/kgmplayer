@@ -429,39 +429,6 @@ int  AddSilencetextbox2callback(int cellno,int i,void *Tmp) {
   e = T->elmt;
   return ret;
 }
-int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext) {
-   int index,i;
-   char buff[500],*pt;
-   int id=0;
-   index = GetBaseIndex(Infile);
-   sprintf(buff,"%-s/",Folder);
-   strcat(buff,Infile+index);
-   i=0;
-   while (buff[i]!='.') {
-     if(buff[i]< ' ') break;
-     if(buff[i]==' ') buff[i]='_';
-     if(i>30) break;
-     i++;
-   }
-#if 1
-   pt= buff+i;
-   while(1) {
-     sprintf(pt,"_%-4.4d.%-s",id,ext);
-//    printf("%s\n",buff);
-     if (!FileStat(buff)) break;
-     id++;
-   }
-#else
-   buff[i]='.';
-   i++;
-   buff[i]='\0';
-   strcat(buff,ext);
-#endif
-   strcpy(Outfile,buff);
-   FILE *fp = fopen(Outfile,"w");
-   fclose(fp);
-   return 1;
-}
 int  AddSilencebutton2callback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 

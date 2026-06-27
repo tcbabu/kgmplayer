@@ -19,6 +19,9 @@ int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
 
 extern MEDIAINFO Minfo;
 
+extern int Jpipe[2];
+extern int Jstat[2];
+extern int MonPipe;
 
 int AudioToWav(char *infile,char *outfile) {
   char command[500];
@@ -139,7 +142,7 @@ int JoinTwoAudio(char *infile1,char *infile2,char *outfile) {
   fclose(fp);
   fclose(of);
   AudioReformat(Afile3,outfile);
-  if(Fstat)kgCleanDir(Tfolder);
+  kgCleanDir(Tfolder);
   return 1;
 }
 
@@ -188,7 +191,7 @@ int JoinWavFiles_bak(char *infile1,char *infile2,char *outfile) {
   fclose(fp);
   fclose(of);
   AudioReformat(Afile3,outfile);
-  if(Fstat)kgCleanDir(Tfolder);
+  kgCleanDir(Tfolder);
   return 1;
 }
 
@@ -204,7 +207,7 @@ int AddSilenceAtStart(char *infile,float duration,char *outfile) {
          Tstring,Atmp1);
   runfunction(command,ProcessPrint,ffmpegfun);
   JoinTwoAudio(Atmp1,infile,outfile);
-  if(Fstat) kgCleanDir(Tfolder);
+  kgCleanDir(Tfolder);
   return 1;
 }
 int AddSilenceAtEnd(char *infile,float duration,char *outfile) {
@@ -219,7 +222,7 @@ int AddSilenceAtEnd(char *infile,float duration,char *outfile) {
          Tstring,Atmp1);
   runfunction(command,ProcessPrint,ffmpegfun);
   JoinTwoAudio(infile,Atmp1,outfile);
-  if(Fstat) kgCleanDir(Tfolder);
+  kgCleanDir(Tfolder);
   return 1;
 }
 int AudioExtract(char *infile,char *outfile) {
@@ -487,7 +490,7 @@ int OverlayVideos(char *base,char *olay,int Qty,char *outfile) {
   printf("buff : %s\n",buff);
   fflush(stdout);
   runfunction(buff,ProcessPrint,ffmpegfun);
-  if(Fstat) kgCleanDir(Tfolder);
+  kgCleanDir(Tfolder);
 #if 0
   if(Tmp1[0] != '\0') remove(Tmp1);
   if(Tmp3[0] != '\0') remove(Tmp2);
@@ -539,7 +542,7 @@ int OverlayToSize(int Bxres,int Byres,float fs,int Qty,char *olay,char *outfile)
   }
   printf("OverlayVideos: %s\n",outfile);
   fflush(stdout);
-  if(Fstat) kgCleanDir(Tfolder);
+  kgCleanDir(Tfolder);
   return 1;
 }
 
@@ -598,7 +601,7 @@ int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile)
     if(FileStat(outfile))printf("created BLANK VIDEO: %s  sleeping..\n",outfile);
     else printf("Failed tp create %s\n",outfile);
     fflush(stdout);
-    if(Fstat) kgCleanDir(folder);
+    kgCleanDir(folder);
     return 1;
 }
 int GetFirstFrame(char *infile,char *outfile) {
@@ -658,7 +661,7 @@ int AddStillAtStart(char *infile,float  duration,char *outfile) {
 //   remove(Sfile);
    free(mpt);
    mpt = NULL;
-   if(Fstat)kgCleanDir(Tfolder);
+   kgCleanDir(Tfolder);
    return 1;
 }
  int RunAddStillAtStart(int argc,char **argv) {
@@ -691,7 +694,7 @@ int AddStillAtEnd(char *infile,float  duration,char *outfile) {
 //   remove(Sfile);
    free(mpt);
    mpt = NULL;
-   if(Fstat)kgCleanDir(Tfolder);
+   kgCleanDir(Tfolder);
    return 1;
 }
  int RunAddStillAtEnd(int argc,char **argv) {
@@ -699,3 +702,259 @@ int AddStillAtEnd(char *infile,float  duration,char *outfile) {
     sscanf(argv[2],"%f",&duration);
     return AddStillAtEnd(argv[1],duration,argv[3]);
  }
+int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext) {
+   int index,i;
+   char buff[500],*pt;
+   int id=0;
+   index = GetBaseIndex(Infile);
+   sprintf(buff,"%-s/",Folder);
+   strcat(buff,Infile+index);
+   i=0;
+   while (buff[i]!='.') {
+     if(buff[i]< ' ') break;
+     if(buff[i]==' ') buff[i]='_';
+     if(i>30) break;
+     i++;
+   }
+#if 1
+   pt= buff+i;
+   while(1) {
+     sprintf(pt,"_%-4.4d.%-s",id,ext);
+//    printf("%s\n",buff);
+     if (!FileStat(buff)) break;
+     id++;
+   }
+#else
+   buff[i]='.';
+   i++;
+   buff[i]='\0';
+   strcat(buff,ext);
+#endif
+   strcpy(Outfile,buff);
+   FILE *fp = fopen(Outfile,"w");
+   fclose(fp);
+   fprintf(stderr,"Touched: MakeFileInFolder: %s\n",Outfile);
+   return 1;
+}
+int MakeFileNameInFolder(char *Infile,char *Folder,char *Outfile,char *ext) {
+   int index,i;
+   char buff[500],*pt;
+   int id=0;
+   index = GetBaseIndex(Infile);
+   sprintf(buff,"%-s/",Folder);
+   strcat(buff,Infile+index);
+   i=0;
+   while (buff[i]!='.') {
+     if(buff[i]< ' ') break;
+     if(buff[i]==' ') buff[i]='_';
+     if(i>30) break;
+     i++;
+   }
+#if 1
+   pt= buff+i;
+   while(1) {
+     sprintf(pt,"_%-4.4d.%-s",id,ext);
+//    printf("%s\n",buff);
+     if (!FileStat(buff)) break;
+     id++;
+   }
+#else
+   buff[i]='.';
+   i++;
+   buff[i]='\0';
+   strcat(buff,ext);
+#endif
+   strcpy(Outfile,buff);
+   fprintf(stderr," MakeFileNameInFolder: %s\n",Outfile);
+   return 1;
+}
+
+int RunAndMonitor(char * job)  {
+
+  int pid=0,id;
+  int status;
+  if(fork() != 0)return 1;
+  id = getpid();
+  if(pipe(Jpipe) < 0) exit(0);
+  if(pipe(Jstat) < 0) exit(0);
+  MonPipe = Jpipe[0];
+  char buff[500];
+  
+  if ((pid=fork())==0) {
+    fflush(stdout);
+    fflush(stderr);
+    close(Jpipe[0]);
+    close(Jstat[1]);
+     sprintf(buff,"Executing... PLEASE WAIT\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"!c01Sorry... Progress Bar may not be correct\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"PLEASE WAIT till the window closes\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"You can cancel job if you wish\n");
+     write(Jpipe[1],buff,strlen(buff));
+     runfunction(job,ProcessOutput,ffmpegfun);
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     exit(0);
+  }  //fork
+  else {
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     RunMonitorJoin(NULL);
+     kill(pid,9);
+     waitpid(pid,&status,0);
+     close(Jpipe[0]);
+     close(Jstat[1]);
+     exit(0);
+  }
+}
+int RunFunctionAndMonitor(char * job,int (*function)(int,char **))  {
+
+  int pid=0,id;
+  int status;
+  if(fork() != 0)return 1;
+  id = getpid();
+  if(pipe(Jpipe) < 0) exit(0);
+  if(pipe(Jstat) < 0) exit(0);
+  MonPipe = Jpipe[0];
+  char buff[500];
+  
+  if ((pid=fork())==0) {
+    fflush(stdout);
+    fflush(stderr);
+    close(Jpipe[0]);
+    close(Jstat[1]);
+     sprintf(buff,"Executing... PLEASE WAIT\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"!c01Sorry... Progress Bar may not be correct\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"PLEASE WAIT till the window closes\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"You can cancel job if you wish\n");
+     write(Jpipe[1],buff,strlen(buff));
+     runfunction(job,ProcessOutput,function);
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     exit(0);
+  }  //fork
+  else {
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     RunMonitorJoin(NULL);
+     kill(pid,9);
+     waitpid(pid,&status,0);
+     close(Jpipe[0]);
+     close(Jstat[1]);
+     exit(0);
+  }
+}
+int RunFunctionAndWait(char * job,int (*function)(int,char **))  {
+
+  int pid=0,id;
+  int status;
+  id = getpid();
+  if(pipe(Jpipe) < 0) exit(0);
+  if(pipe(Jstat) < 0) exit(0);
+  MonPipe = Jpipe[0];
+  char buff[500];
+  
+  if ((pid=fork())==0) {
+    fflush(stdout);
+    fflush(stderr);
+    close(Jpipe[0]);
+    close(Jstat[1]);
+     sprintf(buff,"Executing... PLEASE WAIT\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"!c01Sorry... Progress Bar may not be correct\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"PLEASE WAIT till the window closes\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"You can cancel job if you wish\n");
+     write(Jpipe[1],buff,strlen(buff));
+     runfunction(job,ProcessOutput,function);
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     exit(0);
+  }  //fork
+  else {
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     RunMonitorJoin(NULL);
+     kill(pid,9);
+     waitpid(pid,&status,0);
+     close(Jpipe[0]);
+     close(Jstat[1]);
+  }
+  return 1;
+}
+int RunMonitorAndWait(char * job)  {
+
+  int pid=0,id;
+  int status;
+  id = getpid();
+  if(pipe(Jpipe) < 0) exit(0);
+  if(pipe(Jstat) < 0) exit(0);
+  MonPipe = Jpipe[0];
+  char buff[500];
+  
+  if ((pid=fork())==0) {
+    fflush(stdout);
+    fflush(stderr);
+    close(Jpipe[0]);
+    close(Jstat[1]);
+     sprintf(buff,"Executing... PLEASE WAIT\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"!c01Sorry... Progress Bar may not be correct\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"PLEASE WAIT till the window closes\n");
+     write(Jpipe[1],buff,strlen(buff));
+     sprintf(buff,"You can cancel job if you wish\n");
+     write(Jpipe[1],buff,strlen(buff));
+     runfunction(job,ProcessOutput,ffmpegfun);
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     exit(0);
+  }  //fork
+  else {
+     close(Jpipe[1]);
+     close(Jstat[0]);
+     RunMonitorJoin(NULL);
+     kill(pid,9);
+     waitpid(pid,&status,0);
+     close(Jpipe[0]);
+     close(Jstat[1]);
+  }
+  return 1;
+}
+int RunAndWait(char * job)  {
+   runfunction(job,ProcessPrint,ffmpegfun);
+   return 1;
+}
+char *MakeTmpFolder(void) {
+    char Folder[500];
+    char *pt;
+    int id=1;
+    sprintf(Folder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+    while(FileStat(Folder)) {
+      id++;
+      sprintf(Folder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+    }
+    mkdir(Folder,0700);
+    pt = (char *)malloc(strlen(Folder)+1);
+    strcpy(pt,Folder);
+    return pt;
+}
+int MakeTmpFolderInHome(char *Tfolder) {
+  int Fstat = 0;
+  int id=0;
+  sprintf(Tfolder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+  while(FileStat(Tfolder)) {
+    id++;
+    sprintf(Tfolder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+  }
+   mkdir(Tfolder,0700);
+    printf("Created: %s\n",Tfolder);
+    Fstat=1;
+  return Fstat;
+}
