@@ -1,6 +1,7 @@
 #include <kulina.h>
 #include "SidebySideCallbacks.h"
 #include "mediainfo.h"
+#include "kgutils.h"
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int FileStat(char *flname);
 int kgffmpeg(int,char **);
@@ -145,38 +146,25 @@ void  SidebySideSBSinput2browseinit (DIN *B,void *ptmp) {
  buts = (BUT_STR *) (B->buts);
 }
 
- /* Callback for  SBSgo   */ 
 
-int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
-  /*********************************** 
-    butno : selected item (1 to max_item) 
-    i :  Index of Widget  (0 to max_widgets-1) 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
-  DIALOG *D;DIL *B; 
-  int n,ret=1; 
-  int Resize=0;
-  char infile1[300],infile2[30],outfile[300],Audio[300];
+int MakeVideoSideBySide(char *infile1,char *infile2,char *outfile,DII *I) {
+
+
+
+  int Xres1,Yres1,Xres2,Yres2,Mx,My;
+  int Resize=0,ret=1;
+  char Audio[300];
   char Tfolder[300],Vfile[300],Vout[300];
   MEDIAINFO *mt1,*mt2;
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-// pt[0] is args passed as inputs; pt[1] is output pointer
-  D = (DIALOG *)Tmp;
-  B = (DIL *) kgGetWidget(Tmp,i);
-  n = B->nx;
-  DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"SBSinput1");
-  DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"SBSinput2");
-  DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"SBSout");
-  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"SBSIbox");
-  int Xres1,Yres1,Xres2,Yres2,Mx,My;
   char buff[500];
   MakeTmpFolderInHome(Tfolder);
   MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vfile,"mp4");
   MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vout,"mp4");
   MakeFileInFolder("/tmp/Audio.wav",Tfolder,Audio,"wav");
-  strcpy(infile1,kgGetString(T,0));
-  strcpy(infile2,kgGetString(TI,0));
-  strcpy(outfile,kgGetString(TO,0));
+  MakeTmpFolderInHome(Tfolder);
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vfile,"mp4");
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vout,"mp4");
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Audio,"wav");
   mt1 = GetMediaInfo(infile1);
   Xres1= mt1->Axres;
   Yres1= mt1->Ayres;
@@ -205,8 +193,8 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
   ret =0;
   if(Resize==0) {
   sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
-       kgGetString(T,0),kgGetString(TI,0),Vout);
-  remove(kgGetString(TO,0));
+       infile1,infile2,Vout);
+  remove(outfile);
   kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);
   RunMonitorAndWait(buff);
@@ -214,26 +202,158 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
   if(Resize == 1) {
     sprintf(buff,"!c01Processing %s\n",infile1);
     kgWrite(I,buff);
-    kgUpdateOn(Tmp);
     ChangeVideoSizeAndFrate(infile1,Vfile,-2,My,(int)mt2->fps,1);
     sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
        Vfile,infile2,Vout);
-       remove(kgGetString(TO,0));
+       remove(outfile);
        kgWrite(I,buff);
        RunMonitorAndWait(buff);
   }
   if(Resize == 2) {
     sprintf(buff,"!c05Processing %s\n",infile2);
     kgWrite(I,buff);
-    kgUpdateOn(Tmp);
     ChangeVideoSizeAndFrate(infile2,Vfile,-2,My,(int)mt1->fps,1);
     sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
        infile1,Vfile,Vout);
-    remove(kgGetString(TO,0));
+    remove(outfile);
     kgWrite(I,buff);
     RunMonitorAndWait(buff);
   }
-  AudioChange(Vout,Audio,kgGetString(TO,0));
+  AudioChange(Vout,Audio,outfile);
+  free(mt1);
+  free(mt2);
+  kgCleanDir(Tfolder);
+  return 1;
+}
+
+ /* Callback for  SBSgo   */ 
+
+int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIL *B; 
+  int n,ret=0; 
+  int Type=3;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIL *) kgGetWidget(Tmp,i);
+  n = B->nx;
+  DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"SBSinput1");
+  DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"SBSinput2");
+  DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"SBSout");
+  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"SBSIbox");
+  char infile1[300],infile2[300],outfile[300],Pinfile1[300],Pinfile2[300];
+  char Tfolder[30],buff[200];
+  MEDIAINFO *mt1,*mt2;
+  float tsec1,tsec2;
+  strcpy(infile1,kgGetString(T,0));
+  strcpy(infile2,kgGetString(TI,0));
+  strcpy(outfile,kgGetString(TO,0));
+  MakeTmpFolderInHome(Tfolder);
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Pinfile1,"mp4");
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Pinfile2,"mp4");
+  mt1 = GetMediaInfo(infile1);
+  mt2 = GetMediaInfo(infile2);
+  tsec1 = mt1->TotSec;
+  tsec2 = mt2->TotSec;
+  switch(Type) {
+    case 1:
+    default:
+      MakeVideoSideBySide(infile1,infile2,outfile,I);
+    break;
+    case 2:
+      sprintf(buff,"!c01Left First:\n");
+      kgWrite(I,buff);
+      sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
+      kgWrite(I,buff);
+      remove(Pinfile1);
+#if 1
+      AddStillAtEnd(infile1,tsec2,Pinfile1);
+#else
+      sprintf(buff,"RunAddStillAtEnd %s %-.3f %s",
+                   infile1,tsec2,Pinfile1);
+      RunFunctionAndWait(buff,AddStillAtEnd);
+#endif
+      if(FileStat(Pinfile1)){
+        sprintf(buff,"!c02Processed %s to %s\n",infile1,Pinfile1);
+        kgWrite(I,buff);
+      }
+      else {
+        sprintf(buff,"!c02FAILED TO CREATE %s\n",Pinfile1);
+        kgWrite(I,buff);
+        sleep(5);
+        return 1;
+      }
+      sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
+      kgWrite(I,buff);
+      sprintf(buff,"!c05Processing %s\n",infile2);
+      kgWrite(I,buff);
+      remove(Pinfile2);
+#if 1
+     AddStillAtStart(infile2,tsec1,Pinfile2);
+#else
+      sprintf(buff,"RunAddStillAtStart %s %-.3f %s",
+                   infile2,tsec1,Pinfile2);
+      RunFunctionAndWait(buff,AddStillAtStart);
+#endif
+      if(FileStat(Pinfile2)){
+        sprintf(buff,"!c02Processed %s to %s\n",infile2,Pinfile2);
+        kgWrite(I,buff);
+      }
+      else {
+        sprintf(buff,"!c02FAILED TO CREATE %s\n",Pinfile2);
+        kgWrite(I,buff);
+        sleep(5);
+        return 1;
+      }
+      MakeVideoSideBySide(Pinfile1,Pinfile2,outfile,I);
+    break;
+    case 3:
+      sprintf(buff,"!c05Processing %s %.3f %s\n",infile2,tsec1,Pinfile2);
+      kgWrite(I,buff);
+#if 1
+      AddStillAtEnd(infile2,tsec1,Pinfile2);
+#else
+      sprintf(buff,"RunAddStillAtEnd %s %-.3f %s",
+                   infile2,tsec1,Pinfile2);
+      RunFunctionAndWait(buff,AddStillAtEnd);
+#endif
+      if(FileStat(Pinfile2)){
+        sprintf(buff,"!c02Processed %s to %s\n",infile2,Pinfile2);
+        kgWrite(I,buff);
+      }
+      else {
+        sprintf(buff,"!c02FAILED TO CREATE %s\n",Pinfile2);
+        kgWrite(I,buff);
+        sleep(5);
+        return 1;
+      }
+      sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
+      kgWrite(I,buff);
+#if 1
+      AddStillAtStart(infile1,tsec2,Pinfile1);
+#else
+      sprintf(buff,"RunAddStillAtStart %s %-.3f %s",
+                   infile1,tsec2,Pinfile1);
+      RunFunctionAndWait(buff,AddStillAtStart);
+#endif
+      if(FileStat(Pinfile1)){
+        sprintf(buff,"!c02Processed %s to %s\n",infile1,Pinfile1);
+        kgWrite(I,buff);
+      }
+      else {
+        sprintf(buff,"!c02FAILED TO CREATE %s\n",Pinfile1);
+        kgWrite(I,buff);
+        sleep(5);
+        return 1;
+      }
+      MakeVideoSideBySide(Pinfile1,Pinfile2,outfile,I);
+    break;
+  }
   free(mt1);
   free(mt2);
   kgCleanDir(Tfolder);
