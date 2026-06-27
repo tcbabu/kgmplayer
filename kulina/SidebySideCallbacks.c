@@ -156,7 +156,8 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
   DIALOG *D;DIL *B; 
   int n,ret=1; 
   int Resize=0;
-  char infile1[300],infile2[30],outfile[300];
+  char infile1[300],infile2[30],outfile[300],Audio[300];
+  char Tfolder[300],Vfile[300],Vout[300];
   MEDIAINFO *mt1,*mt2;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
@@ -169,6 +170,10 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
   DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"SBSIbox");
   int Xres1,Yres1,Xres2,Yres2,Mx,My;
   char buff[500];
+  MakeTmpFolderInHome(Tfolder);
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vfile,"mp4");
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vout,"mp4");
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Audio,"wav");
   strcpy(infile1,kgGetString(T,0));
   strcpy(infile2,kgGetString(TI,0));
   strcpy(outfile,kgGetString(TO,0));
@@ -182,6 +187,7 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
   sprintf(buff,"Inside go: %d %d %d %f\n",mt2->Axres,mt2->Ayres,mt2->Video,mt2->fps);
   kgWrite(I,buff);
   if(mt2->Video==0) {free(mt2); free(mt1);return 0;}
+  MixTwoAudios(infile1,infile2,Audio);
   Xres2= mt2->Axres;
   Yres2= mt2->Ayres;
   if ( Yres2 > Yres1 ) {
@@ -199,22 +205,19 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
   ret =0;
   if(Resize==0) {
   sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
-       kgGetString(T,0),kgGetString(TI,0),kgGetString(TO,0));
+       kgGetString(T,0),kgGetString(TI,0),Vout);
   remove(kgGetString(TO,0));
   kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);
   RunMonitorAndWait(buff);
   }
-  char Tfolder[300],Vfile[300];
-  MakeTmpFolderInHome(Tfolder);
-  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vfile,"mp4");
   if(Resize == 1) {
     sprintf(buff,"!c01Processing %s\n",infile1);
     kgWrite(I,buff);
     kgUpdateOn(Tmp);
     ChangeVideoSizeAndFrate(infile1,Vfile,-2,My,(int)mt2->fps,1);
     sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
-       Vfile,infile2,kgGetString(TO,0));
+       Vfile,infile2,Vout);
        remove(kgGetString(TO,0));
        kgWrite(I,buff);
        RunMonitorAndWait(buff);
@@ -225,11 +228,12 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
     kgUpdateOn(Tmp);
     ChangeVideoSizeAndFrate(infile2,Vfile,-2,My,(int)mt1->fps,1);
     sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
-       infile1,Vfile,kgGetString(TO,0));
+       infile1,Vfile,Vout);
     remove(kgGetString(TO,0));
     kgWrite(I,buff);
     RunMonitorAndWait(buff);
   }
+  AudioChange(Vout,Audio,kgGetString(TO,0));
   free(mt1);
   free(mt2);
   kgCleanDir(Tfolder);

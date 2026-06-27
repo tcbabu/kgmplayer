@@ -702,6 +702,71 @@ int AddStillAtEnd(char *infile,float  duration,char *outfile) {
     sscanf(argv[2],"%f",&duration);
     return AddStillAtEnd(argv[1],duration,argv[3]);
  }
+int MixTwoAudios( char *infile1,char *infile2,char *outfile) {
+  int Qty=1;
+  int same=0;
+  char Folder[500];
+  char Atmp1[300],Atmp2[300],Atmp3[300],Atmp[300],Aextra[300],Tstring[30];
+
+    MEDIAINFO *mt1,*mt2;
+    char command[10000];
+
+    float  Asec,Msec,Esec;
+
+    MakeTmpFolderInHome(Folder);
+    mt1 = GetMediaInfo(infile1);
+    mt2 = GetMediaInfo(infile2);
+    Asec = mt1->TotSec;
+    Esec = mt2->TotSec;
+    Msec = Asec;
+    if(Esec< Asec) {
+       Msec = Esec;
+    }
+    GetTimeString((float)Msec,Tstring);
+    MakeFileInFolder("/tmp/Audio.wav",Folder,Atmp1,"wav");
+    MakeFileInFolder("/tmp/Audio.wav",Folder,Atmp2,"wav");
+    MakeFileInFolder("/tmp/Audio.wav",Folder,Atmp3,"wav");
+    MakeFileInFolder("/tmp/Audio.wav",Folder,Atmp,"wav");
+    MakeFileInFolder("/tmp/Audio.wav",Folder,Aextra,"wav");
+    AudioToWav(infile1,Atmp1);
+    AudioToWav(infile2,Atmp2);
+    sprintf(command,"ffmpegfun -vn -i %s -vn -i "
+       " %s  -t %s -ac 2 -ar 44100 -acodec pcm_s32le -lavfi amix "
+       "  -y %s ",
+       Atmp1,Atmp2,Tstring,Atmp3);
+    runfunction(command,ProcessPrint,ffmpegfun);
+    sprintf(command,"ffmpegfun  -i %s -ac 2 -ar 44100 "
+       " -acodec pcm_s32le -filter_complex "
+       " \"aeval=val(0)/2*3|val(1)/2*3:c=same\" "
+       "  -y %s ",
+       Atmp3,Atmp);
+//       printf("%s\n",command);
+    runfunction(command,ProcessPrint,ffmpegfun);
+    same =0;
+    if( (int)(Asec*1000) == (int)(Esec*1000) ) same=1;
+    if(same) {
+       AudioReformat(Atmp,outfile);
+    }
+    else {    
+      if(Msec == Asec) {
+      sprintf(command,"ffmpegfun -vn -i \"%s\" -ss %s "
+       " -vn -aq 2 -ac 2 -ar 44100 -acodec pcm_s32le -y %s ",
+       Atmp2,Tstring,Aextra);
+      }
+      else {
+      sprintf(command,"ffmpegfun -vn -i \"%s\" -ss %s "
+       " -vn -aq 2 -ac 2 -ar 44100 -acodec pcm_s32le -y %s ",
+       Atmp1,Tstring,Aextra);
+      }
+      runfunction(command,ProcessToPipe,ffmpegfun);
+      JoinTwoAudio(Atmp,Aextra,Atmp1);
+      AudioReformat(Atmp1,outfile);
+    }
+    free(mt1);
+    free(mt2);
+    kgCleanDir(Folder);
+    return 1;
+}
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext) {
    int index,i;
    char buff[500],*pt;
