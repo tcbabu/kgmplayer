@@ -168,12 +168,8 @@ int MakeVideoSideBySide(char *infile1,char *infile2,char *outfile,DII *I) {
   mt1 = GetMediaInfo(infile1);
   Xres1= mt1->Axres;
   Yres1= mt1->Ayres;
-  sprintf(buff,"Inside go: %d %d %d %f\n",mt1->Axres,mt1->Ayres,mt1->Video,mt1->fps);
-  kgWrite(I,buff);
   if(mt1->Video==0) {free(mt1); return 0;}
   mt2 = GetMediaInfo(infile2);
-  sprintf(buff,"Inside go: %d %d %d %f\n",mt2->Axres,mt2->Ayres,mt2->Video,mt2->fps);
-  kgWrite(I,buff);
   if(mt2->Video==0) {free(mt2); free(mt1);return 0;}
   MixTwoAudios(infile1,infile2,Audio);
   Xres2= mt2->Axres;
@@ -236,7 +232,7 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
    ***********************************/ 
   DIALOG *D;DIL *B; 
   int n,ret=0; 
-  int Type=3;
+  int Type;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
   D = (DIALOG *)Tmp;
@@ -250,6 +246,7 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
   char Tfolder[30],buff[200];
   MEDIAINFO *mt1,*mt2;
   float tsec1,tsec2;
+  Type = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"SBSradio"));
   strcpy(infile1,kgGetString(T,0));
   strcpy(infile2,kgGetString(TI,0));
   strcpy(outfile,kgGetString(TO,0));
@@ -497,6 +494,25 @@ void * SidebySideInterface(void *args,void *rets) {
 }
  
  
+int SidebySideSBSradiocallback(int item,int i,void *Tmp) {
+  /*********************************** 
+    item : selected item (1 to max_item)  not any specific relevence
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIRA *R;DIALOG *D; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  ThumbNail **th; 
+  int ret=1; 
+  D = (DIALOG *)Tmp;
+  R = (DIRA *)kgGetWidget(Tmp,i);
+  th = (ThumbNail **) R->list;
+  return ret;
+}
+void  SidebySideSBSradioinit (DIRA *R,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+}
 int SidebySideinit(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  

@@ -613,7 +613,7 @@ int GetFirstFrame(char *infile,char *outfile) {
 int GetLastFrame(char *infile,char *outfile) {
    char buff[500],tbuff[30];
    int hr=0,mi=0;
-   float sec;
+   float sec,offset=0.05,id;
    MEDIAINFO *mt = GetMediaInfo(infile);
    if(mt->Video != 1) {free(mt);return 0;}
    free(mt);
@@ -622,9 +622,17 @@ int GetLastFrame(char *infile,char *outfile) {
    sec = sec - mi*60;
    hr = mi/60;
    mi = mi - hr*60;
-   sprintf(tbuff,"%-d:%-d:%-.3f",hr,mi,sec-0.1);
+   id =1;   
+   while(1) {
+   sprintf(tbuff,"%-d:%-d:%-.3f",hr,mi,sec-offset*id);
    sprintf(buff,"ffmpegfun  -y  -ss %s  -i %s -frames:v 1 %s",tbuff,infile,outfile);
    RunAndWait(buff);
+     if(!FileSize(outfile)){
+        fprintf(stderr,"Failed to get Last Frame\n");
+        id++;
+     }
+     else break;
+   }
    return 1;
 }
 int JoinTwoVideos(char *infile1,char *infile2,char *outfile){
@@ -694,7 +702,7 @@ int AddStillAtEnd(char *infile,float  duration,char *outfile) {
 //   remove(Sfile);
    free(mpt);
    mpt = NULL;
-   kgCleanDir(Tfolder);
+//   kgCleanDir(Tfolder);
    return 1;
 }
  int RunAddStillAtEnd(int argc,char **argv) {
@@ -758,7 +766,7 @@ int MixTwoAudios( char *infile1,char *infile2,char *outfile) {
        " -vn -aq 2 -ac 2 -ar 44100 -acodec pcm_s32le -y %s ",
        Atmp1,Tstring,Aextra);
       }
-      runfunction(command,ProcessToPipe,ffmpegfun);
+      runfunction(command,ProcessPrint,ffmpegfun);
       JoinTwoAudio(Atmp,Aextra,Atmp1);
       AudioReformat(Atmp1,outfile);
     }
@@ -1022,4 +1030,11 @@ int MakeTmpFolderInHome(char *Tfolder) {
     printf("Created: %s\n",Tfolder);
     Fstat=1;
   return Fstat;
+}
+ int FileSize(char *flname) {
+  int ret;
+  struct stat buff;
+  ret = stat(flname,&buff);
+  if(ret < 0) return 0;
+  else return (int)buff.st_size;
 }

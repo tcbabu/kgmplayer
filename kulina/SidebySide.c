@@ -14,8 +14,8 @@ int SidebySideGroup( DIALOG *D,void **v,void *pt) {
   e0[0].img=NULL;
   DIT t0 = { 
     't',
-    9,25,  
-    386,59,
+    9,9,  
+    386,43,
     20, 
     1,1, 
     e0,
@@ -35,11 +35,11 @@ int SidebySideGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].xpmp=NULL;
   butn1[0].xpmh=NULL;
   butn1[0].bkgr=-1;
-  butn1[0].butncode=10;
+  butn1[0].butncode=31;
   DIN b1 = { 
     'n',
-    385,24,  
-    467,58,
+    385,8,  
+    467,42,
     2,2,  
     72, 
     24, 
@@ -61,8 +61,8 @@ int SidebySideGroup( DIALOG *D,void **v,void *pt) {
   e2[0].img=NULL;
   DIT t2 = { 
     't',
-    9,65,  
-    386,99,
+    9,49,  
+    386,83,
     20, 
     1,1, 
     e2,
@@ -82,11 +82,11 @@ int SidebySideGroup( DIALOG *D,void **v,void *pt) {
   butn3[0].xpmp=NULL;
   butn3[0].xpmh=NULL;
   butn3[0].bkgr=-1;
-  butn3[0].butncode=10;
+  butn3[0].butncode=31;
   DIN b3 = { 
     'n',
-    385,62,  
-    467,96,
+    385,46,  
+    467,80,
     2,2,  
     72, 
     24, 
@@ -99,30 +99,23 @@ int SidebySideGroup( DIALOG *D,void **v,void *pt) {
   strcpy(b3.Wid,(char *)"SBSinput2browse");
   b3.item = -1;
   BUT_STR  *butn4=NULL; 
-  butn4= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
+  butn4= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn4[0].sw=1;
-  strcpy(butn4[0].title,(char *)"Go...");
+  strcpy(butn4[0].title,(char *)"Process");
   butn4[0].xpmn=NULL;
   butn4[0].xpmp=NULL;
   butn4[0].xpmh=NULL;
   butn4[0].bkgr=-1;
-  butn4[0].butncode=2174;
-  butn4[1].sw=0;
-  strcpy(butn4[1].title,(char *)"Okay");
-  butn4[1].xpmn=NULL;
-  butn4[1].xpmp=NULL;
-  butn4[1].xpmh=NULL;
-  butn4[1].bkgr=-1;
-  butn4[1].butncode=126;
+  butn4[0].butncode=126;
   DIL h4 = { 
     'h',
-    151,325,  
-    309,359,
+    189,358,  
+    318,392,
     2,0,  
-    72, 
+    124, 
     25, 
-    2,1, 
-    2,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    1,1, 
+    5,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
     butn4, 
     SidebySideSBSgocallback ,  /* *args, Callback */
     NULL  /* any args */
@@ -131,24 +124,24 @@ int SidebySideGroup( DIALOG *D,void **v,void *pt) {
   h4.item = -1;
   DII i5 = { 
     'i',
-    55,239,  
-    436,313,  
-    41,3,0   
+    7,200,  
+    479,353,  
+    51,6,0   
   };
   strcpy(i5.Wid,(char *)"SBSIbox");
   i5.item = -1;
   T_ELMT *e6  ; 
   e6 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e6[0].fmt = (char *)malloc(11);
-  strcpy(e6[0].fmt,(char *)"Output%30s");
+  e6[0].fmt = (char *)malloc(12);
+  strcpy(e6[0].fmt,(char *)" Output%30s");
   e6[0].v=(void *)v[2];
   e6[0].sw=1;
   e6[0].noecho=0;
   e6[0].img=NULL;
   DIT t6 = { 
     't',
-    8,136,  
-    385,170,
+    8,107,  
+    385,137,
     20, 
     1,1, 
     e6,
@@ -168,11 +161,11 @@ int SidebySideGroup( DIALOG *D,void **v,void *pt) {
   butn7[0].xpmp=NULL;
   butn7[0].xpmh=NULL;
   butn7[0].bkgr=-1;
-  butn7[0].butncode=10;
+  butn7[0].butncode=126;
   DIN b7 = { 
     'n',
-    385,136,  
-    466,169,
+    387,106,  
+    468,139,
     2,2,  
     72, 
     24, 
@@ -184,15 +177,38 @@ int SidebySideGroup( DIALOG *D,void **v,void *pt) {
   };
   strcpy(b7.Wid,(char *)"SBSOutbrowse");
   b7.item = -1;
-  DIM m8 = { 
-    'm',
-    84,192,  
-    384,216,  
-    0,0  
+  char *menu8[]  = { 
+    (char *)"Simultaneous",
+    (char *)"Left First",
+    (char *)"Right First",
+    NULL 
   };
-  strncpy(m8.msg,(char *)"!c01Height of Videos must be same",499);
-  strcpy(m8.Wid,(char *)"SidebySideWidget9");
-  m8.item = -1;
+  ThumbNail **th0 ;
+  DIRA r8 = { 
+    'r',
+    70,160,  
+    485,187,   
+    8,0,  
+    120, 
+    25, 
+    1,3, 
+    0,1, 
+    (int *)v[3], 
+    NULL, 
+    NULL ,
+    NULL,SidebySideSBSradiocallback , /* *args, Callback  */
+    1,  /* Border Offset  */
+     2,  /* Scroll width  */
+     0,  /* Type  */
+     0, /* item highlight */
+    0, /* bordr */
+    0, /* bkgr */
+    0  /*=1 hide  */
+   };
+  th0 = (ThumbNail **)kgStringToThumbNails((char **)menu8);
+  r8.list=(void **)th0;
+  strcpy(r8.Wid,(char *)"SBSradio");
+  r8.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
@@ -227,9 +243,10 @@ int SidebySideGroup( DIALOG *D,void **v,void *pt) {
   *d[7].N = b7;
   d[7].N->item = -1;
   SidebySideSBSOutbrowseinit(d[7].N,pt) ;
-  d[8].t = (DIT *)malloc(sizeof(DIM));
-  *d[8].m = m8;
-  d[8].m->item = -1;
+  d[8].t = (DIT *)malloc(sizeof(DIRA));
+  *d[8].r = r8;
+  d[8].r->item = -1;
+  SidebySideSBSradioinit(d[8].r,pt) ;
   d[9].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
@@ -248,6 +265,7 @@ int MakeSidebySideGroup(DIALOG *D,void *arg) {
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  1 data values
+    RadioButtons1  1 data value
 
 *************************************************/
    char  *v0 ;
@@ -259,16 +277,21 @@ int MakeSidebySideGroup(DIALOG *D,void *arg) {
    char  *v2 ;
    v2 = (char *)malloc(sizeof(char)*500);
    v2[0] = '\0';
-   void** v=(void **)malloc(sizeof(void*)*4);
-   v[3]=NULL;
+   int  *v3 ;
+   v3 = (int *)malloc(sizeof(int));
+   *v3 = 1;
+   void** v=(void **)malloc(sizeof(void*)*5);
+   v[4]=NULL;
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
+   v[3]=(void *)(v3);
    void *pt=NULL; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    GrpId = SidebySideGroup(D,v,pt);
    Gpt = kgGetWidgetGrp(D,GrpId);
    Gpt->arg= v; // kulina will double free this; you may modify
+   SidebySideSetup(D,Gpt->arg);
    return GrpId;
 }
 
@@ -288,15 +311,15 @@ int SidebySide( void *parent,void **v,void *pt) {
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 7;
+  D.df = 8;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
   D.rw = 4;
   D.xo = 828;   /* Position of Dialog */ 
   D.yo = 148;
-  D.xl = 494;    /*  Length of Dialog */
-  D.yl = 374;    /*  Width  of Dialog */
+  D.xl = 485;    /*  Length of Dialog */
+  D.yl = 395;    /*  Width  of Dialog */
   D.Initfun = SidebySideinit;    /*   init fuction for Dialog */
   D.Cleanupfun = SidebySidecleanup;    /*   cleanup fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
@@ -354,15 +377,18 @@ void *RunSidebySide(void *parent ,void *args) {
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  1 data values
+    RadioButtons1  1 data value
 
 *************************************************/
    char  v0[500]="" ;
    char  v1[500]="" ;
    char  v2[500]="" ;
-   void* v[3];
+   int   v3 = 1;
+   void* v[4];
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
+   v[3]=(void *)(&v3);
    void *pt[2]={NULL,NULL}; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    pt[0]=args;

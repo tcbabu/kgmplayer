@@ -70,5 +70,6 @@ int GetlastFrame(char *infile,char *outfile);
  int RunAddStillAtStart(int argc,char **argv);
  int RunAddStillAtEnd(int argc,char **argv);
 int MixTwoAudios( char *infile1,char *infile2,char *outfile);
+int FileSize(char *flname);
 #endif
 
