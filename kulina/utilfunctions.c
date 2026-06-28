@@ -605,15 +605,31 @@ int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile)
     return 1;
 }
 int GetFirstFrame(char *infile,char *outfile) {
-   char buff[500];
-   sprintf(buff,"ffmpegfun  -y  -ss 00:00:0.01 -i %s -frames:v 1 %s",infile,outfile);
+   char buff[500],tbuff[30];
+   float sec=0.0,offset=0.05;
+   int id=1;
+   MEDIAINFO *mt = GetMediaInfo(infile);
+   if(mt->Video != 1) {free(mt);return 0;}
+   free(mt);
+//   sprintf(buff,"ffmpegfun  -y  -ss 00:00:0.01 -i %s -frames:v 1 %s",infile,outfile);
+//   RunAndWait(buff);
+   while(1) {
+   sprintf(tbuff,"00:00:%-.3f",sec+offset*id);
+   sprintf(buff,"ffmpegfun  -y  -ss %s  -i %s -frames:v 1 %s",tbuff,infile,outfile);
    RunAndWait(buff);
+     if(!FileSize(outfile)){
+        fprintf(stderr,"Failed to get Last Frame\n");
+        id++;
+     }
+     else break;
+   }
    return 1;
 }
 int GetLastFrame(char *infile,char *outfile) {
    char buff[500],tbuff[30];
    int hr=0,mi=0;
-   float sec,offset=0.05,id;
+   float sec,offset=0.05;
+   int id;
    MEDIAINFO *mt = GetMediaInfo(infile);
    if(mt->Video != 1) {free(mt);return 0;}
    free(mt);
@@ -702,7 +718,7 @@ int AddStillAtEnd(char *infile,float  duration,char *outfile) {
 //   remove(Sfile);
    free(mpt);
    mpt = NULL;
-//   kgCleanDir(Tfolder);
+   kgCleanDir(Tfolder);
    return 1;
 }
  int RunAddStillAtEnd(int argc,char **argv) {
