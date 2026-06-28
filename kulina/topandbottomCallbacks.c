@@ -1,5 +1,6 @@
 #include <kulina.h>
 #include "topandbottomCallbacks.h"
+#include "kgutils.h"
 
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int FileStat(char *flname);
@@ -144,9 +145,217 @@ void  topandbottomTABinput2browseinit (DIN *B,void *ptmp) {
  buts = (BUT_STR *) (B->buts);
 }
 
+int MakeVideoTopBottom(char *infile1,char *infile2,char *outfile,DII *I) {
+
+
+  int Xres1,Yres1,Xres2,Yres2,Mx,My;
+  int Resize=0,ret=1;
+  char Audio[300];
+  char Tfolder[300],Vfile[300],Vout[300];
+  MEDIAINFO *mt1,*mt2;
+  char buff[500];
+  MakeTmpFolderInHome(Tfolder);
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vfile,"mp4");
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vout,"mp4");
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Audio,"wav");
+  MakeTmpFolderInHome(Tfolder);
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vfile,"mp4");
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vout,"mp4");
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Audio,"wav");
+  mt1 = GetMediaInfo(infile1);
+  Xres1= mt1->Axres;
+  Yres1= mt1->Ayres;
+  if(mt1->Video==0) {free(mt1); return 0;}
+  mt2 = GetMediaInfo(infile2);
+  if(mt2->Video==0) {free(mt2); free(mt1);return 0;}
+  MixTwoAudios(infile1,infile2,Audio);
+  Xres2= mt2->Axres;
+  Yres2= mt2->Ayres;
+  if ( Xres2 > Xres1 ) {
+     Resize=2;
+     Mx = Xres1;
+     My = Yres1;
+  }
+  if ( Xres2 < Xres1 ) {
+     Resize=1;
+     Mx = Xres2;
+     My = Yres2;
+  }
+  sprintf (buff,"Processing Top and Bottom ...\n");
+  kgWrite(I,buff);
+  ret =0;
+  if(Resize==0) {
+  sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"Vstack\" %s",
+       infile1,infile2,Vout);
+  remove(outfile);
+  kgWrite(I,buff);
+//  runfunction(buff,ProcessPrint,ffmpegfun);
+  RunMonitorAndWait(buff);
+  }
+  if(Resize == 1) {
+    sprintf(buff,"!c01Processing %s\n",infile1);
+    kgWrite(I,buff);
+    ChangeVideoSizeAndFrate(infile1,Vfile,Mx,-2,(int)mt2->fps,1);
+    sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"vstack\" %s",
+       Vfile,infile2,Vout);
+       remove(outfile);
+       kgWrite(I,buff);
+       RunMonitorAndWait(buff);
+  }
+  if(Resize == 2) {
+    sprintf(buff,"!c05Processing %s\n",infile2);
+    kgWrite(I,buff);
+    ChangeVideoSizeAndFrate(infile2,Vfile,Mx,-2,(int)mt1->fps,1);
+    sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"vstack\" %s",
+       infile1,Vfile,Vout);
+    remove(outfile);
+    kgWrite(I,buff);
+    RunMonitorAndWait(buff);
+  }
+  AudioChange(Vout,Audio,outfile);
+  free(mt1);
+  free(mt2);
+  kgCleanDir(Tfolder);
+  return 1;
+}
+
  /* Callback for  TABgo   */ 
 
 int topandbottomTABgocallback( int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIL *B; 
+  int n,ret=0; 
+  int Type;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIL *) kgGetWidget(Tmp,i);
+  n = B->nx;
+  DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"TABinput1");
+  DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"TABinput2");
+  DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"TABout");
+  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"TABIbox");
+  char infile1[300],infile2[300],outfile[300],Pinfile1[300],Pinfile2[300];
+  char Tfolder[30],buff[200];
+  MEDIAINFO *mt1,*mt2;
+  float tsec1,tsec2;
+  Type = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TABradio"));
+  strcpy(infile1,kgGetString(T,0));
+  strcpy(infile2,kgGetString(TI,0));
+  strcpy(outfile,kgGetString(TO,0));
+  MakeTmpFolderInHome(Tfolder);
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Pinfile1,"mp4");
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Pinfile2,"mp4");
+  mt1 = GetMediaInfo(infile1);
+  mt2 = GetMediaInfo(infile2);
+  tsec1 = mt1->TotSec;
+  tsec2 = mt2->TotSec;
+  switch(Type) {
+    case 1:
+    default:
+      MakeVideoTopBottom(infile1,infile2,outfile,I);
+    break;
+    case 2:
+      sprintf(buff,"!c01Left First:\n");
+      kgWrite(I,buff);
+      sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
+      kgWrite(I,buff);
+      remove(Pinfile1);
+#if 0
+      AddStillAtEnd(infile1,tsec2,Pinfile1);
+#else
+      sprintf(buff,"RunAddStillAtEnd %s %-.3f %s",
+                   infile1,tsec2,Pinfile1);
+      RunFunctionAndWait(buff,RunAddStillAtEnd);
+#endif
+      if(FileStat(Pinfile1)){
+        sprintf(buff,"!c02Processed %s to %s\n",infile1,Pinfile1);
+        kgWrite(I,buff);
+      }
+      else {
+        sprintf(buff,"!c02FAILED TO CREATE %s\n",Pinfile1);
+        kgWrite(I,buff);
+        sleep(5);
+        return 1;
+      }
+      sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
+      kgWrite(I,buff);
+      sprintf(buff,"!c05Processing %s\n",infile2);
+      kgWrite(I,buff);
+      remove(Pinfile2);
+#if 0
+     AddStillAtStart(infile2,tsec1,Pinfile2);
+#else
+      sprintf(buff,"RunAddStillAtStart %s %-.3f %s",
+                   infile2,tsec1,Pinfile2);
+      RunFunctionAndWait(buff,RunAddStillAtStart);
+#endif
+      if(FileStat(Pinfile2)){
+        sprintf(buff,"!c02Processed %s to %s\n",infile2,Pinfile2);
+        kgWrite(I,buff);
+      }
+      else {
+        sprintf(buff,"!c02FAILED TO CREATE %s\n",Pinfile2);
+        kgWrite(I,buff);
+        sleep(5);
+        return 1;
+      }
+      MakeVideoTopBottom(Pinfile1,Pinfile2,outfile,I);
+    break;
+    case 3:
+      sprintf(buff,"!c05Processing %s %.3f %s\n",infile2,tsec1,Pinfile2);
+      kgWrite(I,buff);
+#if 0
+      AddStillAtEnd(infile2,tsec1,Pinfile2);
+#else
+      sprintf(buff,"RunAddStillAtEnd %s %-.3f %s",
+                   infile2,tsec1,Pinfile2);
+      RunFunctionAndWait(buff,RunAddStillAtEnd);
+#endif
+      if(FileStat(Pinfile2)){
+        sprintf(buff,"!c02Processed %s to %s\n",infile2,Pinfile2);
+        kgWrite(I,buff);
+      }
+      else {
+        sprintf(buff,"!c02FAILED TO CREATE %s\n",Pinfile2);
+        kgWrite(I,buff);
+        sleep(5);
+        return 1;
+      }
+      sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
+      kgWrite(I,buff);
+#if 0
+      AddStillAtStart(infile1,tsec2,Pinfile1);
+#else
+      sprintf(buff,"RunAddStillAtStart %s %-.3f %s",
+                   infile1,tsec2,Pinfile1);
+      RunFunctionAndWait(buff,RunAddStillAtStart);
+#endif
+      if(FileStat(Pinfile1)){
+        sprintf(buff,"!c02Processed %s to %s\n",infile1,Pinfile1);
+        kgWrite(I,buff);
+      }
+      else {
+        sprintf(buff,"!c02FAILED TO CREATE %s\n",Pinfile1);
+        kgWrite(I,buff);
+        sleep(5);
+        return 1;
+      }
+      MakeVideoTopBottom(Pinfile1,Pinfile2,outfile,I);
+    break;
+  }
+  free(mt1);
+  free(mt2);
+  kgCleanDir(Tfolder);
+  return ret;
+}
+ /* Callback for  TABgo   */ 
+
+int topandbottomTABgocallback_org( int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -312,6 +521,25 @@ void * topandbottomInterface(void *args,void *rets) {
 }
  
  
+int topandbottomTABradiocallback(int item,int i,void *Tmp) {
+  /*********************************** 
+    item : selected item (1 to max_item)  not any specific relevence
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIRA *R;DIALOG *D; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  ThumbNail **th; 
+  int ret=1; 
+  D = (DIALOG *)Tmp;
+  R = (DIRA *)kgGetWidget(Tmp,i);
+  th = (ThumbNail **) R->list;
+  return ret;
+}
+void  topandbottomTABradioinit (DIRA *R,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+}
 int topandbottominit(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
