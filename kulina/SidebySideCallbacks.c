@@ -268,12 +268,12 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
       sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
       kgWrite(I,buff);
       remove(Pinfile1);
-#if 1
+#if 0
       AddStillAtEnd(infile1,tsec2,Pinfile1);
 #else
       sprintf(buff,"RunAddStillAtEnd %s %-.3f %s",
                    infile1,tsec2,Pinfile1);
-      RunFunctionAndWait(buff,AddStillAtEnd);
+      RunFunctionAndWait(buff,RunAddStillAtEnd);
 #endif
       if(FileStat(Pinfile1)){
         sprintf(buff,"!c02Processed %s to %s\n",infile1,Pinfile1);
@@ -290,12 +290,12 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
       sprintf(buff,"!c05Processing %s\n",infile2);
       kgWrite(I,buff);
       remove(Pinfile2);
-#if 1
+#if 0
      AddStillAtStart(infile2,tsec1,Pinfile2);
 #else
       sprintf(buff,"RunAddStillAtStart %s %-.3f %s",
                    infile2,tsec1,Pinfile2);
-      RunFunctionAndWait(buff,AddStillAtStart);
+      RunFunctionAndWait(buff,RunAddStillAtStart);
 #endif
       if(FileStat(Pinfile2)){
         sprintf(buff,"!c02Processed %s to %s\n",infile2,Pinfile2);
@@ -312,12 +312,12 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
     case 3:
       sprintf(buff,"!c05Processing %s %.3f %s\n",infile2,tsec1,Pinfile2);
       kgWrite(I,buff);
-#if 1
+#if 0
       AddStillAtEnd(infile2,tsec1,Pinfile2);
 #else
       sprintf(buff,"RunAddStillAtEnd %s %-.3f %s",
                    infile2,tsec1,Pinfile2);
-      RunFunctionAndWait(buff,AddStillAtEnd);
+      RunFunctionAndWait(buff,RunAddStillAtEnd);
 #endif
       if(FileStat(Pinfile2)){
         sprintf(buff,"!c02Processed %s to %s\n",infile2,Pinfile2);
@@ -331,12 +331,12 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
       }
       sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
       kgWrite(I,buff);
-#if 1
+#if 0
       AddStillAtStart(infile1,tsec2,Pinfile1);
 #else
       sprintf(buff,"RunAddStillAtStart %s %-.3f %s",
                    infile1,tsec2,Pinfile1);
-      RunFunctionAndWait(buff,AddStillAtStart);
+      RunFunctionAndWait(buff,RunAddStillAtStart);
 #endif
       if(FileStat(Pinfile1)){
         sprintf(buff,"!c02Processed %s to %s\n",infile1,Pinfile1);
