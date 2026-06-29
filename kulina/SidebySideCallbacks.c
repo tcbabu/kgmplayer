@@ -283,8 +283,6 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
         sleep(5);
         return 1;
       }
-      sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
-      kgWrite(I,buff);
       sprintf(buff,"!c05Processing %s\n",infile2);
       kgWrite(I,buff);
       remove(Pinfile2);
@@ -308,6 +306,8 @@ int SidebySideSBSgocallback( int butno,int i,void *Tmp) {
       MakeVideoSideBySide(Pinfile1,Pinfile2,outfile,I);
     break;
     case 3:
+      sprintf(buff,"!c01Right First:\n");
+      kgWrite(I,buff);
       sprintf(buff,"!c05Processing %s %.3f %s\n",infile2,tsec1,Pinfile2);
       kgWrite(I,buff);
 #if 0

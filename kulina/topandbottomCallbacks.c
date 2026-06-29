@@ -280,8 +280,6 @@ int topandbottomTABgocallback( int butno,int i,void *Tmp) {
         sleep(5);
         return 1;
       }
-      sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
-      kgWrite(I,buff);
       sprintf(buff,"!c05Processing %s\n",infile2);
       kgWrite(I,buff);
       remove(Pinfile2);
