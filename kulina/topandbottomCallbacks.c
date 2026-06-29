@@ -158,10 +158,6 @@ int MakeVideoTopBottom(char *infile1,char *infile2,char *outfile,DII *I) {
   MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vfile,"mp4");
   MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vout,"mp4");
   MakeFileInFolder("/tmp/Audio.wav",Tfolder,Audio,"wav");
-  MakeTmpFolderInHome(Tfolder);
-  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vfile,"mp4");
-  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vout,"mp4");
-  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Audio,"wav");
   mt1 = GetMediaInfo(infile1);
   Xres1= mt1->Axres;
   Yres1= mt1->Ayres;
@@ -188,7 +184,7 @@ int MakeVideoTopBottom(char *infile1,char *infile2,char *outfile,DII *I) {
   sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"Vstack\" %s",
        infile1,infile2,Vout);
   remove(outfile);
-  kgWrite(I,buff);
+//  kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);
   RunMonitorAndWait(buff);
   }
@@ -199,7 +195,7 @@ int MakeVideoTopBottom(char *infile1,char *infile2,char *outfile,DII *I) {
     sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"vstack\" %s",
        Vfile,infile2,Vout);
        remove(outfile);
-       kgWrite(I,buff);
+//       kgWrite(I,buff);
        RunMonitorAndWait(buff);
   }
   if(Resize == 2) {
@@ -209,9 +205,11 @@ int MakeVideoTopBottom(char *infile1,char *infile2,char *outfile,DII *I) {
     sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"vstack\" %s",
        infile1,Vfile,Vout);
     remove(outfile);
-    kgWrite(I,buff);
+//    kgWrite(I,buff);
     RunMonitorAndWait(buff);
   }
+  sprintf(buff,"!c01Processing Audio... Pl. Wait\n");
+  kgWrite(I,buff);
   AudioChange(Vout,Audio,outfile);
   free(mt1);
   free(mt2);
@@ -260,7 +258,7 @@ int topandbottomTABgocallback( int butno,int i,void *Tmp) {
       MakeVideoTopBottom(infile1,infile2,outfile,I);
     break;
     case 2:
-      sprintf(buff,"!c01Left First:\n");
+      sprintf(buff,"!c01Top First:\n");
       kgWrite(I,buff);
       sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
       kgWrite(I,buff);
@@ -307,6 +305,8 @@ int topandbottomTABgocallback( int butno,int i,void *Tmp) {
       MakeVideoTopBottom(Pinfile1,Pinfile2,outfile,I);
     break;
     case 3:
+      sprintf(buff,"!c01Bottom First:\n");
+      kgWrite(I,buff);
       sprintf(buff,"!c05Processing %s %.3f %s\n",infile2,tsec1,Pinfile2);
       kgWrite(I,buff);
 #if 0

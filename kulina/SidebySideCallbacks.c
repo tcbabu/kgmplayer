@@ -161,10 +161,6 @@ int MakeVideoSideBySide(char *infile1,char *infile2,char *outfile,DII *I) {
   MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vfile,"mp4");
   MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vout,"mp4");
   MakeFileInFolder("/tmp/Audio.wav",Tfolder,Audio,"wav");
-  MakeTmpFolderInHome(Tfolder);
-  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vfile,"mp4");
-  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vout,"mp4");
-  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Audio,"wav");
   mt1 = GetMediaInfo(infile1);
   Xres1= mt1->Axres;
   Yres1= mt1->Ayres;
@@ -191,7 +187,7 @@ int MakeVideoSideBySide(char *infile1,char *infile2,char *outfile,DII *I) {
   sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
        infile1,infile2,Vout);
   remove(outfile);
-  kgWrite(I,buff);
+//  kgWrite(I,buff);
 //  runfunction(buff,ProcessPrint,ffmpegfun);
   RunMonitorAndWait(buff);
   }
@@ -202,7 +198,7 @@ int MakeVideoSideBySide(char *infile1,char *infile2,char *outfile,DII *I) {
     sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
        Vfile,infile2,Vout);
        remove(outfile);
-       kgWrite(I,buff);
+//       kgWrite(I,buff);
        RunMonitorAndWait(buff);
   }
   if(Resize == 2) {
@@ -212,9 +208,11 @@ int MakeVideoSideBySide(char *infile1,char *infile2,char *outfile,DII *I) {
     sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
        infile1,Vfile,Vout);
     remove(outfile);
-    kgWrite(I,buff);
+//    kgWrite(I,buff);
     RunMonitorAndWait(buff);
   }
+  sprintf(buff,"!c05Processing Audio... !c01 pl Wait\n");
+  kgWrite(I,buff);
   AudioChange(Vout,Audio,outfile);
   free(mt1);
   free(mt2);
