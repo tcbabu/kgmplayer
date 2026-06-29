@@ -239,6 +239,22 @@ int AudioChange(char *media,char *audio,char *outfile) {
    runfunction(buff,NULL,ffmpegfun);
    return 1;
 }
+int VideoCrop(char *infile,int xo,int yo,int xres,int yres,char *outfile) {
+  char buff[500];
+  sprintf(buff,"ffmpegfun -y -i %s   -vf \"crop=%-d:%-d:%-d:%-d\" %s",
+       infile,xres,yres,xo,yo,outfile);
+  runfunction(buff,ProcessPrint,ffmpegfun);
+  return 1;
+}
+int RunVideoCrop(int argc,char **argv) {
+   int xo,yo,xres,yres;
+   sscanf(argv[2],"%d",&xo);
+   sscanf(argv[3],"%d",&yo);
+   sscanf(argv[4],"%d",&xres);
+   sscanf(argv[5],"%d",&yres );
+   VideoCrop(argv[1],xo,yo,xres,yres,argv[6]);
+   return 1;
+}
 int ChangeVideoSizeAndFrate(char *infile,char *outfile,int Xres,int Yres,int fs,int Qty){
   char buff[500];
   char Qstr[200];

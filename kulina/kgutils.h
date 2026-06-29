@@ -71,5 +71,7 @@ int GetlastFrame(char *infile,char *outfile);
  int RunAddStillAtEnd(int argc,char **argv);
 int MixTwoAudios( char *infile1,char *infile2,char *outfile);
 int FileSize(char *flname);
+int VideoCrop(char *infile,int xo,int yo,int xres,int yres,char *outfile);
+int RunVideoCrop(int argc,char **argv);
 #endif
 
