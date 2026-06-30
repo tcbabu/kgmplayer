@@ -1,9 +1,11 @@
 #include <kulina.h>
 #include "ArrangeVideoCallbacks.h"
+#include "kgutils.h"
 
 static void *Args=NULL,*Rets=NULL;
 
 static DIAINTR *It = NULL;
+
 
 
 static MODINTERFACE ModFuns[] = { 
@@ -11,32 +13,43 @@ static MODINTERFACE ModFuns[] = {
 };
 static Dlink *ModuleList=NULL;
 
- /* Callback for  AVMlist   */ 
-
-int ArrangeVideoAVMlistcallback(int item,int i,void *Tmp) {
-  /*********************************** 
-    item : selected item (1 to max_item) 
-    i :  Index of Widget  (0 to max_widgets-1) 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
-  DIALOG *D;DIX *X; 
-  int ret=1; 
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-// pt[0] is args passed as inputs; pt[1] is output pointer
-  D = (DIALOG *)Tmp;
-  X = (DIX *)kgGetWidget(Tmp,i);
-  switch(item) {
-    case 1: 
-      break;
+char * MakeArrangeVideoFile(void) {
+  char buff[500],*pt;
+  int id=0,ln;
+  sprintf(buff,"%-s/",getenv("HOME"));
+  ln = strlen(buff);
+  pt = buff+ln;
+  while(1) {
+    sprintf(pt,"ArrangedVideo_%-4.4d.mp4",id);
+//    printf("%s\n",buff);
+    if (!FileStat(buff)) break;
+    id++;
   }
-  return ret;
+  ln = strlen(buff);
+  pt = (char *)malloc(ln+1);
+  strcpy(pt,buff);
+  return pt;
 }
-void  ArrangeVideoAVMlistinit (DIX *X,void *ptmp) {
- // One may setup browser list here by setting X->list
- // if it need to be freed set it as X->pt also
- void **pt=(void **)ptmp; //pt[0] is arg 
+int DeleteSelectedFromList(DIX *X) {
+   ThumbNail **Th=(ThumbNail **)kgGetList(X);
+   Dlink *L=Dopen();
+   ThumbNail *tpt=NULL;
+   int i=0;
+   while(Th[i]!= NULL) {
+//      printf("Name: %s sw= %d \n",Th[i]->name,Th[i]->sw);
+      if(Th[i]->sw == 1) kgFreeThumbNail(Th[i]);
+      else Dadd(L,Th[i]);
+      i++;
+   }
+   i=0;
+   Resetlink(L);
+   while((tpt = (ThumbNail *)Getrecord(L)) != NULL) Th[i++]=tpt;
+   Th[i]=NULL;
+   kgSetList(X,(void **)Th);
+   kgUpdateWidget(X);
+   Dfree(L);
+   return 1;
 }
-
  /* Callback for  AVMbutns   */ 
 
 int ArrangeVideoAVMbutnscallback(int butno,int i,void *Tmp) {
@@ -46,16 +59,47 @@ int ArrangeVideoAVMbutnscallback(int butno,int i,void *Tmp) {
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
   DIALOG *D;DIN *B; 
+  static char filename[500]="";
+  ThumbNail **th,**Xlist;
+  char **Str=NULL;
+  static int Entry=1;
   int n,ret =0; 
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-// pt[0] is args passed as inputs; pt[1] is output pointer
   D = (DIALOG *)Tmp;
+  DIX *VX2 = (DIX *)kgGetNamedWidget(Tmp,(char *)"AVMlist");
   B = (DIN *)kgGetWidget(Tmp,i);
+  Dlink *L;
   n = B->nx*B->ny;
   switch(butno) {
-    case 1: //  Add 
+    case 1: 
+#if 1
+       if(Entry) {
+         char *fpt = MakeArrangeVideoFile();
+         DIT *TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"AVMout");
+         kgSetString (TO,0,fpt);
+         kgUpdateWidget(TO);
+         kgUpdateOn(Tmp);
+         free(fpt);
+         Entry = 0;
+       }
+#endif
+      Str = kgGetVideoFiles(NULL);
+       
+      if(Str != NULL){
+          th =kgStringToThumbNails(Str); 
+	  kgFreeDouble((void **)Str);
+      }
+      i=0;
+      while(th[i] != NULL) {
+          kgAddThumbNail(VX2,th[i],-1);
+          i++;
+      }
+          kgUpdateWidget(VX2);
+          kgUpdateOn(Tmp);
+	  Str=NULL;
       break;
-    case 2: //  Delete 
+    case 2: 
+      DeleteSelectedFromList(VX2);
+      kgUpdateOn(Tmp);
       break;
   }
   return ret;
@@ -150,6 +194,14 @@ int ArrangeVideoAVMbrowsecallback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   switch(butno) {
     case 1: //  Browse 
+       char Flname[300];
+       Flname[0]='\0';
+       if(kgFolderBrowser(Tmp,2,2,Flname,"*") ) {
+         DIT *TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"AVMout");
+         kgSetString (TO,0,Flname);
+         kgUpdateWidget(TO);
+         kgUpdateOn(Tmp);
+       }
       break;
   }
   return ret;
@@ -160,12 +212,67 @@ void  ArrangeVideoAVMbrowseinit (DIN *B,void *ptmp) {
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
+
+ /* Callback for  AVMradio   */ 
+
+int ArrangeVideoAVMradiocallback(int item,int i,void *Tmp) {
+  /*********************************** 
+    item : selected item (1 to max_item)  not any specific relevence
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIRA *R;DIALOG *D; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  ThumbNail **th; 
+  int ret=1; 
+  D = (DIALOG *)Tmp;
+  R = (DIRA *)kgGetWidget(Tmp,i);
+  th = (ThumbNail **) R->list;
+  return ret;
+}
+void  ArrangeVideoAVMradioinit (DIRA *R,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+}
+
+ /* Callback for  AVMlist   */ 
+
+int ArrangeVideoAVMlistcallback(int item,int i,void *Tmp) {
+  /*********************************** 
+    item : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIX *X; 
+  int ret=1; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  X = (DIX *)kgGetWidget(Tmp,i);
+  switch(item) {
+    case 1: 
+      break;
+  }
+  return ret;
+}
+void  ArrangeVideoAVMlistinit (DIX *X,void *ptmp) {
+ // One may setup browser list here by setting X->list
+ // if it need to be freed set it as X->pt also
+ void **pt=(void **)ptmp; //pt[0] is arg 
+}
 int ArrangeVideoSetup(void *Tmp,void *args) {
+
   /*********************************** 
     args :  Pointer to args  
    ***********************************/ 
   /* you add any initialisation here */
   /* useful for setting is used as MakeGroup */
+  void **pt = (void **)args;
+  int *ipt;
+  ipt = (int *)pt[0];
+  *ipt = 1080;
+  ipt = (int *)pt[1];
+  *ipt = 1920;
   return 1;
 }
  

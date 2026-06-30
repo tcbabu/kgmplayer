@@ -67,6 +67,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Overlay.o OverlayCallbacks.o \
 	 Boverlay.o BoverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \
+	 ArrangeVideo.o ArrangeVideoCallbacks.o \
 	 PicFrame.o PicFrameCallbacks.o \
 	 VR.o VRCallbacks.o \
 	 GetCropArea.o GetCropAreaCallbacks.o \
@@ -147,6 +148,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 Overlay.o OverlayCallbacks.o \
 	 Boverlay.o BoverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \
+	 ArrangeVideo.o ArrangeVideoCallbacks.o \
 	 PicFrame.o PicFrameCallbacks.o \
 	 VR.o VRCallbacks.o \
 	 GetCropArea.o GetCropAreaCallbacks.o \
@@ -388,6 +390,8 @@ BoverlayCallbacks.o		: BoverlayCallbacks.c
 		 $(CC) -c BoverlayCallbacks.c
 Crop.o		: Crop.c
 		 $(CC) -c Crop.c
+ArrangeVideo.o		: ArrangeVideo.c
+		 $(CC) -c ArrangeVideo.c
 PicFrame.o		: PicFrame.c
 		 $(CC) -c PicFrame.c
 VR.o		: VR.c

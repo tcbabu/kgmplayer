@@ -1,5 +1,3 @@
-int ArrangeVideoAVMlistcallback(int item,int i,void *Tmp) ;
-void  ArrangeVideoAVMlistinit (DIX *X,void *pt) ;
 int ArrangeVideoAVMbutnscallback(int butno,int i,void *Tmp) ;
 void  ArrangeVideoAVMbutnsinit (DIN *B,void *pt) ;
 int ArrangeVideoAVMrescallback(int cellno,int i,void *Tmp) ;
@@ -8,6 +6,10 @@ void  ArrangeVideoAVMgoinit (DIL *B,void *pt) ;
 int ArrangeVideoAVMoutcallback(int cellno,int i,void *Tmp) ;
 int ArrangeVideoAVMbrowsecallback(int butno,int i,void *Tmp) ;
 void  ArrangeVideoAVMbrowseinit (DIN *B,void *pt) ;
+int ArrangeVideoAVMradiocallback(int item,int i,void *Tmp) ;
+void  ArrangeVideoAVMradioinit (DIRA *R,void *pt) ;
+int ArrangeVideoAVMlistcallback(int item,int i,void *Tmp) ;
+void  ArrangeVideoAVMlistinit (DIX *X,void *pt) ;
 int ArrangeVideoinit(void *Tmp) ;
 int ArrangeVideocleanup(void *Tmp) ;
 void *RunArrangeVideo(void *,void *) ;

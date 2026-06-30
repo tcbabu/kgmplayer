@@ -4,16 +4,186 @@
 int ArrangeVideoGroup( DIALOG *D,void **v,void *pt) {
   int GrpId=0,oitems=0,i,j;
   DIA *d=NULL,*dtmp;
-  DIX x0 = { 
-    'x',
-    19,38,  
-    496,174,   
-    8,2,  
-    300, 
+  BUT_STR  *butn0=NULL; 
+  butn0= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
+  butn0[0].sw=1;
+  strcpy(butn0[0].title,(char *)"Add");
+  butn0[0].xpmn=NULL;
+  butn0[0].xpmp=NULL;
+  butn0[0].xpmh=NULL;
+  butn0[0].bkgr=-1;
+  butn0[0].butncode=126;
+  butn0[1].sw=1;
+  strcpy(butn0[1].title,(char *)"Delete");
+  butn0[1].xpmn=NULL;
+  butn0[1].xpmp=NULL;
+  butn0[1].xpmh=NULL;
+  butn0[1].bkgr=-1;
+  butn0[1].butncode=126;
+  DIN b0 = { 
+    'n',
+    297,10,  
+    475,41,
+    2,2,  
+    84, 
+    24, 
+    2,1, 
+    4,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    butn0, 
+    ArrangeVideoAVMbutnscallback , /* *args, Callback */
+    NULL  /* any args */
+  };
+  strcpy(b0.Wid,(char *)"AVMbutns");
+  b0.item = -1;
+  T_ELMT *e1  ; 
+  e1 =(T_ELMT *)malloc(sizeof(T_ELMT)*2);
+  e1[0].fmt = (char *)malloc(8);
+  strcpy(e1[0].fmt,(char *)"Xres%6d");
+  e1[0].v=(void *)v[0];
+  e1[0].sw=1;
+  e1[0].noecho=0;
+  e1[0].img=NULL;
+  e1[1].fmt = (char *)malloc(10);
+  strcpy(e1[1].fmt,(char *)"  Yres%6d");
+  e1[1].v=(void *)v[1];
+  e1[1].sw=1;
+  e1[1].noecho=0;
+  e1[1].img=NULL;
+  DIT t1 = { 
+    't',
+    111,214,  
+    413,246,
+    20, 
+    2,1, 
+    e1,
+    1,1,
+    NULL,ArrangeVideoAVMrescallback ,0 ,0,18,9 
+  };
+    /* *args,Callback,border,hide,font,fontsize */
+  strcpy(t1.Wid,(char *)"AVMres");
+  t1.pt=NULL;
+  t1.type = 0;
+  t1.item = -1;
+  DII i2 = { 
+    'i',
+    5,280,  
+    487,393,  
+    52,4,0   
+  };
+  strcpy(i2.Wid,(char *)"AVMinfo");
+  i2.item = -1;
+  BUT_STR  *butn3=NULL; 
+  butn3= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn3[0].sw=1;
+  strcpy(butn3[0].title,(char *)"Process");
+  butn3[0].xpmn=NULL;
+  butn3[0].xpmp=NULL;
+  butn3[0].xpmh=NULL;
+  butn3[0].bkgr=-1;
+  butn3[0].butncode=31;
+  DIL h3 = { 
+    'h',
+    206,398,  
+    336,431,
+    2,0,  
+    120, 
     25, 
-    1,0, 
-    1,4, 
-    (int *)v[0], 
+    1,1, 
+    5,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    butn3, 
+    ArrangeVideoAVMgocallback ,  /* *args, Callback */
+    NULL  /* any args */
+  };
+  strcpy(h3.Wid,(char *)"AVMgo");
+  h3.item = -1;
+  T_ELMT *e4  ; 
+  e4 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
+  e4[0].fmt = (char *)malloc(11);
+  strcpy(e4[0].fmt,(char *)"Output%32s");
+  e4[0].v=(void *)v[2];
+  e4[0].sw=1;
+  e4[0].noecho=0;
+  e4[0].img=NULL;
+  DIT t4 = { 
+    't',
+    14,178,  
+    409,212,
+    20, 
+    1,1, 
+    e4,
+    1,1,
+    NULL,ArrangeVideoAVMoutcallback ,0 ,0,18,9 
+  };
+    /* *args,Callback,border,hide,font,fontsize */
+  strcpy(t4.Wid,(char *)"AVMout");
+  t4.pt=NULL;
+  t4.type = 0;
+  t4.item = -1;
+  BUT_STR  *butn5=NULL; 
+  butn5= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn5[0].sw=1;
+  strcpy(butn5[0].title,(char *)"Browse");
+  butn5[0].xpmn=NULL;
+  butn5[0].xpmp=NULL;
+  butn5[0].xpmh=NULL;
+  butn5[0].bkgr=-1;
+  butn5[0].butncode=31;
+  DIN b5 = { 
+    'n',
+    409,178,  
+    487,212,
+    2,2,  
+    72, 
+    24, 
+    1,1, 
+    5,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    butn5, 
+    ArrangeVideoAVMbrowsecallback , /* *args, Callback */
+    NULL  /* any args */
+  };
+  strcpy(b5.Wid,(char *)"AVMbrowse");
+  b5.item = -1;
+  char *menu6[]  = { 
+    (char *)"Simultaneous",
+    (char *)"One by One",
+    NULL 
+  };
+  ThumbNail **th0 ;
+  DIRA r6 = { 
+    'r',
+    109,246,  
+    489,275,   
+    8,0,  
+    180, 
+    25, 
+    1,2, 
+    0,1, 
+    (int *)v[3], 
+    NULL, 
+    NULL ,
+    NULL,ArrangeVideoAVMradiocallback , /* *args, Callback  */
+    1,  /* Border Offset  */
+     2,  /* Scroll width  */
+     0,  /* Type  */
+     0, /* item highlight */
+    0, /* bordr */
+    0, /* bkgr */
+    0  /*=1 hide  */
+   };
+  th0 = (ThumbNail **)kgStringToThumbNails((char **)menu6);
+  r6.list=(void **)th0;
+  strcpy(r6.Wid,(char *)"AVMradio");
+  r6.item = -1;
+  DIX x7 = { 
+    'x',
+    25,41,  
+    475,171,   
+    10,2,  
+    408, 
+    25, 
+    1,24, 
+    0,4, 
+    (int *)v[4], 
     NULL, 
     NULL, 
     NULL,ArrangeVideoAVMlistcallback , /* *args, Callback  */
@@ -21,183 +191,48 @@ int ArrangeVideoGroup( DIALOG *D,void **v,void *pt) {
      22,  /* Scroll width  */
      0,  /* Type  */
      1, /* item highlight */
-    1, /* bordr */
+    0, /* bordr */
     1, /* bkgr */
     0  /*=1 hide  */
    };
-  strcpy(x0.Wid,(char *)"AVMlist");
-  x0.item = -1;
-  BUT_STR  *butn1=NULL; 
-  butn1= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
-  butn1[0].sw=1;
-  strcpy(butn1[0].title,(char *)"Add");
-  butn1[0].xpmn=NULL;
-  butn1[0].xpmp=NULL;
-  butn1[0].xpmh=NULL;
-  butn1[0].bkgr=-1;
-  butn1[0].butncode=31;
-  butn1[1].sw=1;
-  strcpy(butn1[1].title,(char *)"Delete");
-  butn1[1].xpmn=NULL;
-  butn1[1].xpmp=NULL;
-  butn1[1].xpmh=NULL;
-  butn1[1].bkgr=-1;
-  butn1[1].butncode=31;
-  DIN b1 = { 
-    'n',
-    318,6,  
-    496,37,
-    2,2,  
-    84, 
-    24, 
-    2,1, 
-    4,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
-    butn1, 
-    ArrangeVideoAVMbutnscallback , /* *args, Callback */
-    NULL  /* any args */
-  };
-  strcpy(b1.Wid,(char *)"AVMbutns");
-  b1.item = -1;
-  T_ELMT *e2  ; 
-  e2 =(T_ELMT *)malloc(sizeof(T_ELMT)*2);
-  e2[0].fmt = (char *)malloc(8);
-  strcpy(e2[0].fmt,(char *)"Xres%6d");
-  e2[0].v=(void *)v[1];
-  e2[0].sw=1;
-  e2[0].noecho=0;
-  e2[0].img=NULL;
-  e2[1].fmt = (char *)malloc(10);
-  strcpy(e2[1].fmt,(char *)"  Yres%6d");
-  e2[1].v=(void *)v[2];
-  e2[1].sw=1;
-  e2[1].noecho=0;
-  e2[1].img=NULL;
-  DIT t2 = { 
-    't',
-    111,229,  
-    413,261,
-    20, 
-    2,1, 
-    e2,
-    1,1,
-    NULL,ArrangeVideoAVMrescallback ,0 ,0,18,9 
-  };
-    /* *args,Callback,border,hide,font,fontsize */
-  strcpy(t2.Wid,(char *)"AVMres");
-  t2.pt=NULL;
-  t2.type = 0;
-  t2.item = -1;
-  DII i3 = { 
-    'i',
-    5,273,  
-    500,355,  
-    53,3,0   
-  };
-  strcpy(i3.Wid,(char *)"AVMinfo");
-  i3.item = -1;
-  BUT_STR  *butn4=NULL; 
-  butn4= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
-  butn4[0].sw=1;
-  strcpy(butn4[0].title,(char *)"Process");
-  butn4[0].xpmn=NULL;
-  butn4[0].xpmp=NULL;
-  butn4[0].xpmh=NULL;
-  butn4[0].bkgr=-1;
-  butn4[0].butncode=31;
-  DIL h4 = { 
-    'h',
-    205,364,  
-    335,397,
-    2,0,  
-    120, 
-    25, 
-    1,1, 
-    5,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
-    butn4, 
-    ArrangeVideoAVMgocallback ,  /* *args, Callback */
-    NULL  /* any args */
-  };
-  strcpy(h4.Wid,(char *)"AVMgo");
-  h4.item = -1;
-  T_ELMT *e5  ; 
-  e5 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e5[0].fmt = (char *)malloc(11);
-  strcpy(e5[0].fmt,(char *)"Output%35s");
-  e5[0].v=(void *)v[3];
-  e5[0].sw=1;
-  e5[0].noecho=0;
-  e5[0].img=NULL;
-  DIT t5 = { 
-    't',
-    7,186,  
-    424,220,
-    20, 
-    1,1, 
-    e5,
-    1,1,
-    NULL,ArrangeVideoAVMoutcallback ,0 ,0,18,9 
-  };
-    /* *args,Callback,border,hide,font,fontsize */
-  strcpy(t5.Wid,(char *)"AVMout");
-  t5.pt=NULL;
-  t5.type = 0;
-  t5.item = -1;
-  BUT_STR  *butn6=NULL; 
-  butn6= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
-  butn6[0].sw=1;
-  strcpy(butn6[0].title,(char *)"Browse");
-  butn6[0].xpmn=NULL;
-  butn6[0].xpmp=NULL;
-  butn6[0].xpmh=NULL;
-  butn6[0].bkgr=-1;
-  butn6[0].butncode=31;
-  DIN b6 = { 
-    'n',
-    425,186,  
-    503,220,
-    2,2,  
-    72, 
-    24, 
-    1,1, 
-    5,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
-    butn6, 
-    ArrangeVideoAVMbrowsecallback , /* *args, Callback */
-    NULL  /* any args */
-  };
-  strcpy(b6.Wid,(char *)"AVMbrowse");
-  b6.item = -1;
+  strcpy(x7.Wid,(char *)"AVMlist");
+  x7.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+8));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+9));
   d =dtmp+i; 
-  d[7].t=NULL;
-  d[0].t = (DIT *)malloc(sizeof(DIX));
-  *d[0].x = x0;
-  d[0].x->item = -1;
-  ArrangeVideoAVMlistinit(d[0].x,pt) ;
-  d[1].t = (DIT *)malloc(sizeof(DIN));
-  *d[1].N = b1;
-  d[1].N->item = -1;
-  ArrangeVideoAVMbutnsinit(d[1].N,pt) ;
-  d[2].t = (DIT *)malloc(sizeof(DIT));
-  *d[2].t = t2;
-  d[2].t->item = -1;
-  d[3].t = (DIT *)malloc(sizeof(DII));
-  *d[3].i = i3;
-  d[3].i->item = -1;
-  d[4].t = (DIT *)malloc(sizeof(DIL));
-  *d[4].h = h4;
-  d[4].h->item = -1;
-  ArrangeVideoAVMgoinit(d[4].h,pt) ;
-  d[5].t = (DIT *)malloc(sizeof(DIT));
-  *d[5].t = t5;
-  d[5].t->item = -1;
-  d[6].t = (DIT *)malloc(sizeof(DIN));
-  *d[6].N = b6;
-  d[6].N->item = -1;
-  ArrangeVideoAVMbrowseinit(d[6].N,pt) ;
-  d[7].t = NULL;
+  d[8].t=NULL;
+  d[0].t = (DIT *)malloc(sizeof(DIN));
+  *d[0].N = b0;
+  d[0].N->item = -1;
+  ArrangeVideoAVMbutnsinit(d[0].N,pt) ;
+  d[1].t = (DIT *)malloc(sizeof(DIT));
+  *d[1].t = t1;
+  d[1].t->item = -1;
+  d[2].t = (DIT *)malloc(sizeof(DII));
+  *d[2].i = i2;
+  d[2].i->item = -1;
+  d[3].t = (DIT *)malloc(sizeof(DIL));
+  *d[3].h = h3;
+  d[3].h->item = -1;
+  ArrangeVideoAVMgoinit(d[3].h,pt) ;
+  d[4].t = (DIT *)malloc(sizeof(DIT));
+  *d[4].t = t4;
+  d[4].t->item = -1;
+  d[5].t = (DIT *)malloc(sizeof(DIN));
+  *d[5].N = b5;
+  d[5].N->item = -1;
+  ArrangeVideoAVMbrowseinit(d[5].N,pt) ;
+  d[6].t = (DIT *)malloc(sizeof(DIRA));
+  *d[6].r = r6;
+  d[6].r->item = -1;
+  ArrangeVideoAVMradioinit(d[6].r,pt) ;
+  d[7].t = (DIT *)malloc(sizeof(DIX));
+  *d[7].x = x7;
+  d[7].x->item = -1;
+  ArrangeVideoAVMlistinit(d[7].x,pt) ;
+  d[8].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -212,9 +247,10 @@ int MakeArrangeVideoGroup(DIALOG *D,void *arg) {
    WIDGETGRP *Gpt;
 /*************************************************
 
-    Selectmenu1  1 data value
     Text_Box1  2 data values
     Text_Box2  1 data values
+    RadioButtons1  1 data value
+    Selectmenu2  1 data value
 
 *************************************************/
    int  *v0 ;
@@ -223,18 +259,22 @@ int MakeArrangeVideoGroup(DIALOG *D,void *arg) {
    int  *v1 ;
    v1 = (int *)malloc(sizeof(int));
    *v1 = 1;
-   int  *v2 ;
-   v2 = (int *)malloc(sizeof(int));
-   *v2 = 1;
-   char  *v3 ;
-   v3 = (char *)malloc(sizeof(char)*500);
-   v3[0] = '\0';
-   void** v=(void **)malloc(sizeof(void*)*5);
-   v[4]=NULL;
+   char  *v2 ;
+   v2 = (char *)malloc(sizeof(char)*500);
+   v2[0] = '\0';
+   int  *v3 ;
+   v3 = (int *)malloc(sizeof(int));
+   *v3 = 1;
+   int  *v4 ;
+   v4 = (int *)malloc(sizeof(int));
+   *v4 = 1;
+   void** v=(void **)malloc(sizeof(void*)*6);
+   v[5]=NULL;
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
    v[3]=(void *)(v3);
+   v[4]=(void *)(v4);
    void *pt=NULL; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    GrpId = ArrangeVideoGroup(D,v,pt);
@@ -260,15 +300,15 @@ int ArrangeVideo( void *parent,void **v,void *pt) {
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 6;
+  D.df = 7;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
   D.rw = 4;
   D.xo = 886;   /* Position of Dialog */ 
   D.yo = 174;
-  D.xl = 509;    /*  Length of Dialog */
-  D.yl = 411;    /*  Width  of Dialog */
+  D.xl = 498;    /*  Length of Dialog */
+  D.yl = 438;    /*  Width  of Dialog */
   D.Initfun = ArrangeVideoinit;    /*   init fuction for Dialog */
   D.Cleanupfun = ArrangeVideocleanup;    /*   cleanup fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
@@ -323,20 +363,23 @@ int ArrangeVideo( void *parent,void **v,void *pt) {
 void *RunArrangeVideo(void *parent ,void *args) {
 /*************************************************
 
-    Selectmenu1  1 data value
     Text_Box1  2 data values
     Text_Box2  1 data values
+    RadioButtons1  1 data value
+    Selectmenu2  1 data value
 
 *************************************************/
    int   v0 = 1;
    int   v1 = 1;
-   int   v2 = 1;
-   char  v3[500]="" ;
-   void* v[4];
+   char  v2[500]="" ;
+   int   v3 = 1;
+   int   v4 = 1;
+   void* v[5];
    v[0]=(void *)(&v0);
    v[1]=(void *)(&v1);
-   v[2]=(void *)(&v2);
-   v[3]=(void *)(v3);
+   v[2]=(void *)(v2);
+   v[3]=(void *)(&v3);
+   v[4]=(void *)(&v4);
    void *pt[2]={NULL,NULL}; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    pt[0]=args;

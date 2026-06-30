@@ -66,6 +66,7 @@ int MakeAddStillGroup(DIALOG *D,void *arg);
 int MakeVideoSpeedGroup(DIALOG *D,void *arg);
 int MakeVideoReverseGroup(DIALOG *D,void *arg);
 int MakeAudioReverseGroup(DIALOG *D,void *arg);
+int MakeArrangeVideoGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -322,6 +323,9 @@ TOOLGRP ToolList[ ] = {
        " for joining  videos without any distortion\n"
        "It may be better to extract and process audios and\n"
        "  add to the procssed video later.\n"
+  },
+  { 0, MakeArrangeVideoGroup,"!f23Arrange Multiple Videos", 340,10,RunHelper,0,
+       "Arrange multiple Videos with in specified  resolution.\n"
   },
 #if 0
 #endif

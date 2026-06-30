@@ -73,5 +73,8 @@ int MixTwoAudios( char *infile1,char *infile2,char *outfile);
 int FileSize(char *flname);
 int VideoCrop(char *infile,int xo,int yo,int xres,int yres,char *outfile);
 int RunVideoCrop(int argc,char **argv);
+ThumbNail **AddItemtoVlist(char *newitem) ;
+ThumbNail **AddItemstoVlist(char **newitems) ;
+ThumbNail **DeleteItemsfromVlist(void) ;
 #endif
 
