@@ -2162,6 +2162,7 @@ MEDIAINFO * GetMediaInfo(char *flname) {
    mpt = (MEDIAINFO *)malloc(sizeof(MEDIAINFO));
     
    *mpt= Minfo;
+    strcpy(mpt->Flname,flname);
     Minfo=mtmp;
     strcpy(Minfo.SAR,(char *)"TESTING");
     return mpt;

@@ -1,6 +1,7 @@
 #include <kulina.h>
 #include "ArrangeVideoCallbacks.h"
 #include "kgutils.h"
+#include <math.h>
 
 static void *Args=NULL,*Rets=NULL;
 
@@ -139,12 +140,71 @@ int ArrangeVideoAVMgocallback( int butno,int i,void *Tmp) {
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
   DIALOG *D;DIL *B; 
-  int n,ret=1; 
+  int n,ret=0; 
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
+  ThumbNail **Th;
+  Dlink *L=Dopen();
+  Dlink *PL=Dopen();
+  Dlink *NL=Dopen();
+  DIX *VX2 = (DIX *)kgGetNamedWidget(Tmp,(char *)"AVMlist");
+  Th = (ThumbNail **) kgGetList(VX2);
+  MEDIAINFO *tpt,*ptpt,*tpt1,*tpt2;
+  float MaxSec=0;
+  char Tfolder[300],NewFile[300],NewFile1[300];
+  DIT *TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"AVMout");
+  MakeTmpFolderInHome(Tfolder);
+  n=0;
+  while(Th[n] != NULL) {
+    tpt = GetMediaInfo(Th[n]->name);
+    Dadd(L,tpt);
+    if(tpt->TotSec > MaxSec ) MaxSec=tpt->TotSec;
+    n++;
+  }
+  fprintf(stderr,"MaxSec %f n= %d\n",MaxSec,n);
+  Resetlink(L);
+  while( (tpt= (MEDIAINFO *)Getrecord(L)) != NULL) {
+     MakeFileInFolder("/tmp/Video.mp4",Tfolder,NewFile,"mp4");
+     fprintf(stderr,"MaxSec %f %s %s\n",MaxSec,tpt->Flname,NewFile);
+     if(fabsf(MaxSec-tpt->TotSec)>0.001) AddStillAtEnd(tpt->Flname,MaxSec-tpt->TotSec,NewFile);    
+     else strcpy(NewFile,tpt->Flname);
+     ptpt = GetMediaInfo(NewFile);
+     Dadd(PL,ptpt);
+  }
+  Resetlink(PL);
+  fprintf(stderr,"Going for Side By Side\n");
+  fflush(stderr);
+  sleep(10);
+  while( (tpt1= (MEDIAINFO *)Getrecord(PL)) != NULL) {
+     if( (tpt2= (MEDIAINFO *)Getrecord(PL)) != NULL) {
+        MakeFileInFolder("/tmp/Video.mp4",Tfolder,NewFile,"mp4");
+        fprintf(stderr,"SideBySide: %s %s %s\n",tpt1->Flname,tpt2->Flname,NewFile);
+        fflush(stdout);
+        sleep(5);
+        VideoSideBySide(tpt1->Flname,tpt2->Flname,NewFile);
+        tpt = GetMediaInfo(NewFile);
+        fprintf(stderr,"Joined: %s %f\n",tpt->Flname,tpt->TotSec);
+        Dadd(NL,tpt);
+     }
+     else break;
+  }
+  Resetlink(NL);
+  if( (tpt= (MEDIAINFO *)Getrecord(NL)) != NULL) {strcpy(NewFile,tpt->Flname);}
+  while( (tpt= (MEDIAINFO *)Getrecord(NL)) != NULL) {
+      MakeFileInFolder("/tmp/Video.mp4",Tfolder,NewFile1,"mp4");
+      VideoTopBottom(NewFile,tpt->Flname,NewFile1);
+      strcpy(NewFile,NewFile1);
+  }
+  tpt = GetMediaInfo(NewFile);
+  OverlayToSize(1080,1920,tpt->fps,1,NewFile,kgGetString(TO,0));
+  free(tpt);
+  Dempty(L);
+  Dempty(PL);
+  Dempty(NL);
+// kgCleanDir(Tfolder);  
   switch(butno) {
     case 1: //  Process 
       break;

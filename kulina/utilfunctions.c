@@ -214,6 +214,10 @@ int AddSilenceAtEnd(char *infile,float duration,char *outfile) {
   char command[500],Tfolder[300],Atmp1[200];
   int Fstat=0;
   char Tstring[50];
+  if ( fabsf(duration) <0.001) {
+    strcpy(outfile,infile);
+    return 0;
+  }
   GetTimeString(duration,Tstring);
   Fstat = MakeTmpFolderInHome(Tfolder);
   MakeFileInFolder("/tmp/Audio.wav",Tfolder,Atmp1,"wav");
@@ -714,6 +718,10 @@ int AddStillAtEnd(char *infile,float  duration,char *outfile) {
               Afile[300],NAfile[300],Tfolder[300];
    MEDIAINFO *mpt,*mtmp;
    int Fstat=1;
+   if ( fabsf(duration) <0.001) {
+    strcpy(outfile,infile);
+    return 0;
+   }
    mpt = GetMediaInfo(infile);
    if(mpt->Video != 1){free(mpt); return 0;}
    Fstat = MakeTmpFolderInHome(Tfolder);
@@ -806,6 +814,166 @@ int MixTwoAudios( char *infile1,char *infile2,char *outfile) {
     free(mt2);
     kgCleanDir(Folder);
     return 1;
+}
+int VideoSideBySide(char *infile1,char *infile2,char *outfile) {
+
+
+
+  int Xres1,Yres1,Xres2,Yres2,Mx,My;
+  int Resize=0,ret=1;
+  char Audio[300];
+  char Tfolder[300],Vfile[300],Vout[300];
+  MEDIAINFO *mt1,*mt2;
+  char buff[500];
+  MakeTmpFolderInHome(Tfolder);
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vfile,"mp4");
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vout,"mp4");
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Audio,"wav");
+  mt1 = GetMediaInfo(infile1);
+  Xres1= mt1->Axres;
+  Yres1= mt1->Ayres;
+  if(mt1->Video==0) {free(mt1); return 0;}
+  mt2 = GetMediaInfo(infile2);
+  if(mt2->Video==0) {free(mt2); free(mt1);return 0;}
+  fprintf(stderr,"Going for Aixing Audios\n");
+  fflush(stderr);
+  sleep(5);
+  MixTwoAudios(infile1,infile2,Audio);
+  Xres2= mt2->Axres;
+  Yres2= mt2->Ayres;
+  if ( Yres2 > Yres1 ) {
+     Resize=2;
+     Mx = Xres1;
+     My = Yres1;
+  }
+  if ( Yres2 < Yres1 ) {
+     Resize=1;
+     Mx = Xres2;
+     My = Yres2;
+  }
+  sprintf (buff,"Processing Side by Side..\n");
+//  kgWrite(I,buff);
+  fprintf(stderr,"%s\n",buff);
+  ret =0;
+  if(Resize==0) {
+  sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
+       infile1,infile2,Vout);
+  remove(outfile);
+//  kgWrite(I,buff);
+//  runfunction(buff,ProcessPrint,ffmpegfun);
+  fprintf(stderr,"%s\n",buff);
+  RunMonitorAndWait(buff);
+  }
+  if(Resize == 1) {
+    sprintf(buff,"!c01Processing %s\n",infile1);
+//    kgWrite(I,buff);
+  fprintf(stderr,"%s\n",buff);
+    ChangeVideoSizeAndFrate(infile1,Vfile,-2,My,(int)mt2->fps,1);
+    sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
+       Vfile,infile2,Vout);
+       remove(outfile);
+//       kgWrite(I,buff);
+  fprintf(stderr,"%s\n",buff);
+       RunMonitorAndWait(buff);
+  }
+  if(Resize == 2) {
+    sprintf(buff,"!c05Processing %s\n",infile2);
+//    kgWrite(I,buff);
+  fprintf(stderr,"%s\n",buff);
+    ChangeVideoSizeAndFrate(infile2,Vfile,-2,My,(int)mt1->fps,1);
+    sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"hstack\" %s",
+       infile1,Vfile,Vout);
+    remove(outfile);
+//    kgWrite(I,buff);
+  fprintf(stderr,"%s\n",buff);
+    RunMonitorAndWait(buff);
+  }
+  sprintf(buff,"!c05Processing Audio... !c01 pl Wait\n");
+//  kgWrite(I,buff);
+  fprintf(stderr,"%s\n",buff);
+  AudioChange(Vout,Audio,outfile);
+  free(mt1);
+  free(mt2);
+  kgCleanDir(Tfolder);
+  return 1;
+}
+int VideoTopBottom(char *infile1,char *infile2,char *outfile) {
+
+
+  int Xres1,Yres1,Xres2,Yres2,Mx,My;
+  int Resize=0,ret=1;
+  char Audio[300];
+  char Tfolder[300],Vfile[300],Vout[300];
+  MEDIAINFO *mt1,*mt2;
+  char buff[500];
+  MakeTmpFolderInHome(Tfolder);
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vfile,"mp4");
+  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Vout,"mp4");
+  MakeFileInFolder("/tmp/Audio.wav",Tfolder,Audio,"wav");
+  mt1 = GetMediaInfo(infile1);
+  Xres1= mt1->Axres;
+  Yres1= mt1->Ayres;
+  if(mt1->Video==0) {free(mt1); return 0;}
+  mt2 = GetMediaInfo(infile2);
+  if(mt2->Video==0) {free(mt2); free(mt1);return 0;}
+  MixTwoAudios(infile1,infile2,Audio);
+  Xres2= mt2->Axres;
+  Yres2= mt2->Ayres;
+  if ( Xres2 > Xres1 ) {
+     Resize=2;
+     Mx = Xres1;
+     My = Yres1;
+  }
+  if ( Xres2 < Xres1 ) {
+     Resize=1;
+     Mx = Xres2;
+     My = Yres2;
+  }
+  sprintf (buff,"Processing Top and Bottom ...\n");
+  //kgWrite(I,buff);
+  fprintf(stderr,"%s\n",buff);
+  ret =0;
+  if(Resize==0) {
+  sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"Vstack\" %s",
+       infile1,infile2,Vout);
+  remove(outfile);
+//  kgWrite(I,buff);
+  fprintf(stderr,"%s\n",buff);
+//  runfunction(buff,ProcessPrint,ffmpegfun);
+  RunMonitorAndWait(buff);
+  }
+  if(Resize == 1) {
+    sprintf(buff,"!c01Processing %s\n",infile1);
+    //kgWrite(I,buff);
+  fprintf(stderr,"%s\n",buff);
+    ChangeVideoSizeAndFrate(infile1,Vfile,Mx,-2,(int)mt2->fps,1);
+    sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"vstack\" %s",
+       Vfile,infile2,Vout);
+       remove(outfile);
+//       kgWrite(I,buff);
+  fprintf(stderr,"%s\n",buff);
+       RunMonitorAndWait(buff);
+  }
+  if(Resize == 2) {
+    sprintf(buff,"!c05Processing %s\n",infile2);
+    //kgWrite(I,buff);
+  fprintf(stderr,"%s\n",buff);
+    ChangeVideoSizeAndFrate(infile2,Vfile,Mx,-2,(int)mt1->fps,1);
+    sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"vstack\" %s",
+       infile1,Vfile,Vout);
+    remove(outfile);
+//    kgWrite(I,buff);
+  printf("%s\n",buff);
+    RunMonitorAndWait(buff);
+  }
+  sprintf(buff,"!c01Processing Audio... Pl. Wait\n");
+  //kgWrite(I,buff);
+  fprintf(stderr,"%s\n",buff);
+  AudioChange(Vout,Audio,outfile);
+  free(mt1);
+  free(mt2);
+  kgCleanDir(Tfolder);
+  return 1;
 }
 int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext) {
    int index,i;

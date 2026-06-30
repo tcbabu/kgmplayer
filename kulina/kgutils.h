@@ -76,5 +76,7 @@ int RunVideoCrop(int argc,char **argv);
 ThumbNail **AddItemtoVlist(char *newitem) ;
 ThumbNail **AddItemstoVlist(char **newitems) ;
 ThumbNail **DeleteItemsfromVlist(void) ;
+int VideoTopBottom(char *infile1,char *infile2,char *outfile);
+int VideoSideBySide(char *infile1,char *infile2,char *outfile);
 #endif
 
