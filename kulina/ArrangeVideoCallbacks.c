@@ -148,6 +148,7 @@
       int Xres = kgGetInt ( TR , 0 ) ;
       int Yres = kgGetInt ( TR , 1 ) ;
       MakeTmpFolderInHome ( Tfolder ) ;
+      int Nraw=2;
       int Sync = kgGetSelection ( kgGetNamedWidget  \
           ( Tmp , ( char * ) "AVMradio" ) ) %2;
       n = 0;
@@ -218,7 +219,13 @@
               fprintf ( stderr , "Joined: %s %f\n" , tpt->Flname , tpt->TotSec ) ;
               Dadd ( NL , tpt ) ;
           }
-          else break;
+          else {
+           MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
+           OverlayToSize(Nraw*tpt1->Axres,tpt1->Ayres,tpt1->fps,1,tpt1->Flname,NewFile);
+           tpt = GetMediaInfo(NewFile);
+           Dadd(NL,tpt);
+           break;
+         }
       }
       Resetlink ( NL ) ;
       if ( ( tpt = ( MEDIAINFO * ) Getrecord ( NL ) ) != NULL )  \
