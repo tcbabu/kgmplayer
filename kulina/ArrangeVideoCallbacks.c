@@ -139,7 +139,8 @@
       Dlink *NL = Dopen ( ) ;
       DIX *VX2 = ( DIX * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMlist" ) ;
       Th = ( ThumbNail ** ) kgGetList ( VX2 ) ;
-      MEDIAINFO *tpt , *ptpt , *tpt1 , *tpt2;
+      MEDIAINFO *tpt , *ptpt , *tpt1 , *tpt2,**M=NULL;
+      int Nv=0;
       float MaxSec = 0;
       float Ssec =0;
       char Tfolder [ 300 ] , NewFile [ 300 ] , NewFile1 [ 300 ] ;
@@ -152,15 +153,18 @@
       int Sync = kgGetSelection ( kgGetNamedWidget  \
           ( Tmp , ( char * ) "AVMradio" ) ) %2;
       n = 0;
-      if ( Sync ) {
-          while ( Th [ n ] != NULL ) {
+      while ( Th [ n ] != NULL ) {
               tpt = GetMediaInfo ( Th [ n ]->name ) ;
               Dadd ( L , tpt ) ;
               if ( tpt->TotSec > MaxSec ) MaxSec = tpt->TotSec;
               n++;
-          }
-          fprintf ( stderr , "MaxSec %f n= %d\n" , MaxSec , n ) ;
-          Resetlink ( L ) ;
+      }
+      fprintf ( stderr , "MaxSec %f n= %d\n" , MaxSec , n ) ;
+      Resetlink ( L ) ;
+      Nv = n;
+      M = (MEDIAINFO **) Dlinktoarray(L);      
+      Resetlink ( L ) ;
+      if ( Sync ) {
           while ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
               fprintf ( stderr , "MaxSec %f %s %s\n" , MaxSec , tpt->Flname , NewFile ) ;
@@ -172,14 +176,6 @@
           }
       }
       else {
-          while ( Th [ n ] != NULL ) {
-              tpt = GetMediaInfo ( Th [ n ]->name ) ;
-              Dadd ( L , tpt ) ;
-               MaxSec += tpt->TotSec;
-              n++;
-          }
-          fprintf ( stderr , "MaxSec %f n= %d\n" , MaxSec , n ) ;
-          Resetlink ( L ) ;
           if ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
               fprintf ( stderr , "MaxSec %f %s %s\n" , MaxSec , tpt->Flname , NewFile ) ;
@@ -205,6 +201,9 @@
               Dadd ( PL , ptpt ) ;
           }
       }
+      Resetlink ( PL ) ;
+      free(M);
+      M = (MEDIAINFO **) Dlinktoarray(PL);      
       Resetlink ( PL ) ;
       fprintf ( stderr , "Going for Side By Side\n" ) ;
       fflush ( stderr ) ;
@@ -239,10 +238,11 @@
       OverlayToSize ( Xres , Yres  , tpt->fps , 1 , \
            NewFile , kgGetString ( TO , 0 ) ) ;
       free ( tpt ) ;
+      free(M);
       Dempty ( L ) ;
       Dempty ( PL ) ;
       Dempty ( NL ) ;
-// kgCleanDir(Tfolder);  
+//    kgCleanDir(Tfolder);  
       switch ( butno ) {
           case 1: // Process 
           break;
