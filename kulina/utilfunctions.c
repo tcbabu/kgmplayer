@@ -659,16 +659,17 @@ int GetLastFrame(char *infile,char *outfile) {
    hr = mi/60;
    mi = mi - hr*60;
    id =1;   
-   while(1) {
-   sprintf(tbuff,"%-d:%-d:%-.3f",hr,mi,sec-offset*id);
-   sprintf(buff,"ffmpegfun  -y  -ss %s  -i %s -frames:v 1 %s",tbuff,infile,outfile);
+//   while(1) {
+//   sprintf(tbuff,"%-d:%-d:%-.3f",hr,mi,sec-offset*id);
+ //  sprintf(buff,"ffmpegfun  -y  -ss %s  -i %s -frames:v 1 %s",tbuff,infile,outfile);
+   sprintf (buff,"ffmpegfun -y -sseof -3 -i %s -update true -q:v 2 %s",infile,outfile);
    RunAndWait(buff);
      if(!FileSize(outfile)){
         fprintf(stderr,"Failed to get Last Frame\n");
         id++;
      }
-     else break;
-   }
+//     else break;
+//   }
    return 1;
 }
 int JoinTwoVideos(char *infile1,char *infile2,char *outfile){
@@ -685,9 +686,13 @@ int AddStillAtStart(char *infile,float  duration,char *outfile) {
               Afile[300],NAfile[300],Tfolder[300];
    MEDIAINFO *mpt,*mtmp;
    int Fstat=1;
+   if(duration <= 0.0 ) {
+      strcpy(outfile,infile);
+      return 0;
+   }
    mpt = GetMediaInfo(infile);
    if(mpt->Video != 1){free(mpt); return 0;}
-  Fstat = MakeTmpFolderInHome(Tfolder);
+   Fstat = MakeTmpFolderInHome(Tfolder);
    MakeFileInFolder(infile,Tfolder,Ffile,(char *)"png");
    GetFirstFrame(infile,Ffile);  
    MakeFileInFolder(infile,Tfolder,Sfile,(char *)"mp4");
@@ -718,7 +723,7 @@ int AddStillAtEnd(char *infile,float  duration,char *outfile) {
               Afile[300],NAfile[300],Tfolder[300];
    MEDIAINFO *mpt,*mtmp;
    int Fstat=1;
-   if ( fabsf(duration) <0.001) {
+   if ( (fabsf(duration) <0.001) ||(duration <= 0.0)){
     strcpy(outfile,infile);
     return 0;
    }
