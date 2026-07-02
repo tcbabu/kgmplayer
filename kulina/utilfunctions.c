@@ -939,7 +939,7 @@ int VideoTopBottom(char *infile1,char *infile2,char *outfile) {
   fprintf(stderr,"%s\n",buff);
   ret =0;
   if(Resize==0) {
-  sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"Vstack\" %s",
+  sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"vstack\" %s",
        infile1,infile2,Vout);
   remove(outfile);
 //  kgWrite(I,buff);

@@ -140,7 +140,8 @@
       DIX *VX2 = ( DIX * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMlist" ) ;
       Th = ( ThumbNail ** ) kgGetList ( VX2 ) ;
       MEDIAINFO *tpt , *ptpt , *tpt1 , *tpt2,**M=NULL;
-      int Nv=0;
+      int Nv=0,Ny,Nr,txres=0;
+      int ix=0,iy=0;
       float MaxSec = 0;
       float Ssec =0;
       char Tfolder [ 300 ] , NewFile [ 300 ] , NewFile1 [ 300 ] ;
@@ -149,7 +150,7 @@
       int Xres = kgGetInt ( TR , 0 ) ;
       int Yres = kgGetInt ( TR , 1 ) ;
       MakeTmpFolderInHome ( Tfolder ) ;
-      int Nraw=2;
+      int Nrow=4;
       int Sync = kgGetSelection ( kgGetNamedWidget  \
           ( Tmp , ( char * ) "AVMradio" ) ) %2;
       n = 0;
@@ -162,6 +163,9 @@
       fprintf ( stderr , "MaxSec %f n= %d\n" , MaxSec , n ) ;
       Resetlink ( L ) ;
       Nv = n;
+      Ny = (Nv/Nrow)*Nrow;
+      Nr = Nv - Ny;;
+      
       M = (MEDIAINFO **) Dlinktoarray(L);      
       Resetlink ( L ) ;
       if ( Sync ) {
@@ -207,8 +211,11 @@
       Resetlink ( PL ) ;
       fprintf ( stderr , "Going for Side By Side\n" ) ;
       fflush ( stderr ) ;
-      while ( ( tpt1 = ( MEDIAINFO * ) Getrecord ( PL ) ) != NULL ) {
-          if ( ( tpt2 = ( MEDIAINFO * ) Getrecord ( PL ) ) != NULL ) {
+      iy =0;
+      while(iy < Ny) {
+          tpt1 = M[iy];
+          for(ix = 1;ix<Nrow;ix++) {
+              tpt2 =M[iy+ix];
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
               fprintf ( stderr , "SideBySide: %s %s %s\n" , \
                    tpt1->Flname , tpt2->Flname , NewFile ) ;
@@ -216,15 +223,36 @@
               VideoSideBySide ( tpt1->Flname , tpt2->Flname , NewFile ) ;
               tpt = GetMediaInfo ( NewFile ) ;
               fprintf ( stderr , "Joined: %s %f\n" , tpt->Flname , tpt->TotSec ) ;
-              Dadd ( NL , tpt ) ;
+              tpt1 =tpt;
           }
-          else {
-           MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-           OverlayToSize(Nraw*tpt1->Axres,tpt1->Ayres,tpt1->fps,1,tpt1->Flname,NewFile);
-           tpt = GetMediaInfo(NewFile);
-           Dadd(NL,tpt);
-           break;
+          Dadd ( NL , tpt ) ;
+          iy = iy+Nrow;
+          txres=tpt->Axres;
+      }
+      if(Nr>0) {
+         tpt1 = M[Ny];
+         for(ix=1;ix<Nr;ix++) {
+            tpt2 =M[Ny+ix];
+            MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
+            fprintf ( stderr , "SideBySide: %s %s %s\n" , \
+                   tpt1->Flname , tpt2->Flname , NewFile ) ;
+            fflush ( stdout ) ;
+            VideoSideBySide ( tpt1->Flname , tpt2->Flname , NewFile ) ;
+            tpt = GetMediaInfo ( NewFile ) ;
+            fprintf ( stderr , "Joined: %s %f\n" , tpt->Flname , tpt->TotSec ) ;
+            tpt1 =tpt;
          }
+         if(Ny >0) {
+           int Xr = (int)(txres/Nrow);
+           Xr = ((Xr*Nr)/2)*2;
+           MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
+           ChangeVideoSize(tpt1->Flname,NewFile,Xr,-2,1);
+           tpt = GetMediaInfo(NewFile);
+           MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
+           OverlayToSize(txres,tpt->Ayres,tpt->fps,1,tpt->Flname,NewFile);
+           tpt = GetMediaInfo(NewFile);
+         }
+         Dadd(NL,tpt);
       }
       Resetlink ( NL ) ;
       if ( ( tpt = ( MEDIAINFO * ) Getrecord ( NL ) ) != NULL )  \
