@@ -1,6 +1,8 @@
 #include <kulina.h>
+#include <sys/stat.h>
 #include "mediainfo.h"
 #include "ChangeSizeCallbacks.h"
+#include "kgutils.h"
 
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int FileStat(char *flname);

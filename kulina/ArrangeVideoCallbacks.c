@@ -76,7 +76,7 @@
           }
 #endif
           Str = kgGetVideoFiles ( NULL ) ;
-          if ( Str != NULL ) {
+          if (( Str != NULL) &&(Str[0] != NULL)) {
               th = kgStringToThumbNails ( Str ) ;
               kgFreeDouble ( ( void ** ) Str ) ;
           }
@@ -119,6 +119,96 @@
       e = T->elmt;
       return ret;
   }
+
+  int GetRowNumber(Dlink *L,int Xres,int Yres) {
+    int Nrow=1,i=0,j=0;
+    Dlink *Ltmp;
+    MEDIAINFO *tpt,*tlast;;
+    int n = Dcount(L);
+    int nr = 0;
+    int nq = 0;
+    int xv,yv,Xreso=Xres;
+    float yfac,xfac;
+    int Xrow,Yrow,Ysum,Xsum;
+    MEDIAINFO **M,*ttmp=NULL;
+    Dend(L);
+    tlast = (MEDIAINFO *)Getrecord(L);
+    Nrow=1;
+    while(1) {
+      n = Dcount(L);
+      Ltmp = Dcopy(L);
+      xv = Xres;
+      nr = n%Nrow;
+      nq = n/Nrow;
+      if(ttmp != NULL){ free(ttmp);ttmp=NULL;}
+      if(nr > 0){
+        ttmp = (MEDIAINFO *)malloc(sizeof(MEDIAINFO)*(Nrow-nr));      
+        for(i=0;i<(Nrow-nr);i++){
+          ttmp[i]=*tlast;
+          Dappend(Ltmp,ttmp+i);
+        }
+      }
+      fprintf(stderr,"New Dcount = %d\n",Dcount(Ltmp));
+      fflush(stderr);
+      sleep(10);
+//      n = Dcount(Ltmp);
+      nq = Dcount(Ltmp)/Nrow;
+      nr =0;
+      yv =Yres/nq;
+      Resetlink(Ltmp);
+      M = (MEDIAINFO **)Dlinktoarray(Ltmp);
+      while( (tpt = (MEDIAINFO *)Getrecord(Ltmp))!= NULL){
+         yfac = (float)yv/tpt->Ayres;
+         tpt->Rxres = tpt->Axres*yfac+0.0001;
+         tpt->Ryres = yv;
+      }
+      Resetlink(Ltmp);
+      for(i=0;i<nq;i++) {
+         Xrow=0;
+         for(j=0;j<Nrow;j++) {
+           tpt = M[i*Nrow+j];
+           Xrow = Xrow + tpt->Rxres;
+         }
+         xfac = (float)Xres/Xrow;
+         Xsum =0;
+         for(j=0;j<Nrow;j++) {
+           tpt = M[i*Nrow+j];
+           tpt->Rxres = tpt->Rxres*xfac;
+           tpt->Ryres = tpt->Ryres*xfac;
+           Xsum = Xsum +  tpt->Rxres; 
+         }
+         fprintf(stderr,"Xres: %d Xsum: %d\n",Xres,Xsum);
+         fflush(stderr);
+         sleep(2);
+         tpt->Rxres = tpt->Rxres +Xres - Xsum;
+      }            
+      Ysum =0;
+      for(i=0;i<nq;i++) {
+         tpt = M[i*Nrow];
+         fprintf(stderr,"tpt->Rxres= %d tpt->Ryres= %d\n",tpt->Rxres,tpt->Ryres);
+         Ysum = Ysum + tpt->Ryres;
+      }
+      fprintf(stderr,"Yres: %d Ysum: %d\n",Yres,Ysum);
+      fflush(stderr);
+      sleep(10);
+      Dfree(Ltmp);
+      free(M);
+      if(Ysum > (Yres*1.3)) {
+       Nrow++;
+       Xres = Xreso;
+      }
+      else {
+       if(Ysum > Yres) {
+         Xres= 0.95*Xres;
+       }
+       else   break;
+      }
+    }
+    if(ttmp != NULL) free(ttmp);
+    return Nrow;
+  }
+
+
  /* Callback for  AVMgo   */ 
   int ArrangeVideoAVMgocallback ( int butno , int i , void *Tmp ) {
   /*********************************** 
@@ -154,12 +244,30 @@
       int Sync = kgGetSelection ( kgGetNamedWidget  \
           ( Tmp , ( char * ) "AVMradio" ) ) %2;
       n = 0;
+      if((Th==NULL)||(Th[0]==NULL)) return 0;
       while ( Th [ n ] != NULL ) {
               tpt = GetMediaInfo ( Th [ n ]->name ) ;
+              tpt->Rxres=0; tpt->Ryres=0;
               Dadd ( L , tpt ) ;
               if ( tpt->TotSec > MaxSec ) MaxSec = tpt->TotSec;
               n++;
       }
+      Resetlink(L);
+      Nrow = GetRowNumber(L,Xres,Yres);
+      Resetlink(L);
+      while ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
+         MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
+         ChangeVideoSize(tpt->Flname,NewFile,tpt->Rxres,tpt->Ryres,1);
+         tpt1 = GetMediaInfo(NewFile);
+         fprintf(stderr,"Changed to: %d %d\n",tpt1->Axres,tpt1->Ayres);
+         fflush(stderr);
+         sleep (5);
+         Dadd(PL,tpt1);
+      }
+      Dempty(L);
+      L = Dcopy(PL);
+      Dfree(PL);
+      PL = Dopen();
       fprintf ( stderr , "MaxSec %f n= %d\n" , MaxSec , n ) ;
       Resetlink ( L ) ;
       Nv = n;
@@ -168,6 +276,7 @@
       
       M = (MEDIAINFO **) Dlinktoarray(L);      
       Resetlink ( L ) ;
+
       if ( Sync ) {
           while ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
@@ -214,6 +323,7 @@
       iy =0;
       while(iy < Ny) {
           tpt1 = M[iy];
+          tpt = tpt1;
           for(ix = 1;ix<Nrow;ix++) {
               tpt2 =M[iy+ix];
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
@@ -268,9 +378,15 @@
       free ( tpt ) ;
       free(M);
       Dempty ( L ) ;
-      Dempty ( PL ) ;
-      Dempty ( NL ) ;
-//    kgCleanDir(Tfolder);  
+      if(n>1) {
+        Dempty ( PL ) ;
+        Dempty ( NL ) ;
+      }
+      else {
+        Dfree(PL);
+        Dfree(NL);
+      }
+      kgCleanDir(Tfolder);  
       switch ( butno ) {
           case 1: // Process 
           break;
