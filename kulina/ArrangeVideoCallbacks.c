@@ -339,7 +339,7 @@
       }
       if(Nr>0) {
          tpt1 = M[Ny];
-         kgWrite(I,"Stacking vertical...\n");
+         kgWrite(I,"Adjusting Odd...\n");
          for(ix=1;ix<Nr;ix++) {
             tpt2 =M[Ny+ix];
             MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
@@ -348,6 +348,7 @@
             tpt1 =tpt;
          }
          if(Ny >0) {
+           kgWrite(I,"Adjusting sizes again...\n");
            int Xr = (int)(txres/Nrow);
            Xr = ((Xr*Nr)/2)*2;
            MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
@@ -363,11 +364,14 @@
       if ( ( tpt = ( MEDIAINFO * ) Getrecord ( NL ) ) != NULL )  \
           {strcpy ( NewFile , tpt->Flname ) ;}
       while ( ( tpt = ( MEDIAINFO * ) Getrecord ( NL ) ) != NULL ) {
+          kgWrite(I,"Stacking Vertical...\n");
           MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile1 , "mp4" ) ;
           VideoTopBottom ( NewFile , tpt->Flname , NewFile1 ) ;
           strcpy ( NewFile , NewFile1 ) ;
       }
       tpt = GetMediaInfo ( NewFile ) ;
+      kgWrite(I,"!c06Making background and placing to target size\n");
+      kgWrite(I,"Pl wait...\n");
       OverlayToSize ( Xres , Yres  , tpt->fps , 1 , \
            NewFile , kgGetString ( TO , 0 ) ) ;
       free ( tpt ) ;
