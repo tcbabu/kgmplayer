@@ -1947,6 +1947,133 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
      strcpy(Minfo.DAR,DAR);
      return 1;
 }
+int ProcessMediaInfoNew(void *targ,int pip0,int pip1,int Pid) {
+     int ch,Asp;
+     char buff[1000],work[100],CODE[10];
+     char SAR[25],DAR[25];
+     char *pt,*ptr;
+     float fps;
+     int pos;
+     int Angle=0;
+     MEDIAINFO *mt = (MEDIAINFO *)targ;
+     MEDIAINFO Minfo;
+     Asp=0;
+     Minfo.Video=Minfo.Audio=0;
+     Minfo.TotSec=0;
+     Minfo.start =0;
+     Minfo.AspectNu=Minfo.AspectDe=1.0;
+     Minfo.Axres=Minfo.Ayres=1;
+     Minfo.Rxres=Minfo.Ryres=1;
+     Minfo.fps=0;
+     Minfo.rotation =0.0;
+     Minfo.vcodectype[0]='\0';
+         strcpy(SAR,"???");
+         strcpy(DAR,"???");
+     strcpy(Minfo.SAR,"Unknown");
+     strcpy(Minfo.DAR,"Unknown");
+     while((ch=GetLine(pip0,buff)) ) {
+//         printf("%s\n",buff);
+//         fflush(stdout);
+         if(ch< 0) continue;
+         if( (pos=SearchString(buff,(char *)"Duration:"))>=0) {
+		 pt = buff+pos+10;
+		 Minfo.TotSec = GetTimeval(pt);
+		 if((pos=SearchString(buff,(char *)" start:"))>=0) {
+		   pt = buff+pos+8;
+		   Minfo.start  = GetTimeval(pt);
+		 }
+		 else Minfo.start =0;
+//		 printf("Totsec = %f\n",Minfo.TotSec);
+	 }	 
+         if( (pos=SearchString(buff,(char *)"Video:"))>=0) {
+	       
+		 int i=0;
+	       pt= buff+pos+7;
+	       Minfo.Video=1;
+	       Minfo.vcodec =0;
+               Minfo.vcodectype[0]='\0';
+	       if( (pos=SearchString(buff,(char *)"hevc"))>=0) Minfo.vcodec =1;
+	       if( (pos=SearchString(buff,(char *)"h264"))>=0) Minfo.vcodec =2;
+               sscanf(pt,"%s",Minfo.vcodectype);
+                 pos = SearchString(pt,(char *)"yuv");
+                 if(pos <= 0)pos = SearchString(pt,(char *)",");
+		 pt = pt+pos+1;
+//		 printf("%s\n",pt);
+                 pos = SearchString(pt,(char *)"),");
+		 if(pos < 0) pos = SearchString(pt,(char *)", ");
+		 pt = pt+pos+2;
+//		 printf("%s\n",pt);
+		 sscanf(pt,"%s",work);
+                 ptr = pt;
+                 i =0;
+		 while( (work[i]>' ')){
+			 if(work[i]=='x') work[i]=' ';
+			 i++;
+		 } 
+		 work[i]='\0';
+                 ptr = ptr + strlen(work);
+		 sscanf(work,"%d%d",&Minfo.Axres,&Minfo.Ayres);
+		 Minfo.Rxres = Minfo.Axres;
+		 Minfo.Ryres = Minfo.Ayres;
+//		 printf(" Res: %d %d \n",Minfo.Axres,Minfo.Ayres);
+                 pos = SearchString(pt,(char *)",");
+		 pt = pt+pos+1;
+//		 printf("%s\n",pt);
+                 pos = SearchString(pt,(char *)"fps,");
+		 pt = pt+pos+5;
+//		 printf("%s\n",pt);
+                 sscanf(pt,"%f",&fps);
+                 Minfo.fps = fps;
+                 Minfo.Video =1;
+                 strcpy(SAR,(char *)"NOTFOUND");
+            if( (pos=SearchString(buff,(char *)"SAR"))>=0) {
+                 pt = buff+pos+4;
+  		 sscanf(pt,"%s",SAR);
+                 strcpy(Minfo.SAR,SAR);
+   	   }
+           else {strcpy(SAR,(char *)"1:1");}
+            if( (pos=SearchString(buff,(char *)"DAR"))>=0) {
+                 pt = buff+pos+4;
+		 sscanf(pt,"%s",DAR);
+                 DAR[strlen(DAR)-2]='\0';
+                 strcpy(Minfo.DAR,DAR);
+            }
+           else {strcpy(DAR,(char *)"?:?");}
+              
+         }
+         if( (pos=SearchString(buff,(char *)"rotation of"))>=0) {
+		 pos= pos+11;
+		 sscanf(buff+pos+1,"%f",&Minfo.rotation);
+		 printf("========>Rotation  %f\n",Minfo.rotation);
+	 }
+         if( (pos=SearchString(buff,(char *)"rotate"))>=0) {
+		 pos=SearchString(buff,(char *)":");
+		 sscanf(buff+pos+1,"%f",&Minfo.rotation);
+		 printf("========>Rotate  %f\n",Minfo.rotation);
+	 }
+         if( (pos=SearchString(buff,(char *)"Audio:"))>=0) {
+	       Minfo.Audio=1;
+
+	 }
+         
+     }
+     Angle = fabsf(Minfo.rotation)+0.5;
+     if(Angle == 90 ) {
+       int rtmp;
+       rtmp = Minfo.Axres;
+       Minfo.Axres = Minfo.Ayres;
+       Minfo.Ayres = rtmp;
+     }
+       
+     if(!Asp) {
+       Minfo.AspectNu=Minfo.Rxres;
+       Minfo.AspectDe=Minfo.Ryres;
+     }
+     strcpy(Minfo.SAR,SAR);
+     strcpy(Minfo.DAR,DAR);
+     *mt = Minfo;
+     return 1;
+}
 int ProcessCheckVideo(int pip0,int pip1,int Pid) {
      int Begin=0;
      
@@ -2139,22 +2266,6 @@ MEDIAINFO * GetMediaInfo_o(char *flname) {
    mtmp = Minfo;
    i=0; while(flname[i]==' ')i++;
    if(flname[i]=='\"') 
-    sprintf(buff,"Mplayer  -endpos 0 -vo null -ao null %s",flname);
-   else sprintf(buff,"Mplayer  -endpos 0 -vo null -ao null \"%s\"",flname);
-//   printf("%s\n",buff);
-   runfunction(buff,ProcessMediaInfo_o,Mplayer);
-   mpt = (MEDIAINFO *)malloc(sizeof(MEDIAINFO));
-   *mpt= Minfo;
-    Minfo=mtmp;
-    return mpt;
-}
-MEDIAINFO * GetMediaInfo(char *flname) {
-   char buff[500];
-   MEDIAINFO *mpt,mtmp;
-   int i;
-   mtmp = Minfo;
-   i=0; while(flname[i]==' ')i++;
-   if(flname[i]=='\"') 
     sprintf(buff,"ffmpegfun  -i %s",flname);
    else sprintf(buff,"ffmpegfun  -i  \"%s\"",flname);
 //   printf("%s\n",buff);
@@ -2165,6 +2276,22 @@ MEDIAINFO * GetMediaInfo(char *flname) {
     strcpy(mpt->Flname,flname);
     Minfo=mtmp;
     strcpy(Minfo.SAR,(char *)"TESTING");
+    return mpt;
+}
+MEDIAINFO * GetMediaInfo(char *flname) {
+   char buff[500];
+   MEDIAINFO *mpt,mtmp;
+   int i;
+   i=0; while(flname[i]==' ')i++;
+   if(flname[i]=='\"') 
+    sprintf(buff,"ffmpegfun  -i %s",flname);
+    else sprintf(buff,"ffmpegfun  -i  \"%s\"",flname);
+    mpt = (MEDIAINFO *)malloc(sizeof(MEDIAINFO));
+    RunFunction(buff,ProcessMediaInfoNew,ffmpegfun,mpt);
+    
+    strcpy(mpt->Flname,flname);
+    
+    strcpy(mpt->SAR,(char *)"TESTING");
     return mpt;
 }
 int ProcessTotTime(int pip0,int pip1,int Pid) {
