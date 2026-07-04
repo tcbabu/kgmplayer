@@ -135,8 +135,11 @@
     tlast = (MEDIAINFO *)Getrecord(L);
     Nrow=1;
     while(1) {
+      fprintf(stderr,"Nrow = %d\n",Nrow);
+      fflush(stdout);
       n = Dcount(L);
       Ltmp = Dcopy(L);
+      Xres = (Xres/Nrow)*Nrow;
       xv = Xres;
       nr = n%Nrow;
       nq = n/Nrow;
@@ -148,19 +151,19 @@
           Dappend(Ltmp,ttmp+i);
         }
       }
-      fprintf(stderr,"New Dcount = %d\n",Dcount(Ltmp));
-      fflush(stderr);
-      sleep(10);
 //      n = Dcount(Ltmp);
       nq = Dcount(Ltmp)/Nrow;
       nr =0;
       yv =Yres/nq;
       Resetlink(Ltmp);
       M = (MEDIAINFO **)Dlinktoarray(Ltmp);
+      Resetlink(Ltmp);
       while( (tpt = (MEDIAINFO *)Getrecord(Ltmp))!= NULL){
          yfac = (float)yv/tpt->Ayres;
          tpt->Rxres = tpt->Axres*yfac+0.0001;
          tpt->Ryres = yv;
+           fprintf(stderr,"tpt->Rxres ====> 1st: %d %d\n",tpt->Rxres,tpt->Ryres);
+           fflush(stderr) ;        
       }
       Resetlink(Ltmp);
       for(i=0;i<nq;i++) {
@@ -175,6 +178,8 @@
            tpt = M[i*Nrow+j];
            tpt->Rxres = tpt->Rxres*xfac;
            tpt->Ryres = tpt->Ryres*xfac;
+           fprintf(stderr,"i= %d j=%d %d %d\n",i,j,tpt->Rxres,tpt->Ryres);
+           fflush(stderr);
            Xsum = Xsum +  tpt->Rxres; 
          }
          fprintf(stderr,"Xres: %d Xsum: %d\n",Xres,Xsum);
@@ -205,6 +210,7 @@
       }
     }
     if(ttmp != NULL) free(ttmp);
+    sleep(20);
     return Nrow;
   }
 
@@ -247,7 +253,9 @@
       if((Th==NULL)||(Th[0]==NULL)) return 0;
       while ( Th [ n ] != NULL ) {
               tpt = GetMediaInfo ( Th [ n ]->name ) ;
-              tpt->Rxres=0; tpt->Ryres=0;
+              fprintf(stderr,"Axres %d %d %d %d\n",tpt->Axres,tpt->Ayres,tpt->Rxres,tpt->Ryres);
+              fflush(stdout);
+              sleep(5);
               Dadd ( L , tpt ) ;
               if ( tpt->TotSec > MaxSec ) MaxSec = tpt->TotSec;
               n++;

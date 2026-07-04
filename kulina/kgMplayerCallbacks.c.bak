@@ -10,6 +10,7 @@
 #include <cdio/cdio.h>
 #include <kulina.h>
 #include "mediainfo.h"
+#include "kgutils.h"
 typedef struct _DevRec {
   char device[50];
   int hdmi;
@@ -51,6 +52,7 @@ int ffmpegfun(int,char **);
 void * RunControls(void *);
 void * RunMonitorJoin(void *);
 int runjob(char *job,int (*ProcessOut)(int,int,int));
+int ProcessPrint(int pip0,int pip1,int Pid);
 extern int BRK;
 extern Dlink *Plink;
 extern int WMErr;
@@ -1401,6 +1403,64 @@ int runmplayer(char *job,int (*ProcessOut)(int,int,int)){
      return 1;
 #endif
 }
+int RunString(char *job,int (*function)(int,char **)){
+   int ret =0;
+   FILE *fp,*fp1;
+   int pip[2],pid,status,pip2[2],argc;
+   char *args[100],buff[1000],pt[300];
+   char *ptr;
+   char *pgrpath=NULL;
+   int i=0,pos=0;
+   if(job==NULL){
+	   fprintf(stderr,"Job: NULL \n");
+           fflush(stdout);
+           fflush(stderr);
+	   return 0;
+   }
+   Mute=0;
+   fprintf(stderr,"Job= %s\n",job);
+   fflush(stdout);
+   fflush(stderr);
+   while(job[i]==' ') i++;
+   strcpy(buff,job+i);
+   i=0;
+   while ( sscanf(buff+pos,"%s",pt) > 0 ) {
+     if(pt[0]=='\"') {
+      pos++;
+      args[i]=buff+pos;
+      while(buff[pos]!='\"')pos++;
+      buff[pos]='\0';
+      i++;
+     }
+     else {
+       args[i]=buff+pos;
+       pos +=strlen(pt);
+       i++;
+       if(buff[pos]< ' ') break;
+       buff[pos]='\0';
+     }
+     pos++;
+     while(buff[pos]==' ') pos++;
+   }
+   args[i]=NULL;
+   if(i==0){
+	   printf("i==0 Exiting\n");
+           fflush(stdout);
+	   return 0;
+   }
+   argc=i;
+     for(i=0;i<argc;i++) {
+	   ptr = (char *)malloc(strlen(args[i])+1);
+			   strcpy(ptr,args[i]);
+			   args[i]=ptr;
+     }
+
+   if(function != NULL) function(argc,args);
+   fprintf(stderr,"FINISHED Job= %s\n",job);
+   fflush(stdout);
+   fflush(stderr);
+     return 1;
+}
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **)){
    int ret =0;
    FILE *fp,*fp1;
@@ -1491,6 +1551,8 @@ int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,cha
         kill(pid,9);
      }
      waitpid(pid,&status,0);
+     close(pip[0]);
+     close(pip2[1]);
      return ret;
    }
 }
@@ -1577,6 +1639,8 @@ int RunFunction(char *job,int (*ProcessOut)(void *,int,int,int),
         kill(pid,9);
      }
      waitpid(pid,&status,0);
+     close(pip2[1]);
+     close(pip[0]);
      return ret;
    }
 #else
@@ -1762,9 +1826,11 @@ float GetTimeval (char *buff) {
 int ProcessMediaInfo(int pip0,int pip1,int Pid) {
      int ch,Asp;
      char buff[1000],work[100],CODE[10];
-     char *pt;
+     char SAR[25],DAR[25];
+     char *pt,*ptr;
      float fps;
      int pos;
+     int Angle=0;
      Asp=0;
      Minfo.Video=Minfo.Audio=0;
      Minfo.TotSec=0;
@@ -1775,6 +1841,10 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
      Minfo.fps=0;
      Minfo.rotation =0.0;
      Minfo.vcodectype[0]='\0';
+         strcpy(SAR,"???");
+         strcpy(DAR,"???");
+     strcpy(Minfo.SAR,"Unknown");
+     strcpy(Minfo.DAR,"Unknown");
      while((ch=GetLine(pip0,buff)) ) {
 //         printf("%s\n",buff);
 //         fflush(stdout);
@@ -1798,7 +1868,6 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
                Minfo.vcodectype[0]='\0';
 	       if( (pos=SearchString(buff,(char *)"hevc"))>=0) Minfo.vcodec =1;
 	       if( (pos=SearchString(buff,(char *)"h264"))>=0) Minfo.vcodec =2;
-              
                sscanf(pt,"%s",Minfo.vcodectype);
                  pos = SearchString(pt,(char *)"yuv");
                  if(pos <= 0)pos = SearchString(pt,(char *)",");
@@ -1809,11 +1878,14 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
 		 pt = pt+pos+2;
 //		 printf("%s\n",pt);
 		 sscanf(pt,"%s",work);
-		 while( (work[i]!=' ')){
+                 ptr = pt;
+                 i =0;
+		 while( (work[i]>' ')){
 			 if(work[i]=='x') work[i]=' ';
 			 i++;
 		 } 
 		 work[i]='\0';
+                 ptr = ptr + strlen(work);
 		 sscanf(work,"%d%d",&Minfo.Axres,&Minfo.Ayres);
 		 Minfo.Rxres = Minfo.Axres;
 		 Minfo.Ryres = Minfo.Ayres;
@@ -1827,8 +1899,27 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
                  sscanf(pt,"%f",&fps);
                  Minfo.fps = fps;
                  Minfo.Video =1;
-
+                 strcpy(SAR,(char *)"NOTFOUND");
+            if( (pos=SearchString(buff,(char *)"SAR"))>=0) {
+                 pt = buff+pos+4;
+  		 sscanf(pt,"%s",SAR);
+                 strcpy(Minfo.SAR,SAR);
+   	   }
+           else {strcpy(SAR,(char *)"1:1");}
+            if( (pos=SearchString(buff,(char *)"DAR"))>=0) {
+                 pt = buff+pos+4;
+		 sscanf(pt,"%s",DAR);
+                 DAR[strlen(DAR)-2]='\0';
+                 strcpy(Minfo.DAR,DAR);
+            }
+           else {strcpy(DAR,(char *)"?:?");}
+              
          }
+         if( (pos=SearchString(buff,(char *)"rotation of"))>=0) {
+		 pos= pos+11;
+		 sscanf(buff+pos+1,"%f",&Minfo.rotation);
+		 printf("========>Rotation  %f\n",Minfo.rotation);
+	 }
          if( (pos=SearchString(buff,(char *)"rotate"))>=0) {
 		 pos=SearchString(buff,(char *)":");
 		 sscanf(buff+pos+1,"%f",&Minfo.rotation);
@@ -1838,11 +1929,22 @@ int ProcessMediaInfo(int pip0,int pip1,int Pid) {
 	       Minfo.Audio=1;
 
 	 }
+         
      }
+     Angle = fabsf(Minfo.rotation)+0.5;
+     if(Angle == 90 ) {
+       int rtmp;
+       rtmp = Minfo.Axres;
+       Minfo.Axres = Minfo.Ayres;
+       Minfo.Ayres = rtmp;
+     }
+       
      if(!Asp) {
        Minfo.AspectNu=Minfo.Rxres;
        Minfo.AspectDe=Minfo.Ryres;
      }
+     strcpy(Minfo.SAR,SAR);
+     strcpy(Minfo.DAR,DAR);
      return 1;
 }
 int ProcessCheckVideo(int pip0,int pip1,int Pid) {
@@ -2058,8 +2160,11 @@ MEDIAINFO * GetMediaInfo(char *flname) {
 //   printf("%s\n",buff);
    runfunction(buff,ProcessMediaInfo,ffmpegfun);
    mpt = (MEDIAINFO *)malloc(sizeof(MEDIAINFO));
+    
    *mpt= Minfo;
+    strcpy(mpt->Flname,flname);
     Minfo=mtmp;
+    strcpy(Minfo.SAR,(char *)"TESTING");
     return mpt;
 }
 int ProcessTotTime(int pip0,int pip1,int Pid) {
@@ -3746,14 +3851,14 @@ void *logo(int l,int w){
       char command [ 512 ] ;
       snprintf ( command , sizeof ( command ) , "ffmpegfun -i \"%s\" " , \
            Vfile ) ;
-      runfunction(command,ProcessVinfo,ffmpegfun);
-      return 1;
+      runfunction(command,ProcessMediaInfo,ffmpegfun);
+      return Minfo.Video;
   }
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
 #include <sys/stat.h>
-
+#if 0
 static int FileStat(char *flname) {
   int ret;
   struct stat buff;
@@ -3761,6 +3866,7 @@ static int FileStat(char *flname) {
   if(ret < 0) return 0;
   else return 1;
 }
+#endif
 int MakeNewFileName(char *Infile,char *OutFile) {
    int index,i;
    char buff[500],*pt,*ext=NULL;
@@ -3843,83 +3949,4 @@ int ProcessOutput(int pip0,int pip1,int Pid) {
      printf("Exiting ProcessTo Pipe\n");
      fflush(stdout);
      return ret;
-}
-int RunAndMonitor(char * job)  {
-
-  int pid=0,id;
-  int status;
-  if(fork() != 0)return 1;
-  id = getpid();
-  if(pipe(Jpipe) < 0) exit(0);
-  if(pipe(Jstat) < 0) exit(0);
-  MonPipe = Jpipe[0];
-  char buff[500];
-  
-  if ((pid=fork())==0) {
-    fflush(stdout);
-    fflush(stderr);
-    close(Jpipe[0]);
-    close(Jstat[1]);
-     sprintf(buff,"Executing... PLEASE WAIT\n");
-     write(Jpipe[1],buff,strlen(buff));
-     sprintf(buff,"!c01Sorry... Progress Bar may not be correct\n");
-     write(Jpipe[1],buff,strlen(buff));
-     sprintf(buff,"PLEASE WAIT till the window closes\n");
-     write(Jpipe[1],buff,strlen(buff));
-     sprintf(buff,"You can cancel job if you wish\n");
-     write(Jpipe[1],buff,strlen(buff));
-     runfunction(job,ProcessOutput,ffmpegfun);
-     close(Jpipe[1]);
-     close(Jstat[0]);
-     exit(0);
-  }  //fork
-  else {
-     close(Jpipe[1]);
-     close(Jstat[0]);
-     RunMonitorJoin(NULL);
-     kill(pid,9);
-     waitpid(pid,&status,0);
-     exit(0);
-  }
-}
-int RunMonitorAndWait(char * job)  {
-
-  int pid=0,id;
-  int status;
-  id = getpid();
-  if(pipe(Jpipe) < 0) exit(0);
-  if(pipe(Jstat) < 0) exit(0);
-  MonPipe = Jpipe[0];
-  char buff[500];
-  
-  if ((pid=fork())==0) {
-    fflush(stdout);
-    fflush(stderr);
-    close(Jpipe[0]);
-    close(Jstat[1]);
-     sprintf(buff,"Executing... PLEASE WAIT\n");
-     write(Jpipe[1],buff,strlen(buff));
-     sprintf(buff,"!c01Sorry... Progress Bar may not be correct\n");
-     write(Jpipe[1],buff,strlen(buff));
-     sprintf(buff,"PLEASE WAIT till the window closes\n");
-     write(Jpipe[1],buff,strlen(buff));
-     sprintf(buff,"You can cancel job if you wish\n");
-     write(Jpipe[1],buff,strlen(buff));
-     runfunction(job,ProcessOutput,ffmpegfun);
-     close(Jpipe[1]);
-     close(Jstat[0]);
-     exit(0);
-  }  //fork
-  else {
-     close(Jpipe[1]);
-     close(Jstat[0]);
-     RunMonitorJoin(NULL);
-     kill(pid,9);
-     waitpid(pid,&status,0);
-  }
-  return 1;
-}
-int RunAndWait(char * job)  {
-   runfunction(job,NULL,ffmpegfun);
-   return 1;
 }
