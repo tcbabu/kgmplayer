@@ -386,6 +386,7 @@
           case 1: // Process 
           break;
       }
+      kgWrite(I,"!c02Finished Job...\n");
       return ret;
   }
   void ArrangeVideoAVMgoinit ( DIL *B , void *ptmp ) {
