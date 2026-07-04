@@ -135,8 +135,6 @@
     tlast = (MEDIAINFO *)Getrecord(L);
     Nrow=1;
     while(1) {
-      fprintf(stderr,"Nrow = %d\n",Nrow);
-      fflush(stdout);
       n = Dcount(L);
       Ltmp = Dcopy(L);
       Xres = (Xres/Nrow)*Nrow;
@@ -162,8 +160,6 @@
          yfac = (float)yv/tpt->Ayres;
          tpt->Rxres = tpt->Axres*yfac+0.0001;
          tpt->Ryres = yv;
-           fprintf(stderr,"tpt->Rxres ====> 1st: %d %d\n",tpt->Rxres,tpt->Ryres);
-           fflush(stderr) ;        
       }
       Resetlink(Ltmp);
       for(i=0;i<nq;i++) {
@@ -178,24 +174,15 @@
            tpt = M[i*Nrow+j];
            tpt->Rxres = tpt->Rxres*xfac;
            tpt->Ryres = tpt->Ryres*xfac;
-           fprintf(stderr,"i= %d j=%d %d %d\n",i,j,tpt->Rxres,tpt->Ryres);
-           fflush(stderr);
            Xsum = Xsum +  tpt->Rxres; 
          }
-         fprintf(stderr,"Xres: %d Xsum: %d\n",Xres,Xsum);
-         fflush(stderr);
-         sleep(2);
          tpt->Rxres = tpt->Rxres +Xres - Xsum;
       }            
       Ysum =0;
       for(i=0;i<nq;i++) {
          tpt = M[i*Nrow];
-         fprintf(stderr,"tpt->Rxres= %d tpt->Ryres= %d\n",tpt->Rxres,tpt->Ryres);
          Ysum = Ysum + tpt->Ryres;
       }
-      fprintf(stderr,"Yres: %d Ysum: %d\n",Yres,Ysum);
-      fflush(stderr);
-      sleep(10);
       Dfree(Ltmp);
       free(M);
       if(Ysum > (Yres*1.3)) {
@@ -209,8 +196,16 @@
        else   break;
       }
     }
+#if 1
     if(ttmp != NULL) free(ttmp);
-    sleep(20);
+      fprintf(stderr,"Nrow : %d\n",Nrow);
+      Resetlink(L);
+      while( (tpt = (MEDIAINFO *)Getrecord(L))!= NULL){
+         fprintf(stderr,"Rxres: %d Ryres: %d\n",tpt->Rxres,tpt->Ryres);
+    }
+    fflush(stderr);
+    Resetlink(L);
+#endif
     return Nrow;
   }
 
@@ -253,9 +248,6 @@
       if((Th==NULL)||(Th[0]==NULL)) return 0;
       while ( Th [ n ] != NULL ) {
               tpt = GetMediaInfo ( Th [ n ]->name ) ;
-              fprintf(stderr,"Axres %d %d %d %d\n",tpt->Axres,tpt->Ayres,tpt->Rxres,tpt->Ryres);
-              fflush(stdout);
-              sleep(5);
               Dadd ( L , tpt ) ;
               if ( tpt->TotSec > MaxSec ) MaxSec = tpt->TotSec;
               n++;
@@ -267,16 +259,12 @@
          MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
          ChangeVideoSize(tpt->Flname,NewFile,tpt->Rxres,tpt->Ryres,1);
          tpt1 = GetMediaInfo(NewFile);
-         fprintf(stderr,"Changed to: %d %d\n",tpt1->Axres,tpt1->Ayres);
-         fflush(stderr);
-         sleep (5);
          Dadd(PL,tpt1);
       }
       Dempty(L);
       L = Dcopy(PL);
       Dfree(PL);
       PL = Dopen();
-      fprintf ( stderr , "MaxSec %f n= %d\n" , MaxSec , n ) ;
       Resetlink ( L ) ;
       Nv = n;
       Ny = (Nv/Nrow)*Nrow;
@@ -288,7 +276,6 @@
       if ( Sync ) {
           while ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-              fprintf ( stderr , "MaxSec %f %s %s\n" , MaxSec , tpt->Flname , NewFile ) ;
               if ( fabsf ( MaxSec-tpt->TotSec ) > 0.001 ) AddStillAtEnd  \
                   ( tpt->Flname , MaxSec-tpt->TotSec , NewFile ) ;
               else strcpy ( NewFile , tpt->Flname ) ;
@@ -299,7 +286,6 @@
       else {
           if ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-              fprintf ( stderr , "MaxSec %f %s %s\n" , MaxSec , tpt->Flname , NewFile ) ;
               if ( fabsf ( MaxSec-tpt->TotSec ) > 0.001 ) AddStillAtEnd  \
                   ( tpt->Flname , MaxSec-tpt->TotSec , NewFile ) ;
               else strcpy ( NewFile , tpt->Flname ) ;
@@ -309,7 +295,6 @@
           }
           while ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-              fprintf ( stderr , "MaxSec %f %s %s\n" , MaxSec , tpt->Flname , NewFile ) ;
               if ( fabsf ( MaxSec-tpt->TotSec -Ssec) > 0.001 ) AddStillAtEnd  \
                   ( tpt->Flname, MaxSec-tpt->TotSec-Ssec , NewFile ) ;
               else strcpy ( NewFile , tpt->Flname ) ;
@@ -326,8 +311,6 @@
       free(M);
       M = (MEDIAINFO **) Dlinktoarray(PL);      
       Resetlink ( PL ) ;
-      fprintf ( stderr , "Going for Side By Side\n" ) ;
-      fflush ( stderr ) ;
       iy =0;
       while(iy < Ny) {
           tpt1 = M[iy];
@@ -335,12 +318,8 @@
           for(ix = 1;ix<Nrow;ix++) {
               tpt2 =M[iy+ix];
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-              fprintf ( stderr , "SideBySide: %s %s %s\n" , \
-                   tpt1->Flname , tpt2->Flname , NewFile ) ;
-              fflush ( stdout ) ;
               VideoSideBySide ( tpt1->Flname , tpt2->Flname , NewFile ) ;
               tpt = GetMediaInfo ( NewFile ) ;
-              fprintf ( stderr , "Joined: %s %f\n" , tpt->Flname , tpt->TotSec ) ;
               tpt1 =tpt;
           }
           Dadd ( NL , tpt ) ;
@@ -352,12 +331,8 @@
          for(ix=1;ix<Nr;ix++) {
             tpt2 =M[Ny+ix];
             MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-            fprintf ( stderr , "SideBySide: %s %s %s\n" , \
-                   tpt1->Flname , tpt2->Flname , NewFile ) ;
-            fflush ( stdout ) ;
             VideoSideBySide ( tpt1->Flname , tpt2->Flname , NewFile ) ;
             tpt = GetMediaInfo ( NewFile ) ;
-            fprintf ( stderr , "Joined: %s %f\n" , tpt->Flname , tpt->TotSec ) ;
             tpt1 =tpt;
          }
          if(Ny >0) {
