@@ -235,9 +235,10 @@
       int ix=0,iy=0;
       float MaxSec = 0;
       float Ssec =0;
-      char Tfolder [ 300 ] , NewFile [ 300 ] , NewFile1 [ 300 ] ;
+      char Tfolder [ 300 ] , NewFile [ 300 ] , NewFile1 [ 300 ],buff[500] ;
       DIT *TO = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMout" ) ;
       DIT *TR = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMres" ) ;
+      DII *I  = (DII *)kgGetNamedWidget ( Tmp , ( char * ) "AVMinfo" ) ; 
       int Xres = kgGetInt ( TR , 0 ) ;
       int Yres = kgGetInt ( TR , 1 ) ;
       MakeTmpFolderInHome ( Tfolder ) ;
@@ -246,6 +247,7 @@
           ( Tmp , ( char * ) "AVMradio" ) ) %2;
       n = 0;
       if((Th==NULL)||(Th[0]==NULL)) return 0;
+      kgWrite(I,"Processing Files...\n");      
       while ( Th [ n ] != NULL ) {
               tpt = GetMediaInfo ( Th [ n ]->name ) ;
               Dadd ( L , tpt ) ;
@@ -253,10 +255,14 @@
               n++;
       }
       Resetlink(L);
+      kgWrite(I,"Getting Arrangement\n");
       Nrow = GetRowNumber(L,Xres,Yres);
       Resetlink(L);
+      
       while ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
          MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
+         sprintf(buff,"Resizing %s to (%d x %d)\n",tpt->Flname,tpt->Rxres,tpt->Ryres);
+         kgWrite(I,buff); 
          ChangeVideoSize(tpt->Flname,NewFile,tpt->Rxres,tpt->Ryres,1);
          tpt1 = GetMediaInfo(NewFile);
          Dadd(PL,tpt1);
@@ -274,6 +280,8 @@
       Resetlink ( L ) ;
 
       if ( Sync ) {
+          kgWrite(I,"Sumultaneous mode ..\n");
+          kgWrite(I,"!c01Adjusting Video and Audio\n");
           while ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
               if ( fabsf ( MaxSec-tpt->TotSec ) > 0.001 ) AddStillAtEnd  \
@@ -285,6 +293,8 @@
       }
       else {
           if ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
+          kgWrite(I,"One by one mode ..\n");
+          kgWrite(I,"!c01Adjusting Video and Audio\n");
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
               if ( fabsf ( MaxSec-tpt->TotSec ) > 0.001 ) AddStillAtEnd  \
                   ( tpt->Flname , MaxSec-tpt->TotSec , NewFile ) ;
@@ -315,6 +325,7 @@
       while(iy < Ny) {
           tpt1 = M[iy];
           tpt = tpt1;
+          kgWrite(I,"Stacking horizontal...\n");
           for(ix = 1;ix<Nrow;ix++) {
               tpt2 =M[iy+ix];
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
@@ -328,6 +339,7 @@
       }
       if(Nr>0) {
          tpt1 = M[Ny];
+         kgWrite(I,"Stacking vertical...\n");
          for(ix=1;ix<Nr;ix++) {
             tpt2 =M[Ny+ix];
             MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
