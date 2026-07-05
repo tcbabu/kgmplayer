@@ -519,7 +519,7 @@ int OverlayVideos(char *base,char *olay,int Qty,char *outfile) {
 #endif  
   return 1;
 }
-int OverlayToSize(int Bxres,int Byres,float fs,int Qty,char *olay,char *outfile) {
+int OverlayToSize(int Bxres,int Byres,float fs,int Qty,int ir,int ig,int ib,char *olay,char *outfile) {
   /*
      Overlays olay over base, in centralised way
      in case olay is bigger in dimension it will be resize to fit
@@ -546,7 +546,7 @@ int OverlayToSize(int Bxres,int Byres,float fs,int Qty,char *olay,char *outfile)
   else Audio=0;;
   printf("Calling CreateBlankVideo: %-.3f\n",mpt->TotSec);
   fflush(stdout);
-  CreateBlankVideo(Bxres,Byres,(float)mpt->TotSec,fs,Tmpfile);
+  CreateColorVideo(Bxres,Byres,(float)mpt->TotSec,fs,ir,ig,ib,Tmpfile);
   printf("Tmpfile: %s\n",Tmpfile);
   fflush(stdout);
   free(mpt);
@@ -573,13 +573,17 @@ int RunOverlayToSize(int argc,char **argv) {
     char olay[300];
     char outfile[300];
     int i=1;
+    int ir,ig,ib;
     sscanf(argv[1],"%d",&Bxres);
     sscanf(argv[2],"%d",&Byres);
     sscanf(argv[3],"%f",&fs);
     sscanf(argv[4],"%d",&Qty);
-    sscanf(argv[5],"%s",olay);
-    sscanf(argv[6],"%s",outfile);
-    return OverlayToSize(Bxres,Byres,(float)((int)(fs+0.5)),Qty,olay,outfile);
+    sscanf(argv[5],"%d",&ir);
+    sscanf(argv[6],"%d",&ig);
+    sscanf(argv[7],"%d",&ib);
+    sscanf(argv[8],"%s",olay);
+    sscanf(argv[9],"%s",outfile);
+    return OverlayToSize(Bxres,Byres,(float)((int)(fs+0.5)),Qty,ir,ig,ib,olay,outfile);
     
 }
 int CreateStillVideo(char *infile,float duration,float fps,char *outfile) {
@@ -602,8 +606,49 @@ int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile)
     fflush(stdout);
 #if 0
     void *img=kgInitImage(Xsize,Ysize,1);
-    kgWriteImage(kgGetResizedImage(img),Infile);
+    kgChangeColor(img,501,0,120,120);
+    kgBoxFill(img,0.,0.,Xsize,Ysize,501,0);
+    void *rimg =kgGetResizedImage(img); 
+    kgWriteImage(rimg,Infile);
     kgCloseImage(img);
+    kgFreeImage(rimg);
+#else
+    void *img= kgCreateImage(Xsize,Ysize);
+    kgWriteImage(img,Infile);
+    kgFreeImage(img);
+#endif
+    if(FileStat(Infile))printf("Created Image: %s\n",Infile);
+    else printf("Failed to Create %s\n",Infile);
+    fflush(stdout);
+    sprintf(buff,"ffmpegfun  -y  -loop 1 -i %s  -t %s -f mp4 -vf fps=%-.3f -vcodec libx264  %s",
+      Infile,Tstring,fps,outfile);
+    printf("%s\n",buff);
+    fflush(stdout);
+    runfunction(buff,ProcessPrint,ffmpegfun);
+//    RunString(buff,ffmpegfun);
+    if(FileStat(outfile))printf("created BLANK VIDEO: %s  sleeping..\n",outfile);
+    else printf("Failed tp create %s\n",outfile);
+    fflush(stdout);
+    kgCleanDir(folder);
+    return 1;
+}
+int CreateColorVideo(int Xsize,int Ysize,float duration,float fps,int ir,int ig,int ib,char *outfile) {
+    char buff[500],Infile[300], folder[300],Tmpfile[300];
+    int Fstat=1;
+  char Tstring[50];
+  GetTimeString(duration,Tstring);
+  Fstat = MakeTmpFolderInHome(folder);
+    MakeFileInFolder(outfile,folder,Infile,"png");
+    printf("Image: %s : %s %f %f \n",Infile,outfile,duration,fps);
+    fflush(stdout);
+#if 1
+    void *img=kgInitImage(Xsize,Ysize,1);
+    kgChangeColor(img,501,ir,ig,ib);
+    kgBoxFill(img,0.,0.,Xsize,Ysize,501,0);
+    void *rimg =kgGetResizedImage(img); 
+    kgWriteImage(rimg,Infile);
+    kgCloseImage(img);
+    kgFreeImage(rimg);
 #else
     void *img= kgCreateImage(Xsize,Ysize);
     kgWriteImage(img,Infile);

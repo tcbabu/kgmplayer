@@ -541,7 +541,7 @@ int JoinToMp4( CONVDATA *cn)  {
           } //if Fcover
           else {
                 sprintf(Tmpfile,"%s/F%-4.4d.mp4",Folder,id);
-                OverlayToSize( Cn.Xsize,Cn.Ysize,(float)Cn.fps,Cn.Quality,mpt->Flname,Tmpfile);
+                OverlayToSize( Cn.Xsize,Cn.Ysize,(float)Cn.fps,Cn.Quality,0,0,0,mpt->Flname,Tmpfile);
           }  // else Fcover
           
 	} // if mpt->Process

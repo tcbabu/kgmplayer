@@ -355,7 +355,7 @@
            ChangeVideoSize(tpt1->Flname,NewFile,Xr,-2,1);
            tpt = GetMediaInfo(NewFile);
            MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-           OverlayToSize(txres,tpt->Ayres,tpt->fps,1,tpt->Flname,NewFile);
+           OverlayToSize(txres,tpt->Ayres,tpt->fps,1,0,100,100,tpt->Flname,NewFile);
            tpt = GetMediaInfo(NewFile);
          }
          Dadd(NL,tpt);
@@ -372,7 +372,7 @@
       tpt = GetMediaInfo ( NewFile ) ;
       kgWrite(I,"!c06Making background and placing to target size\n");
       kgWrite(I,"Pl wait...\n");
-      OverlayToSize ( Xres , Yres  , tpt->fps , 1 , \
+      OverlayToSize ( Xres , Yres  , tpt->fps , 1 , 0,0,0, \
            NewFile , kgGetString ( TO , 0 ) ) ;
       free ( tpt ) ;
       free(M);
