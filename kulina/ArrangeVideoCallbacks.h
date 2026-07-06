@@ -10,6 +10,7 @@ int ArrangeVideoAVMradiocallback(int item,int i,void *Tmp) ;
 void  ArrangeVideoAVMradioinit (DIRA *R,void *pt) ;
 int ArrangeVideoAVMlistcallback(int item,int i,void *Tmp) ;
 void  ArrangeVideoAVMlistinit (DIX *X,void *pt) ;
+int ArrangeVideoAVMcolorcallback(int cellno,int i,void *Tmp) ;
 int ArrangeVideoinit(void *Tmp) ;
 int ArrangeVideocleanup(void *Tmp) ;
 void *RunArrangeVideo(void *,void *) ;

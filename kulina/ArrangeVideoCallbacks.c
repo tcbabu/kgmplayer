@@ -215,7 +215,7 @@
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
       DIALOG *D;DIL *B;
-      int n , ret = 0;
+      int n , ret = 0,Red,Green,Blue;;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
       D = ( DIALOG * ) Tmp;
@@ -236,9 +236,13 @@
       int fps = 10000000;
       DIT *TO = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMout" ) ;
       DIT *TR = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMres" ) ;
+      DIT *TC = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMcolor" ) ;
       DII *I = ( DII * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMinfo" ) ;
       int Xres = kgGetInt ( TR , 0 ) ;
       int Yres = kgGetInt ( TR , 1 ) ;
+      Red = kgGetInt ( TC,0); 
+      Green = kgGetInt ( TC,1); 
+      Blue = kgGetInt ( TC,2); 
       MakeTmpFolderInHome ( Tfolder ) ;
       int Nrow = 4;
       int Sync = kgGetSelection ( kgGetNamedWidget \
@@ -359,7 +363,7 @@
               tpt = GetMediaInfo ( NewFile ) ;
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
               OverlayToSize ( txres , tpt->Ayres , tpt->fps , 1 , \
-                   0 , 100 , 100 , tpt->Flname , NewFile ) ;
+                  Red , Green , Blue , tpt->Flname , NewFile ) ;
               tpt = GetMediaInfo ( NewFile ) ;
               kgWrite ( I , "!c01Going vertical stacking, if needed \n" ) ;
           }
@@ -377,7 +381,7 @@
       tpt = GetMediaInfo ( NewFile ) ;
       kgWrite ( I , "!c06Making background and placing to target size\n" ) ;
       kgWrite ( I , "!c06Pl wait...may take time\n" ) ;
-      OverlayToSize ( Xres , Yres , tpt->fps , 1 , 60 , 100 , 50 , \
+      OverlayToSize ( Xres , Yres , tpt->fps , 1 , Red , Green , Blue , \
       NewFile , kgGetString ( TO , 0 ) ) ;
       free ( tpt ) ;
       free ( M ) ;
@@ -500,6 +504,7 @@
       void **pt = ( void ** ) ptmp; //pt [ 0 ] is arg 
   }
   int ArrangeVideoSetup ( void *Tmp , void *args ) {
+
   /*********************************** 
     args :  Pointer to args  
    ***********************************/ 
@@ -511,6 +516,12 @@
       *ipt = 1080;
       ipt = ( int * ) pt [ 1 ] ;
       *ipt = 1920;
+      ipt = ( int * ) pt [ 5 ] ;
+      *ipt = 0;
+      ipt = ( int * ) pt [ 6 ] ;
+      *ipt = 0;
+      ipt = ( int * ) pt [ 7 ] ;
+      *ipt = 0;
       return 1;
   }
   void * ArrangeVideoCleanDia ( void *args ) {
@@ -573,6 +584,22 @@
       It = it;
       return it;
   }
+int ArrangeVideoAVMcolorcallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  return ret;
+}
   int ArrangeVideoinit ( void *Tmp ) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
