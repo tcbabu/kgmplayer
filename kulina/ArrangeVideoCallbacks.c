@@ -236,6 +236,7 @@
       float MaxSec = 0;
       float Ssec =0;
       char Tfolder [ 300 ] , NewFile [ 300 ] , NewFile1 [ 300 ],buff[500] ;
+      int fps=10000000;
       DIT *TO = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMout" ) ;
       DIT *TR = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMres" ) ;
       DII *I  = (DII *)kgGetNamedWidget ( Tmp , ( char * ) "AVMinfo" ) ; 
@@ -251,6 +252,7 @@
       while ( Th [ n ] != NULL ) {
               tpt = GetMediaInfo ( Th [ n ]->name ) ;
               Dadd ( L , tpt ) ;
+              if(tpt->fps < fps ) fps= tpt->fps;
               if ( tpt->TotSec > MaxSec ) MaxSec = tpt->TotSec;
               n++;
       }
@@ -263,7 +265,7 @@
          MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
          sprintf(buff,"Resizing %s to (%d x %d)\n",tpt->Flname,tpt->Rxres,tpt->Ryres);
          kgWrite(I,buff); 
-         ChangeVideoSize(tpt->Flname,NewFile,tpt->Rxres,tpt->Ryres,1);
+         ChangeVideoSizeAndFrate(tpt->Flname,NewFile,tpt->Rxres,tpt->Ryres,fps,1);
          tpt1 = GetMediaInfo(NewFile);
          Dadd(PL,tpt1);
       }
