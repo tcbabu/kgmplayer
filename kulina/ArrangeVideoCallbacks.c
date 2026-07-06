@@ -76,7 +76,7 @@
           }
 #endif
           Str = kgGetVideoFiles ( NULL ) ;
-          if (( Str != NULL) &&(Str[0] != NULL)) {
+          if ( ( Str != NULL ) && ( Str [ 0 ] != NULL ) ) {
               th = kgStringToThumbNails ( Str ) ;
               kgFreeDouble ( ( void ** ) Str ) ;
           }
@@ -119,97 +119,94 @@
       e = T->elmt;
       return ret;
   }
-
-  int GetRowNumber(Dlink *L,int Xres,int Yres) {
-    int Nrow=1,i=0,j=0;
-    Dlink *Ltmp;
-    MEDIAINFO *tpt,*tlast;;
-    int n = Dcount(L);
-    int nr = 0;
-    int nq = 0;
-    int xv,yv,Xreso=Xres;
-    float yfac,xfac;
-    int Xrow,Yrow,Ysum,Xsum;
-    MEDIAINFO **M,*ttmp=NULL;
-    Dend(L);
-    tlast = (MEDIAINFO *)Getrecord(L);
-    Nrow=1;
-    while(1) {
-      n = Dcount(L);
-      Ltmp = Dcopy(L);
-      Xres = (Xres/Nrow)*Nrow;
-      xv = Xres;
-      nr = n%Nrow;
-      nq = n/Nrow;
-      if(ttmp != NULL){ free(ttmp);ttmp=NULL;}
-      if(nr > 0){
-        ttmp = (MEDIAINFO *)malloc(sizeof(MEDIAINFO)*(Nrow-nr));      
-        for(i=0;i<(Nrow-nr);i++){
-          ttmp[i]=*tlast;
-          Dappend(Ltmp,ttmp+i);
-        }
-      }
+  int GetRowNumber ( Dlink *L , int Xres , int Yres ) {
+      int Nrow = 1 , i = 0 , j = 0;
+      Dlink *Ltmp;
+      MEDIAINFO *tpt , *tlast;;
+      int n = Dcount ( L ) ;
+      int nr = 0;
+      int nq = 0;
+      int xv , yv , Xreso = Xres;
+      float yfac , xfac;
+      int Xrow , Yrow , Ysum , Xsum;
+      MEDIAINFO **M , *ttmp = NULL;
+      Dend ( L ) ;
+      tlast = ( MEDIAINFO * ) Getrecord ( L ) ;
+      Nrow = 1;
+      while ( 1 ) {
+          n = Dcount ( L ) ;
+          Ltmp = Dcopy ( L ) ;
+          Xres = ( Xres/Nrow ) *Nrow;
+          xv = Xres;
+          nr = n%Nrow;
+          nq = n/Nrow;
+          if ( ttmp != NULL ) { free ( ttmp ) ;ttmp = NULL;}
+          if ( nr > 0 ) {
+              ttmp = ( MEDIAINFO * ) malloc ( sizeof ( MEDIAINFO ) * ( Nrow-nr ) ) ;
+              for ( i = 0;i < ( Nrow-nr ) ;i++ ) {
+                  ttmp [ i ] = *tlast;
+                  Dappend ( Ltmp , ttmp+i ) ;
+              }
+          }
 //      n = Dcount(Ltmp);
-      nq = Dcount(Ltmp)/Nrow;
-      nr =0;
-      yv =Yres/nq;
-      Resetlink(Ltmp);
-      M = (MEDIAINFO **)Dlinktoarray(Ltmp);
-      Resetlink(Ltmp);
-      while( (tpt = (MEDIAINFO *)Getrecord(Ltmp))!= NULL){
-         yfac = (float)yv/tpt->Ayres;
-         tpt->Rxres = tpt->Axres*yfac+0.0001;
-         tpt->Ryres = yv;
+          nq = Dcount ( Ltmp ) /Nrow;
+          nr = 0;
+          yv = Yres/nq;
+          Resetlink ( Ltmp ) ;
+          M = ( MEDIAINFO ** ) Dlinktoarray ( Ltmp ) ;
+          Resetlink ( Ltmp ) ;
+          while ( ( tpt = ( MEDIAINFO * ) Getrecord ( Ltmp ) ) != NULL ) {
+              yfac = ( float ) yv/tpt->Ayres;
+              tpt->Rxres = tpt->Axres*yfac+0.0001;
+              tpt->Ryres = yv;
+          }
+          Resetlink ( Ltmp ) ;
+          for ( i = 0;i < nq;i++ ) {
+              Xrow = 0;
+              for ( j = 0;j < Nrow;j++ ) {
+                  tpt = M [ i*Nrow+j ] ;
+                  Xrow = Xrow + tpt->Rxres;
+              }
+              xfac = ( float ) Xres/Xrow;
+              Xsum = 0;
+              for ( j = 0;j < Nrow;j++ ) {
+                  tpt = M [ i*Nrow+j ] ;
+                  tpt->Rxres = tpt->Rxres*xfac;
+                  tpt->Ryres = tpt->Ryres*xfac;
+                  Xsum = Xsum + tpt->Rxres;
+              }
+              tpt->Rxres = tpt->Rxres +Xres - Xsum;
+          }
+          Ysum = 0;
+          for ( i = 0;i < nq;i++ ) {
+              tpt = M [ i*Nrow ] ;
+              Ysum = Ysum + tpt->Ryres;
+          }
+          Dfree ( Ltmp ) ;
+          free ( M ) ;
+          if ( Ysum > ( Yres*1.3 ) ) {
+              Nrow++;
+              Xres = Xreso;
+          }
+          else {
+              if ( Ysum > Yres ) {
+                  Xres = 0.95*Xres;
+              }
+              else break;
+          }
       }
-      Resetlink(Ltmp);
-      for(i=0;i<nq;i++) {
-         Xrow=0;
-         for(j=0;j<Nrow;j++) {
-           tpt = M[i*Nrow+j];
-           Xrow = Xrow + tpt->Rxres;
-         }
-         xfac = (float)Xres/Xrow;
-         Xsum =0;
-         for(j=0;j<Nrow;j++) {
-           tpt = M[i*Nrow+j];
-           tpt->Rxres = tpt->Rxres*xfac;
-           tpt->Ryres = tpt->Ryres*xfac;
-           Xsum = Xsum +  tpt->Rxres; 
-         }
-         tpt->Rxres = tpt->Rxres +Xres - Xsum;
-      }            
-      Ysum =0;
-      for(i=0;i<nq;i++) {
-         tpt = M[i*Nrow];
-         Ysum = Ysum + tpt->Ryres;
-      }
-      Dfree(Ltmp);
-      free(M);
-      if(Ysum > (Yres*1.3)) {
-       Nrow++;
-       Xres = Xreso;
-      }
-      else {
-       if(Ysum > Yres) {
-         Xres= 0.95*Xres;
-       }
-       else   break;
-      }
-    }
 #if 1
-    if(ttmp != NULL) free(ttmp);
-      fprintf(stderr,"Nrow : %d\n",Nrow);
-      Resetlink(L);
-      while( (tpt = (MEDIAINFO *)Getrecord(L))!= NULL){
-         fprintf(stderr,"Rxres: %d Ryres: %d\n",tpt->Rxres,tpt->Ryres);
-    }
-    fflush(stderr);
-    Resetlink(L);
+      if ( ttmp != NULL ) free ( ttmp ) ;
+      fprintf ( stderr , "Nrow : %d\n" , Nrow ) ;
+      Resetlink ( L ) ;
+      while ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
+          fprintf ( stderr , "Rxres: %d Ryres: %d\n" , tpt->Rxres , tpt->Ryres ) ;
+      }
+      fflush ( stderr ) ;
+      Resetlink ( L ) ;
 #endif
-    return Nrow;
+      return Nrow;
   }
-
-
  /* Callback for  AVMgo   */ 
   int ArrangeVideoAVMgocallback ( int butno , int i , void *Tmp ) {
   /*********************************** 
@@ -230,64 +227,64 @@
       Dlink *NL = Dopen ( ) ;
       DIX *VX2 = ( DIX * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMlist" ) ;
       Th = ( ThumbNail ** ) kgGetList ( VX2 ) ;
-      MEDIAINFO *tpt , *ptpt , *tpt1 , *tpt2,**M=NULL;
-      int Nv=0,Ny,Nr,txres=0;
-      int ix=0,iy=0;
+      MEDIAINFO *tpt , *ptpt , *tpt1 , *tpt2 , **M = NULL;
+      int Nv = 0 , Ny , Nr , txres = 0;
+      int ix = 0 , iy = 0;
       float MaxSec = 0;
-      float Ssec =0;
-      char Tfolder [ 300 ] , NewFile [ 300 ] , NewFile1 [ 300 ],buff[500] ;
-      int fps=10000000;
+      float Ssec = 0;
+      char Tfolder [ 300 ] , NewFile [ 300 ] , NewFile1 [ 300 ] , buff [ 500 ] ;
+      int fps = 10000000;
       DIT *TO = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMout" ) ;
       DIT *TR = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMres" ) ;
-      DII *I  = (DII *)kgGetNamedWidget ( Tmp , ( char * ) "AVMinfo" ) ; 
+      DII *I = ( DII * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMinfo" ) ;
       int Xres = kgGetInt ( TR , 0 ) ;
       int Yres = kgGetInt ( TR , 1 ) ;
       MakeTmpFolderInHome ( Tfolder ) ;
-      int Nrow=4;
-      int Sync = kgGetSelection ( kgGetNamedWidget  \
-          ( Tmp , ( char * ) "AVMradio" ) ) %2;
+      int Nrow = 4;
+      int Sync = kgGetSelection ( kgGetNamedWidget \
+       ( Tmp , ( char * ) "AVMradio" ) ) %2;
       n = 0;
-      if((Th==NULL)||(Th[0]==NULL)) return 0;
-      kgWrite(I,"Processing Files...\n");      
+      if ( ( Th == NULL ) || ( Th [ 0 ] == NULL ) ) return 0;
+      kgWrite ( I , "Processing Files...\n" ) ;
       while ( Th [ n ] != NULL ) {
-              tpt = GetMediaInfo ( Th [ n ]->name ) ;
-              Dadd ( L , tpt ) ;
-              if(tpt->fps < fps ) fps= tpt->fps;
-              if ( tpt->TotSec > MaxSec ) MaxSec = tpt->TotSec;
-              n++;
+          tpt = GetMediaInfo ( Th [ n ]->name ) ;
+          Dadd ( L , tpt ) ;
+          if ( tpt->fps < fps ) fps = tpt->fps;
+          if ( tpt->TotSec > MaxSec ) MaxSec = tpt->TotSec;
+          n++;
       }
-      Resetlink(L);
-      kgWrite(I,"Getting Arrangement\n");
-      Nrow = GetRowNumber(L,Xres,Yres);
-      Resetlink(L);
-      
+      Resetlink ( L ) ;
+      kgWrite ( I , "Getting Arrangement\n" ) ;
+      Nrow = GetRowNumber ( L , Xres , Yres ) ;
+      Resetlink ( L ) ;
       while ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
-         MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-         sprintf(buff,"Resizing %s to (%d x %d)\n",tpt->Flname,tpt->Rxres,tpt->Ryres);
-         kgWrite(I,buff); 
-         ChangeVideoSizeAndFrate(tpt->Flname,NewFile,tpt->Rxres,tpt->Ryres,fps,1);
-         tpt1 = GetMediaInfo(NewFile);
-         Dadd(PL,tpt1);
+          MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
+          sprintf ( buff , "Resizing %s to (%d x %d)\n" , \
+               tpt->Flname , tpt->Rxres , tpt->Ryres ) ;
+          kgWrite ( I , buff ) ;
+          ChangeVideoSizeAndFrate ( tpt->Flname , NewFile , \
+               tpt->Rxres , tpt->Ryres , fps , 1 ) ;
+          tpt1 = GetMediaInfo ( NewFile ) ;
+          Dadd ( PL , tpt1 ) ;
       }
-      Dempty(L);
-      L = Dcopy(PL);
-      Dfree(PL);
-      PL = Dopen();
+      Dempty ( L ) ;
+      L = Dcopy ( PL ) ;
+      Dfree ( PL ) ;
+      PL = Dopen ( ) ;
       Resetlink ( L ) ;
       Nv = n;
-      Ny = (Nv/Nrow)*Nrow;
+      Ny = ( Nv/Nrow ) *Nrow;
       Nr = Nv - Ny;;
-      
-      M = (MEDIAINFO **) Dlinktoarray(L);      
+      M = ( MEDIAINFO ** ) Dlinktoarray ( L ) ;
       Resetlink ( L ) ;
-
       if ( Sync ) {
-          kgWrite(I,"Sumultaneous mode ..\n");
-          kgWrite(I,"!c01Adjusting Video and Audio\n");
+          kgWrite ( I , "Sumultaneous mode ..\n" ) ;
+          kgWrite ( I , "!c01Adjusting Video and Audio to length by adding stills\n" ) ;
           while ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
+              kgWrite ( I , "!c01Adding still at end ...\n" ) ;
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-              if ( fabsf ( MaxSec-tpt->TotSec ) > 0.001 ) AddStillAtEnd  \
-                  ( tpt->Flname , MaxSec-tpt->TotSec , NewFile ) ;
+              if ( fabsf ( MaxSec-tpt->TotSec ) > 0.001 ) AddStillAtEnd \
+               ( tpt->Flname , MaxSec-tpt->TotSec , NewFile ) ;
               else strcpy ( NewFile , tpt->Flname ) ;
               ptpt = GetMediaInfo ( NewFile ) ;
               Dadd ( PL , ptpt ) ;
@@ -295,11 +292,12 @@
       }
       else {
           if ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
-          kgWrite(I,"One by one mode ..\n");
-          kgWrite(I,"!c01Adjusting Video and Audio\n");
+              kgWrite ( I , "One by one mode ..\n" ) ;
+              kgWrite ( I , "!c01Adjusting Video and Audio to length by adding stills\n" ) ;
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-              if ( fabsf ( MaxSec-tpt->TotSec ) > 0.001 ) AddStillAtEnd  \
-                  ( tpt->Flname , MaxSec-tpt->TotSec , NewFile ) ;
+              kgWrite ( I , "!c01Adding still at end ...\n" ) ;
+              if ( fabsf ( MaxSec-tpt->TotSec ) > 0.001 ) AddStillAtEnd \
+               ( tpt->Flname , MaxSec-tpt->TotSec , NewFile ) ;
               else strcpy ( NewFile , tpt->Flname ) ;
               ptpt = GetMediaInfo ( NewFile ) ;
               Ssec = tpt->TotSec;
@@ -307,12 +305,14 @@
           }
           while ( ( tpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-              if ( fabsf ( MaxSec-tpt->TotSec -Ssec) > 0.001 ) AddStillAtEnd  \
-                  ( tpt->Flname, MaxSec-tpt->TotSec-Ssec , NewFile ) ;
+              kgWrite ( I , "!c01Adding still at end ...\n" ) ;
+              if ( fabsf ( MaxSec-tpt->TotSec -Ssec ) > 0.001 ) AddStillAtEnd \
+               ( tpt->Flname , MaxSec-tpt->TotSec-Ssec , NewFile ) ;
               else strcpy ( NewFile , tpt->Flname ) ;
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile1 , "mp4" ) ;
-              if ( fabsf ( Ssec ) > 0.001 ) AddStillAtStart  \
-                  ( NewFile , Ssec , NewFile1 ) ;
+              kgWrite ( I , "!c01Adding still at start ...\n" ) ;
+              if ( fabsf ( Ssec ) > 0.001 ) AddStillAtStart \
+               ( NewFile , Ssec , NewFile1 ) ;
               else strcpy ( NewFile1 , NewFile ) ;
               ptpt = GetMediaInfo ( NewFile1 ) ;
               Ssec += tpt->TotSec;
@@ -320,79 +320,82 @@
           }
       }
       Resetlink ( PL ) ;
-      free(M);
-      M = (MEDIAINFO **) Dlinktoarray(PL);      
+      free ( M ) ;
+      M = ( MEDIAINFO ** ) Dlinktoarray ( PL ) ;
       Resetlink ( PL ) ;
-      iy =0;
-      while(iy < Ny) {
-          tpt1 = M[iy];
+      iy = 0;
+      while ( iy < Ny ) {
+          tpt1 = M [ iy ] ;
           tpt = tpt1;
-          kgWrite(I,"Stacking horizontal...\n");
-          for(ix = 1;ix<Nrow;ix++) {
-              tpt2 =M[iy+ix];
+          for ( ix = 1;ix < Nrow;ix++ ) {
+              tpt2 = M [ iy+ix ] ;
+              kgWrite ( I , "Stacking horizontal...\n" ) ;
               MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
               VideoSideBySide ( tpt1->Flname , tpt2->Flname , NewFile ) ;
               tpt = GetMediaInfo ( NewFile ) ;
-              tpt1 =tpt;
+              tpt1 = tpt;
           }
           Dadd ( NL , tpt ) ;
           iy = iy+Nrow;
-          txres=tpt->Axres;
+          txres = tpt->Axres;
       }
-      if(Nr>0) {
-         tpt1 = M[Ny];
-         kgWrite(I,"Adjusting Odd...\n");
-         for(ix=1;ix<Nr;ix++) {
-            tpt2 =M[Ny+ix];
-            MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-            VideoSideBySide ( tpt1->Flname , tpt2->Flname , NewFile ) ;
-            tpt = GetMediaInfo ( NewFile ) ;
-            tpt1 =tpt;
-         }
-         if(Ny >0) {
-           kgWrite(I,"Adjusting sizes again...\n");
-           int Xr = (int)(txres/Nrow);
-           Xr = ((Xr*Nr)/2)*2;
-           MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-           ChangeVideoSize(tpt1->Flname,NewFile,Xr,-2,1);
-           tpt = GetMediaInfo(NewFile);
-           MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
-           OverlayToSize(txres,tpt->Ayres,tpt->fps,1,0,100,100,tpt->Flname,NewFile);
-           tpt = GetMediaInfo(NewFile);
-         }
-         Dadd(NL,tpt);
+      if ( Nr > 0 ) {
+          tpt1 = M [ Ny ] ;
+          kgWrite ( I , "Adjusting Odd...\n" ) ;
+          for ( ix = 1;ix < Nr;ix++ ) {
+              tpt2 = M [ Ny+ix ] ;
+              MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
+              kgWrite ( I , "Stacking horizontal...\n" ) ;
+              VideoSideBySide ( tpt1->Flname , tpt2->Flname , NewFile ) ;
+              tpt = GetMediaInfo ( NewFile ) ;
+              tpt1 = tpt;
+          }
+          if ( Ny > 0 ) {
+              kgWrite ( I , "!c01Adjusting last row...\n" ) ;
+              int Xr = ( int ) ( txres/Nrow ) ;
+              Xr = ( ( Xr*Nr ) /2 ) *2;
+              MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
+              ChangeVideoSize ( tpt1->Flname , NewFile , Xr , -2 , 1 ) ;
+              tpt = GetMediaInfo ( NewFile ) ;
+              MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile , "mp4" ) ;
+              OverlayToSize ( txres , tpt->Ayres , tpt->fps , 1 , \
+                   0 , 100 , 100 , tpt->Flname , NewFile ) ;
+              tpt = GetMediaInfo ( NewFile ) ;
+              kgWrite ( I , "!c01Going vertical stacking, if needed \n" ) ;
+          }
+          Dadd ( NL , tpt ) ;
       }
       Resetlink ( NL ) ;
-      if ( ( tpt = ( MEDIAINFO * ) Getrecord ( NL ) ) != NULL )  \
-          {strcpy ( NewFile , tpt->Flname ) ;}
+      if ( ( tpt = ( MEDIAINFO * ) Getrecord ( NL ) ) != NULL ) \
+      {strcpy ( NewFile , tpt->Flname ) ;}
       while ( ( tpt = ( MEDIAINFO * ) Getrecord ( NL ) ) != NULL ) {
-          kgWrite(I,"Stacking Vertical...\n");
+          kgWrite ( I , "!c07Stacking Vertical...\n" ) ;
           MakeFileInFolder ( "/tmp/Video.mp4" , Tfolder , NewFile1 , "mp4" ) ;
           VideoTopBottom ( NewFile , tpt->Flname , NewFile1 ) ;
           strcpy ( NewFile , NewFile1 ) ;
       }
       tpt = GetMediaInfo ( NewFile ) ;
-      kgWrite(I,"!c06Making background and placing to target size\n");
-      kgWrite(I,"Pl wait...\n");
-      OverlayToSize ( Xres , Yres  , tpt->fps , 1 , 0,0,0, \
-           NewFile , kgGetString ( TO , 0 ) ) ;
+      kgWrite ( I , "!c06Making background and placing to target size\n" ) ;
+      kgWrite ( I , "!c06Pl wait...may take time\n" ) ;
+      OverlayToSize ( Xres , Yres , tpt->fps , 1 , 60 , 100 , 50 , \
+      NewFile , kgGetString ( TO , 0 ) ) ;
       free ( tpt ) ;
-      free(M);
+      free ( M ) ;
       Dempty ( L ) ;
-      if(n>1) {
-        Dempty ( PL ) ;
-        Dempty ( NL ) ;
+      if ( n > 1 ) {
+          Dempty ( PL ) ;
+          Dempty ( NL ) ;
       }
       else {
-        Dfree(PL);
-        Dfree(NL);
+          Dfree ( PL ) ;
+          Dfree ( NL ) ;
       }
-      kgCleanDir(Tfolder);  
+      kgCleanDir ( Tfolder ) ;
       switch ( butno ) {
           case 1: // Process 
           break;
       }
-      kgWrite(I,"!c02Finished Job...\n");
+      kgWrite ( I , "!c38Finished Job...\n" ) ;
       return ret;
   }
   void ArrangeVideoAVMgoinit ( DIL *B , void *ptmp ) {
@@ -607,8 +610,8 @@
       int i , n;
       kgCheckParentPosition ( Tmp ) ;
       d = D->d;
-      if ( ModuleList == NULL ) ModuleList = kgGetModuleList  \
-          ( ( void ** ) ModFuns ) ;
+      if ( ModuleList == NULL ) ModuleList = kgGetModuleList \
+       ( ( void ** ) ModFuns ) ;
       i = 0;
       void *args = NULL;
       DIAINTR *Dt;
