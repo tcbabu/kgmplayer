@@ -245,9 +245,9 @@ int BoverlaySetup(void *Tmp,void *args) {
   int  *ipt;
   double *fpt;
   ipt = (int *)Apt[2];
-  *ipt = 600;
+  *ipt = 540;
   ipt = (int *)Apt[3];
-  *ipt = 800;
+  *ipt = 960;
   fpt = (double *)Apt[4];
   *fpt = 24;
 

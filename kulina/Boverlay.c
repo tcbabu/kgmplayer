@@ -14,8 +14,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   e0[0].img=NULL;
   DIT t0 = { 
     't',
-    9,25,  
-    386,59,
+    9,9,  
+    386,43,
     20, 
     1,1, 
     e0,
@@ -38,8 +38,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].butncode=31;
   DIN b1 = { 
     'n',
-    385,24,  
-    467,58,
+    385,8,  
+    467,42,
     2,2,  
     72, 
     24, 
@@ -62,8 +62,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   butn2[0].butncode=31;
   DIL h2 = { 
     'h',
-    174,348,  
-    316,378,
+    174,392,  
+    316,422,
     2,0,  
     132, 
     25, 
@@ -77,8 +77,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   h2.item = -1;
   DII i3 = { 
     'i',
-    9,244,  
-    485,340,  
+    9,289,  
+    485,385,  
     51,4,0   
   };
   strcpy(i3.Wid,(char *)"OBIbox");
@@ -93,8 +93,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   e4[0].img=NULL;
   DIT t4 = { 
     't',
-    8,62,  
-    385,96,
+    8,46,  
+    385,80,
     20, 
     1,1, 
     e4,
@@ -117,8 +117,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   butn5[0].butncode=126;
   DIN b5 = { 
     'n',
-    385,62,  
-    466,95,
+    385,46,  
+    466,79,
     2,2,  
     72, 
     24, 
@@ -146,8 +146,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   e6[1].img=NULL;
   DIT t6 = { 
     't',
-    4,119,  
-    304,153,
+    4,139,  
+    304,173,
     20, 
     2,1, 
     e6,
@@ -161,8 +161,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   t6.item = -1;
   DIM m7 = { 
     'm',
-    3,97,  
-    303,121,  
+    3,113,  
+    303,137,  
     0,0  
   };
   strncpy(m7.msg,(char *)"Backgrond Resolution",499);
@@ -178,8 +178,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   e8[0].img=NULL;
   DIT t8 = { 
     't',
-    49,157,  
-    264,191,
+    49,177,  
+    264,211,
     20, 
     1,1, 
     e8,
@@ -200,8 +200,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   ThumbNail **th0 ;
   DIRA r9 = { 
     'r',
-    81,213,  
-    406,241,   
+    81,253,  
+    406,281,   
     8,0,  
     95, 
     23, 
@@ -225,8 +225,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   r9.item = -1;
   DIM m10 = { 
     'm',
-    186,192,  
-    271,212,  
+    186,232,  
+    271,252,  
     1,0  
   };
   strncpy(m10.msg,(char *)"Quality",499);
@@ -243,11 +243,11 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   butn11[0].butncode=31;
   DIN b11 = { 
     'n',
-    368,120,  
-    442,194,
+    368,136,  
+    446,214,
     2,2,  
-    66, 
-    66, 
+    72, 
+    72, 
     1,1, 
     1,0.000000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
     butn11, 
@@ -258,8 +258,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   b11.item = -1;
   DIM m12 = { 
     'm',
-    324,96,  
-    474,120,  
+    324,112,  
+    474,136,  
     1,0  
   };
   strncpy(m12.msg,(char *)"Background Color",499);
@@ -395,8 +395,8 @@ int Boverlay( void *parent,void **v,void *pt) {
   D.rw = 4;
   D.xo = 828;   /* Position of Dialog */ 
   D.yo = 148;
-  D.xl = 490;    /*  Length of Dialog */
-  D.yl = 389;    /*  Width  of Dialog */
+  D.xl = 492;    /*  Length of Dialog */
+  D.yl = 424;    /*  Width  of Dialog */
   D.Initfun = Boverlayinit;    /*   init fuction for Dialog */
   D.Cleanupfun = Boverlaycleanup;    /*   cleanup fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
