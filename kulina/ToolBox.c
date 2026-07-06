@@ -315,7 +315,7 @@ TOOLGRP ToolList[ ] = {
        "FILE EXTENSION decides the output format,\n"
        " so give a valid extension\n"
   },
-  { 0, MakeBoverlayGroup,"!f23Overlay Video over Blank Area", 346,40,RunHelper,0,
+  { 0, MakeBoverlayGroup,"!f23Overlay Video over Colored Area", 346,10,RunHelper,0,
        "Overlays Video on BLANK AREA of specified resolution.\n"
        "The video will be centralised after resize,\n"
        " keeping the orignal aspectratio \n"

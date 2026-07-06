@@ -12,14 +12,14 @@ int ArrangeVideoGroup( DIALOG *D,void **v,void *pt) {
   butn0[0].xpmp=NULL;
   butn0[0].xpmh=NULL;
   butn0[0].bkgr=-221221221;
-  butn0[0].butncode=125;
+  butn0[0].butncode=15198078;
   butn0[1].sw=1;
   strcpy(butn0[1].title,(char *)"Delete");
   butn0[1].xpmn=NULL;
   butn0[1].xpmp=NULL;
   butn0[1].xpmh=NULL;
   butn0[1].bkgr=-1;
-  butn0[1].butncode=126;
+  butn0[1].butncode=-2302850;
   DIN b0 = { 
     'n',
     297,10,  
@@ -38,26 +38,26 @@ int ArrangeVideoGroup( DIALOG *D,void **v,void *pt) {
   T_ELMT *e1  ; 
   e1 =(T_ELMT *)malloc(sizeof(T_ELMT)*2);
   e1[0].fmt = (char *)malloc(8);
-  strcpy(e1[0].fmt,(char *)"Xres%6d");
+  strcpy(e1[0].fmt,(char *)"Xres%5d");
   e1[0].v=(void *)v[0];
   e1[0].sw=1;
   e1[0].noecho=0;
   e1[0].img=NULL;
   e1[1].fmt = (char *)malloc(10);
-  strcpy(e1[1].fmt,(char *)"  Yres%6d");
+  strcpy(e1[1].fmt,(char *)"  Yres%5d");
   e1[1].v=(void *)v[1];
   e1[1].sw=1;
   e1[1].noecho=0;
   e1[1].img=NULL;
   DIT t1 = { 
     't',
-    111,214,  
-    413,246,
+    181,246,  
+    345,311,
     20, 
-    2,1, 
+    1,2, 
     e1,
     1,1,
-    NULL,ArrangeVideoAVMrescallback ,0 ,0,18,9 
+    NULL,ArrangeVideoAVMrescallback ,1 ,0,18,9 
   };
     /* *args,Callback,border,hide,font,fontsize */
   strcpy(t1.Wid,(char *)"AVMres");
@@ -151,13 +151,13 @@ int ArrangeVideoGroup( DIALOG *D,void **v,void *pt) {
   ThumbNail **th0 ;
   DIRA r6 = { 
     'r',
-    109,284,  
-    490,317,   
+    9,247,  
+    170,305,   
     8,0,  
-    180, 
+    150, 
     25, 
     1,2, 
-    0,1, 
+    0,2, 
     (int *)v[3], 
     NULL, 
     NULL ,
@@ -166,7 +166,7 @@ int ArrangeVideoGroup( DIALOG *D,void **v,void *pt) {
      2,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
-    0, /* bordr */
+    1, /* bordr */
     0, /* bkgr */
     0  /*=1 hide  */
    };
@@ -197,56 +197,63 @@ int ArrangeVideoGroup( DIALOG *D,void **v,void *pt) {
    };
   strcpy(x7.Wid,(char *)"AVMlist");
   x7.item = -1;
-  T_ELMT *e8  ; 
-  e8 =(T_ELMT *)malloc(sizeof(T_ELMT)*3);
-  e8[0].fmt = (char *)malloc(11);
-  strcpy(e8[0].fmt,(char *)"!c03Red%3d");
-  e8[0].v=(void *)v[5];
-  e8[0].sw=1;
-  e8[0].noecho=0;
-  e8[0].img=NULL;
-  e8[1].fmt = (char *)malloc(13);
-  strcpy(e8[1].fmt,(char *)"!c38Green%3d");
-  e8[1].v=(void *)v[6];
-  e8[1].sw=1;
-  e8[1].noecho=0;
-  e8[1].img=NULL;
-  e8[2].fmt = (char *)malloc(12);
-  strcpy(e8[2].fmt,(char *)"!c01Blue%3d");
-  e8[2].v=(void *)v[7];
-  e8[2].sw=1;
-  e8[2].noecho=0;
-  e8[2].img=NULL;
-  DIT t8 = { 
-    't',
-    147,249,  
-    487,283,
-    20, 
-    3,1, 
-    e8,
-    1,1,
-    NULL,ArrangeVideoAVMcolorcallback ,0 ,0,18,9 
+  BUT_STR  *butn8=NULL; 
+  butn8= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn8[0].sw=1;
+  strcpy(butn8[0].title,(char *)"");
+  butn8[0].xpmn=NULL;
+  butn8[0].xpmp=NULL;
+  butn8[0].xpmh=NULL;
+  butn8[0].bkgr=0;
+  butn8[0].butncode=124;
+  DIN b8 = { 
+    'n',
+    361,238,  
+    439,316,
+    2,2,  
+    72, 
+    72, 
+    1,1, 
+    1,0.000000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    butn8, 
+    ArrangeVideoAVMcolorcallback , /* *args, Callback */
+    NULL  /* any args */
   };
-    /* *args,Callback,border,hide,font,fontsize */
-  strcpy(t8.Wid,(char *)"AVMcolor");
-  t8.pt=NULL;
-  t8.type = 0;
-  t8.item = -1;
+  strcpy(b8.Wid,(char *)"AVMcolor");
+  b8.item = -1;
   DIM m9 = { 
     'm',
-    2,255,  
-    147,279,  
+    323,216,  
+    493,238,  
     1,0  
   };
-  strncpy(m9.msg,(char *)"Background (0-255)",499);
+  strncpy(m9.msg,(char *)"!c03Select !c38Background !c01Color",499);
   strcpy(m9.Wid,(char *)"AVMmsg1");
   m9.item = -1;
+  DIM m10 = { 
+    'm',
+    26,223,  
+    176,247,  
+    -1,0  
+  };
+  strncpy(m10.msg,(char *)"Video playing style",499);
+  strcpy(m10.Wid,(char *)"AVMmsg3");
+  m10.item = -1;
+  DIM m11 = { 
+    'm',
+    180,224,  
+    320,244,  
+    -1,0  
+  };
+  strncpy(m11.msg,(char *)"Output dimension",499);
+  strcpy(m11.Wid,(char *)"AVMmsg2");
+  m11.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+11));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+13));
   d =dtmp+i; 
-  d[10].t=NULL;
+  d[12].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIN));
   *d[0].N = b0;
   d[0].N->item = -1;
@@ -276,13 +283,20 @@ int ArrangeVideoGroup( DIALOG *D,void **v,void *pt) {
   *d[7].x = x7;
   d[7].x->item = -1;
   ArrangeVideoAVMlistinit(d[7].x,pt) ;
-  d[8].t = (DIT *)malloc(sizeof(DIT));
-  *d[8].t = t8;
-  d[8].t->item = -1;
+  d[8].t = (DIT *)malloc(sizeof(DIN));
+  *d[8].N = b8;
+  d[8].N->item = -1;
+  ArrangeVideoAVMcolorinit(d[8].N,pt) ;
   d[9].t = (DIT *)malloc(sizeof(DIM));
   *d[9].m = m9;
   d[9].m->item = -1;
-  d[10].t = NULL;
+  d[10].t = (DIT *)malloc(sizeof(DIM));
+  *d[10].m = m10;
+  d[10].m->item = -1;
+  d[11].t = (DIT *)malloc(sizeof(DIM));
+  *d[11].m = m11;
+  d[11].m->item = -1;
+  d[12].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -301,7 +315,6 @@ int MakeArrangeVideoGroup(DIALOG *D,void *arg) {
     Text_Box2  1 data values
     RadioButtons1  1 data value
     Selectmenu2  1 data value
-    Text_Box3  3 data values
 
 *************************************************/
    int  *v0 ;
@@ -319,25 +332,13 @@ int MakeArrangeVideoGroup(DIALOG *D,void *arg) {
    int  *v4 ;
    v4 = (int *)malloc(sizeof(int));
    *v4 = 1;
-   int  *v5 ;
-   v5 = (int *)malloc(sizeof(int));
-   *v5 = 1;
-   int  *v6 ;
-   v6 = (int *)malloc(sizeof(int));
-   *v6 = 1;
-   int  *v7 ;
-   v7 = (int *)malloc(sizeof(int));
-   *v7 = 1;
-   void** v=(void **)malloc(sizeof(void*)*9);
-   v[8]=NULL;
+   void** v=(void **)malloc(sizeof(void*)*6);
+   v[5]=NULL;
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
    v[3]=(void *)(v3);
    v[4]=(void *)(v4);
-   v[5]=(void *)(v5);
-   v[6]=(void *)(v6);
-   v[7]=(void *)(v7);
    void *pt=NULL; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    GrpId = ArrangeVideoGroup(D,v,pt);
@@ -430,7 +431,6 @@ void *RunArrangeVideo(void *parent ,void *args) {
     Text_Box2  1 data values
     RadioButtons1  1 data value
     Selectmenu2  1 data value
-    Text_Box3  3 data values
 
 *************************************************/
    int   v0 = 1;
@@ -438,18 +438,12 @@ void *RunArrangeVideo(void *parent ,void *args) {
    char  v2[500]="" ;
    int   v3 = 1;
    int   v4 = 1;
-   int   v5 = 1;
-   int   v6 = 1;
-   int   v7 = 1;
-   void* v[8];
+   void* v[5];
    v[0]=(void *)(&v0);
    v[1]=(void *)(&v1);
    v[2]=(void *)(v2);
    v[3]=(void *)(&v3);
    v[4]=(void *)(&v4);
-   v[5]=(void *)(&v5);
-   v[6]=(void *)(&v6);
-   v[7]=(void *)(&v7);
    void *pt[2]={NULL,NULL}; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    pt[0]=args;

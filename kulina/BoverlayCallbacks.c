@@ -14,7 +14,7 @@ int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int GetFolderName(char *infile,char *folder);
 static void *Args=NULL,*Rets=NULL;
 int RunAndMonitor(char *);
-
+static int Red=0,Green=0,Blue=0;
 #if 0   // Dummy for testing
 int RunAndMonitor(char * job) {
   printf("%s \n",job);
@@ -142,8 +142,8 @@ int BoverlayOBgocallback( int butno,int i,void *Tmp) {
             kgGetString(TI,0),kgGetString(TO,0));
   kgWrite(I,buff);
 //  OverlayToSize(Xres,Yres,fps,Qty,0,0,0,kgGetString(TI,0),kgGetString(TO,0));
-  sprintf(buff,"RunOverlayToSize %d %d %-.3f %d 0 0 0 %s %s ",
-               Xres,Yres,fps,Qty,kgGetString(TI,0),kgGetString(TO,0));
+  sprintf(buff,"RunOverlayToSize %d %d %-.3f %d %d %d %d  %s %s ",
+               Xres,Yres,fps,Qty,Red,Green,Blue,kgGetString(TI,0),kgGetString(TO,0));
   RunFunctionAndWait(buff,RunOverlayToSize);
   sprintf (buff,"!c02FINISHED JOB....");
   kgWrite(I,buff);
@@ -360,6 +360,34 @@ int BoverlayOBQtycallback(int item,int i,void *Tmp) {
 }
 void  BoverlayOBQtyinit (DIRA *R,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
+}
+int BoverlayOBcolorcallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  switch(butno) {
+    case 1: //   
+      kgGetColor(Tmp,100,10,&Red,&Green,&Blue);
+      kgChangeButtonColor(B,0,Red,Green,Blue);
+      kgUpdateWidget(B);
+      break;
+  }
+  return ret;
+}
+void  BoverlayOBcolorinit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
 }
 int Boverlayinit(void *Tmp) {
   /*********************************** 

@@ -7,6 +7,7 @@
   static MODINTERFACE ModFuns [ ] = {
    ( MODINTERFACE ) NULL };
   static Dlink *ModuleList = NULL;
+  static int Red=0,Green=0,Blue=0;
   char * MakeArrangeVideoFile ( void ) {
       char buff [ 500 ] , *pt;
       int id = 0 , ln;
@@ -215,7 +216,7 @@
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
       DIALOG *D;DIL *B;
-      int n , ret = 0,Red,Green,Blue;;
+      int n , ret = 0;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
       D = ( DIALOG * ) Tmp;
@@ -236,13 +237,9 @@
       int fps = 10000000;
       DIT *TO = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMout" ) ;
       DIT *TR = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMres" ) ;
-      DIT *TC = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMcolor" ) ;
       DII *I = ( DII * ) kgGetNamedWidget ( Tmp , ( char * ) "AVMinfo" ) ;
       int Xres = kgGetInt ( TR , 0 ) ;
       int Yres = kgGetInt ( TR , 1 ) ;
-      Red = kgGetInt ( TC,0); 
-      Green = kgGetInt ( TC,1); 
-      Blue = kgGetInt ( TC,2); 
       MakeTmpFolderInHome ( Tfolder ) ;
       int Nrow = 4;
       int Sync = kgGetSelection ( kgGetNamedWidget \
@@ -516,12 +513,14 @@
       *ipt = 1080;
       ipt = ( int * ) pt [ 1 ] ;
       *ipt = 1920;
+#if 0
       ipt = ( int * ) pt [ 5 ] ;
       *ipt = 0;
       ipt = ( int * ) pt [ 6 ] ;
       *ipt = 0;
       ipt = ( int * ) pt [ 7 ] ;
       *ipt = 0;
+#endif
       return 1;
   }
   void * ArrangeVideoCleanDia ( void *args ) {
@@ -583,35 +582,6 @@
       it->Dtmp = NULL; // fiiled by MakeGroup 
       It = it;
       return it;
-  }
-int ArrangeVideoAVMcolorcallback(int cellno,int i,void *Tmp) {
-  /************************************************* 
-   cellno: current cell counted along column strting with 0 
-           ie 0 to (nx*ny-1) 
-   i     : widget id starting from 0 
-   Tmp   : Pointer to DIALOG 
-   *************************************************/ 
-  DIALOG *D;DIT *T;T_ELMT *e; 
-  int ret=1;
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-// pt[0] is args passed as inputs; pt[1] is output pointer
-  D = (DIALOG *)Tmp;
-  T = (DIT *)kgGetWidget(Tmp,i);
-  e = T->elmt;
-  return ret;
-}
-  int ArrangeVideoinit ( void *Tmp ) {
-  /*********************************** 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
-  /* you add any initialisation here */
-      int ret = 1;
-      DIALOG *D;
-      D = ( DIALOG * ) Tmp;
-      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
-// pt[0] is args passed as inputs; pt[1] is output pointer
- /* pt[0] is inputs, given by caller */
-      return ret;
   }
   int ArrangeVideocleanup ( void *Tmp ) {
   /* you add any cleanup/mem free here */
@@ -716,4 +686,45 @@ int ArrangeVideoAVMcolorcallback(int cellno,int i,void *Tmp) {
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
       return ret;
+}
+int ArrangeVideoAVMcolorcallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  switch(butno) {
+    case 1: //   
+      kgGetColor(Tmp,100,0,&Red,&Green,&Blue);
+      kgChangeButtonColor(B,0,Red,Green,Blue);
+      kgUpdateWidget(B);
+      break;
   }
+  return ret;
+}
+void  ArrangeVideoAVMcolorinit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
+}
+int ArrangeVideoinit(void *Tmp) {
+  /*********************************** 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  /* you add any initialisation here */
+  int ret = 1;
+  DIALOG *D;
+  D = (DIALOG *)Tmp;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+ /* pt[0] is inputs, given by caller */
+  return ret;
+}

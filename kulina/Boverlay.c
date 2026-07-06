@@ -114,7 +114,7 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   butn5[0].xpmp=NULL;
   butn5[0].xpmh=NULL;
   butn5[0].bkgr=-1;
-  butn5[0].butncode=15198078;
+  butn5[0].butncode=126;
   DIN b5 = { 
     'n',
     385,62,  
@@ -146,13 +146,13 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   e6[1].img=NULL;
   DIT t6 = { 
     't',
-    92,119,  
-    392,153,
+    4,119,  
+    304,153,
     20, 
     2,1, 
     e6,
     1,1,
-    NULL,BoverlayOBRescallback ,0 ,0,18,9 
+    NULL,BoverlayOBRescallback ,1 ,0,18,9 
   };
     /* *args,Callback,border,hide,font,fontsize */
   strcpy(t6.Wid,(char *)"OBRes");
@@ -161,8 +161,8 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   t6.item = -1;
   DIM m7 = { 
     'm',
-    91,97,  
-    391,121,  
+    3,97,  
+    303,121,  
     0,0  
   };
   strncpy(m7.msg,(char *)"Backgrond Resolution",499);
@@ -178,13 +178,13 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   e8[0].img=NULL;
   DIT t8 = { 
     't',
-    140,166,  
-    355,200,
+    49,157,  
+    264,191,
     20, 
     1,1, 
     e8,
     1,1,
-    NULL,BoverlayOBFpscallback ,0 ,0,18,9 
+    NULL,BoverlayOBFpscallback ,1 ,0,18,9 
   };
     /* *args,Callback,border,hide,font,fontsize */
   strcpy(t8.Wid,(char *)"OBFps");
@@ -200,10 +200,10 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   ThumbNail **th0 ;
   DIRA r9 = { 
     'r',
-    130,210,  
-    473,238,   
+    81,213,  
+    406,241,   
     8,0,  
-    100, 
+    95, 
     23, 
     1,3, 
     0,1, 
@@ -215,7 +215,7 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
      2,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
-    0, /* bordr */
+    1, /* bordr */
     0, /* bkgr */
     0  /*=1 hide  */
    };
@@ -225,19 +225,52 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   r9.item = -1;
   DIM m10 = { 
     'm',
-    26,213,  
-    126,237,  
+    186,192,  
+    271,212,  
     1,0  
   };
   strncpy(m10.msg,(char *)"Quality",499);
   strcpy(m10.Wid,(char *)"OBQty");
   m10.item = -1;
+  BUT_STR  *butn11=NULL; 
+  butn11= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn11[0].sw=1;
+  strcpy(butn11[0].title,(char *)"");
+  butn11[0].xpmn=NULL;
+  butn11[0].xpmp=NULL;
+  butn11[0].xpmh=NULL;
+  butn11[0].bkgr=0;
+  butn11[0].butncode=31;
+  DIN b11 = { 
+    'n',
+    368,120,  
+    442,194,
+    2,2,  
+    66, 
+    66, 
+    1,1, 
+    1,0.000000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    butn11, 
+    BoverlayOBcolorcallback , /* *args, Callback */
+    NULL  /* any args */
+  };
+  strcpy(b11.Wid,(char *)"OBcolor");
+  b11.item = -1;
+  DIM m12 = { 
+    'm',
+    324,96,  
+    474,120,  
+    1,0  
+  };
+  strncpy(m12.msg,(char *)"Background Color",499);
+  strcpy(m12.Wid,(char *)"OBmsg3");
+  m12.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+12));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+14));
   d =dtmp+i; 
-  d[11].t=NULL;
+  d[13].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
@@ -275,7 +308,14 @@ int BoverlayGroup( DIALOG *D,void **v,void *pt) {
   d[10].t = (DIT *)malloc(sizeof(DIM));
   *d[10].m = m10;
   d[10].m->item = -1;
-  d[11].t = NULL;
+  d[11].t = (DIT *)malloc(sizeof(DIN));
+  *d[11].N = b11;
+  d[11].N->item = -1;
+  BoverlayOBcolorinit(d[11].N,pt) ;
+  d[12].t = (DIT *)malloc(sizeof(DIM));
+  *d[12].m = m12;
+  d[12].m->item = -1;
+  d[13].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -348,7 +388,7 @@ int Boverlay( void *parent,void **v,void *pt) {
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 9;
+  D.df = 11;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;

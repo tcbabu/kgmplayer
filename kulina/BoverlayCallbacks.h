@@ -10,6 +10,8 @@ int BoverlayOBRescallback(int cellno,int i,void *Tmp) ;
 int BoverlayOBFpscallback(int cellno,int i,void *Tmp) ;
 int BoverlayOBQtycallback(int item,int i,void *Tmp) ;
 void  BoverlayOBQtyinit (DIRA *R,void *pt) ;
+int BoverlayOBcolorcallback(int butno,int i,void *Tmp) ;
+void  BoverlayOBcolorinit (DIN *B,void *pt) ;
 int Boverlayinit(void *Tmp) ;
 int Boverlaycleanup(void *Tmp) ;
 void *RunBoverlay(void *,void *) ;
