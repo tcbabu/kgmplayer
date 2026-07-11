@@ -174,18 +174,6 @@
           sprintf ( options , "Creating background Image\n" ) ;
           write ( Jpipe [ 1 ] , options , strlen ( options ) ) ;
           Minfo.TotSec = is2vdata->imagetime;
-#if 0
-#ifdef D_X264
-          sprintf ( command , "ffmpegfun -f lavfi -i color=c=black:s=%-dx%-d  " "-t %-5.2f -video_track_timescale 90k " " -y -f mp4 -b:v 3000K -vcodec libx264 \"%-s/%-d\"" , \
-               \
-          is2vdata->Xsize , is2vdata->Ysize , is2vdata->imagetime , Folder , id ) ;
-#else
-          sprintf ( command , "ffmpegfun -f lavfi -i color=c=black:s=%-dx%-d  " "-t %-5.2f -video_track_timescale 90k " " -y -f mp4 -vcodec libx265 \"%-s/%-d\"" , \
-               \
-          is2vdata->Xsize , is2vdata->Ysize , is2vdata->imagetime , Folder , id ) ;
-#endif
-          runfunction ( command , ProcessToPipe , ffmpegfun ) ;
-#endif
           Vlist = Dopen ( ) ;
           while ( ( Mpt = ( MEDIAINFO * ) Getrecord ( L ) ) != NULL ) {
               sprintf ( Vname , "%-s/Img%-5.5d.mp4" , Folder , vid ) ;
@@ -217,57 +205,9 @@
                   kgFreeImage ( Img ) ;
               }
               else {
-                  dx = 0 , dy = 0;
-                  iaspect = ( double ) yl/xl;
-                  raspect = ( double ) is2vdata->Ysize/is2vdata->Xsize;
-                  if ( iaspect > raspect ) {
-                      if ( is2vdata->fittoscrn ) {
-                          xv = is2vdata->Xsize;
-                          yv = ( int ) ( xv*iaspect ) ;
-                      }
-                      else {
-                          yv = is2vdata->Ysize;
-                          xv = ( int ) ( yv/iaspect ) ;
-                          dx = ( is2vdata->Xsize -xv ) /2;
-                      }
-                      Timg = ( GMIMG * ) kgChangeSizeImage ( Img , xv , yv ) ;
-                      off = ( yv - is2vdata->Ysize ) /2;
-                      kgFreeImage ( Img ) ;
-                      Img = ( GMIMG * ) kgCropImage ( Timg , 0 , off , xv-1 , yv-1-off ) ;
-                  }
-                  else {
-                      if ( is2vdata->fittoscrn ) {
-                          yv = is2vdata->Ysize;
-                          xv = ( int ) ( yv/iaspect ) ;
-                      }
-                      else{
-                          xv = is2vdata->Xsize;
-                          yv = ( int ) ( xv*iaspect ) ;
-                          dy = ( is2vdata->Ysize -yv ) /2;
-                      }
-                      Timg = ( GMIMG * ) kgChangeSizeImage ( Img , xv , yv ) ;
-                      off = ( xv - is2vdata->Xsize ) /2;
-                      kgFreeImage ( Img ) ;
-                      Img = ( GMIMG * ) kgCropImage ( Timg , off , 0 , xv-1-off , yv-1 ) ;
-                  }
-                  kgFreeImage ( Timg ) ;
-                  kgWriteImage ( Img , Tmpimage ) ;
-                  kgFreeImage ( Img ) ;
               }
               Minfo.TotSec = is2vdata->imagetime;
               CreateStillVideo ( Tmpimage , Minfo.TotSec , 24.0 , Vname ) ;
-#if 0
-#ifdef D_X264
-              sprintf ( command , "ffmpegfun -i \"%-s/%-d\" -i \"%s\" -filter_complex" " overlay=%-d:%-d -f mp4 -video_track_timescale 90k -b:v 3000K -vcodec libx264 -y \"%-s\" " , \
-                   \
-              Folder , id , Tmpimage , dx , dy , Vname ) ;
-#else
-              sprintf ( command , "ffmpegfun -i \"%-s/%-d\" -i \"%s\" -filter_complex" " overlay=%-d:%-d -f mp4 -video_track_timescale 90k -vcodec libx265 -y \"%-s\" " , \
-                   \
-              Folder , id , Tmpimage , dx , dy , Vname ) ;
-#endif
-              runfunction ( command , ProcessToPipe , ffmpegfun ) ;
-#endif
               fprintf ( myl , "file  \'%-s\'\n" , Vname ) ;
               fflush ( myl ) ;
               vid++;
