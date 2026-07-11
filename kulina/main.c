@@ -1,4 +1,4 @@
-//#define D_DEBUG
+#define D_DEBUG
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
