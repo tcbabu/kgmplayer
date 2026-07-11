@@ -138,6 +138,7 @@
       void *Bkimg;
       double iaspect , raspect;
       int vid = 0 , pid = 0;
+      int repeat=2;
       int status, i;
       Dlink *L , *Vlist = NULL;
       char *vnames = NULL;
@@ -204,7 +205,7 @@
                   kgFreeImage ( Img ) ;
               Minfo.TotSec = is2vdata->imagetime;
               CreateStillVideo ( Tmpimage , Minfo.TotSec , 25.0 , Vname ) ;
-              for(i=0;i<4;i++)fprintf ( myl , "file  \'%-s\'\n" , Vname ) ;
+              for(i=0;i<repeat;i++)fprintf ( myl , "file  \'%-s\'\n" , Vname ) ;
 //              fprintf ( myl , "file  \'%-s\'\n" , Vname ) ;
               fflush ( myl ) ;
               vid++;
