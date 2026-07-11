@@ -168,7 +168,7 @@
           close ( Jstat [ 1 ] ) ;
           sprintf ( mylist , "%-s/mylist.txt" , Folder ) ;
           myl = fopen ( mylist , "w" ) ;
-          strcpy ( Qstr , "3000K" ) ;
+          strcpy ( Qstr , " -crf 20 -preset medium " ) ;
           Resetlink ( L ) ;
           sprintf ( Tmpimage , "%-s/Image.jpg" , Folder ) ;
           sprintf ( options , "Creating background Image\n" ) ;
@@ -191,7 +191,6 @@
               if ( is2vdata->fittoscrn ) {xn = is2vdata->Xsize; yn = is2vdata->Ysize;}
               else GetResizeRes ( is2vdata->Xsize , is2vdata->Ysize , & xn , & yn ) ;
               Rimg = kgChangeSizeImage ( Img , xn , yn ) ;
-              if ( 1 ) {
 //                  Bkimg = kgCopyImage ( Bimg) ;
                   Bkimg = CreateColorImage(is2vdata->Xsize,is2vdata->Ysize,80,90,70);
        //           kgSetImageColor ( Bkimg , 120 , 140 , 90 ) ;
@@ -203,9 +202,6 @@
                   kgFreeImage ( Bkimg ) ;
                   kgFreeImage ( Rimg ) ;
                   kgFreeImage ( Img ) ;
-              }
-              else {
-              }
               Minfo.TotSec = is2vdata->imagetime;
               CreateStillVideo ( Tmpimage , Minfo.TotSec , 24.0 , Vname ) ;
               fprintf ( myl , "file  \'%-s\'\n" , Vname ) ;
@@ -227,13 +223,15 @@
           write ( Jpipe [ 1 ] , options , strlen ( options ) ) ;
           Minfo.TotSec = vid*is2vdata->imagetime;
 #ifdef D_X264
-          sprintf ( command , "ffmpegfun -f concat -safe 0  -i %-s -video_track_timescale 90k -y -f mp4 -vcodec libx264 " " -b:v %-s \"%-s\" " , \
-               \
-          mylist , Qstr , is2vdata->Outfile ) ;
+          sprintf ( command , "ffmpegfun -f concat -safe 0  -i %-s "
+            "  -video_track_timescale 90k -y -f mp4 -vcodec libx264 " 
+            "  %-s \"%-s\" " , \
+            mylist , Qstr , is2vdata->Outfile ) ;
 #else
-          sprintf ( command , "ffmpegfun -f concat -safe 0 -i %-s -video_track_timescale 90k -y -f mp4 -vcodec libx265 " "  \"%-s\" " , \
-               \
-          mylist , is2vdata->Outfile ) ;
+          sprintf ( command , "ffmpegfun -f concat -safe 0 -i %-s "
+            " -video_track_timescale 90k -y -f mp4 -vcodec libx265 " 
+            "  -crf 20 -preset fast \"%-s\" " , \
+            mylist , is2vdata->Outfile ) ;
 #endif
           runfunction ( command , ProcessToPipe , ffmpegfun ) ;
           Dempty ( Vlist ) ;
