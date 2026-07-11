@@ -143,6 +143,8 @@
       char *vnames = NULL;
       MEDIAINFO *Mpt;
       extern MEDIAINFO Minfo;
+ //     void *Bimg = CreateColorImage(is2vdata->Xsize,is2vdata->Ysize,120,140,100);
+      fflush(stderr);
 #if 0
       if ( ( pid = fork ( ) ) != 0 ) {
           kgSplashMessage ( NULL , 100 , 100 , 300 , 40 , \
@@ -195,21 +197,21 @@
               strcpy ( vnames , Vname ) ;
               Dadd ( Vlist , vnames ) ;
               Img = ( GMIMG * ) kgGetImage ( Mpt->Flname ) ;
-              xl = Img->image_width;
-              yl = Img->image_height;
+              kgGetImageSize(Img,&xl,&yl);
               xn = xl;
               yn = yl;
               if ( is2vdata->fittoscrn ) {xn = is2vdata->Xsize; yn = is2vdata->Ysize;}
               else GetResizeRes ( is2vdata->Xsize , is2vdata->Ysize , & xn , & yn ) ;
               Rimg = kgChangeSizeImage ( Img , xn , yn ) ;
               if ( 1 ) {
-                  Bkimg = kgCreateImage ( is2vdata->Xsize , is2vdata->Ysize ) ;
-                  kgSetImageColor ( Bkimg , 120 , 140 , 90 ) ;
+//                  Bkimg = kgCopyImage ( Bimg) ;
+                  Bkimg = CreateColorImage(is2vdata->Xsize,is2vdata->Ysize,80,90,70);
+       //           kgSetImageColor ( Bkimg , 120 , 140 , 90 ) ;
                   dx = is2vdata->Xsize -xn;
                   dy = is2vdata->Ysize -yn;
-                  kgMergeImages ( Bkimg , Rimg , dx/2 , dy/2 ) ;
-                  kgWriteImage ( Bkimg , Tmpimage ) ;
-                  fprintf ( stderr , "Created Tmpimage: %s\n" , Tmpimage ) ;
+                  kgMergeImages ( Bkimg , Rimg , 0 , 0 ) ;
+                  kgWriteImage(Bkimg,Tmpimage);
+//                  fprintf ( stderr , "Created Tmpimage: %s\n" , Tmpimage ) ;
                   kgFreeImage ( Bkimg ) ;
                   kgFreeImage ( Rimg ) ;
                   kgFreeImage ( Img ) ;
@@ -308,7 +310,7 @@
           RunMonitorJoin ( NULL ) ;
           kill ( pid , 9 ) ;
           waitpid ( pid , & status , 0 ) ;
-//     if(FileStat(Folder)) kgCleanDir(Folder);
+//          if(FileStat(Folder)) kgCleanDir(Folder);
           return 0;
       }
   }

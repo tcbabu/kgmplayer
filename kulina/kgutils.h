@@ -79,5 +79,6 @@ ThumbNail **AddItemstoVlist(char **newitems) ;
 ThumbNail **DeleteItemsfromVlist(void) ;
 int VideoTopBottom(char *infile1,char *infile2,char *outfile);
 int VideoSideBySide(char *infile1,char *infile2,char *outfile);
+void *CreateColorImage(int Xsize,int Ysize,int red,int green,int blue);
 #endif
 

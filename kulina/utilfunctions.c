@@ -595,6 +595,15 @@ int CreateStillVideo(char *infile,float duration,float fps,char *outfile) {
     runfunction(buff,NULL,ffmpegfun);
     return 1;
 }
+void *CreateColorImage(int Xsize,int Ysize,int red,int green,int blue) {
+    void *rimg=NULL;
+    void *img=kgInitImage(Xsize,Ysize,1);
+    kgChangeColor(img,501,red,green,blue);
+    kgBoxFill(img,0.,0.,Xsize,Ysize,501,0);
+    rimg =kgGetResizedImage(img); 
+    kgCloseImage(img);
+    return rimg;
+}
 int CreateBlankVideo(int Xsize,int Ysize,float duration,float fps,char *outfile) {
     char buff[500],Infile[300], folder[300],Tmpfile[300];
     int Fstat=1;
