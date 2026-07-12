@@ -138,7 +138,7 @@
       void *Bkimg;
       double iaspect , raspect;
       int vid = 0 , pid = 0;
-      int repeat=2;
+      int repeat=1;
       int status, i;
       Dlink *L , *Vlist = NULL;
       char *vnames = NULL;
