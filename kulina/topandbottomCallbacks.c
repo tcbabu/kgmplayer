@@ -258,6 +258,8 @@ int topandbottomTABgocallback( int butno,int i,void *Tmp) {
       MakeVideoTopBottom(infile1,infile2,outfile,I);
     break;
     case 2:
+      sprintf(buff,"!c01Top First:\n");
+      kgWrite(I,buff);
       sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
       kgWrite(I,buff);
       remove(Pinfile1);
