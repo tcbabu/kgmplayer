@@ -227,12 +227,12 @@
 #ifdef D_X264
           sprintf ( command , "ffmpegfun -f concat -safe 0  -i %-s "
             "  -video_track_timescale 90k -y -f mp4 -vcodec libx264 " 
-            "  %-s \"%-s\" " , \
+            "  -an %-s \"%-s\" " , \
             mylist , Qstr , is2vdata->Outfile ) ;
 #else
           sprintf ( command , "ffmpegfun -f concat -safe 0 -i %-s "
             " -video_track_timescale 90k -y -f mp4 -vcodec libx265 " 
-            "  -crf 20 -preset fast \"%-s\" " , \
+            "  -an -crf 20 -preset fast \"%-s\" " , \
             mylist , is2vdata->Outfile ) ;
 #endif
           runfunction ( command , ProcessToPipe , ffmpegfun ) ;

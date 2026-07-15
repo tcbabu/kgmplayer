@@ -67,6 +67,7 @@ int MakeVideoSpeedGroup(DIALOG *D,void *arg);
 int MakeVideoReverseGroup(DIALOG *D,void *arg);
 int MakeAudioReverseGroup(DIALOG *D,void *arg);
 int MakeArrangeVideoGroup(DIALOG *D,void *arg);
+int MaketextovervideoGroup(DIALOG *D,void *arg);
 
 TOOLGRP ToolList[ ] = {
   { 0, MakeAudioConvertGroup,"!f23Convert/Extract Audio",346,40,RunHelper,0,
@@ -326,6 +327,13 @@ TOOLGRP ToolList[ ] = {
   },
   { 0, MakeArrangeVideoGroup,"!f23Arrange Multiple Videos", 340,10,RunHelper,0,
        "Arrange multiple Videos with in specified  resolution.\n"
+  },
+  { 0, MaketextovervideoGroup,"!f23Add Text Over Videos", 346,10,RunHelper,0,
+       "bring two videos top and bottom.\n"
+       "Width of videos must be same\n"
+       "Adjust video and audio timings using other tools.\n"
+       "It is better to extract and process audios and\n"
+       "  add to the procssed video later.\n"
   },
 #if 0
 #endif

@@ -375,6 +375,153 @@ int ConvertToLibx264(char *infile,int Qty,char *outfile){
   runfunction(buff,ProcessPrint,ffmpegfun);
   return 1;
 }
+int MergeVideos(char *base,char *olay,float transparency,char *outfile) {
+  /*
+     Overlays olay over base, in centralised way
+     in case olay is bigger in dimension it will be resize to fit
+     aspect ratio will be maintained
+  */
+  int Qty=1;
+  int Bxres,Byres,Oxres,Oyres;
+  float Bfps,Ofps;
+  int xloc,yloc;
+  MEDIAINFO *mpt;
+  char Bvcodec[30],Ovcodec[30];
+  char Tmp1[300],Tmp2[300],Tmp3[300],Otmp[200],Btmp[200];
+  char buff[500];
+  char Tfolder[300],Err[400];
+  int Fstat=1;
+  int cx =0,cy=0;
+  double cxfact=1.0,cyfact=1.0;
+  Fstat = MakeTmpFolderInHome(Tfolder);
+  printf("Inside OverlayVideos\n");
+  fflush(stdout);
+  strcpy(Otmp,olay);
+  mpt = GetMediaInfo(base);
+  if(mpt->Video != 1) return 0;
+  Bxres =mpt->Axres;
+  Byres =mpt->Ayres;
+  Bfps  = mpt->fps;
+  strcpy(Bvcodec,mpt->vcodectype);
+  Btmp[0]='\0';
+  strcpy(Btmp,base);
+  free(mpt);
+  mpt= NULL;
+  if ((strcmp(Bvcodec,"h264") != 0)) {
+     MakeFileInFolder(base,Tfolder,Btmp,"mp4");
+     printf("Calling Libx264 %s %s\n",base,Btmp);
+     fflush(stdout);
+     ConvertToLibx264(base,Qty,Btmp);
+     printf("Created: %s\n",Btmp);
+     fflush(stdout);
+     mpt = GetMediaInfo(Btmp);
+     if(mpt->Video != 1) return 0;
+     Bxres =mpt->Axres;
+     Byres =mpt->Ayres;
+     Bfps  = mpt->fps;
+     strcpy(Bvcodec,mpt->vcodectype);
+     free(mpt);
+     mpt=NULL;
+  }
+  printf("Opened Err 2\n");
+  fflush(stdout);
+  mpt = GetMediaInfo(olay);
+  if(mpt->Video != 1) return 0;
+  Oxres = mpt->Axres;
+  Oyres =mpt->Ayres;
+  Ofps  = mpt->fps;
+  strcpy(Ovcodec,mpt->vcodectype);
+  free(mpt);
+  mpt = NULL;
+  Tmp1[0]='\0';
+  Tmp2[0]='\0';
+  printf("Oxres = %d Bxres = %d\n",Oxres,Bxres);
+  fflush(stdout);
+  cxfact =1;
+  cx =0;
+  if(Bxres< Oxres) {
+    cxfact = (float)Bxres/Oxres;
+    Oxres = ((int)(Oxres*cxfact))/2*2;
+    Oyres  = ((int)(Oyres*cxfact))/2*2;
+    cx =1;
+  }
+  cyfact = 1.0;
+  cy = 0;
+  if(Byres< Oyres) {
+    cyfact = (float)Byres/Oyres;
+    Oxres = ((int)(Oxres*cyfact))/2*2;
+    Oyres  = ((int)(Oyres*cyfact))/2*2;
+    cy =1;
+  }
+//  if( (Oxres > Bxres )||( fabsf(Bfps -Ofps)> 1)){
+  if (cx||cy||( fabsf(Bfps -Ofps)> 1)){
+
+     MakeFileInFolder(olay,Tfolder,Tmp1,"mp4");
+     printf("ChangeVideoSizeAndFrate\n");
+     fflush(stdout);
+     ChangeVideoSizeAndFrate(Otmp,Tmp1,Oxres,Oyres,(int)(Bfps+0.5),Qty);
+     strcpy(Otmp,Tmp1);
+     mpt = GetMediaInfo(Otmp);
+     if(mpt->Video != 1) return 0;
+     Oxres =mpt->Axres;
+     Oyres =mpt->Ayres;
+     Ofps  = mpt->fps;
+     strcpy(Ovcodec,mpt->vcodectype);
+     free(mpt);
+     mpt = NULL;
+  }   
+#if 0
+  if( Oyres > Byres ){
+//     MakeNewFileName(olay,Tmp2);
+     MakeFileInFolder(olay,Tfolder,Tmp2,"mp4");
+     ChangeVideoSize(Otmp,Tmp2,-2,Byres,Qty);
+     strcpy(Otmp,Tmp2);
+     mpt = GetMediaInfo(Otmp);
+     if(mpt->Video != 1) return 0;
+     Oxres =mpt->Axres;
+     Oyres =mpt->Ayres;
+     Ofps  = mpt->fps;
+     strcpy(Ovcodec,mpt->vcodectype);
+     free(mpt);
+     mpt = NULL;
+  }   
+#endif
+  Tmp3[0]='\0';  
+  if ((strcmp(Ovcodec,"h264") != 0)){
+//     MakeNewFileName(olay,Tmp3);
+     MakeFileInFolder(olay,Tfolder,Tmp3,"mp4");
+     ConvertToLibx264(Otmp,Qty,Tmp3);
+     strcpy(Otmp,Tmp3);
+     mpt = GetMediaInfo(Otmp);
+     if(mpt->Video != 1) return 0;
+     Oxres =mpt->Axres;
+     Oyres =mpt->Ayres;
+     Ofps  = mpt->fps;
+     strcpy(Ovcodec,mpt->vcodectype);
+     free(mpt);
+     mpt = NULL;
+  }
+  xloc = (Bxres - Oxres)/2;
+  yloc = (Byres - Oyres)/2;
+  printf("Btmp : %s Otmp : %s : %d %d %s\n",Btmp,Otmp,xloc,yloc,outfile);
+  fflush(stdout);
+//  sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex \"[0:v][1:v]overlay=%-d:%-d\" %s",
+//       Btmp,Otmp,xloc,yloc,outfile);
+  sprintf(buff,"ffmpegfun -y -i %s  -i %s -filter_complex"
+     " \"[1:v]format=yuva420p,colorchannelmixer=aa=%-.2f[trans];[0:v][trans]overlay=%-d:%-d\" %s",
+       Btmp,Otmp,1.-transparency,xloc,yloc,outfile);
+  printf("buff : %s\n",buff);
+  fflush(stdout);
+  runfunction(buff,ProcessPrint,ffmpegfun);
+  kgCleanDir(Tfolder);
+#if 0
+  if(Tmp1[0] != '\0') remove(Tmp1);
+  if(Tmp3[0] != '\0') remove(Tmp2);
+  if(Tmp3[0] != '\0') remove(Tmp3);
+  if(Btmp[0] != '\0') remove(Btmp);
+#endif  
+  return 1;
+}
 
 int OverlayVideos(char *base,char *olay,int Qty,char *outfile) {
   /*

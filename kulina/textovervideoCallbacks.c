@@ -1,5 +1,5 @@
 #include <kulina.h>
-#include "topandbottomCallbacks.h"
+#include "textovervideoCallbacks.h"
 #include "kgutils.h"
 
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
@@ -39,9 +39,9 @@ static int FolderBrowser(char *FileName) {
 	}
 	return ret;
 }
- /* Callback for  TABinput1   */ 
+ /* Callback for  TOVinput1   */ 
 
-int topandbottomTABinput1callback(int cellno,int i,void *Tmp) {
+int textovervideoTOVinput1callback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -58,9 +58,9 @@ int topandbottomTABinput1callback(int cellno,int i,void *Tmp) {
   return ret;
 }
 
- /* Callback for  TABinput1browse   */ 
+ /* Callback for  TOVinput1browse   */ 
 
-int topandbottomTABinput1browsecallback(int butno,int i,void *Tmp) {
+int textovervideoTOVinput1browsecallback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -75,28 +75,28 @@ int topandbottomTABinput1browsecallback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   DIT *T,*TO;
   char FileName[500],OutFile[500];;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"TABinput1");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"TOVinput1");
   FileName[0]='\0';
   if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
   kgUpdateWidget(T);
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"TABout");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"TOVout");
   MakeNewFileName(FileName,OutFile);
   kgSetString(TO,0,OutFile);
   kgUpdateWidget(TO);
   kgUpdateOn(Tmp);
   return ret;
 }
-void  topandbottomTABinput1browseinit (DIN *B,void *ptmp) {
+void  textovervideoTOVinput1browseinit (DIN *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
 
- /* Callback for  TABinput2   */ 
+ /* Callback for  TOVinput2   */ 
 
-int topandbottomTABinput2callback(int cellno,int i,void *Tmp) {
+int textovervideoTOVinput2callback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -113,9 +113,9 @@ int topandbottomTABinput2callback(int cellno,int i,void *Tmp) {
   return ret;
 }
 
- /* Callback for  TABinput2browse   */ 
+ /* Callback for  TOVinput2browse   */ 
 
-int topandbottomTABinput2browsecallback(int butno,int i,void *Tmp) {
+int textovervideoTOVinput2browsecallback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -130,7 +130,7 @@ int topandbottomTABinput2browsecallback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   DIT *T,*TO;
   char FileName[500],OutFile[500];;
-  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"TABinput2");
+  T = (DIT *)kgGetNamedWidget(Tmp,(char *)"TOVinput2");
   FileName[0]='\0';
   if(!FolderBrowser(FileName))return 0;
   kgSetString(T,0,FileName);
@@ -138,14 +138,14 @@ int topandbottomTABinput2browsecallback(int butno,int i,void *Tmp) {
   kgUpdateOn(Tmp);
   return ret;
 }
-void  topandbottomTABinput2browseinit (DIN *B,void *ptmp) {
+void  textovervideoTOVinput2browseinit (DIN *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
 
-int MakeVideoTopBottom(char *infile1,char *infile2,char *outfile,DII *I) {
+int MakeTextOverVideo(char *infile1,char *infile2,char *outfile,DII *I) {
 
 
   int Xres1,Yres1,Xres2,Yres2,Mx,My;
@@ -217,9 +217,9 @@ int MakeVideoTopBottom(char *infile1,char *infile2,char *outfile,DII *I) {
   return 1;
 }
 
- /* Callback for  TABgo   */ 
+ /* Callback for  TOVgo   */ 
 
-int topandbottomTABgocallback( int butno,int i,void *Tmp) {
+int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -233,15 +233,15 @@ int topandbottomTABgocallback( int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
-  DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"TABinput1");
-  DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"TABinput2");
-  DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"TABout");
-  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"TABIbox");
+  DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVinput1");
+  DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVinput2");
+  DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVout");
+  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"TOVIbox");
   char infile1[300],infile2[300],outfile[300],Pinfile1[300],Pinfile2[300];
   char Tfolder[30],buff[200];
   MEDIAINFO *mt1,*mt2;
   float tsec1,tsec2;
-  Type = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TABradio"));
+  Type = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVradio"));
   strcpy(infile1,kgGetString(T,0));
   strcpy(infile2,kgGetString(TI,0));
   strcpy(outfile,kgGetString(TO,0));
@@ -255,9 +255,11 @@ int topandbottomTABgocallback( int butno,int i,void *Tmp) {
   switch(Type) {
     case 1:
     default:
-      MakeVideoTopBottom(infile1,infile2,outfile,I);
+      MakeTextOverVideo(infile1,infile2,outfile,I);
     break;
     case 2:
+      sprintf(buff,"!c01Top First:\n");
+      kgWrite(I,buff);
       sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
       kgWrite(I,buff);
       remove(Pinfile1);
@@ -298,7 +300,7 @@ int topandbottomTABgocallback( int butno,int i,void *Tmp) {
         sleep(5);
         return 1;
       }
-      MakeVideoTopBottom(Pinfile1,Pinfile2,outfile,I);
+      MakeTextOverVideo(Pinfile1,Pinfile2,outfile,I);
     break;
     case 3:
       sprintf(buff,"!c01Bottom First:\n");
@@ -341,7 +343,7 @@ int topandbottomTABgocallback( int butno,int i,void *Tmp) {
         sleep(5);
         return 1;
       }
-      MakeVideoTopBottom(Pinfile1,Pinfile2,outfile,I);
+      MakeTextOverVideo(Pinfile1,Pinfile2,outfile,I);
     break;
   }
   free(mt1);
@@ -349,9 +351,9 @@ int topandbottomTABgocallback( int butno,int i,void *Tmp) {
   kgCleanDir(Tfolder);
   return ret;
 }
- /* Callback for  TABgo   */ 
+ /* Callback for  TOVgo   */ 
 
-int topandbottomTABgocallback_org( int butno,int i,void *Tmp) {
+int textovervideoTOVgocallback_org( int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -364,11 +366,11 @@ int topandbottomTABgocallback_org( int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
-  DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"TABinput1");
-  DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"TABinput2");
-  DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"TABout");
+  DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVinput1");
+  DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVinput2");
+  DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVout");
   char buff[500];
-  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"TABIbox");
+  DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"TOVIbox");
   sprintf (buff,"Processing Side by Side..\n");
   kgWrite(I,buff);
   ret =0;
@@ -379,16 +381,16 @@ int topandbottomTABgocallback_org( int butno,int i,void *Tmp) {
   RunAndMonitor(buff);
   return ret;
 }
-void  topandbottomTABgoinit (DIL *B,void *ptmp) {
+void  textovervideoTOVgoinit (DIL *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
 
- /* Callback for  TABout   */ 
+ /* Callback for  TOVout   */ 
 
-int topandbottomTABoutcallback(int cellno,int i,void *Tmp) {
+int textovervideoTOVoutcallback(int cellno,int i,void *Tmp) {
   /************************************************* 
    cellno: current cell counted along column strting with 0 
            ie 0 to (nx*ny-1) 
@@ -405,9 +407,9 @@ int topandbottomTABoutcallback(int cellno,int i,void *Tmp) {
   return ret;
 }
 
- /* Callback for  TABOutbrowse   */ 
+ /* Callback for  TOVOutbrowse   */ 
 
-int topandbottomTABOutbrowsecallback(int butno,int i,void *Tmp) {
+int textovervideoTOVOutbrowsecallback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -424,19 +426,19 @@ int topandbottomTABOutbrowsecallback(int butno,int i,void *Tmp) {
   FileName[0]='\0';
   if(!kgFolderBrowser(Tmp,10,10,FileName,"*"))return 0;
   DIT *TO;
-  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"TABout");
+  TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"TOVout");
   kgSetString(TO,0,FileName);
   kgUpdateWidget(TO);
   kgUpdateOn(Tmp);
   return ret;
 }
-void  topandbottomTABOutbrowseinit (DIN *B,void *ptmp) {
+void  textovervideoTOVOutbrowseinit (DIN *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
-int topandbottomSetup(void *Tmp,void *args) {
+int textovervideoSetup(void *Tmp,void *args) {
   /*********************************** 
     args :  Pointer to args  
    ***********************************/ 
@@ -445,7 +447,7 @@ int topandbottomSetup(void *Tmp,void *args) {
   return 1;
 }
  
-void * topandbottomCleanDia(void *args) {
+void * textovervideoCleanDia(void *args) {
   /*********************************** 
     args :  Pointer to args  
    ***********************************/ 
@@ -456,12 +458,12 @@ void * topandbottomCleanDia(void *args) {
 }
  
  
-void *  topandbottomAction(void *Tmp,void *Args) {
+void *  textovervideoAction(void *Tmp,void *Args) {
   return NULL;
 } 
  
  
-int   topandbottomOn(void *itmp) {
+int   textovervideoOn(void *itmp) {
   DIAINTR * Dt = (DIAINTR *) itmp;
   if(Dt == NULL ) Dt = (DIAINTR *)It;
   if(Dt != NULL) {
@@ -472,7 +474,7 @@ int   topandbottomOn(void *itmp) {
   return 0;
 } 
  
-int   topandbottomOff(void *itmp) {
+int   textovervideoOff(void *itmp) {
   DIAINTR * Dt = (DIAINTR *) itmp;
   if(Dt == NULL ) Dt = (DIAINTR *)It;
   if(Dt != NULL) {
@@ -491,33 +493,33 @@ static char *GetPointer(char *str) {
 } 
  
  
-void * topandbottomInterface(void *args,void *rets) {
+void * textovervideoInterface(void *args,void *rets) {
   /*********************************** 
    ***********************************/ 
   DIAINTR *it= (DIAINTR *)malloc(sizeof(DIAINTR));
   it->GrpId=0;
   // filled by MakeGroup  it->xsh=0;
   it->ysh=0;
-  it->RunDia = Runtopandbottom;
-  it->MakeGroup = MaketopandbottomGroup;
-  it->Title = GetPointer((char *)"topandbottom");
+  it->RunDia = Runtextovervideo;
+  it->MakeGroup = MaketextovervideoGroup;
+  it->Title = GetPointer((char *)"textovervideo");
   it->Help = GetPointer( (char *)"No help yet, request");
-  it->Action = topandbottomAction;
-  it->Settings = topandbottomSetup;
-  it->Cleanup  = topandbottomCleanDia;
+  it->Action = textovervideoAction;
+  it->Settings = textovervideoSetup;
+  it->Cleanup  = textovervideoCleanDia;
   if(args != NULL) Args=args;
   if(rets != NULL) Rets=rets;
   it->args = Args;
   it->rets = Rets;
-  it->SwitchOn = topandbottomOn;
-  it->SwitchOff = topandbottomOff;
+  it->SwitchOn = textovervideoOn;
+  it->SwitchOff = textovervideoOff;
   it->Dtmp = NULL; // fiiled by MakeGroup 
   It = it;
   return it;
 }
  
  
-int topandbottomTABradiocallback(int item,int i,void *Tmp) {
+int textovervideoTOVradiocallback(int item,int i,void *Tmp) {
   /*********************************** 
     item : selected item (1 to max_item)  not any specific relevence
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -533,10 +535,51 @@ int topandbottomTABradiocallback(int item,int i,void *Tmp) {
   th = (ThumbNail **) R->list;
   return ret;
 }
-void  topandbottomTABradioinit (DIRA *R,void *ptmp) {
+void  textovervideoTOVradioinit (DIRA *R,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 }
-int topandbottominit(void *Tmp) {
+int textovervideoTOBinput1browsecallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  switch(butno) {
+    case 1: //  Browse 
+      break;
+  }
+  return ret;
+}
+void  textovervideoTOBinput1browseinit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
+}
+int textovervideoTOBinput2callback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  return ret;
+}
+int textovervideoinit(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
@@ -549,7 +592,7 @@ int topandbottominit(void *Tmp) {
  /* pt[0] is inputs, given by caller */
   return ret;
 }
-int topandbottomcleanup(void *Tmp) {
+int textovervideocleanup(void *Tmp) {
   /* you add any cleanup/mem free here */
   /*********************************** 
     Tmp :  Pointer to DIALOG  
@@ -563,7 +606,7 @@ int topandbottomcleanup(void *Tmp) {
  /* pt[0] is inputs, given by caller */
   return ret;
 }
-int Modifytopandbottom(void *Tmp,int GrpId) {
+int Modifytextovervideo(void *Tmp,int GrpId) {
   DIALOG *D;
   D = (DIALOG *)Tmp;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
@@ -607,7 +650,7 @@ int Modifytopandbottom(void *Tmp,int GrpId) {
   return GrpId;
 }
 
-int topandbottomCallBack(void *Tmp,void *tmp) {
+int textovervideoCallBack(void *Tmp,void *tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
     tmp :  Pointer to KBEVENT  
@@ -625,7 +668,7 @@ int topandbottomCallBack(void *Tmp,void *tmp) {
   }
   return ret;
 }
-int topandbottomResizeCallBack(void *Tmp) {
+int textovervideoResizeCallBack(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
@@ -644,7 +687,7 @@ int topandbottomResizeCallBack(void *Tmp) {
   kgRedrawDialog(D);
   return ret;
 }
-int topandbottomWaitCallBack(void *Tmp) {
+int textovervideoWaitCallBack(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
     Called while waiting for event  

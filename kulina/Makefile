@@ -12,6 +12,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 audiodelay.o audiodelayCallbacks.o \
 	 AudioTime.o AudioTimeCallbacks.o ToolBox.o ToolBoxCallbacks.o \
 	 HelperMsg.o \
+	 kgsld.o \
 	 AudioConvert.o AudioConvertCallbacks.o \
 	 Range.o RangeCallbacks.o \
 	 EnVolume.o EnVolumeCallbacks.o \
@@ -63,7 +64,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 VideoSpeed.o VideoSpeedCallbacks.o \
 	 VideoReverse.o VideoReverseCallbacks.o \
 	 AudioReverse.o AudioReverseCallbacks.o \
-	 topandbottom.o topandbottomCallbacks.o \
+	 textovervideo.o textovervideoCallbacks.o \
 	 Overlay.o OverlayCallbacks.o \
 	 Boverlay.o BoverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \
@@ -89,6 +90,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 AudioTime.o AudioTimeCallbacks.o \
 	 ToolBox.o ToolBoxCallbacks.o \
 	 HelperMsg.o \
+	 kgsld.o \
 	 AudioConvert.o AudioConvertCallbacks.o \
 	 Range.o RangeCallbacks.o \
 	 EnVolume.o EnVolumeCallbacks.o \
@@ -145,6 +147,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 VideoReverse.o VideoReverseCallbacks.o \
 	 AudioReverse.o AudioReverseCallbacks.o \
 	 topandbottom.o topandbottomCallbacks.o \
+	 textovervideo.o textovervideoCallbacks.o \
 	 Overlay.o OverlayCallbacks.o \
 	 Boverlay.o BoverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \
@@ -174,6 +177,8 @@ ControlsCallbacks.o	: ControlsCallbacks.c
 	 $(CC) -c ControlsCallbacks.c
 Rip.o	: Rip.c 
 	 $(CC) -c Rip.c
+kgsld.o	: kgsld.c 
+	 $(CC) -c kgsld.c
 Manage.o	: Manage.c 
 	 $(CC) -c Manage.c
 ManageCallbacks.o	: ManageCallbacks.c 
@@ -382,6 +387,8 @@ SidebySide.o		: SidebySide.c
 		 $(CC) -c SidebySide.c
 topandbottom.o		: topandbottom.c
 		 $(CC) -c topandbottom.c
+textovervideo.o		: textovervideo.c
+		 $(CC) -c textovervideo.c
 Overlay.o		: Overlay.c
 		 $(CC) -c Overlay.c
 Boverlay.o		: Boverlay.c

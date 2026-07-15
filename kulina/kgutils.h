@@ -38,6 +38,7 @@ int ChangeVideoFrate(char *infile,char *outfile,int fs,int Qty);
 int ConverToLibx265(char *infile,int Qty,char *outfile);
 int ConverToLibx264(char *infile,int Qty,char *outfile);
 int OverlayVideos(char *base,char *olay,int Qty,char *outfile);
+int MergeVideos(char *base,char *olay,float transparency,char *outfile);
 int OverlayToSize(int Bxres,int Byres,float fps,int Qty,int ir,int ig,int ib,char *olay,char *outfile) ;
 int RunOverlayToSize(int argc,char **argv);
 int CreateStillVideo(char *infile,float duration,float fps,char *outfile);
@@ -80,5 +81,6 @@ ThumbNail **DeleteItemsfromVlist(void) ;
 int VideoTopBottom(char *infile1,char *infile2,char *outfile);
 int VideoSideBySide(char *infile1,char *infile2,char *outfile);
 void *CreateColorImage(int Xsize,int Ysize,int red,int green,int blue);
+int kgwrite(int argc,char *argv[]);
 #endif
 
