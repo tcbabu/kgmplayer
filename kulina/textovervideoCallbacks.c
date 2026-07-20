@@ -247,8 +247,8 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
 
       sprintf(buff,"kgwrite -v%-s -o%-s %-s",infile1,outfile,infile2);
 //      runfunction(buff,ProcessPrint,kgwrite);
-      ExecFunction(buff,kgwrite);
-//      RunFunctionAndWait(buff,kgwrite);
+//      ExecFunction(buff,kgwrite);
+      RunFunctionAndWait(buff,kgwrite);
       kgWrite(I,buff);
 #endif
   return ret;

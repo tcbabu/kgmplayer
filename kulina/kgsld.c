@@ -2358,8 +2358,6 @@
       if ( i < 1 ) return;
       lng = strlen(buf)-1;
       if( buf[lng]< ' ') buf[lng]='\0';
-      printf("Inside mkpara buf: %s\n",buf);
-      fflush(stdout);
       wid = kgStringLength ( Img , buf ) ;
       max = i;
       buf [ i + 1 ] = '\0';
@@ -3118,8 +3116,6 @@
                       gap = tg * gfac;
 //                  if ( ngp >= 1 ) gap = gap + ( xdsp / ( ngp ) ) ;
                       if ( ngp >= 1 ) adjfact += ( xdsp / ( ngp ) ) ;
-                      printf("Adjfact = %f\n",adjfact);
-                      fflush(stdout);
 #endif
                       kgTextSize ( Img , th * hfac , tw * wfac+adjfact , gap ) ;
                       xdsp = kgStringLength ( Img , txt ) ;
@@ -3153,8 +3149,6 @@
                   yy = yy - sfac * space * th * Ad_vn;
                   Ad_vn = 1;
               }
-              printf("writng : %s\n",txt);
-              fflush(stdout);
               kgWriteText ( Img , txt ) ;
           };
       }
@@ -3492,11 +3486,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
            mklist ( fp , tmp , ofs , rmg , width ) ; 
            break; 
            case 'B': 
-           printf("Making SB...\n");
-           fflush(stdout);
            mkpara ( fp , tmp , ofs , rmg , 0 , width ) ; 
-           printf("SB over \n");
-           fflush(stdout);
            break; 
            case 'A':
            mkdotalign ( fp , tmp , ofs , rmg ) ;
@@ -3966,11 +3956,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       }
 #endif
       MakeImgFile ( Ostr.Vframes , PngFile , "png" ) ;
-      printf ( "MSG: PngFile: %s\n" , PngFile ) ;
-      fflush(stdout);
       kgWriteImage ( Png , PngFile ) ;
       kgFreeImage ( Png ) ;
-      printf("MSG: Created %s\n",PngFile);
+      printf("MSG: Created %s\r",PngFile);
       fflush(stdout);
   }
   static int MakeScrollFrames ( void *Bimg , float wxl , \
@@ -4022,8 +4010,8 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           kgWriteImage ( Png , PngFrame ) ;
           kgFreeImage ( Png ) ;
           per = 100*(float)(j+1)/Frames;
-//          printf("MSG: Per: %f\n",per);
-          printf("MSG: %s %f\r",PngFrame,per);
+          printf("MSG: Per: %f\n",per);
+//          printf("MSG: %s %f\r",PngFrame,per);
           fflush(stdout);
           fprintf (stderr, "%s\r" , PngFrame ) ;
           fflush ( stdout ) ;
@@ -4087,7 +4075,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           fprintf (stderr, "%s\r" , PngFrame ) ;
           per = 100*(float)(j+1)/Frames;
           printf("MSG: Per: %f\n",per);
-          printf("MSG: %s %f\r",PngFrame,per);
+//          printf("MSG: %s %f\r",PngFrame,per);
           fflush(stdout);
           kgWriteImage ( Png , PngFrame ) ;
           kgFreeImage ( Png ) ;
@@ -4126,21 +4114,20 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
         int fcount=0,i=0,repeat=1,j=0,k=0;
         void *Img=NULL,*Bimg=NULL;
         char *Bkfile;
-        char TmpDir[300],Flname[300];;
+        char TmpDir[300],Flname[300],buff[100];
+        float per;
         char **Pngs;
         MakeTmpFolderInHome(TmpDir);
         rename(Ostr.Vframes,TmpDir);
-        printf("Inside: MargeWith... renamed\n");
-        fflush(stdout);
         Pngs = GetFileList(TmpDir,(char *)"*.png");
         i=0;
         if(Pngs== NULL) {
-          printf("MSG: Failed to Images\n");
+          printf("MSG: Failed to make Images\n");
           fflush(stdout);
           return 0;
         }
         while(Pngs[i]!= NULL){
-          printf("MSG: File : %s\n",Pngs[i]);
+          printf("MSG: File : %s\r",Pngs[i]);
           fflush(stdout);
           i++;
         }
@@ -4150,19 +4137,21 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
         i=0;
         k=1;
         while(Pngs[i]!= NULL) {
-          printf("MSG: !c06Processing %s\n",Pngs[i]);
+          printf("MSG: !c06Processing %s\r",Pngs[i]);
           fflush(stdout);
           Img = kgGetImage(Pngs[i]);
+            printf("MSG: Merging Images\n");
+            fflush(stdout);
           for(j=0;j<repeat;j++) {
+              per = (float)j/repeat*100;
+            sprintf(buff,"MSG: Per: %.3f\n",per);
+            printf("%s",buff);
+            fflush(stdout);
             Bkfile = GetBkgrImage();
             Bimg = kgGetImage(Bkfile);
             if(Bimg==NULL) break;
-            printf("Merging Images\n");
-            fflush(stdout);
             kgMergeImages(Bimg,Img,0,0);
             sprintf(Flname,"%-s/Frames%06d.png",Ostr.Vframes,k);
-            printf("Flname: %s\n",Flname);
-            fflush(stdout);
             k++;
             kgWriteImage(Bimg,Flname);
             kgFreeImage(Bimg);
@@ -4209,11 +4198,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       if ( f21 != NULL ) {
           int NewPage = 0;
           kgTextSize ( Img , th , tw , tg ) ;
-          printf("Calling prepro\n");
-          fflush(stdout);
           preprocess ( f21 ) ;
-          printf(" prepro OVER\n");
-          fflush(stdout);
 	  /*
 	   * Need a relook on the following line
 	   * to check whether everything need to
@@ -4566,11 +4551,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           }
           fclose ( f23 ) ;
           if ( iskip <= 0 ) {
-          printf ("Going for read_txt\n");
-          fflush(stdout);
               read_txt ( TEMP_FILE , ofs , yy - Top_skip ) ;
-          printf ("Done read_txt\n");
-          fflush(stdout);
               iskip = 0;
               } else {
               iskip--;
@@ -4579,8 +4560,6 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           yy = yyl;
           rmg = rmgl;
           if ( np < stpage ) goto l10;
-          printf ("Going fot printing\n");
-          fflush(stdout);
 #if 0
           kgViewport ( Img , 0. , 0. , 1. , 1. ) ;
 #endif
@@ -4641,12 +4620,12 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           }
           if ( Scroll ) {
               if ( RIGHT_MAR < 220 ) {
-                  printf ( "Scroll A4\n" ) ;
+                  printf ( "MSG: Scroll A4\n" ) ;
                   fflush ( stdout ) ;
                   MakeScrollA4Frames ( Sbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
               }
               else {
-                  printf ( "Scroll LandScape\n" ) ;
+                  printf ( "MSG: Scroll LandScape\n" ) ;
                   fflush ( stdout ) ;
                   MakeScrollFrames ( Sbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
               }
@@ -4768,7 +4747,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       kgUserFrame ( Img , 0. , -127. , 297. , 170. ) ;
       Reset_for_tp ( xp , yp ) ;
       strcpy ( flname , Ostr.TextFile ) ;
-      printf ( "Calling Print_process: %s\n",flname    ) ;
+      printf ( "MSG: Calling Print_process: %s\n",flname    ) ;
       fflush(stdout);
       print_process ( flname , 1 ) ;
       kgCloseGph ( Img ) ;
@@ -4830,7 +4809,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
               Ostr.duration = mpt->TotSec;
               Ostr.fps = mpt->fps;
               Ostr.Nf = ( int ) ( Ostr.duration*Ostr.fps+0.1 ) ;
-              printf("Fps = %f Nf= %d\n",Ostr.fps,Ostr.Nf );
+              printf("MSG: Fps = %f Nf= %d\n",Ostr.fps,Ostr.Nf );
               fflush(stdout);
               fprintf(stderr,"Vxres:Vyres %d:%d\n",Ostr.Vxres,Ostr.Vyres);
               free ( mpt ) ;
@@ -5010,10 +4989,10 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
 #endif
       printf("MSG: Joining... \n",ImgName);
       if(Ostr.Video) {
-         CreateImagesVideo(Imgs,(int)(Ostr.fps),Ostr.ListFile);
+         CreateImagesVideo(Imgs,(Ostr.fps),Ostr.ListFile);
          OverlayVideos(Ostr.VideoFile,Ostr.ListFile,1,Ostr.Output);
       }
-      else CreateImagesVideo(Imgs,(int)(Ostr.fps),Ostr.Output); 
+      else CreateImagesVideo(Imgs,(Ostr.fps),Ostr.Output); 
 #endif
       if(Ostr.Preserve == 0)kgCleanDir(Ostr.Vframes); 
       kgCleanDir(Ostr.Folder);

@@ -1504,7 +1504,7 @@ int ExecFunction(char *job,int (*function)(int,char **)){
    fflush(stderr);
    return 1;
 }
-  int CreateImagesVideo ( char **L,int fps , char *Outfile ) {
+  int CreateImagesVideo ( char **L,float  fps , char *Outfile ) {
 /* images must be of same size */
       char Folder [ 500 ]  , Vname [ 500 ] ;
       int id ;

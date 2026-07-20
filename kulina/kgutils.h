@@ -3,7 +3,7 @@
 #ifndef D_MINFO
 #include "mediainfo.h"
 #endif
-int CreateImagesVideo ( char **L ,int fps,char *Output);
+int CreateImagesVideo ( char **L ,float fps,char *Output);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int ExecFunction(char *job,int (*function)(int,char **));
 int runfunctionbkgr(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
