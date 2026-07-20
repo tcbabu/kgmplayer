@@ -865,7 +865,7 @@ static ExceptionInfo exception;
 //  resize_image=ResizeImage(image,w,h,QuadraticFilter,1.2,Exception);
 //  resize_image=ResizeImage(image,w,h,BesselFilter,1.2,Exception);
       if ( Exception->severity != UndefinedException ) {
-          DestroyImageInfo ( Image_info ) ;
+          if(Image_info != NULL) DestroyImageInfo ( Image_info ) ;
           DestroyExceptionInfo ( Exception ) ;
           free ( Exception ) ;
           return NULL;
@@ -876,8 +876,8 @@ static ExceptionInfo exception;
       resize_image->background_color.green = 0;
       resize_image->background_color.opacity = 255;
       png = ( GMIMG * ) Malloc ( sizeof ( GMIMG ) ) ;
-      Image_info = CloneImageInfo ( ( ImageInfo * ) NULL ) ;
-      GetImageInfo ( Image_info ) ;
+//      Image_info = CloneImageInfo ( ( ImageInfo * ) NULL ) ;
+//      GetImageInfo ( Image_info ) ;
       png->image = resize_image;
       Image_info = CloneImageInfo ( ( ImageInfo * ) NULL ) ;
       GetImageInfo ( Image_info ) ;
@@ -3289,7 +3289,7 @@ int   kgGetImageLeftRight( void * img ,int *left,int *right ) {
           Rightskip++;
         }
       }
-//      else Leftskip=xsize -1 - (xsize/5.0 +0.5);
+      else Leftskip=xsize -1 - (xsize/5.0 +0.5);
       *left=Leftskip;
       *right=Rightskip;
       return 1;      
@@ -3335,7 +3335,7 @@ int   kgGetAlphaLeftRight( void * img ,int *left,int *right ) {
           Rightskip++;
         }
       }
-//      else Leftskip=xsize -1 - (xsize/5.0 +0.5);
+      else Leftskip=xsize -1 - (xsize/5.0 +0.5);
       *left=Leftskip;
       *right=Rightskip;
       return 1;      

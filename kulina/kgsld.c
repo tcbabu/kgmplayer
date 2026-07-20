@@ -1,3 +1,5 @@
+
+#define D_KULINA
 /*
   A4 Size :210 x 297  (8.27 x 11.69 inches)
   So it is this dimension in mm is used as the 
@@ -32,7 +34,9 @@
 #include <string.h>
 #include <kulina.h>
 #include <sys/stat.h>
+#ifdef D_KULINA
 #include "kgutils.h"
+#endif
 #define BLANK 31
 #define TX_CLR 15
 #define TX_FONT 0
@@ -42,7 +46,7 @@
   static char TEMP_FILE [ 100 ] ;
   static char Contents [ 100 ] ;
   static char OutFile [ 100 ] ;
-  static char GphFile [ 100 ] ;
+  static char GphFile [ 200 ] ;
   static void *Img = NULL;
   static void *Png = NULL;
   static char Bimg [ 300 ] ;
@@ -78,7 +82,7 @@
   static int txtg , ifac = 24;
   static int SpFac = 24 , Font = 0 , TxtClr = TX_CLR , TxtW = 16;;
   long tpattern = 15 , tfill = 1 , tbodr = 1 , \
-       tbkgr , tfnt = 0 , tcolor = TX_CLR , \
+  tbkgr , tfnt = 0 , tcolor = TX_CLR , \
   tbold = 1 , tangle = 0 , tslant = 0 , tuline = 0;
   static long ipattern , ifill , ibodr , ibkgr , ifnt , \
   icolor , ibold , iangle , islant , iuline;
@@ -92,7 +96,7 @@
   static float wxmin , wymin , wxmax , wymax;
   static int Xres , Yres;
   static char rstr [ 17 ] [ 5 ] = { "   i" , \
-       "  ii" , " iii" , "  iv" , "   v" , \
+      "  ii" , " iii" , "  iv" , "   v" , \
       "  vi" , " vii" , "viii" , "  ix" , "   x" , "  xi" , " xii" , \
   "xiii" , " xiv" , "  xv" , " xvi" , "xvii" };
   static float adjfact = 0.0 ;
@@ -110,31 +114,34 @@
   static int BkgrFill = 0;
   int stripblnk ( char * ) ;
   static int MakeImgFile ( char *Folder , char *Outfile , char *ext ) ;
-typedef struct _Ostr {
-  int Video;
-  int PsOut;
-  int Scroll;
-  int Preserve;
-  int Rgiven;
-  int Sxres;
-  int Syres;
-  int Vxres;
-  int Vyres;
-  int Bkgr;
-  int Red;
-  int Green;
-  int Blue;
-  int Nf;
-  float fps;
-  float ssec;
-  float duration;
-  char Output[300];
-  char Folder[300];
-  char Vframes[300];
-  char VideoFile[300];
-  char TextFile[300];
-} OSTR;
-OSTR Ostr;
+  char **GetFileList(char *Folder,char *Filter) ;
+  typedef struct _Ostr {
+      int Video;
+      int PsOut;
+      int Scroll;
+      int Preserve;
+      int Rgiven;
+      int Sxres;
+      int Syres;
+      int Vxres;
+      int Vyres;
+      int Bkgr;
+      int Red;
+      int Green;
+      int Blue;
+      int Nf;
+      float fps;
+      float ssec;
+      float duration;
+      char Output [ 300 ] ;
+      char Folder [ 300 ] ;
+      char Vframes [ 300 ] ;
+      char VideoFile [ 300 ] ;
+      char TextFile [ 300 ] ;
+      char ListFolder[300];
+      char ListFile[300];
+  } OSTR;
+  OSTR Ostr;
 #define MAX1 55
 #define MAX2 60
 #define FOREVER for(;;)
@@ -2341,16 +2348,22 @@ OSTR Ostr;
                   goto jmp;
               }
               if ( ( i > 1 ) && ( buf [ i - 1 ] != ' ' ) && ( ( buf [ i - 2 ] != '\\' ) \
-               || ( buf [ i - 1 ] != 'E' ) ) ) buf [ i++ ] = ' ';
+               || ( buf [ i - 1 ] != 'E' ) ) ) {buf [ i++ ] = ' ';buf[i]='\0';}
           }
           buf [ i++ ] = ch;
+          buf[i] ='\0';
           ch = Getc ( fp ) ;
       }
       jmp:
       if ( i < 1 ) return;
+      lng = strlen(buf)-1;
+      if( buf[lng]< ' ') buf[lng]='\0';
+      printf("Inside mkpara buf: %s\n",buf);
+      fflush(stdout);
       wid = kgStringLength ( Img , buf ) ;
       max = i;
       buf [ i + 1 ] = '\0';
+
       i = 0;
       oldi = 0;
       lngmax = MAX1;
@@ -2471,9 +2484,10 @@ OSTR Ostr;
                   goto jmp;
               }
               if ( ( i > 1 ) && ( buf [ i - 1 ] != ' ' ) && ( ( buf [ i - 2 ] != '\\' ) \
-               || ( buf [ i - 1 ] != 'E' ) ) ) buf [ i++ ] = ' ';
+               || ( buf [ i - 1 ] != 'E' ) ) ) {buf [ i++ ] = ' ';buf[i]='\0';}
           }
           buf [ i++ ] = ch;
+          buf[i]='\0';
           ch = Getc ( fp ) ;
       }
       jmp:
@@ -3104,7 +3118,8 @@ OSTR Ostr;
                       gap = tg * gfac;
 //                  if ( ngp >= 1 ) gap = gap + ( xdsp / ( ngp ) ) ;
                       if ( ngp >= 1 ) adjfact += ( xdsp / ( ngp ) ) ;
-//                  printf("Adjfact = %f\n",adjfact);
+                      printf("Adjfact = %f\n",adjfact);
+                      fflush(stdout);
 #endif
                       kgTextSize ( Img , th * hfac , tw * wfac+adjfact , gap ) ;
                       xdsp = kgStringLength ( Img , txt ) ;
@@ -3138,6 +3153,8 @@ OSTR Ostr;
                   yy = yy - sfac * space * th * Ad_vn;
                   Ad_vn = 1;
               }
+              printf("writng : %s\n",txt);
+              fflush(stdout);
               kgWriteText ( Img , txt ) ;
           };
       }
@@ -3464,6 +3481,73 @@ OSTR Ostr;
           fclose ( tmp ) ;
       }
   }
+void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
+                        int rmg,int Para_of,int width) {  
+   switch ( buf [ 2 ] ) 
+       { 
+           case 'P': 
+           mkpara ( fp , tmp , ofs , rmg , Para_of , width ) ; 
+           break; 
+           case 'L': 
+           mklist ( fp , tmp , ofs , rmg , width ) ; 
+           break; 
+           case 'B': 
+           printf("Making SB...\n");
+           fflush(stdout);
+           mkpara ( fp , tmp , ofs , rmg , 0 , width ) ; 
+           printf("SB over \n");
+           fflush(stdout);
+           break; 
+           case 'A':
+           mkdotalign ( fp , tmp , ofs , rmg ) ;
+           break;
+           case 'T': 
+           switch ( buf [ 3 ] ) { 
+               case '0':Tbl_type = 0;break; 
+               case '1':Tbl_type = 1;break; 
+               case '2':Tbl_type = 2;break; 
+               case '3':Tbl_type = 3;break; 
+               case '4':Tbl_type = 4;break; 
+               case '5':Tbl_type = 5;break; 
+               default :Tbl_type = 0;break; 
+           } 
+           mktbl ( fp , tmp , ofs , rmg , width ) ; 
+           break; 
+           case 'O': 
+           Para_of = scanint ( ( char * ) & buf [ 3 ] ) ; 
+           break; 
+           case 'R': 
+           R_N_no = 0; 
+           fclose ( tmp ) ; 
+           copy_refences ( DUMM_FIL ) ;
+           tmp = fopen ( DUMM_FIL , "a" ) ; 
+           break; 
+           case 'Y': 
+           Hypn = scanint ( ( char * ) & buf [ 3 ] ) ; 
+           break; 
+           case 'J': 
+           Rjust = scanint ( ( char * ) & buf [ 3 ] ) ; 
+           break; 
+           case 'N': 
+           F_N_no = scanint ( ( char * ) & buf [ 3 ] ) -1; 
+           break; 
+           case 'H': 
+           { 
+               int level = 0;
+               level = scanint ( ( char * ) & buf [ 3 ] ) ; 
+               if ( level > Hd_max ) Hd_max = level; 
+          /*fprintf(tmp,"$RL4\n");*/
+               fprintf ( tmp , "%s" , buf ) ;
+           } 
+           break; 
+           case 'E': 
+           fprintf ( tmp , "%s" , buf ) ;
+           break; 
+           default: 
+           return; 
+       } 
+       return;
+   }
   static void preprocess ( File * fp ) {
       FILE *tmp , *tmp1;
       float width , space = 2.1 , sp;
@@ -3482,7 +3566,8 @@ OSTR Ostr;
           if ( ( buf [ 0 ] == '$' ) ) {
               switch ( buf [ 1 ] ) {
                   case 'S':
-                  pro_para_list_table;
+//                  pro_para_list_table;
+                  ProcessParaListTable(fp,tmp,ofs,rmg,Para_of,width);
                   break;
                   case 'D':
                   pro_graphic_commands;
@@ -3766,7 +3851,7 @@ OSTR Ostr;
       if ( BkgrFill ) {
           void *Img = kgInitImage ( Ostr.Sxres , Ostr.Syres , 1 ) ;
           kgChangeColor ( Img , 501 , Ostr.Red , Ostr.Green , Ostr.Blue ) ;
-          kgBoxFill ( Img , 0 , 0 ,Ostr.Sxres , Ostr.Syres , 501 , 0 ) ;
+          kgBoxFill ( Img , 0 , 0 , Ostr.Sxres , Ostr.Syres , 501 , 0 ) ;
           Bfill = kgGetResizedImage ( Img ) ;
           kgCloseImage ( Img ) ;
       }
@@ -3775,10 +3860,12 @@ OSTR Ostr;
   void * GetBkgrImage ( ) {
       char Flname [ 300 ] ;
       static int i = 1;
-      sprintf ( Flname , "%-s/Frame_%06d.png" , Ostr.Folder, i++ ) ;
-      char *pt;
+      char *pt = NULL;
+      if ( Ostr.Video == 0 ) return pt;
+      sprintf ( Flname , "%-s/Frame_%06d.png" , Ostr.Folder , i++ ) ;
       pt = ( char * ) malloc ( strlen ( Flname ) +3 ) ;
       strcpy ( pt , Flname ) ;
+ //     printf ( "%s\n" , pt ) ;
       return pt;
   }
   static int MakePngImage ( void *Bimg , float wxl , \
@@ -3801,7 +3888,6 @@ OSTR Ostr;
 #endif
 //      printf("UF: %.2f %.2f %.2f %.2f\n",wxl,wyl,wxu,wyu);
       yup = wyu;
-      Bfill = GetBkgr ( ) ;
       kgUserFrame ( Img , wxl , ydown , wxu , wyu ) ;
       kgBackupGph ( Img , GphFile ) ;
       Pimg = kgInitImage ( Sxres , Syres , 4 ) ;
@@ -3809,12 +3895,13 @@ OSTR Ostr;
       kgImportGphFile ( Pimg , GphFile , wxl , ydown , wxu , wyu ) ;
       Png = kgGetResizedImage ( Pimg ) ;
       kgCloseImage ( Pimg ) ;
+      Bfill = GetBkgr ( ) ;
       if ( Bfill != NULL ) {
-          void *Dummy = kgCopyImage ( Bfill ) ;
-          kgMergeImages ( Dummy , Png , 0 , 0 ) ;
+          kgMergeImages ( Bfill , Png , 0 , 0 ) ;
           kgFreeImage ( Png ) ;
-          Png = Dummy;
+          Png = Bfill;
       }
+#if 0
       Bkimg = GetBkgrImage ( ) ;
       if ( Bkimg != NULL ) {
           void *Dummy = kgGetImage ( Bkimg ) ;
@@ -3825,11 +3912,12 @@ OSTR Ostr;
               free ( Bkimg ) ;
           }
       }
-      MakeImgFile ( PngFolder , PngFile , "png" ) ;
-      printf ( "PngFile: %s\n" , PngFile ) ;
+#endif
+      MakeImgFile ( Ostr.Vframes , PngFile , "png" ) ;
+      printf ( "MSG: PngFile: %s\n" , PngFile ) ;
       kgWriteImage ( Png , PngFile ) ;
       kgFreeImage ( Png ) ;
-      if ( Bfill != NULL ) kgFreeImage ( Bfill ) ;
+//      if ( Bfill != NULL ) kgFreeImage ( Bfill ) ;
   }
   static int MakePngA4Image ( void *Bimg , float wxl , \
   float wyl , float wxu , float wyu ) {
@@ -3852,7 +3940,6 @@ OSTR Ostr;
 #endif
 //      printf("UF: %.2f %.2f %.2f %.2f\n",wxl,wyl,wxu,wyu);
       yup = wyu;
-      Bfill = GetBkgr ( ) ;
       kgUserFrame ( Img , wxl , wyl , xright , wyu ) ;
       kgBackupGph ( Img , GphFile ) ;
       Pimg = kgInitImage ( Sxres , Syres , 4 ) ;
@@ -3860,12 +3947,13 @@ OSTR Ostr;
       kgImportGphFile ( Pimg , GphFile , wxl , wyl , xright , wyu ) ;
       Png = kgGetResizedImage ( Pimg ) ;
       kgCloseImage ( Pimg ) ;
+      Bfill = GetBkgr ( ) ;
       if ( Bfill != NULL ) {
-          void *Dummy = kgCopyImage ( Bfill ) ;
-          kgMergeImages ( Dummy , Png , 0 , 0 ) ;
+          kgMergeImages ( Bfill , Png , 0 , 0 ) ;
           kgFreeImage ( Png ) ;
-          Png = Dummy;
+          Png = Bfill;
       }
+#if 0
       Bkimg = GetBkgrImage ( ) ;
       if ( Bkimg != NULL ) {
           void *Dummy = kgGetImage ( Bkimg ) ;
@@ -3876,30 +3964,32 @@ OSTR Ostr;
               free ( Bkimg ) ;
           }
       }
-      MakeImgFile ( PngFolder , PngFile , "png" ) ;
-      printf ( "PngFile: %s\n" , PngFile ) ;
+#endif
+      MakeImgFile ( Ostr.Vframes , PngFile , "png" ) ;
+      printf ( "MSG: PngFile: %s\n" , PngFile ) ;
+      fflush(stdout);
       kgWriteImage ( Png , PngFile ) ;
       kgFreeImage ( Png ) ;
-      if ( Bfill != NULL ) kgFreeImage ( Bfill ) ;
+      printf("MSG: Created %s\n",PngFile);
+      fflush(stdout);
   }
   static int MakeScrollFrames ( void *Bimg , float wxl , \
   float wyl , float wxu , float wyu ) {
       int j;
-      float dx , fact;
+      float dx , fact,per;
       float ylow , yup , ydown;
       char PngFrame [ 50 ] ;
       void *Bfill = NULL , *Bkimg = NULL;
       ylow = wyl;
+      Frames = Ostr.Nf;
       if ( Frames < 0 ) Frames = 1;
-      kgCleanDir ( "Frames" ) ;
-      mkdir ( "Frames" , 0744 ) ;
       dx = ( wyu-ylow ) /Frames;
       dx = ( -Yend +wyu -wyl ) /Frames;
       ydown = -40;;
       yup = wyu;
-      Bfill = GetBkgr ( ) ;
-      Frames = Ostr.Nf;
-      printf("Frames;%d\n",Frames);
+      fprintf (stderr, "Frames;%d\n" , Frames ) ;
+      printf("MSG: !c06Total Frames: %d\n",Frames);
+      fflush(stdout);
       for ( j = 0;j < Frames;j++ ) {
           Pimg = kgInitImage ( Sxres , Syres , 4 ) ;
           kgUserFrame ( Pimg , wxl , ydown , wxu , yup ) ;
@@ -3909,57 +3999,61 @@ OSTR Ostr;
           Png = kgGetResizedImage ( Pimg ) ;
 //        Png = kgGetSharpImage ( Pimg ) ;
           kgCloseImage ( Pimg ) ;
+          Bfill = GetBkgr ( ) ;
           if ( Bfill != NULL ) {
-              void *Dummy = kgCopyImage ( Bfill ) ;
-              kgMergeImages ( Dummy , Png , 0 , 0 ) ;
+              kgMergeImages ( Bfill , Png , 0 , 0 ) ;
               kgFreeImage ( Png ) ;
-              Png = Dummy;
+              Png = Bfill;
           }
-          if(Ostr.Video) {
-          Bkimg = GetBkgrImage ( ) ;
-          if ( Bkimg != NULL ) {
-              void *Dummy = kgGetImage ( Bkimg ) ;
-              if ( Dummy == NULL ) break;
-              kgMergeImages ( Dummy , Png , 0 , 0 ) ;
-              kgFreeImage ( Png ) ;
-              Png = Dummy;
-              free ( Bkimg ) ;
-          }
-          else break;
+          if ( Ostr.Video ) {
+              Bkimg = GetBkgrImage ( ) ;
+              if ( Bkimg != NULL ) {
+                  void *Dummy = kgGetImage ( Bkimg ) ;
+                  if ( Dummy == NULL ) break;
+                  kgMergeImages ( Dummy , Png , 0 , 0 ) ;
+                  kgFreeImage ( Png ) ;
+                  Png = Dummy;
+                  free ( Bkimg ) ;
+              }
+              else break;
           }
 //          sprintf ( PngFrame , "Frames/Frame%-4.4d.png" , j+1 ) ;
-          sprintf ( PngFrame , "%-s/Frame%-6.6d.png" , Ostr.Vframes,j+1 ) ;
+          sprintf ( PngFrame , "%-s/Frame%-6.6d.png" , Ostr.Vframes , j+1 ) ;
           kgWriteImage ( Png , PngFrame ) ;
           kgFreeImage ( Png ) ;
-          printf ( "%s\r" , PngFrame ) ;
+          per = 100*(float)(j+1)/Frames;
+//          printf("MSG: Per: %f\n",per);
+          printf("MSG: %s %f\r",PngFrame,per);
+          fflush(stdout);
+          fprintf (stderr, "%s\r" , PngFrame ) ;
           fflush ( stdout ) ;
           yup -= dx;
           ydown -= dx;
       }
       printf ( "\n" ) ;
-      if ( Bfill != NULL ) kgFreeImage ( Bfill ) ;
   }
   static int MakeScrollA4Frames ( void *Bimg , float wxl , \
   float wyl , float wxu , float wyu ) {
       int j;
-      float dx , fact;
+      float dx , fact,per;
       float ylow , yup , ydown , xright = 210;
       char PngFrame [ 50 ] ;
       void *Bfill = NULL , *Bkimg = NULL;
       ylow = wyl;
       fact = ( float ) Syres/ ( float ) Sxres;
+      Frames = Ostr.Nf;
       if ( Frames < 0 ) Frames = 1;
-      kgCleanDir ( "Frames" ) ;
-      mkdir ( "Frames" , 0744 ) ;
       printf ( "Yend = %f\n" , Yend ) ;
       dx = ( -Yend +wyu -wyl ) /Frames;
 //      kgUserFrame ( Img , wxl , wyl, wxu , wyu ) ;
 //      kgBackupGph ( Img , GphFile ) ;
       yup = wyu;
-      Bfill = GetBkgr ( ) ;
-      Frames = Ostr.Nf;
+//      Bfill = GetBkgr ( ) ;
+      fprintf(stderr,"Fames= %d\n",Frames);
+      fprintf (stderr, "Frames;%d\n" , Frames ) ;
+      printf("MSG: !c06Total Frames: %d\n",Frames);
       for ( j = 0;j < Frames;j++ ) {
-          Pimg = kgInitImage ( Sxres , Syres , 4 ) ;
+          Pimg = kgInitImage ( Ostr.Sxres , Ostr.Syres , 4 ) ;
           kgUserFrame ( Pimg , wxl , ylow , xright , yup ) ;
           kgUserFrame ( Img , wxl , ylow , xright , yup ) ;
           kgBackupGph ( Img , GphFile ) ;
@@ -3967,35 +4061,120 @@ OSTR Ostr;
           Png = kgGetResizedImage ( Pimg ) ;
 //          Png = kgGetSharpImage ( Pimg ) ;
           kgCloseImage ( Pimg ) ;
+          Bfill = GetBkgr ( ) ;
           if ( Bfill != NULL ) {
-              void *Dummy = kgCopyImage ( Bfill ) ;
-              kgMergeImages ( Dummy , Png , 0 , 0 ) ;
+          //    void *Dummy = kgCopyImage ( Bfill ) ;
+          // Freeing Dummy creates problem;
+              kgMergeImages ( Bfill , Png , 0 , 0 ) ;
               kgFreeImage ( Png ) ;
-              Png = Dummy;
+              Png = Bfill;
           }
-          if(Ostr.Video) {
-          Bkimg = GetBkgrImage ( ) ;
-          if ( Bkimg != NULL ) {
-              void *Dummy = kgGetImage ( Bkimg ) ;
-              if ( Dummy == NULL ) break;
-              kgMergeImages ( Dummy , Png , 0 , 0 ) ;
-              kgFreeImage ( Png ) ;
-              Png = Dummy;
-              free ( Bkimg ) ;
+          if ( Ostr.Video ) {
+              Bkimg = GetBkgrImage ( ) ;
+              if ( Bkimg != NULL ) {
+#if 1
+                  void *Dummy = kgGetImage ( Bkimg ) ;
+                  if ( Dummy == NULL ) break;
+                  kgMergeImages ( Dummy , Png , 0 , 0 ) ;
+                  kgFreeImage ( Png ) ;
+                  Png = Dummy;
+#endif
+                  free ( Bkimg ) ;
+              }
+              else break;
           }
-          else break;
-          }
-          sprintf ( PngFrame , "%-s/Frame%-6.6d.png" , Ostr.Vframes,j+1 ) ;
-          printf ( "%s\r" , PngFrame ) ;
-          fflush ( stdout ) ;
+          sprintf ( PngFrame , "%-s/Frame%-6.6d.png" , Ostr.Vframes , j+1 ) ;
+          fprintf (stderr, "%s\r" , PngFrame ) ;
+          per = 100*(float)(j+1)/Frames;
+          printf("MSG: Per: %f\n",per);
+          printf("MSG: %s %f\r",PngFrame,per);
+          fflush(stdout);
           kgWriteImage ( Png , PngFrame ) ;
           kgFreeImage ( Png ) ;
           yup -= dx;
           ylow -= dx;
       }
       printf ( "\n" ) ;
-      if ( Bfill != NULL ) kgFreeImage ( Bfill ) ;
   }
+
+#ifndef D_KULINA
+  static int FileStat ( char *flname ) {
+      int ret;
+      struct stat buff;
+      ret = stat ( flname , & buff ) ;
+      if ( ret < 0 ) return 0;
+      else return 1;
+  }
+#endif
+#ifndef D_KULINA
+  int MakeTmpFolderInHome ( char *Tfolder ) {
+      int Fstat = 0;
+      int id = 0;
+      sprintf ( Tfolder , "%-s/%-d_%-3.3d" , getenv ( "HOME" ) , getpid ( ) , id ) ;
+      while ( FileStat ( Tfolder ) ) {
+          id++;
+          sprintf ( Tfolder , "%-s/%-d_%-3.3d" , getenv ( "HOME" ) , getpid ( ) , id ) ;
+      }
+      mkdir ( Tfolder , 0700 ) ;
+      printf ( "Created: %s\n" , Tfolder ) ;
+      Fstat = 1;
+      return Fstat;
+  }
+#endif
+//#ifdef D_KULINA
+      int MergeWithVideoFrames() {
+        int fcount=0,i=0,repeat=1,j=0,k=0;
+        void *Img=NULL,*Bimg=NULL;
+        char *Bkfile;
+        char TmpDir[300],Flname[300];;
+        char **Pngs;
+        MakeTmpFolderInHome(TmpDir);
+        rename(Ostr.Vframes,TmpDir);
+        printf("Inside: MargeWith... renamed\n");
+        fflush(stdout);
+        Pngs = GetFileList(TmpDir,(char *)"*.png");
+        i=0;
+        if(Pngs== NULL) {
+          printf("MSG: Failed to Images\n");
+          fflush(stdout);
+          return 0;
+        }
+        while(Pngs[i]!= NULL){
+          printf("MSG: File : %s\n",Pngs[i]);
+          fflush(stdout);
+          i++;
+        }
+        fcount=i;       
+        repeat = Ostr.Nf/fcount;
+        mkdir(Ostr.Vframes,0700);
+        i=0;
+        k=1;
+        while(Pngs[i]!= NULL) {
+          printf("MSG: !c06Processing %s\n",Pngs[i]);
+          fflush(stdout);
+          Img = kgGetImage(Pngs[i]);
+          for(j=0;j<repeat;j++) {
+            Bkfile = GetBkgrImage();
+            Bimg = kgGetImage(Bkfile);
+            if(Bimg==NULL) break;
+            printf("Merging Images\n");
+            fflush(stdout);
+            kgMergeImages(Bimg,Img,0,0);
+            sprintf(Flname,"%-s/Frames%06d.png",Ostr.Vframes,k);
+            printf("Flname: %s\n",Flname);
+            fflush(stdout);
+            k++;
+            kgWriteImage(Bimg,Flname);
+            kgFreeImage(Bimg);
+            free(Bkfile);
+          }
+          kgFreeImage(Img);
+          i++;          
+        }
+        kgCleanDir(TmpDir);
+        return 1;
+      }
+//#endif
   static int print_process ( char *flname , int Ponly ) {
       static char mag [ 16 ] = { "            " } , pageno [ 5 ] = { "1  " };
       int ch;
@@ -4016,6 +4195,7 @@ OSTR Ostr;
       int txth,txtw;
       int txtg,ifac=24;
 */
+      int Vscroll = 1;
       float pglimit_bk;
       short Col_shft = 0;
       char ftnotes [ 16 ] = { "Foot_NoT.ZzZ" };
@@ -4029,7 +4209,11 @@ OSTR Ostr;
       if ( f21 != NULL ) {
           int NewPage = 0;
           kgTextSize ( Img , th , tw , tg ) ;
+          printf("Calling prepro\n");
+          fflush(stdout);
           preprocess ( f21 ) ;
+          printf(" prepro OVER\n");
+          fflush(stdout);
 	  /*
 	   * Need a relook on the following line
 	   * to check whether everything need to
@@ -4105,6 +4289,7 @@ OSTR Ostr;
                   break;
                   case 'P':
                   if ( pl != 0. ) {
+                      Vscroll =0;
                       if ( col_num == Columns ) goto l150;
                       else {
                           pglimit = pl - fac * Ad_vn * 0.8;
@@ -4123,6 +4308,7 @@ OSTR Ostr;
                   switch ( ln [ 2 ] ) {
                       case 'E':
                       pglimit = ( float ) scanint ( ( char * ) & ln [ 3 ] ) ;
+                      if ( pglimit > 268 ) Vscroll = 0;
                       pglimit -= Top_skip;
                       pglimit = ( pglimit / 5.62 ) ;
                       pglimit_bk = pglimit;
@@ -4380,7 +4566,11 @@ OSTR Ostr;
           }
           fclose ( f23 ) ;
           if ( iskip <= 0 ) {
+          printf ("Going for read_txt\n");
+          fflush(stdout);
               read_txt ( TEMP_FILE , ofs , yy - Top_skip ) ;
+          printf ("Done read_txt\n");
+          fflush(stdout);
               iskip = 0;
               } else {
               iskip--;
@@ -4389,6 +4579,8 @@ OSTR Ostr;
           yy = yyl;
           rmg = rmgl;
           if ( np < stpage ) goto l10;
+          printf ("Going fot printing\n");
+          fflush(stdout);
 #if 0
           kgViewport ( Img , 0. , 0. , 1. , 1. ) ;
 #endif
@@ -4420,32 +4612,54 @@ OSTR Ostr;
                   system ( ln ) ;
               }
           }
-          printf("PngOut:Scroll: %d %d %d\n",PngOut,Scroll,RIGHT_MAR );
-          fflush(stdout);
+          printf ( "PngOut:Scroll: %d %d %d\n" , PngOut , Scroll , RIGHT_MAR ) ;
+          printf ("MSG: !c01Vscroll = %d\n",Vscroll);
+          fflush ( stdout ) ;
+          PngOut =1;
+          Scroll =0;
+          if ( Vscroll ) {
+              PngOut = 0;
+              Scroll = 1;
+          }
+          
           if ( PngOut ) {
 //              MakePngImage ( Pbkimg , wxl , wyl , wxu , wyu ) ;
               if ( RIGHT_MAR < 220 ) {
+                  printf("MSG: PngA4\n");
+                  fflush(stdout);
+                  sleep(5);
                   MakePngA4Image ( Pbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
+                  sleep(5);
               }
               else {
+                  printf("MSG: PngLandscaoe\n");
+                  fflush(stdout);
+                  sleep(5);
                   MakePngImage ( Pbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
+                  sleep(5);
               }
           }
           if ( Scroll ) {
               if ( RIGHT_MAR < 220 ) {
-                  printf("Scroll A4\n");
-                  fflush(stdout);
+                  printf ( "Scroll A4\n" ) ;
+                  fflush ( stdout ) ;
                   MakeScrollA4Frames ( Sbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
               }
               else {
-                  printf("Scroll LandScape\n");
-                  fflush(stdout);
+                  printf ( "Scroll LandScape\n" ) ;
+                  fflush ( stdout ) ;
                   MakeScrollFrames ( Sbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
               }
           }
           kgUserFrame ( Img , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
           if ( ! Finish && ( np < endpage ) ) goto l10;
           else {
+//#ifdef D_KULINA
+              if(Ostr.Video && PngOut) {
+                printf("MSG: Processing Video Frames\n");
+                MergeWithVideoFrames();
+              }
+//#endif
               remove ( Z_DU_ZZ ) ;
               remove ( TEMP_FILE ) ;
               return ( 0 ) ;
@@ -4491,7 +4705,7 @@ OSTR Ostr;
   static void ProcessTextDoc ( int argc , char *argv [ ] ) {
       int i , j , INPUT;
       static float xp [ 2 ] = { 0. , 297. } , yp [ 2 ] = { -127.0 , 170.0 };
-      char ch , flname [ 30 ] , *pt , ch1;
+      char ch , flname [ 300 ] , *pt , ch1;
       char Line [ 300 ] ;
       if ( TmpDir == NULL ) {
           TmpDir = kgMakeTmpDir ( ) ;
@@ -4503,13 +4717,13 @@ OSTR Ostr;
           sprintf ( GphFile , "%-s/GphFile" , TmpDir ) ;
       }
       if ( buf == NULL ) {
-          buf = ( char * ) malloc ( sizeof ( char ) * 50000L ) ;
+          buf = ( char * ) malloc ( sizeof ( char ) * 90000L ) ;
           if ( buf == NULL ) {
               printf ( " Memory allocation error \n" ) ;
               exit ( 0 ) ;
           }
       }
-      Buf = buf + 40000L;
+      Buf = buf + 50000L;
       tw = 2.81;
       th = 2.81;
       tg = 2*2.81 / 12.0;
@@ -4542,18 +4756,20 @@ OSTR Ostr;
       PsOut = Ostr.PsOut;
       Bkgr = Ostr.Bkgr;
       Scroll = Ostr.Scroll;
-      PngOut=0;
-      if((PsOut==0)){
-       if (Scroll==0) PngOut=1;
+      PngOut = 0;
+      if ( ( PsOut == 0 ) ) {
+          if ( Scroll == 0 ) PngOut = 1;
       }
-      printf("PsOut:PngOut:Scroll: %d %d %d\n",PsOut,PngOut,Scroll);
-      strcpy(PsFile,Ostr.Output);
+      printf ( "PsOut:PngOut:Scroll: %d %d %d\n" , PsOut , PngOut , Scroll ) ;
+      strcpy ( PsFile , Ostr.Output ) ;
       if ( PsOut ) remove ( PsFile ) ;
-      Img = kgInitGph ( 960 , 720 ) ;
+//      Img = kgInitGph ( 960 , 720 ) ;
+      Img = kgInitGph ( 297, 297 ) ;
       kgUserFrame ( Img , 0. , -127. , 297. , 170. ) ;
       Reset_for_tp ( xp , yp ) ;
-      strcpy(flname,Ostr.TextFile);      
-      printf("Calling Print_process\n");
+      strcpy ( flname , Ostr.TextFile ) ;
+      printf ( "Calling Print_process: %s\n",flname    ) ;
+      fflush(stdout);
       print_process ( flname , 1 ) ;
       kgCloseGph ( Img ) ;
       kgCleanDir ( TmpDir ) ;
@@ -4561,15 +4777,6 @@ OSTR Ostr;
       TmpDir = NULL;
       return;
   }
-#if 0
-  static int FileStat ( char *flname ) {
-      int ret;
-      struct stat buff;
-      ret = stat ( flname , & buff ) ;
-      if ( ret < 0 ) return 0;
-      else return 1;
-  }
-#endif
   static int MakeImgFile ( char *Folder , char *Outfile , char *ext ) {
       int index , i;
       char buff [ 500 ] , *pt;
@@ -4588,155 +4795,228 @@ OSTR Ostr;
       strcpy ( Outfile , buff ) ;
       return 1;
   }
-  int ProcessArgs(char *argv[]){
-    char *apt;
-    int ch;
-    int i=1,j=0;
-    int error=1;
-    char buff[200];
-    
-    while(argv[i]!= NULL) {
-       printf("argv[%d]: %s\n",i,argv[i]);
-       fflush(stdout);
-       apt= argv[i];
-       i++;
-       ch = apt[0];
-       if ( ch != '-') {
-         if(error==0) {error=1;break;}
-         error =0;
-         printf("TextFile : %s\n",apt);
-         strcpy(Ostr.TextFile,apt);
-         continue;
-       }
-       ch=apt[1];
-       switch (ch) {
-         case 'v':
-           sscanf(apt+2,"%s",Ostr.VideoFile);
-           Ostr.Video=1;
-           Ostr.PsOut=0;
-#if 1
-           MEDIAINFO *mpt= GetMediaInfo(Ostr.Output);
-           Ostr.Vxres=mpt->Axres;
-           Ostr.Vyres=mpt->Ayres;
-           Ostr.duration = mpt->TotSec;
-           Ostr.fps = mpt->fps;
-           Ostr.Nf = (int)(Ostr.duration*Ostr.fps+0.1);
-           free(mpt);
+  int ProcessArgs ( char *argv [ ] ) {
+      char *apt;
+      int ch;
+      int i = 1 , j = 0;
+      int error = 1;
+      char buff [ 200 ] ;
+      while ( argv [ i ] != NULL ) {
+          apt = argv [ i ] ;
+          i++;
+          ch = apt [ 0 ] ;
+          if ( ch != '-' ) {
+              if ( error == 0 ) {error = 1;break;}
+              error = 0;
+              strcpy ( Ostr.TextFile , apt ) ;
+              printf("TextFile: %s\n",Ostr.TextFile );
+              continue;
+          }
+          ch = apt [ 1 ] ;
+          switch ( ch ) {
+              case 'v':
+              sscanf ( apt+2 , "%s" , Ostr.VideoFile ) ;
+              Ostr.Video = 1;
+              Ostr.PsOut = 0;
+#ifdef D_KULINA
+              MEDIAINFO *mpt = GetMediaInfo ( Ostr.VideoFile ) ;
+              if((mpt==NULL)||(mpt->Video==0)) {
+                     printf("%s not a video file\n", Ostr.VideoFile );
+                     return 0;
+              }
+              printf("Video file: %s\n",Ostr.VideoFile);
+              Ostr.Vxres = mpt->Axres;
+              Ostr.Vyres = mpt->Ayres;
+              Ostr.duration = mpt->TotSec;
+              Ostr.fps = mpt->fps;
+              Ostr.Nf = ( int ) ( Ostr.duration*Ostr.fps+0.1 ) ;
+              printf("Fps = %f Nf= %d\n",Ostr.fps,Ostr.Nf );
+              fflush(stdout);
+              fprintf(stderr,"Vxres:Vyres %d:%d\n",Ostr.Vxres,Ostr.Vyres);
+              free ( mpt ) ;
 #else
-           Ostr.Vxres=540;
-           Ostr.Vyres=960;
-           Ostr.fps=25.0;
-           Ostr.duration = 10;
-           Ostr.Nf = (int)(Ostr.duration*Ostr.fps+0.1);
+              Ostr.Vxres = 540;
+              Ostr.Vyres = 960;
+              Ostr.fps = 25.0;
+              Ostr.duration = 10;
+              Ostr.Nf = ( int ) ( Ostr.duration*Ostr.fps+0.1 ) ;
 #endif
-           if(Ostr.Sxres == 0) {
-             Ostr.Sxres= Ostr.Vxres;
-             Ostr.Syres= Ostr.Vyres;
-           }
-         break;
-         case 's':
-           sscanf(apt+2,"%s",buff);
-           j=0;
-           while(buff[j]>' ') {
-             if(buff[j]== ':') buff[j]=' ';
-             j++;
-           }           
-           sscanf(buff,"%d%d",&(Ostr.Sxres),&(Ostr.Syres));
-           Ostr.Rgiven=1;
-         break;
-         case 'o':
-           printf("Apt+2: %s\n",apt+2 );
-           fflush(stdout);
-           sscanf(apt+2,"%s",buff);
-           printf("Buff: %s\n",buff);
-           fflush(stdout);
-           strcpy(Ostr.Output,buff);
-         break;
-         case 'f':
-           sscanf(apt+2,"%s",buff);
-           strcpy(Ostr.Folder,buff);
-           Ostr.Preserve=1;
-         break;
-         case 't':
-           sscanf(apt+2,"%f",&(Ostr.ssec));
-           Ostr.Scroll=0;
-           Ostr.PsOut=0;
-         break;
-         case 'l':
-           sscanf(apt+2,"%f",&(Ostr.duration));
-           Ostr.Scroll=0;
-           Ostr.PsOut=0;
-         break;
-         case 'k':
-           sscanf(apt+2,"%s",buff);
-           j=0;
-           while(buff[j]>' ') {
-             if(buff[j]== ':') buff[j]=' ';
-             j++;
-           }           
-           sscanf(buff,"%d%d%d",&(Ostr.Red),&(Ostr.Green),&(Ostr.Blue));
-           Ostr.Bkgr=1;
-           Ostr.PsOut=0;
-         break;
-         default:
-         break;
-       }
-    }
-    if(Ostr.PsOut) Ostr.Scroll=0;
-    if(i==1) {PrintUsage(argv[0]);return 0;}
-    strcpy(PngFolder,Ostr.Folder);
-    Sxres= Ostr.Sxres;
-    Syres= Ostr.Syres;
-    Pxres = Sxres;
-    Pyres = Syres;
-    if(Ostr.Video) {
-      kgCleanDir(Ostr.Folder);
-      mkdir(Ostr.Folder,0700);
-      sprintf(buff,"ffmpegfun -i %s %-s/Frame_%06d.png",Ostr.VideoFile,Ostr.Folder); 
-      runfunction(buff,ProcessPrint,ffmpegfun);
-    }
-
-    return 1;
+              if ( Ostr.Sxres == 0 ) {
+                  Ostr.Sxres = Ostr.Vxres;
+                  Ostr.Syres = Ostr.Vyres;
+              }
+              break;
+              case 's':
+              sscanf ( apt+2 , "%s" , buff ) ;
+              j = 0;
+              while ( buff [ j ] > ' ' ) {
+                  if ( buff [ j ] == ':' ) buff [ j ] = ' ';
+                  j++;
+              }
+              sscanf ( buff , "%d%d" , & ( Ostr.Sxres ) , & ( Ostr.Syres ) ) ;
+              
+              Ostr.PsOut = 0;
+              Ostr.Rgiven = 1;
+              break;
+              case 'o':
+              sscanf ( apt+2 , "%s" , buff ) ;
+              strcpy ( Ostr.Output , buff ) ;
+              break;
+              case 'f':
+              kgCleanDir ( Ostr.Vframes ) ;
+              sscanf ( apt+2 , "%s" , buff ) ;
+              strcpy ( Ostr.Vframes , buff ) ;
+              printf("MSG: Frames set to %s\n", Ostr.Vframes);
+              kgCleanDir ( Ostr.Vframes ) ;
+              mkdir ( Ostr.Vframes , 0700 ) ;
+              Ostr.Preserve = 1;
+              break;
+              case 't':
+              sscanf ( apt+2 , "%f" , & ( Ostr.ssec ) ) ;
+              Ostr.Scroll = 0;
+              Ostr.PsOut = 0;
+              break;
+              case 'l':
+              sscanf ( apt+2 , "%f" , & ( Ostr.duration ) ) ;
+              Ostr.Scroll = 0;
+              Ostr.PsOut = 0;
+              Ostr.Nf = ( int ) ( Ostr.duration*Ostr.fps+0.1 ) ;
+              break;
+              case 'k':
+              sscanf ( apt+2 , "%s" , buff ) ;
+              j = 0;
+              while ( buff [ j ] > ' ' ) {
+                  if ( buff [ j ] == ':' ) buff [ j ] = ' ';
+                  j++;
+              }
+              sscanf ( buff , "%d%d%d" , & ( Ostr.Red ) , \
+                   & ( Ostr.Green ) , & ( Ostr.Blue ) ) ;
+              Ostr.Red %= 256;
+              Ostr.Green %= 256;
+              Ostr.Blue %= 256;
+              Ostr.Bkgr = 1;
+              Ostr.PsOut = 0;
+              break;
+              case 'h':
+              PrintUsage ( argv [ 0 ] ) ;return 0;
+              break;
+              default:
+              break;
+          }
+      }
+      if ( Ostr.PsOut ) Ostr.Scroll = 0;
+      if ( i == 1 ) {PrintUsage ( argv [ 0 ] ) ;return 0;}
+      strcpy ( PngFolder , Ostr.Folder ) ;
+      Sxres = Ostr.Sxres;
+      Syres = Ostr.Syres;
+      Pxres = Sxres;
+      Pyres = Syres;
+      printf("Res: %d:%d %d:%d\n",Sxres,Syres,Ostr.Vxres,Ostr.Vyres);
+      if ( Ostr.Video ) {
+          kgCleanDir ( Ostr.Folder ) ;
+          mkdir ( Ostr.Folder , 0700 ) ;
+#ifdef D_KULINA
+          sprintf ( buff , "ffmpegfun -i %s %-s/%-s" , Ostr.VideoFile , \
+               Ostr.Folder , ( char * ) "Frame_%06d.png"  ) ;
+          printf ( "%s\n" , buff ) ;
+         runfunction ( buff , ProcessPrint , ffmpegfun ) ;
+//         runfunction ( buff , ProcessSkip , ffmpegfun ) ;
+//          ExecFunction(buff,ffmpegfun);
+#else
+          sprintf ( buff , "kgffmpeg -i %s %-s/%-s" , Ostr.VideoFile , \
+               Ostr.Folder , ( char * ) "Frame_%06d.png" ) ;
+          printf ( "%s\n" , buff ) ;
+          system ( buff ) ;
+#endif
+      }
+      return 1;
   }
-  int InitOstr(OSTR *O) {
-     O->Video=0;
-     O->PsOut=1;
-     O->Scroll=1;
-     O->Preserve=0;
-     O->Rgiven=0;
-     O->Sxres=0;
-     O->Syres=0;
-     O->Vxres=540;
-     O->Vyres=960;
-     O->Bkgr=0;
-     O->Red=0;
-     O->Green=0;
-     O->Blue=0;
-     O->ssec=10;
-     O->duration=60;
-     O->fps = 25.0;
-     O->Nf=1;
-     if(getenv("PWD") != NULL) {
-        sprintf(O->Output,"%-s/Output.ps",getenv("PWD"));
-        sprintf(O->Folder,"%-s/Folder",getenv("PWD"));
-        sprintf(O->Vframes,"%-s/Frames",getenv("PWD"));
-     }
-     else {
-        sprintf(O->Output,"%-s/Output.ps",getenv("HOME"));
-        sprintf(O->Folder,"%-s/Folder",getenv("HOME"));
-        sprintf(O->Vframes,"%-s/Frames",getenv("PWD"));
-     }
-     printf("Output : %s\n",O->Output);
-
-     O->VideoFile[0]='\0';
-     O->TextFile[0]='\0';
-     return 1;
+  int InitOstr ( OSTR *O ) {
+      O->Video = 0;
+      O->PsOut = 1;
+      O->Scroll = 1;
+      O->Preserve = 0;
+      O->Rgiven = 0;
+      O->Sxres = 0;
+      O->Syres = 0;
+      O->Vxres = 540;
+      O->Vyres = 960;
+      O->Bkgr = 0;
+      O->Red = 0;
+      O->Green = 0;
+      O->Blue = 0;
+      O->ssec = 10;
+      O->duration = 60;
+      O->fps = 25.0;
+      O->Nf = 1;
+      if ( getenv ( "PWD" ) != NULL ) {
+          sprintf ( O->Output , "%-s/Output.ps" , getenv ( "PWD" ) ) ;
+      }
+      else {
+          sprintf ( O->Output , "%-s/Output.ps" , getenv ( "HOME" ) ) ;
+      }
+      O->VideoFile [ 0 ] = '\0';
+      O->TextFile [ 0 ] = '\0';
+      MakeTmpFolderInHome ( O->Folder ) ;
+      MakeTmpFolderInHome ( O->Vframes ) ;
+      MakeTmpFolderInHome ( O->ListFolder ) ;
+      strcpy(O->ListFile,O->ListFolder);
+      strcat(O->ListFile,"/Output.mp4");
+      return 1;
+  }
+  char **GetFileList(char *Folder,char *Filter) {
+      char **Imgs=NULL;      
+      char ImgName[300];
+      int i=0;
+      Imgs = kgFileMenu(Folder,(char *)"*.png");
+      i=0;
+      while(Imgs[i]!= NULL) {
+         sprintf(ImgName,"%-s/%-s",Folder,Imgs[i]);
+         free(Imgs[i]);
+         Imgs[i]=(char *)malloc(strlen(ImgName)+1);
+         strcpy(Imgs[i],ImgName);
+         printf("NewName: %s\n",Imgs[i]);
+         i++;
+      }
+      return Imgs;
   }
   int kgwrite ( int argc , char *argv [ ] ) {
-      InitOstr(&Ostr);
-      if(ProcessArgs(argv)==0) return 0;;
+      int i=0;
+      char **Imgs=NULL;      
+      char ImgName[300],buff[300];;
+      InitOstr ( & Ostr ) ;
+      
+      if ( ProcessArgs ( argv ) == 0 ) return 0;;
+      printf("MSG: Frames in %s\n", Ostr.Vframes );
+      if(FileStat(Ostr.Vframes)!=1) {
+         fprintf(stderr,"Failed to create %s\n",Ostr.Vframes);
+         return 0;
+      }
+      printf("MSG: !c01Processing Text ....\n");
       ProcessTextDoc ( argc , argv ) ;
-//      kgCleanDir(Ostr.Folder);
-//      if(Ostr.Preserve == 0)kgCleanDir(Ostr.Vframes); 
+      printf("MSG: !c02Processed Text ....\n");
+#ifdef D_KULINA
+      Imgs = GetFileList(Ostr.Vframes,(char *)"*.png");
+#if 0
+      i=0;
+      while(Imgs[i]!= NULL) {
+         sprintf(ImgName,"%-s/%-s",Ostr.Vframes,Imgs[i]);
+         free(Imgs[i]);
+         Imgs[i]=(char *)malloc(strlen(ImgName)+1);
+         strcpy(Imgs[i],ImgName);
+         printf("MSG: Created %s\n",ImgName);
+         i++;
+      }
+#endif
+      printf("MSG: Joining... \n",ImgName);
+      if(Ostr.Video) {
+         CreateImagesVideo(Imgs,(int)(Ostr.fps),Ostr.ListFile);
+         OverlayVideos(Ostr.VideoFile,Ostr.ListFile,1,Ostr.Output);
+      }
+      else CreateImagesVideo(Imgs,(int)(Ostr.fps),Ostr.Output); 
+#endif
+      if(Ostr.Preserve == 0)kgCleanDir(Ostr.Vframes); 
+      kgCleanDir(Ostr.Folder);
+      kgCleanDir(Ostr.ListFolder);
       return 1;
   }

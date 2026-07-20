@@ -46,10 +46,10 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
     1,1, 
     5,0.150000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
     butn1, 
-    textovervideoTOBinput1browsecallback , /* *args, Callback */
+    textovervideoTOVinput1browsecallback , /* *args, Callback */
     NULL  /* any args */
   };
-  strcpy(b1.Wid,(char *)"TOBinput1browse");
+  strcpy(b1.Wid,(char *)"TOVinput1browse");
   b1.item = -1;
   T_ELMT *e2  ; 
   e2 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
@@ -67,10 +67,10 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
     1,1, 
     e2,
     1,1,
-    NULL,textovervideoTOBinput2callback ,0 ,0,18,9 
+    NULL,textovervideoTOVinput2callback ,0 ,0,18,9 
   };
     /* *args,Callback,border,hide,font,fontsize */
-  strcpy(t2.Wid,(char *)"TOBinput2");
+  strcpy(t2.Wid,(char *)"TOVinput2");
   t2.pt=NULL;
   t2.type = 1;
   t2.item = -1;
@@ -178,21 +178,20 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   strcpy(b7.Wid,(char *)"TOVOutbrowse");
   b7.item = -1;
   char *menu8[]  = { 
-    (char *)"Simultaneous",
-    (char *)"Top First",
-    (char *)"Bottom First",
+    (char *)"Scroll Text Over Video",
+    (char *)"Show as slides",
     NULL 
   };
   ThumbNail **th0 ;
   DIRA r8 = { 
     'r',
-    10,158,  
-    482,187,   
+    36,171,  
+    479,199,   
     8,0,  
-    140, 
+    210, 
     25, 
-    1,3, 
-    0,-197388760, 
+    1,2, 
+    0,1, 
     (int *)v[3], 
     NULL, 
     NULL ,
@@ -203,7 +202,7 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
      0, /* item highlight */
     0, /* bordr */
     0, /* bkgr */
-    1  /*=1 hide  */
+    0  /*=1 hide  */
    };
   th0 = (ThumbNail **)kgStringToThumbNails((char **)menu8);
   r8.list=(void **)th0;
@@ -221,7 +220,7 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   d[1].t = (DIT *)malloc(sizeof(DIN));
   *d[1].N = b1;
   d[1].N->item = -1;
-  textovervideoTOBinput1browseinit(d[1].N,pt) ;
+  textovervideoTOVinput1browseinit(d[1].N,pt) ;
   d[2].t = (DIT *)malloc(sizeof(DIT));
   *d[2].t = t2;
   d[2].t->item = -1;
@@ -311,7 +310,7 @@ int textovervideo( void *parent,void **v,void *pt) {
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 7;
+  D.df = 8;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;

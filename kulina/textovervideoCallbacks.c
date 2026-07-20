@@ -93,7 +93,6 @@ void  textovervideoTOVinput1browseinit (DIN *B,void *ptmp) {
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
-
  /* Callback for  TOVinput2   */ 
 
 int textovervideoTOVinput2callback(int cellno,int i,void *Tmp) {
@@ -132,7 +131,8 @@ int textovervideoTOVinput2browsecallback(int butno,int i,void *Tmp) {
   char FileName[500],OutFile[500];;
   T = (DIT *)kgGetNamedWidget(Tmp,(char *)"TOVinput2");
   FileName[0]='\0';
-  if(!FolderBrowser(FileName))return 0;
+//  if(!FolderBrowser(FileName))return 0;
+  if(!kgFolderBrowser(Tmp,10,10,FileName,"*"))return 0;
   kgSetString(T,0,FileName);
   kgUpdateWidget(T);
   kgUpdateOn(Tmp);
@@ -239,116 +239,18 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
   DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"TOVIbox");
   char infile1[300],infile2[300],outfile[300],Pinfile1[300],Pinfile2[300];
   char Tfolder[30],buff[200];
-  MEDIAINFO *mt1,*mt2;
-  float tsec1,tsec2;
   Type = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVradio"));
   strcpy(infile1,kgGetString(T,0));
   strcpy(infile2,kgGetString(TI,0));
   strcpy(outfile,kgGetString(TO,0));
-  MakeTmpFolderInHome(Tfolder);
-  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Pinfile1,"mp4");
-  MakeFileInFolder("/tmp/Video.mp4",Tfolder,Pinfile2,"mp4");
-  mt1 = GetMediaInfo(infile1);
-  mt2 = GetMediaInfo(infile2);
-  tsec1 = mt1->TotSec;
-  tsec2 = mt2->TotSec;
-  switch(Type) {
-    case 1:
-    default:
-      MakeTextOverVideo(infile1,infile2,outfile,I);
-    break;
-    case 2:
-      sprintf(buff,"!c01Top First:\n");
+#if 1
+
+      sprintf(buff,"kgwrite -v%-s -o%-s %-s",infile1,outfile,infile2);
+//      runfunction(buff,ProcessPrint,kgwrite);
+      ExecFunction(buff,kgwrite);
+//      RunFunctionAndWait(buff,kgwrite);
       kgWrite(I,buff);
-      sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
-      kgWrite(I,buff);
-      remove(Pinfile1);
-#if 0
-      AddStillAtEnd(infile1,tsec2,Pinfile1);
-#else
-      sprintf(buff,"RunAddStillAtEnd %s %-.3f %s",
-                   infile1,tsec2,Pinfile1);
-      RunFunctionAndWait(buff,RunAddStillAtEnd);
 #endif
-      if(FileStat(Pinfile1)){
-        sprintf(buff,"!c02Processed %s to %s\n",infile1,Pinfile1);
-        kgWrite(I,buff);
-      }
-      else {
-        sprintf(buff,"!c02FAILED TO CREATE %s\n",Pinfile1);
-        kgWrite(I,buff);
-        sleep(5);
-        return 1;
-      }
-      sprintf(buff,"!c05Processing %s\n",infile2);
-      kgWrite(I,buff);
-      remove(Pinfile2);
-#if 0
-     AddStillAtStart(infile2,tsec1,Pinfile2);
-#else
-      sprintf(buff,"RunAddStillAtStart %s %-.3f %s",
-                   infile2,tsec1,Pinfile2);
-      RunFunctionAndWait(buff,RunAddStillAtStart);
-#endif
-      if(FileStat(Pinfile2)){
-        sprintf(buff,"!c02Processed %s to %s\n",infile2,Pinfile2);
-        kgWrite(I,buff);
-      }
-      else {
-        sprintf(buff,"!c02FAILED TO CREATE %s\n",Pinfile2);
-        kgWrite(I,buff);
-        sleep(5);
-        return 1;
-      }
-      MakeTextOverVideo(Pinfile1,Pinfile2,outfile,I);
-    break;
-    case 3:
-      sprintf(buff,"!c01Bottom First:\n");
-      kgWrite(I,buff);
-      sprintf(buff,"!c05Processing %s %.3f %s\n",infile2,tsec1,Pinfile2);
-      kgWrite(I,buff);
-#if 0
-      AddStillAtEnd(infile2,tsec1,Pinfile2);
-#else
-      sprintf(buff,"RunAddStillAtEnd %s %-.3f %s",
-                   infile2,tsec1,Pinfile2);
-      RunFunctionAndWait(buff,RunAddStillAtEnd);
-#endif
-      if(FileStat(Pinfile2)){
-        sprintf(buff,"!c02Processed %s to %s\n",infile2,Pinfile2);
-        kgWrite(I,buff);
-      }
-      else {
-        sprintf(buff,"!c02FAILED TO CREATE %s\n",Pinfile2);
-        kgWrite(I,buff);
-        sleep(5);
-        return 1;
-      }
-      sprintf(buff,"!c05Processing %s %.3f %s\n",infile1,tsec2,Pinfile1);
-      kgWrite(I,buff);
-#if 0
-      AddStillAtStart(infile1,tsec2,Pinfile1);
-#else
-      sprintf(buff,"RunAddStillAtStart %s %-.3f %s",
-                   infile1,tsec2,Pinfile1);
-      RunFunctionAndWait(buff,RunAddStillAtStart);
-#endif
-      if(FileStat(Pinfile1)){
-        sprintf(buff,"!c02Processed %s to %s\n",infile1,Pinfile1);
-        kgWrite(I,buff);
-      }
-      else {
-        sprintf(buff,"!c02FAILED TO CREATE %s\n",Pinfile1);
-        kgWrite(I,buff);
-        sleep(5);
-        return 1;
-      }
-      MakeTextOverVideo(Pinfile1,Pinfile2,outfile,I);
-    break;
-  }
-  free(mt1);
-  free(mt2);
-  kgCleanDir(Tfolder);
   return ret;
 }
  /* Callback for  TOVgo   */ 
@@ -424,7 +326,8 @@ int textovervideoTOVOutbrowsecallback(int butno,int i,void *Tmp) {
   n = B->nx*B->ny;
   char FileName[500];
   FileName[0]='\0';
-  if(!kgFolderBrowser(Tmp,10,10,FileName,"*"))return 0;
+//  if(!kgFolderBrowser(Tmp,10,10,FileName,"*"))return 0;
+  if(!FolderBrowser(FileName))return 0;
   DIT *TO;
   TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"TOVout");
   kgSetString(TO,0,FileName);
@@ -537,47 +440,6 @@ int textovervideoTOVradiocallback(int item,int i,void *Tmp) {
 }
 void  textovervideoTOVradioinit (DIRA *R,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
-}
-int textovervideoTOBinput1browsecallback(int butno,int i,void *Tmp) {
-  /*********************************** 
-    butno : selected item (1 to max_item) 
-    i :  Index of Widget  (0 to max_widgets-1) 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
-  DIALOG *D;DIN *B; 
-  int n,ret =0; 
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-// pt[0] is args passed as inputs; pt[1] is output pointer
-  D = (DIALOG *)Tmp;
-  B = (DIN *)kgGetWidget(Tmp,i);
-  n = B->nx*B->ny;
-  switch(butno) {
-    case 1: //  Browse 
-      break;
-  }
-  return ret;
-}
-void  textovervideoTOBinput1browseinit (DIN *B,void *ptmp) {
- void **pt=(void **)ptmp; //pt[0] is arg 
-// may use kgChangeButtonNormalImage etc...
- BUT_STR *buts;
- buts = (BUT_STR *) (B->buts);
-}
-int textovervideoTOBinput2callback(int cellno,int i,void *Tmp) {
-  /************************************************* 
-   cellno: current cell counted along column strting with 0 
-           ie 0 to (nx*ny-1) 
-   i     : widget id starting from 0 
-   Tmp   : Pointer to DIALOG 
-   *************************************************/ 
-  DIALOG *D;DIT *T;T_ELMT *e; 
-  int ret=1;
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-// pt[0] is args passed as inputs; pt[1] is output pointer
-  D = (DIALOG *)Tmp;
-  T = (DIT *)kgGetWidget(Tmp,i);
-  e = T->elmt;
-  return ret;
 }
 int textovervideoinit(void *Tmp) {
   /*********************************** 

@@ -1444,3 +1444,108 @@ int MakeTmpFolderInHome(char *Tfolder) {
   if(ret < 0) return 0;
   else return (int)buff.st_size;
 }
+int ExecFunction(char *job,int (*function)(int,char **)){
+   int ret =0;
+   FILE *fp,*fp1;
+   int pip[2],pid,status,pip2[2],argc;
+   char *args[100],buff[1000],pt[300];
+   char *ptr;
+   char *pgrpath=NULL;
+   int i=0,pos=0;
+   if(job==NULL){
+	   fprintf(stderr,"Job: NULL \n");
+           fflush(stdout);
+           fflush(stderr);
+	   return 0;
+   }
+   fprintf(stderr,"Job= %s\n",job);
+   fflush(stdout);
+   fflush(stderr);
+   while(job[i]==' ') i++;
+   strcpy(buff,job+i);
+   i=0;
+   while ( sscanf(buff+pos,"%s",pt) > 0 ) {
+     if(pt[0]=='\"') {
+      pos++;
+      args[i]=buff+pos;
+      while(buff[pos]!='\"')pos++;
+      buff[pos]='\0';
+      i++;
+     }
+     else {
+       args[i]=buff+pos;
+       pos +=strlen(pt);
+       i++;
+       if(buff[pos]< ' ') break;
+       buff[pos]='\0';
+     }
+     pos++;
+     while(buff[pos]==' ') pos++;
+   }
+   args[i]=NULL;
+   if(i==0){
+	   printf("i==0 Exiting\n");
+           fflush(stdout);
+	   return 0;
+   }
+   argc=i;
+     for(i=0;i<argc;i++) {
+	   ptr = (char *)malloc(strlen(args[i])+1);
+			   strcpy(ptr,args[i]);
+			   args[i]=ptr;
+     }
+
+   if(function != NULL) function(argc,args);
+   for(i=0;i<argc;i++) {
+           free(args[i]);
+   }
+   fprintf(stderr,"FINISHED Job= %s\n",job);
+   fflush(stdout);
+   fflush(stderr);
+   return 1;
+}
+  int CreateImagesVideo ( char **L,int fps , char *Outfile ) {
+/* images must be of same size */
+      char Folder [ 500 ]  , Vname [ 500 ] ;
+      int id ;
+      char command [ 10000 ] ,  Qstr [ 100 ] ;
+      char mylist [ 300 ] ;
+      FILE *myl = NULL;
+      int vid = 0 ;
+      int status , i;
+      Dlink  *Vlist = NULL;
+      char *vnames = NULL;
+      char *ipt = NULL;
+      float TotSec;
+      float tsecs;
+      tsecs = 1.0/fps;
+      MakeTmpFolderInHome ( Folder ) ;
+      if ( FileStat ( Folder ) ) kgCleanDir ( Folder ) ;
+      if ( L == NULL ) return 0;
+      mkdir ( Folder , 0700 ) ;
+      sprintf ( mylist , "%-s/mylist.txt" , Folder ) ;
+      myl = fopen ( mylist , "w" ) ;
+      strcpy ( Qstr , " -crf 20 -preset medium " ) ;
+      Vlist = Dopen ( ) ;
+      vid=0;
+      while ( ( ipt = L[vid] ) != NULL ) {
+          sprintf ( Vname , "%-s/Img%-5.5d.mp4" , Folder , vid ) ;
+          vnames = ( char * ) malloc ( strlen ( Vname ) +1 ) ;
+          strcpy ( vnames , Vname ) ;
+          Dadd ( Vlist , vnames ) ;
+          CreateStillVideo ( ipt , tsecs , ( float ) fps , Vname ) ;
+          fprintf ( myl , "file  \'%-s\'\n" , Vname ) ;
+          fflush ( myl ) ;
+          vid++;
+      } // while...
+      fclose ( myl ) ;
+      TotSec = vid*tsecs;
+      sprintf ( command , "ffmpegfun -f concat -safe 0  -i %-s " "  -video_track_timescale 90k -y -f mp4 -vcodec libx264 " "  -an %-s \"%-s\" " , \
+           \
+      mylist , Qstr , Outfile ) ;
+      runfunction ( command , ProcessPrint , ffmpegfun ) ;
+      Dempty ( Vlist ) ;
+      Vlist = NULL;
+      if ( FileStat ( Folder ) ) kgCleanDir ( Folder ) ;
+      return 1 ;
+  }

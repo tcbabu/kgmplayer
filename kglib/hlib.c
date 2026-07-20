@@ -82,8 +82,10 @@ typedef struct {
 
 void *Loadfontstruct(void);
 Dlink *uiGetFontlist(void);
+int uiAddFonts(void);
 
 static Dlink *Fontlist=NULL;
+extern Dlink *FontList;
 static float CFact=300000.0;
 static Dlink *Pnlist = NULL;
 typedef struct Line {
@@ -3145,6 +3147,7 @@ static void win_txt_font( void)
   m_f =  pt->m_f;
   t_font =font;
   strcpy(FontName,pt->fontname);
+//  printf("FontName: %s\n",FontName);
 }
 static void set_txt_font( int font)
  {
@@ -3162,6 +3165,7 @@ static void set_txt_font( int font)
   m_f =  pt->m_f;
   t_font =font;
   strcpy(FontName,pt->fontname);
+//  printf("FontName set: %s\n",FontName);
   fprintf(TX_F,"ZF%-s findfont %-6.1f scalefont setfont\n",FontName,font_size);
  }
 static void t_txt_font( int font)
@@ -4913,9 +4917,13 @@ int  pscript(char *inf,char *outf) {
   float fact;
   FILE *fp;
   char *TmpDir;
+  char *Newfont;
+  FONT *pt,*ptmp;
+  Dlink *Dummy;
   T_rot=0;
   LSCAPE=0;
   A4 =0;
+ 
   EVGAX=LEVGAX;
   EVGAY=LEVGAY;
   strcpy(InFile,inf);
@@ -4926,6 +4934,42 @@ int  pscript(char *inf,char *outf) {
   ln = ((int)(evgax+1))*((int)(evgay+1))*fact+8;
   ln >>=3;
   y_mulf=1.0;
+  if(FontList == NULL ) uiAddFonts();
+  if(Fontlist == NULL ) Fontlist=(Dlink *)Loadfontstruct();
+  Resetlink(FontList);
+  Resetlink(Fontlist);
+
+  Dummy = Dopen();;
+  while ((Newfont=(char *)Getrecord(FontList))!=NULL){
+    if((pt = (FONT *)Getrecord(Fontlist))==NULL){
+       Resetlink(Fontlist);
+       pt =(FONT *)Getrecord(Fontlist);
+    } 
+        int pos = strlen(Newfont)-1;
+        while( Newfont[pos] !='/'){
+          if(Newfont[pos]== '.') Newfont[pos]='\0';
+          pos--;
+        }
+        pos++;
+        ptmp = (FONT *)malloc(sizeof(FONT));
+        *ptmp = *pt;
+        strcpy(ptmp->fontname,Newfont+pos);
+        Dadd(Dummy,ptmp);
+  }
+  Dempty(Fontlist);
+  Fontlist = Dcopy(Dummy);
+  Dfree(Dummy);
+#if 0 
+  while (((pt = (FONT *)Getrecord(Fontlist))!=NULL)&&
+           ((Newfont=(char *)Getrecord(FontList))!=NULL)) {
+        int pos = strlen(Newfont)-1;
+        while( Newfont[pos] !='/')pos--;
+        pos++;
+        strcpy(pt->fontname,Newfont+pos);
+  }
+#endif
+  Resetlink(FontList);
+  Resetlink(Fontlist);
   if (LSCAPE){
    T_rot=0.0;
    A4=0;

@@ -156,7 +156,8 @@
       }
 #endif  
       id = getpid ( ) ;
-      sprintf ( Folder , "%-s/%-d" , getenv ( "HOME" ) , id ) ;
+      MakeTmpFolderInHome(Folder);
+//      sprintf ( Folder , "%-s/%-d" , getenv ( "HOME" ) , id ) ;
       if ( FileStat ( Folder ) ) kgCleanDir ( Folder ) ;
       L = ( Dlink * ) ( is2vdata->List ) ;
       if ( L == NULL ) return 1;

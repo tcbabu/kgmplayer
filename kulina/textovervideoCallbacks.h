@@ -1,7 +1,7 @@
 int textovervideoTOVinput1callback(int cellno,int i,void *Tmp) ;
-int textovervideoTOBinput1browsecallback(int butno,int i,void *Tmp) ;
-void  textovervideoTOBinput1browseinit (DIN *B,void *pt) ;
-int textovervideoTOBinput2callback(int cellno,int i,void *Tmp) ;
+int textovervideoTOVinput1browsecallback(int butno,int i,void *Tmp) ;
+void  textovervideoTOVinput1browseinit (DIN *B,void *pt) ;
+int textovervideoTOVinput2callback(int cellno,int i,void *Tmp) ;
 int textovervideoTOVinput2browsecallback(int butno,int i,void *Tmp) ;
 void  textovervideoTOVinput2browseinit (DIN *B,void *pt) ;
 int textovervideoTOVgocallback(int butno,int i,void *Tmp) ;

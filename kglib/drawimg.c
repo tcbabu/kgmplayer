@@ -2782,6 +2782,7 @@ extern Dlink *FontList;
         int base =0;
         float cfx = (dc->v_x2 -dc->v_x1)/(wx2 - wx1);
         float cfy = (dc->v_y2 -dc->v_y1)/(wy2 - wy1);
+ //       printf("img_txt_wr Font= %d\n",dc->t_font);
         IMG = (IMG_STR *)ftGrStringImage ( dc->t_font , dc->t_color ,(float)t_angle, txt ,w,h,g,cfx,cfy);
         uiUserImageBox(IMG, t_angle,x1,y1, cfx,cfy,&X1,&Y1,&X2,&Y2);
         img_drawimage(G,IMG->img,X1,Y1,X2,Y2); 

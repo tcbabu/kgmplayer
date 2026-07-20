@@ -4048,6 +4048,10 @@ int ProcessOutput(int pip0,int pip1,int Pid) {
      while((ch=GetLine(pip0,buff)) ) {
          line++;
          if(ch< 0) continue;
+         if(SearchString(buff,(char *)"MSG: ")>=0)  {
+               write(Jpipe[1],buff+5,strlen(buff+5));
+               continue;
+         }
          if(SearchString(buff,(char *)"frame=")>=0)  {
              pos = SearchString(buff,(char *)"time=");
              if(pos>=0) {
