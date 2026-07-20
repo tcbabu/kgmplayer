@@ -3897,23 +3897,29 @@ void *logo(int l,int w){
   kgTextFont(fid,23);
   kgTextColor(fid,0);
   kgMove2f(fid,l*0.55+1,(float)l*0.5+1);
+  kgTextAngle(fid,90.);
   kgWriteText(fid,(char *)"kgMplayer");
   kgTextColor(fid,15);
   kgMove2f(fid,l*0.55,(float)l*0.5-1);
+  kgTextAngle(fid,90.);
   kgWriteText(fid,(char *)"kgMplayer");
   kgChangeColor(fid,30,245,245,255);
   kgTextColor(fid,30);
   kgMove2f(fid,l*0.55,(float)l*0.5);
+  kgTextAngle(fid,90.);
   kgWriteText(fid,(char *)"kgMplayer");
   kgTextSize(fid,l*0.2,l*0.16,0.0);
   kgMove2f(fid,l*0.90,(float)l*0.05);
-  kgTextFont(fid,36);
+  kgTextFont(fid,38);
   kgChangeColor(fid,6,0,190,190);
   kgChangeColor(fid,9,20,25,15);
   kgTextColor(fid,Kuclr);
+  kgTextAngle(fid,90.);
   kgWriteText(fid,(char *)"a KULINA player & media ToolBox");
   logoimg = kgGetResizedImage(fid);
   kgCloseImage(fid);
+  fprintf(stderr,"Writing logoimg to Logo.png\n");
+  kgWriteImage(logoimg,"Logo.png");
   return logoimg;
 }
   int ProcessVinfo (  int pip0,int pip1,int Pid ) {
