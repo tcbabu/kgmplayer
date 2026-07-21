@@ -3918,7 +3918,7 @@ void *logo(int l,int w){
   kgWriteText(fid,(char *)"a KULINA player & media ToolBox");
   logoimg = kgGetResizedImage(fid);
   kgCloseImage(fid);
-  fprintf(stderr,"Writing logoimg to Logo.png\n");
+//  fprintf(stderr,"Writing logoimg to Logo.png\n");
   kgWriteImage(logoimg,"Logo.png");
   return logoimg;
 }

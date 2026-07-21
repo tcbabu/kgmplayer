@@ -109,8 +109,8 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   butn4[0].butncode=126;
   DIL h4 = { 
     'h',
-    180,369,  
-    311,400,
+    187,401,  
+    318,432,
     2,0,  
     120, 
     25, 
@@ -124,9 +124,9 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   h4.item = -1;
   DII i5 = { 
     'i',
-    8,202,  
-    482,358,  
-    51,6,0   
+    8,304,  
+    483,388,  
+    51,3,0   
   };
   strcpy(i5.Wid,(char *)"TOVIbox");
   i5.item = -1;
@@ -140,8 +140,8 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   e6[0].img=NULL;
   DIT t6 = { 
     't',
-    8,104,  
-    385,138,
+    8,91,  
+    385,125,
     20, 
     1,1, 
     e6,
@@ -161,11 +161,11 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   butn7[0].xpmp=NULL;
   butn7[0].xpmh=NULL;
   butn7[0].bkgr=-1;
-  butn7[0].butncode=31;
+  butn7[0].butncode=126;
   DIN b7 = { 
     'n',
-    385,104,  
-    466,137,
+    385,90,  
+    466,123,
     2,2,  
     72, 
     24, 
@@ -177,22 +177,72 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   };
   strcpy(b7.Wid,(char *)"TOVOutbrowse");
   b7.item = -1;
-  char *menu8[]  = { 
-    (char *)"Scroll Text Over Video",
-    (char *)"Show as slides",
+  T_ELMT *e8  ; 
+  e8 =(T_ELMT *)malloc(sizeof(T_ELMT)*4);
+  e8[0].fmt = (char *)malloc(8);
+  strcpy(e8[0].fmt,(char *)"Xres%4d");
+  e8[0].v=(void *)v[3];
+  e8[0].sw=1;
+  e8[0].noecho=0;
+  e8[0].img=NULL;
+  e8[1].fmt = (char *)malloc(8);
+  strcpy(e8[1].fmt,(char *)"Yres%4d");
+  e8[1].v=(void *)v[4];
+  e8[1].sw=1;
+  e8[1].noecho=0;
+  e8[1].img=NULL;
+  e8[2].fmt = (char *)malloc(8);
+  strcpy(e8[2].fmt,(char *)"Xoff%4d");
+  e8[2].v=(void *)v[5];
+  e8[2].sw=1;
+  e8[2].noecho=0;
+  e8[2].img=NULL;
+  e8[3].fmt = (char *)malloc(8);
+  strcpy(e8[3].fmt,(char *)"Yoff%4d");
+  e8[3].v=(void *)v[6];
+  e8[3].sw=1;
+  e8[3].noecho=0;
+  e8[3].img=NULL;
+  DIT t8 = { 
+    't',
+    5,162,  
+    484,195,
+    20, 
+    4,1, 
+    e8,
+    1,1,
+    NULL,textovervideoTOVtrescallback ,1 ,0,18,9 
+  };
+    /* *args,Callback,border,hide,font,fontsize */
+  strcpy(t8.Wid,(char *)"TOVtres");
+  t8.pt=NULL;
+  t8.type = 0;
+  t8.item = -1;
+  DIM m9 = { 
+    'm',
+    80,136,  
+    427,159,  
+    0,0  
+  };
+  strncpy(m9.msg,(char *)"!c01!f02Text box size and offset (offset from center position)",499);
+  strcpy(m9.Wid,(char *)"TOVmsg2");
+  m9.item = -1;
+  char *menu10[]  = { 
+    (char *)"No",
+    (char *)"Yes",
     NULL 
   };
   ThumbNail **th0 ;
-  DIRA r8 = { 
+  DIRA r10 = { 
     'r',
-    36,171,  
-    479,199,   
+    243,209,  
+    461,240,   
     8,0,  
-    210, 
+    90, 
     25, 
     1,2, 
     0,1, 
-    (int *)v[3], 
+    (int *)v[7], 
     NULL, 
     NULL ,
     NULL,textovervideoTOVradiocallback , /* *args, Callback  */
@@ -200,20 +250,89 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
      2,  /* Scroll width  */
      0,  /* Type  */
      0, /* item highlight */
-    0, /* bordr */
+    1, /* bordr */
     0, /* bkgr */
     0  /*=1 hide  */
    };
-  th0 = (ThumbNail **)kgStringToThumbNails((char **)menu8);
-  r8.list=(void **)th0;
-  strcpy(r8.Wid,(char *)"TOVradio");
-  r8.item = -1;
+  th0 = (ThumbNail **)kgStringToThumbNails((char **)menu10);
+  r10.list=(void **)th0;
+  strcpy(r10.Wid,(char *)"TOVradio");
+  r10.item = -1;
+  DIM m11 = { 
+    'm',
+    40,213,  
+    240,237,  
+    1,0  
+  };
+  strncpy(m11.msg,(char *)"Fill Background",499);
+  strcpy(m11.Wid,(char *)"TOVmsg3");
+  m11.item = -1;
+  BUT_STR  *butn12=NULL; 
+  butn12= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn12[0].sw=1;
+  strcpy(butn12[0].title,(char *)"");
+  butn12[0].xpmn=NULL;
+  butn12[0].xpmp=NULL;
+  butn12[0].xpmh=NULL;
+  butn12[0].bkgr=-255255255;
+  butn12[0].butncode=10;
+  DIN b12 = { 
+    'n',
+    107,254,  
+    237,288,
+    2,2,  
+    120, 
+    24, 
+    1,1, 
+    1,0.150000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    butn12, 
+    textovervideoTOVbclrcallback , /* *args, Callback */
+    NULL  /* any args */
+  };
+  strcpy(b12.Wid,(char *)"TOVbclr");
+  b12.item = -1;
+  DIM m13 = { 
+    'm',
+    16,256,  
+    107,285,  
+    1,0  
+  };
+  strncpy(m13.msg,(char *)"Select Color",499);
+  strcpy(m13.Wid,(char *)"TOVmsg4");
+  m13.item = -1;
+  char **menu14 ; 
+  menu14= (char **)malloc(sizeof(char *)*5);
+  menu14[4]=NULL;
+  menu14[0]=(char *)malloc(4);
+  strcpy(menu14[0],(char *)"0.0");
+  menu14[1]=(char *)malloc(5);
+  strcpy(menu14[1],(char *)"0.15");
+  menu14[2]=(char *)malloc(4);
+  strcpy(menu14[2],(char *)"0.3");
+  menu14[3]=(char *)malloc(4);
+  strcpy(menu14[3],(char *)"0.5");
+  char *prompt14 ; 
+  prompt14=(char *)malloc(17);
+  strcpy(prompt14,(char *)"Rounding factor ");
+  DIW w14 = { 
+    'w',
+    237,257,  
+    475,286,   
+    4,  
+    (int *)v[8],
+    prompt14 ,
+    menu14 ,
+    NULL,textovervideoTOVrfactcallback , /* *args, Callback  */
+    0 
+  };
+  strcpy(w14.Wid,(char *)"TOVrfact");
+  w14.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+10));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+16));
   d =dtmp+i; 
-  d[9].t=NULL;
+  d[15].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
@@ -242,11 +361,30 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   *d[7].N = b7;
   d[7].N->item = -1;
   textovervideoTOVOutbrowseinit(d[7].N,pt) ;
-  d[8].t = (DIT *)malloc(sizeof(DIRA));
-  *d[8].r = r8;
-  d[8].r->item = -1;
-  textovervideoTOVradioinit(d[8].r,pt) ;
-  d[9].t = NULL;
+  d[8].t = (DIT *)malloc(sizeof(DIT));
+  *d[8].t = t8;
+  d[8].t->item = -1;
+  d[9].t = (DIT *)malloc(sizeof(DIM));
+  *d[9].m = m9;
+  d[9].m->item = -1;
+  d[10].t = (DIT *)malloc(sizeof(DIRA));
+  *d[10].r = r10;
+  d[10].r->item = -1;
+  textovervideoTOVradioinit(d[10].r,pt) ;
+  d[11].t = (DIT *)malloc(sizeof(DIM));
+  *d[11].m = m11;
+  d[11].m->item = -1;
+  d[12].t = (DIT *)malloc(sizeof(DIN));
+  *d[12].N = b12;
+  d[12].N->item = -1;
+  textovervideoTOVbclrinit(d[12].N,pt) ;
+  d[13].t = (DIT *)malloc(sizeof(DIM));
+  *d[13].m = m13;
+  d[13].m->item = -1;
+  d[14].t = (DIT *)malloc(sizeof(DIW));
+  *d[14].w = w14;
+  d[14].w->item = -1;
+  d[15].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -264,7 +402,9 @@ int MaketextovervideoGroup(DIALOG *D,void *arg) {
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  1 data values
+    Text_Box4  4 data values
     RadioButtons1  1 data value
+    Browser2  1 data value
 
 *************************************************/
    char  *v0 ;
@@ -279,12 +419,32 @@ int MaketextovervideoGroup(DIALOG *D,void *arg) {
    int  *v3 ;
    v3 = (int *)malloc(sizeof(int));
    *v3 = 1;
-   void** v=(void **)malloc(sizeof(void*)*5);
-   v[4]=NULL;
+   int  *v4 ;
+   v4 = (int *)malloc(sizeof(int));
+   *v4 = 1;
+   int  *v5 ;
+   v5 = (int *)malloc(sizeof(int));
+   *v5 = 1;
+   int  *v6 ;
+   v6 = (int *)malloc(sizeof(int));
+   *v6 = 1;
+   int  *v7 ;
+   v7 = (int *)malloc(sizeof(int));
+   *v7 = 1;
+   int  *v8 ;
+   v8 = (int *)malloc(sizeof(int));
+   *v8 = 1;
+   void** v=(void **)malloc(sizeof(void*)*10);
+   v[9]=NULL;
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
    v[3]=(void *)(v3);
+   v[4]=(void *)(v4);
+   v[5]=(void *)(v5);
+   v[6]=(void *)(v6);
+   v[7]=(void *)(v7);
+   v[8]=(void *)(v8);
    void *pt=NULL; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    GrpId = textovervideoGroup(D,v,pt);
@@ -310,15 +470,15 @@ int textovervideo( void *parent,void **v,void *pt) {
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 8;
+  D.df = 14;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
   D.rw = 4;
   D.xo = 828;   /* Position of Dialog */ 
   D.yo = 148;
-  D.xl = 491;    /*  Length of Dialog */
-  D.yl = 411;    /*  Width  of Dialog */
+  D.xl = 490;    /*  Length of Dialog */
+  D.yl = 435;    /*  Width  of Dialog */
   D.Initfun = textovervideoinit;    /*   init fuction for Dialog */
   D.Cleanupfun = textovervideocleanup;    /*   cleanup fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
@@ -376,18 +536,30 @@ void *Runtextovervideo(void *parent ,void *args) {
     Text_Box1  1 data values
     Text_Box2  1 data values
     Text_Box3  1 data values
+    Text_Box4  4 data values
     RadioButtons1  1 data value
+    Browser2  1 data value
 
 *************************************************/
    char  v0[500]="" ;
    char  v1[500]="" ;
    char  v2[500]="" ;
    int   v3 = 1;
-   void* v[4];
+   int   v4 = 1;
+   int   v5 = 1;
+   int   v6 = 1;
+   int   v7 = 1;
+   int   v8 = 1;
+   void* v[9];
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
    v[3]=(void *)(&v3);
+   v[4]=(void *)(&v4);
+   v[5]=(void *)(&v5);
+   v[6]=(void *)(&v6);
+   v[7]=(void *)(&v7);
+   v[8]=(void *)(&v8);
    void *pt[2]={NULL,NULL}; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    pt[0]=args;

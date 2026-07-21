@@ -25,7 +25,7 @@ static MODINTERFACE ModFuns[] = {
 };
 static Dlink *ModuleList=NULL;
 
-
+static int Red=245,Green=245,Blue=230;
 static int FolderBrowser(char *FileName) {
 	char *Str=NULL;
 	int ret=0,ln;
@@ -70,14 +70,31 @@ int textovervideoTOVinput1browsecallback(int butno,int i,void *Tmp) {
   int n,ret =0; 
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
+  MEDIAINFO *mpt=NULL;
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
-  DIT *T,*TO;
+  DIT *T,*TO,*TR;
   char FileName[500],OutFile[500];;
   T = (DIT *)kgGetNamedWidget(Tmp,(char *)"TOVinput1");
+  TR = (DIT *)kgGetNamedWidget(Tmp,(char *)"TOVtres");
   FileName[0]='\0';
   if(!FolderBrowser(FileName))return 0;
+  mpt = GetMediaInfo(FileName);
+  if(mpt->Video==0) {free(mpt);return ret;}
+  kgSetInt(TR,0,mpt->Axres);
+  kgSetInt(TR,1,mpt->Ayres);
+  kgSetInt(TR,2,0);
+  kgSetInt(TR,3,0);
+  kgUpdateWidget(TR);
+  DII *I= (DII *)kgGetNamedWidget(D,(char *)"TOVIbox");
+  sprintf(OutFile, "Video: Xres: %d Yres %d\n",mpt->Axres,mpt->Ayres);
+  kgWrite(I,OutFile);
+  sprintf(OutFile, "FPS: %f TotSecs: %f \n",mpt->fps,mpt->TotSec);
+  kgWrite(I,OutFile);
+  sprintf(OutFile, "Total Frames: %d\n",(int)(mpt->fps*mpt->TotSec));
+  kgWrite(I,OutFile);
+  free(mpt);
   kgSetString(T,0,FileName);
   kgUpdateWidget(T);
   TO = (DIT *)kgGetNamedWidget(Tmp,(char *)"TOVout");
@@ -228,24 +245,47 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
   DIALOG *D;DIL *B; 
   int n,ret=0; 
   int Type;
+  int Sxres,Syres,Xoff,Yoff;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
+  int Fsel=1;
+  float Rfact=0.15;
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
   DIT *T=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVinput1");
   DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVinput2");
   DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVout");
+  DIT *TR=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVtres");
   DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"TOVIbox");
   char infile1[300],infile2[300],outfile[300],Pinfile1[300],Pinfile2[300];
   char Tfolder[30],buff[200];
   Type = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVradio"));
+  Fsel = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVrfact"));
+  switch(Fsel) {
+       case 1: Rfact=0.;break;
+       case 2: Rfact=0.15;break;
+       case 3: Rfact=0.3;break;
+       case 4: Rfact=0.5;break;
+   }
   strcpy(infile1,kgGetString(T,0));
   strcpy(infile2,kgGetString(TI,0));
   strcpy(outfile,kgGetString(TO,0));
+  Sxres =kgGetInt(TR,0);
+  Syres =kgGetInt(TR,1);
+  Xoff =kgGetInt(TR,2);
+  Yoff =kgGetInt(TR,3);
 #if 1
 
-      sprintf(buff,"kgwrite -v%-s -o%-s %-s",infile1,outfile,infile2);
+  if(Type==1) {
+      sprintf(buff,"kgwrite -v%-s -s%-d:%-d:%-d:%-d -o%-s %-s",infile1,
+           Sxres,Syres,Xoff,Yoff,outfile,infile2);
+  }
+  else {
+      sprintf(buff,"kgwrite -v%-s -k%-d:%-d:%-d:%-0.2f -s%-d:%-d:%-d:%-d -o%-s %-s",
+          infile1,Red,Green,Blue,Rfact,
+           Sxres,Syres,Xoff,Yoff,outfile,infile2);
+  }
 //      runfunction(buff,ProcessPrint,kgwrite);
 //      ExecFunction(buff,kgwrite);
       RunFunctionAndWait(buff,kgwrite);
@@ -347,6 +387,18 @@ int textovervideoSetup(void *Tmp,void *args) {
    ***********************************/ 
   /* you add any initialisation here */
   /* useful for setting is used as MakeGroup */
+#if 1
+  void **pargs =(void **)args;
+  int *ipt=NULL;
+  ipt= (int *)pargs[3];
+  *ipt=100;
+  ipt= (int *)pargs[4];
+  *ipt=100;
+  ipt= (int *)pargs[5];
+  *ipt=0;
+  ipt= (int *)pargs[6];
+  *ipt=0;
+#endif
   return 1;
 }
  
@@ -440,6 +492,70 @@ int textovervideoTOVradiocallback(int item,int i,void *Tmp) {
 }
 void  textovervideoTOVradioinit (DIRA *R,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
+}
+int textovervideoTOVtrescallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  return ret;
+}
+int textovervideoTOVbclrcallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  kgGetColor(Tmp,10,10,&Red,&Green,&Blue);
+  kgChangeButtonColor(B,0,Red,Green,Blue);
+  kgUpdateWidget(B);
+  kgUpdateOn(Tmp);
+  switch(butno) {
+    case 1: //   
+      break;
+  }
+  return ret;
+}
+void  textovervideoTOVbclrinit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
+ kgChangeButtonColor(B,0,Red,Green,Blue);
+}
+int textovervideoTOVrfactcallback(int item ,int i,void *Tmp) {
+  /*********************************** 
+    item : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIW *B; 
+  int ret=1; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIW *) kgGetWidget(Tmp,i);
+  switch(item) {
+    case 1: 
+      break;
+  }
+  return ret;
 }
 int textovervideoinit(void *Tmp) {
   /*********************************** 

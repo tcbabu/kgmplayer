@@ -123,12 +123,19 @@
       int Rgiven;
       int Sxres;
       int Syres;
+      int Xoff;
+      int Yoff;
       int Vxres;
       int Vyres;
+      int Pxl;
+      int Pxu;
+      int Pyl;
+      int Pyu;
       int Bkgr;
       int Red;
       int Green;
       int Blue;
+      float Rfact;
       int Nf;
       float fps;
       float ssec;
@@ -3237,9 +3244,9 @@
           break;
           case 'P':
           ofst = scanint ( str ) ;
-          theadpos = 170 - ofst;
+          theadpos = Ostr.Pyu - ofst;
           tlinepos = theadpos - 1.5;
-          bheadpos = -127.0 + ofst;
+          bheadpos = Ostr.Pyl + ofst;
           blinepos = bheadpos + 5.5;
           if ( pagepos > 0. ) pagepos = theadpos;
           else pagepos = bheadpos;
@@ -3818,9 +3825,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       return ( n ) ;
   }
   static void Reset_for_tp ( float *xp , float *yp ) {
-      xp [ 0 ] = 0. , xp [ 1 ] = 297.0 , yp [ 0 ] = -127. , yp [ 1 ] = 170.;
-      Yend = 170;
-      kgUserFrame ( Img , 0. , -127. , 297. , 170. ) ;
+      xp [ 0 ] = Ostr.Pxl, xp [ 1 ] = Ostr.Pxu , yp [ 0 ] = Ostr.Pyl , yp [ 1 ] = Ostr.Pyu;
+      Yend = yp[1];
+      kgUserFrame ( Img , xp[0],yp[0],xp[1],yp[1]); 
       kgTextColor ( Img , tcolor ) ;
       kgTextAngle ( Img , 0. ) ;
       kgTextSize ( Img , th , tw , tg ) ;
@@ -3839,9 +3846,11 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       void *Bfill = NULL;
       BkgrFill = Ostr.Bkgr;
       if ( BkgrFill ) {
-          void *Img = kgInitImage ( Ostr.Sxres , Ostr.Syres , 1 ) ;
+          void *Img = kgInitImage ( Ostr.Sxres , Ostr.Syres , 8 ) ;
           kgChangeColor ( Img , 501 , Ostr.Red , Ostr.Green , Ostr.Blue ) ;
-          kgBoxFill ( Img , 0 , 0 , Ostr.Sxres , Ostr.Syres , 501 , 0 ) ;
+//          kgBoxFill ( Img , 0.0 , 0.0 , (float) Ostr.Sxres ,(float) Ostr.Syres , 501 , 0 ) ;
+          kgRoundedRectangleFill(Img , Ostr.Sxres*0.5 ,Ostr.Syres*0.5 ,(float) Ostr.Sxres ,(float) Ostr.Syres ,
+                             0,501 , Ostr.Rfact);
           Bfill = kgGetResizedImage ( Img ) ;
           kgCloseImage ( Img ) ;
       }
@@ -3885,12 +3894,14 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       kgImportGphFile ( Pimg , GphFile , wxl , ydown , wxu , wyu ) ;
       Png = kgGetResizedImage ( Pimg ) ;
       kgCloseImage ( Pimg ) ;
+#if 1
       Bfill = GetBkgr ( ) ;
       if ( Bfill != NULL ) {
           kgMergeImages ( Bfill , Png , 0 , 0 ) ;
           kgFreeImage ( Png ) ;
           Png = Bfill;
       }
+#endif
 #if 0
       Bkimg = GetBkgrImage ( ) ;
       if ( Bkimg != NULL ) {
@@ -3937,12 +3948,14 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       kgImportGphFile ( Pimg , GphFile , wxl , wyl , xright , wyu ) ;
       Png = kgGetResizedImage ( Pimg ) ;
       kgCloseImage ( Pimg ) ;
+#if 1
       Bfill = GetBkgr ( ) ;
       if ( Bfill != NULL ) {
           kgMergeImages ( Bfill , Png , 0 , 0 ) ;
           kgFreeImage ( Png ) ;
           Png = Bfill;
       }
+#endif
 #if 0
       Bkimg = GetBkgrImage ( ) ;
       if ( Bkimg != NULL ) {
@@ -3998,7 +4011,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
               if ( Bkimg != NULL ) {
                   void *Dummy = kgGetImage ( Bkimg ) ;
                   if ( Dummy == NULL ) break;
-                  kgMergeImages ( Dummy , Png , 0 , 0 ) ;
+                  kgMergeImages ( Dummy , Png ,Ostr.Xoff ,Ostr.Yoff ) ;
                   kgFreeImage ( Png ) ;
                   Png = Dummy;
                   free ( Bkimg ) ;
@@ -4063,7 +4076,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
 #if 1
                   void *Dummy = kgGetImage ( Bkimg ) ;
                   if ( Dummy == NULL ) break;
-                  kgMergeImages ( Dummy , Png , 0 , 0 ) ;
+                  kgMergeImages ( Dummy , Png ,Ostr.Xoff ,Ostr.Yoff ) ;
                   kgFreeImage ( Png ) ;
                   Png = Dummy;
 #endif
@@ -4150,7 +4163,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
             Bkfile = GetBkgrImage();
             Bimg = kgGetImage(Bkfile);
             if(Bimg==NULL) break;
-            kgMergeImages(Bimg,Img,0,0);
+            kgMergeImages(Bimg,Img,Ostr.Xoff,Ostr.Yoff);
             sprintf(Flname,"%-s/Frames%06d.png",Ostr.Vframes,k);
             k++;
             kgWriteImage(Bimg,Flname);
@@ -4579,7 +4592,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
                   sprintf ( ln , "cat %s >> %s" , OutFile , PsFile ) ;
                   system ( ln ) ;
               }
-              } else {
+         } else {
               wxl = w [ 0 ] , wxu = w [ 2 ] ;
               wyl = w [ 3 ] - ( w [ 3 ] -w [ 1 ] ) *0.70707;
               wyu = w [ 3 ] ;
@@ -4594,6 +4607,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           printf ( "PngOut:Scroll: %d %d %d\n" , PngOut , Scroll , RIGHT_MAR ) ;
           printf ("MSG: !c01Vscroll = %d\n",Vscroll);
           fflush ( stdout ) ;
+          if(PsOut)return 0;
           PngOut =1;
           Scroll =0;
           if ( Vscroll ) {
@@ -4669,9 +4683,13 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
                " -v<videofile> background video\n"
                " -o<output video> externsion must be 'mp4'\n"
                "                  for video output\n"
-               " -s<Sxres:Syres> resolution of text box,\n"
-               "                 default is  video resolution\n"
+               " -s<Sxres:Syres:Xoff:yoff> resolution of text box anf offset on video(from center),\n"
+               "                 default is  video resolution and 0:0\n"
                "                 either -v or -r must be specified\n"
+               " -p<Pxu:Pyu:Pxl:Pyl : Output paper Size,\n"
+               "                 Full size is(297:170:0:-127)\n"
+               "                 A4 is (210:170:0:-127)\n"
+               "                 Landscape is (297:170:0:0)\n"
                " -t<secs> : slides of time 'secs'\n" 
                "            if not given text scroll is assumed\n"
                " -l<secs> : scroll time if video file is not given\n"
@@ -4686,6 +4704,10 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       static float xp [ 2 ] = { 0. , 297. } , yp [ 2 ] = { -127.0 , 170.0 };
       char ch , flname [ 300 ] , *pt , ch1;
       char Line [ 300 ] ;
+      xp[0]=Ostr.Pxl;
+      xp[1]=Ostr.Pxu;
+      yp[0]=Ostr.Pyl;
+      yp[1]=Ostr.Pyu;
       if ( TmpDir == NULL ) {
           TmpDir = kgMakeTmpDir ( ) ;
           sprintf ( DUMM_FIL , "%-s/DUMM_FIL" , TmpDir ) ;
@@ -4742,9 +4764,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       printf ( "PsOut:PngOut:Scroll: %d %d %d\n" , PsOut , PngOut , Scroll ) ;
       strcpy ( PsFile , Ostr.Output ) ;
       if ( PsOut ) remove ( PsFile ) ;
-//      Img = kgInitGph ( 960 , 720 ) ;
-      Img = kgInitGph ( 297, 297 ) ;
-      kgUserFrame ( Img , 0. , -127. , 297. , 170. ) ;
+//      Img = kgInitGph ( 960 , 960 ) ;
+      Img = kgInitGph ( Ostr.Pxu-Ostr.Pxl,Ostr.Pyu-Ostr.Pyl);
+      kgUserFrame ( Img , (float)Ostr.Pxl,(float)Ostr.Pyl,(float)Ostr.Pxu,(float)Ostr.Pyu);
       Reset_for_tp ( xp , yp ) ;
       strcpy ( flname , Ostr.TextFile ) ;
       printf ( "MSG: Calling Print_process: %s\n",flname    ) ;
@@ -4823,6 +4845,8 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
               if ( Ostr.Sxres == 0 ) {
                   Ostr.Sxres = Ostr.Vxres;
                   Ostr.Syres = Ostr.Vyres;
+                  Ostr.Xoff =0;
+                  Ostr.Yoff =0;
               }
               break;
               case 's':
@@ -4832,10 +4856,22 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
                   if ( buff [ j ] == ':' ) buff [ j ] = ' ';
                   j++;
               }
-              sscanf ( buff , "%d%d" , & ( Ostr.Sxres ) , & ( Ostr.Syres ) ) ;
+              sscanf ( buff , "%d%d%d%d" , & ( Ostr.Sxres ) , & ( Ostr.Syres ),
+                       &(Ostr.Xoff) ,&(Ostr.Yoff) ) ;
               
               Ostr.PsOut = 0;
               Ostr.Rgiven = 1;
+              break;
+              case 'p':
+              sscanf ( apt+2 , "%s" , buff ) ;
+              j = 0;
+              while ( buff [ j ] > ' ' ) {
+                  if ( buff [ j ] == ':' ) buff [ j ] = ' ';
+                  j++;
+              }
+              sscanf ( buff , "%d%d%d%d" , & ( Ostr.Pxu ) , & ( Ostr.Pyu ),
+                            &(Ostr.Pxl),&(Ostr.Pyl));
+              
               break;
               case 'o':
               sscanf ( apt+2 , "%s" , buff ) ;
@@ -4868,11 +4904,13 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
                   if ( buff [ j ] == ':' ) buff [ j ] = ' ';
                   j++;
               }
-              sscanf ( buff , "%d%d%d" , & ( Ostr.Red ) , \
-                   & ( Ostr.Green ) , & ( Ostr.Blue ) ) ;
+              sscanf ( buff , "%d%d%d%f" , & ( Ostr.Red ) , \
+                   & ( Ostr.Green ) , & ( Ostr.Blue ) ,&(Ostr.Rfact)) ;
               Ostr.Red %= 256;
               Ostr.Green %= 256;
               Ostr.Blue %= 256;
+              printf("MSG: !c01Red: %d Green: %d Blue: %d Rfact: %f\n",
+                       Ostr.Red,Ostr.Green,Ostr.Blue,Ostr.Rfact);
               Ostr.Bkgr = 1;
               Ostr.PsOut = 0;
               break;
@@ -4918,12 +4956,19 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       O->Rgiven = 0;
       O->Sxres = 0;
       O->Syres = 0;
+      O->Xoff  =0;
+      O->Yoff  =0;
+      O->Pxl = 0;
+      O->Pxu= 297;
+      O->Pyl= -127;
+      O->Pyu= 170;
       O->Vxres = 540;
       O->Vyres = 960;
       O->Bkgr = 0;
       O->Red = 0;
       O->Green = 0;
       O->Blue = 0;
+      O->Rfact =0.0;
       O->ssec = 10;
       O->duration = 60;
       O->fps = 25.0;
@@ -4974,19 +5019,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       printf("MSG: !c01Processing Text ....\n");
       ProcessTextDoc ( argc , argv ) ;
       printf("MSG: !c02Processed Text ....\n");
+      if(!Ostr.PsOut) {
 #ifdef D_KULINA
       Imgs = GetFileList(Ostr.Vframes,(char *)"*.png");
-#if 0
-      i=0;
-      while(Imgs[i]!= NULL) {
-         sprintf(ImgName,"%-s/%-s",Ostr.Vframes,Imgs[i]);
-         free(Imgs[i]);
-         Imgs[i]=(char *)malloc(strlen(ImgName)+1);
-         strcpy(Imgs[i],ImgName);
-         printf("MSG: Created %s\n",ImgName);
-         i++;
-      }
-#endif
       printf("MSG: Joining... \n",ImgName);
       if(Ostr.Video) {
          CreateImagesVideo(Imgs,(Ostr.fps),Ostr.ListFile);
@@ -4994,6 +5029,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       }
       else CreateImagesVideo(Imgs,(Ostr.fps),Ostr.Output); 
 #endif
+}
       if(Ostr.Preserve == 0)kgCleanDir(Ostr.Vframes); 
       kgCleanDir(Ostr.Folder);
       kgCleanDir(Ostr.ListFolder);
