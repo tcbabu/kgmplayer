@@ -3845,8 +3845,10 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
   void *GetBkgr ( ) {
       void *Bfill = NULL;
       BkgrFill = Ostr.Bkgr;
+      int Mag=8;
+      if(Ostr.Rfact < 0.001) Mag=1;
       if ( BkgrFill ) {
-          void *Img = kgInitImage ( Ostr.Sxres , Ostr.Syres , 8 ) ;
+          void *Img = kgInitImage ( Ostr.Sxres , Ostr.Syres , Mag ) ;
           kgChangeColor ( Img , 501 , Ostr.Red , Ostr.Green , Ostr.Blue ) ;
 //          kgBoxFill ( Img , 0.0 , 0.0 , (float) Ostr.Sxres ,(float) Ostr.Syres , 501 , 0 ) ;
           kgRoundedRectangleFill(Img , Ostr.Sxres*0.5 ,Ostr.Syres*0.5 ,(float) Ostr.Sxres ,(float) Ostr.Syres ,

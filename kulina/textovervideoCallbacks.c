@@ -84,8 +84,6 @@ int textovervideoTOVinput1browsecallback(int butno,int i,void *Tmp) {
   if(mpt->Video==0) {free(mpt);return ret;}
   kgSetInt(TR,0,mpt->Axres);
   kgSetInt(TR,1,mpt->Ayres);
-  kgSetInt(TR,2,0);
-  kgSetInt(TR,3,0);
   kgUpdateWidget(TR);
   DII *I= (DII *)kgGetNamedWidget(D,(char *)"TOVIbox");
   sprintf(OutFile, "Video: Xres: %d Yres %d\n",mpt->Axres,mpt->Ayres);
@@ -246,9 +244,10 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
   int n,ret=0; 
   int Type;
   int Sxres,Syres,Xoff,Yoff;
+  MEDIAINFO *mt;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
-  int Fsel=1;
+  int Fsel=1,Tpos=1;
   float Rfact=0.15;
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
@@ -262,19 +261,41 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
   char Tfolder[30],buff[200];
   Type = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVradio"));
   Fsel = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVrfact"));
-  switch(Fsel) {
-       case 1: Rfact=0.;break;
-       case 2: Rfact=0.15;break;
-       case 3: Rfact=0.3;break;
-       case 4: Rfact=0.5;break;
-   }
+  Tpos = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVpos"));
+  Rfact = (Fsel-1)*0.05;
   strcpy(infile1,kgGetString(T,0));
+  mt = GetMediaInfo(infile1);
   strcpy(infile2,kgGetString(TI,0));
   strcpy(outfile,kgGetString(TO,0));
   Sxres =kgGetInt(TR,0);
   Syres =kgGetInt(TR,1);
-  Xoff =kgGetInt(TR,2);
-  Yoff =kgGetInt(TR,3);
+  if(Sxres> mt->Axres){
+    float fact = mt->Axres/(float)Sxres;
+    Sxres = Sxres*fact;
+    Syres = Syres*fact;
+ }
+  if(Syres> mt->Ayres){
+    float fact = mt->Ayres/(float)Syres;
+    Sxres = Sxres*fact;
+    Syres = Syres*fact;
+ }
+ int dx = (mt->Axres -Sxres)/2;
+ int dy = (mt->Ayres -Syres)/2;
+//  Xoff =kgGetInt(TR,2);
+//  Yoff =kgGetInt(TR,3);
+  switch(Tpos) {
+       case 1: Xoff=0;Yoff=0;break;
+       case 2: Xoff=0;Yoff=dy-10;break;
+       case 3: Xoff=0;Yoff=-dy+10;break;
+       case 4: Xoff=-dx+10;Yoff=+dy-10;break;
+       case 5: Xoff=+dx-10;Yoff=+dy-10;break;
+       case 6: Xoff=-dx+10;Yoff=0;break;
+       case 7: Xoff=+dx-10;Yoff=0;break;
+       case 8: Xoff=-dx+10;Yoff=-dy+10;break;
+       case 9: Xoff=+dx-10;Yoff=-dy+10;break;
+       case 10: Xoff=0;Yoff=-dy/2;break;
+       case 11: Xoff=0;Yoff=dy/2;break;
+   }
 #if 1
 
   if(Type==1) {
@@ -387,7 +408,6 @@ int textovervideoSetup(void *Tmp,void *args) {
    ***********************************/ 
   /* you add any initialisation here */
   /* useful for setting is used as MakeGroup */
-#if 1
   void **pargs =(void **)args;
   int *ipt=NULL;
   ipt= (int *)pargs[3];
@@ -395,9 +415,14 @@ int textovervideoSetup(void *Tmp,void *args) {
   ipt= (int *)pargs[4];
   *ipt=100;
   ipt= (int *)pargs[5];
-  *ipt=0;
-  ipt= (int *)pargs[6];
-  *ipt=0;
+  *ipt=2;
+#if 0
+   DIM *M=(DIM *) kgGetNamedWidget(Tmp,(char *)"TOVmsg4");
+   kgSetWidgetVisibility(M,0);
+   DIN *B = (DIN *)kgGetNamedWidget(Tmp,(char *)"TOVbclr");
+   kgSetWidgetVisibility(B,0);
+   DIW *W = (DIW *)kgGetNamedWidget(Tmp,(char *)"TOVrfact");
+   kgSetWidgetVisibility(W,0);
 #endif
   return 1;
 }
@@ -488,6 +513,26 @@ int textovervideoTOVradiocallback(int item,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   R = (DIRA *)kgGetWidget(Tmp,i);
   th = (ThumbNail **) R->list;
+   DIM *M=(DIM *) kgGetNamedWidget(Tmp,(char *)"TOVmsg4");
+   DIN *B = (DIN *)kgGetNamedWidget(Tmp,(char *)"TOVbclr");
+   DIW *W = (DIW *)kgGetNamedWidget(Tmp,(char *)"TOVrfact");
+  switch(item){
+       case 1:
+       kgSetWidgetVisibility(M,0);
+       kgSetWidgetVisibility(B,0);
+       kgSetWidgetVisibility(W,0);
+       break;
+       case 2:
+       kgSetWidgetVisibility(M,1);
+       kgSetWidgetVisibility(B,1);
+       kgSetWidgetVisibility(W,1);
+       break;
+  }
+  kgUpdateWidget(M);
+  kgUpdateWidget(B);
+  kgUpdateWidget(W);
+  kgUpdateOn(Tmp);
+
   return ret;
 }
 void  textovervideoTOVradioinit (DIRA *R,void *ptmp) {
@@ -540,6 +585,24 @@ void  textovervideoTOVbclrinit (DIN *B,void *ptmp) {
  kgChangeButtonColor(B,0,Red,Green,Blue);
 }
 int textovervideoTOVrfactcallback(int item ,int i,void *Tmp) {
+  /*********************************** 
+    item : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIW *B; 
+  int ret=1; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIW *) kgGetWidget(Tmp,i);
+  switch(item) {
+    case 1: 
+      break;
+  }
+  return ret;
+}
+int textovervideoTOVposcallback(int item ,int i,void *Tmp) {
   /*********************************** 
     item : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
