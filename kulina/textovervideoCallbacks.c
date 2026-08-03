@@ -318,9 +318,9 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
            Sxres,Syres,Xoff,Yoff,outfile,infile2);
   }
 //      runfunction(buff,ProcessPrint,kgwrite);
-//      ExecFunction(buff,kgwrite);
-      RunFunctionAndWait(buff,kgwrite);
       kgWrite(I,buff);
+      RunFunctionAndWait(buff,kgwrite);
+//      ExecFunction(buff,kgwrite);
   return ret;
 }
  /* Callback for  TOVgo   */ 

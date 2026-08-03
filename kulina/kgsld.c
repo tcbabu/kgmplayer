@@ -3866,12 +3866,12 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       }
       return Bfill;
   }
-  void * GetBkgrImage ( ) {
+  void * GetBkgrImage ( int k) {
       char Flname [ 300 ] ;
       static int i = 1;
       char *pt = NULL;
       if ( Ostr.Video == 0 ) return pt;
-      sprintf ( Flname , "%-s/Frame_%06d.png" , Ostr.Folder , i++ ) ;
+      sprintf ( Flname , "%-s/Frame_%06d.png" , Ostr.Folder , k ) ;
       pt = ( char * ) malloc ( strlen ( Flname ) +3 ) ;
       strcpy ( pt , Flname ) ;
  //     printf ( "%s\n" , pt ) ;
@@ -4011,7 +4011,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
               Png = Bfill;
           }
           if ( Ostr.Video ) {
-              Bkimg = GetBkgrImage ( ) ;
+              Bkimg = GetBkgrImage ( j+1) ;
               if ( Bkimg != NULL ) {
                   void *Dummy = kgGetImage ( Bkimg ) ;
                   if ( Dummy == NULL ) break;
@@ -4075,7 +4075,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
               Png = Bfill;
           }
           if ( Ostr.Video ) {
-              Bkimg = GetBkgrImage ( ) ;
+              Bkimg = GetBkgrImage (j+1 ) ;
               if ( Bkimg != NULL ) {
 #if 1
                   void *Dummy = kgGetImage ( Bkimg ) ;
@@ -4157,14 +4157,14 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           printf("MSG: !c06Processing %s\r",Pngs[i]);
           fflush(stdout);
           Img = kgGetImage(Pngs[i]);
-            printf("MSG: Merging Images\n");
+            printf("MSG: Merging Images: %d (%d)\r",k,Ostr.Nf);
             fflush(stdout);
           for(j=0;j<repeat;j++) {
               per = (float)j/repeat*100;
             sprintf(buff,"MSG: Per: %.3f\n",per);
             printf("%s",buff);
             fflush(stdout);
-            Bkfile = GetBkgrImage();
+            Bkfile = GetBkgrImage(k);
             Bimg = kgGetImage(Bkfile);
             if(Bimg==NULL) break;
             kgMergeImages(Bimg,Img,Ostr.Xoff,Ostr.Yoff);
@@ -5032,9 +5032,14 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
 #ifdef D_KULINA
       Imgs = GetFileList(Ostr.Vframes,(char *)"*.png");
       printf("MSG: Joining... \n",ImgName);
+      printf("MSG: Per: 0\n");
       if(Ostr.Video) {
+#if 0
          CreateImagesVideo(Imgs,(Ostr.fps),Ostr.ListFile);
          OverlayVideos(Ostr.VideoFile,Ostr.ListFile,1,Ostr.Output);
+#else
+         UpdateVideoImages(Ostr.VideoFile,Imgs,Ostr.Output);
+#endif
       }
       else CreateImagesVideo(Imgs,(Ostr.fps),Ostr.Output); 
 #endif

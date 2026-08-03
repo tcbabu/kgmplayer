@@ -1549,3 +1549,113 @@ int ExecFunction(char *job,int (*function)(int,char **)){
       if ( FileStat ( Folder ) ) kgCleanDir ( Folder ) ;
       return 1 ;
   }
+  int UpdateVideoImages ( char *Vfile,char **L, char *Outfile ) {
+/* images must be of same size */
+      char Folder [ 500 ]  , Vname [ 500 ] ;
+      int id ;
+      char command [ 10000 ] ,  Qstr [ 100 ] ;
+      char mylist [ 300 ] ,TimeStamps[300];
+      char AudioFile[300],VtmpFile[300];
+      FILE *myl = NULL;
+      FILE *tst=NULL;
+      int vid = 0 ;
+      int status , i;
+      Dlink  *Vlist = NULL;
+      char *vnames = NULL;
+      char *ipt = NULL;
+      float TotSec;
+      float tsecs,tstamp;
+      MakeTmpFolderInHome ( Folder ) ;
+      if ( FileStat ( Folder ) ) kgCleanDir ( Folder ) ;
+      if ( L == NULL ) return 0;
+      mkdir ( Folder , 0700 ) ;
+      sprintf(TimeStamps,"%-s/stamp.txt",Folder);
+      sprintf(AudioFile,"%-s/audio.wav",Folder);
+      sprintf(VtmpFile,"%-s/video.mp4",Folder);
+      GetTimeStamps(Vfile,TimeStamps);
+      tst= fopen(TimeStamps,"r");
+      if(tst == NULL ){
+          printf("Failed to open TimeStams\n");
+          fflush(stdout);
+          return 0;
+      }
+      fscanf(tst,"%f",&tstamp);
+      sprintf ( mylist , "%-s/mylist.txt" , Folder ) ;
+      myl = fopen ( mylist , "w" ) ;
+      vid=0;
+      TotSec=0;
+      if( ( ipt = L[vid] ) != NULL ) {
+          fprintf ( myl , "file  \'%-s\'\n" , ipt ) ;
+          printf("MSG: %s\n",ipt);
+          fflush ( myl ) ;
+          vid++;
+      }
+      while ( ( ipt = L[vid] ) != NULL ) {
+          if(fscanf(tst,"%f",&tstamp)<= 0 ) {
+               printf("FAILED READING... : %d\n",vid);
+               fflush(stdout);
+               break;
+          }
+          TotSec += tstamp;
+          fprintf(myl, "duration %f\n",tstamp);
+          fprintf ( myl , "file  \'%-s\'\n" , ipt ) ;
+          printf ( "file  \'%-s\'\n" , ipt ) ;
+          fflush(stdout);
+
+          printf("MSG: %s\n",ipt);
+          fflush ( myl ) ;
+          vid++;
+      } // while...
+      fclose ( myl ) ;
+      fclose (tst);
+      TotSec += 0.001;
+      printf("MSG: TotSec: %f\n",TotSec);
+      printf( "TotSec: %f\n",TotSec);
+      fflush(stdout);
+      sprintf(command,"ffmpegfun -i %s -f concat -safe 0 -i %s -filter_complex \"[1:v]setpts=PTS+0.0/TB[replacement_track];"
+                "[0:v][replacement_track]overlay=enable=\'between(t,0.0,%-f)\':eof_action=pass\""
+                " -c:a copy %s",Vfile,mylist,TotSec,Outfile);
+//                " -c:a copy %s",Vfile,mylist,TotSec,VtmpFile);
+      printf("%s\n",command);
+      fflush(stdout);
+      runfunction ( command , ProcessPrint , ffmpegfun ) ;
+#if 0
+      AudioExtract(Vfile,AudioFile);
+      AudioChange(VtmpFile,AudioFile,Outfile);
+#endif
+      if ( FileStat ( Folder ) ) kgCleanDir ( Folder ) ;
+      return 1 ;
+  }
+int ProcessPts(void *tpt,int pip0,int pip1,int Pid) {
+     char buff[1000];
+     char *PtsFile=(char *) tpt;
+     int ret =0;
+     int pos,i,ch;
+     float per=0.0,ptime1=0,ptime2,ptime;
+     char *pt;
+//     close(pip1);
+     FILE *fp=fopen(PtsFile,"w");
+     if(fp == NULL) return 0;
+     i=0;
+     while((ch=GetLine(pip0,buff)) ) {
+         if(ch< 0) continue;
+         if((pos=SearchString(buff,(char *)"] n:"))>=0) {
+            i++;
+            pos = SearchString(buff,(char *)"pts_time:");
+            pt = buff+pos+9;
+            sscanf(pt,"%f",&ptime2);
+            fprintf(fp,"%f\n",ptime2-ptime1);
+            printf("MSG: Per: %d \n",i%100);
+            ptime1 = ptime2;
+         }
+     }
+     fclose(fp);
+     return ret;
+}
+  int GetTimeStamps(char *vfile,char *ptsfile) {
+     char buff[500];
+     sprintf(buff,"ffmpegfun -i %s -vf \"showinfo\" -f null /dev/null",vfile);
+     printf("%s\n",buff);
+     RunFunction(buff,ProcessPts,ffmpegfun,ptsfile);
+     return 1;
+  }

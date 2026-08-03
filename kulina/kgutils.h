@@ -53,7 +53,7 @@ int AddStillAtStart(char *infile,float  duration,char *outfile);
 int AddStillAtEnd(char *infile,float  duration,char *outfile);
 int runfunction(char *job,int (*ProcessOut)(int,int,int),int (*function)(int,char **));
 int RunFunction(char *job,int (*ProcessOut)(void *,int,int,int),int
-(*function)(int,char **),void *);
+             (*function)(int,char **),void *);
 int kgffmpeg(int,char **);
 int ffmpegfun(int,char **);
 int ProcessSkip(int pip0,int pip1,int Pid);
@@ -84,5 +84,7 @@ int VideoTopBottom(char *infile1,char *infile2,char *outfile);
 int VideoSideBySide(char *infile1,char *infile2,char *outfile);
 void *CreateColorImage(int Xsize,int Ysize,int red,int green,int blue);
 int kgwrite(int argc,char *argv[]);
+int GetTimeStamps(char *vfile,char *ptsfile);
+int UpdateVideoImages ( char *Vfile,char **L, char *Outfile );
 #endif
 
