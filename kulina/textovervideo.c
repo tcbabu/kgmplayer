@@ -106,7 +106,7 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   butn4[0].xpmp=NULL;
   butn4[0].xpmh=NULL;
   butn4[0].bkgr=-1;
-  butn4[0].butncode=-2302850;
+  butn4[0].butncode=16119166;
   DIL h4 = { 
     'h',
     187,401,  
@@ -254,7 +254,7 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   butn11[0].xpmp=NULL;
   butn11[0].xpmh=NULL;
   butn11[0].bkgr=-255255255;
-  butn11[0].butncode=31;
+  butn11[0].butncode=-2302945;
   DIN b11 = { 
     'n',
     107,254,  
@@ -263,7 +263,7 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
     120, 
     24, 
     1,1, 
-    1,0.150000,0,1,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    1,0.150000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
     butn11, 
     textovervideoTOVbclrcallback , /* *args, Callback */
     NULL  /* any args */
@@ -274,39 +274,37 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
     'm',
     16,256,  
     107,285,  
-    1,1  
+    1,0  
   };
   strncpy(m12.msg,(char *)"Select Color",499);
   strcpy(m12.Wid,(char *)"TOVmsg4");
   m12.item = -1;
   char **menu13 ; 
-  menu13= (char **)malloc(sizeof(char *)*12);
-  menu13[11]=NULL;
+  menu13= (char **)malloc(sizeof(char *)*11);
+  menu13[10]=NULL;
   menu13[0]=(char *)malloc(4);
   strcpy(menu13[0],(char *)"0.0");
   menu13[1]=(char *)malloc(5);
-  strcpy(menu13[1],(char *)"0.05");
+  strcpy(menu13[1],(char *)"0.10");
   menu13[2]=(char *)malloc(5);
-  strcpy(menu13[2],(char *)"0.10");
+  strcpy(menu13[2],(char *)"0.20");
   menu13[3]=(char *)malloc(5);
-  strcpy(menu13[3],(char *)"0.15");
+  strcpy(menu13[3],(char *)"0.30");
   menu13[4]=(char *)malloc(5);
-  strcpy(menu13[4],(char *)"0.20");
+  strcpy(menu13[4],(char *)"0.40");
   menu13[5]=(char *)malloc(5);
-  strcpy(menu13[5],(char *)"0.25");
-  menu13[6]=(char *)malloc(4);
-  strcpy(menu13[6],(char *)"0.3");
+  strcpy(menu13[5],(char *)"0.50");
+  menu13[6]=(char *)malloc(5);
+  strcpy(menu13[6],(char *)"0.60");
   menu13[7]=(char *)malloc(5);
-  strcpy(menu13[7],(char *)"0.35");
+  strcpy(menu13[7],(char *)"0.70");
   menu13[8]=(char *)malloc(5);
-  strcpy(menu13[8],(char *)"0.40");
+  strcpy(menu13[8],(char *)"0.80");
   menu13[9]=(char *)malloc(5);
-  strcpy(menu13[9],(char *)"0.45");
-  menu13[10]=(char *)malloc(4);
-  strcpy(menu13[10],(char *)"0.5");
+  strcpy(menu13[9],(char *)"0.90");
   char *prompt13 ; 
-  prompt13=(char *)malloc(17);
-  strcpy(prompt13,(char *)"Rounding factor ");
+  prompt13=(char *)malloc(14);
+  strcpy(prompt13,(char *)"Transparency ");
   DIW w13 = { 
     'w',
     237,257,  
@@ -316,7 +314,7 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
     prompt13 ,
     menu13 ,
     NULL,textovervideoTOVrfactcallback , /* *args, Callback  */
-    1 
+    0 
   };
   strcpy(w13.Wid,(char *)"TOVrfact");
   w13.item = -1;

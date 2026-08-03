@@ -95,6 +95,9 @@
   static float pagepos;
   static float wxmin , wymin , wxmax , wymax;
   static int Xres , Yres;
+  static int PGLIMIT=268;
+  static float ConFact=5.62;
+  static float Szfact=1.0;
   static char rstr [ 17 ] [ 5 ] = { "   i" , \
       "  ii" , " iii" , "  iv" , "   v" , \
       "  vi" , " vii" , "viii" , "  ix" , "   x" , "  xi" , " xii" , \
@@ -112,6 +115,8 @@
   static unsigned char tmenu [ 23 ] = { " Give text file name :" };
   static int Red = 60 , Green = 80 , Blue = 70;
   static int BkgrFill = 0;
+  static int YYBGN=174;
+  static float THWFac =2.81;
   int stripblnk ( char * ) ;
   static int MakeImgFile ( char *Folder , char *Outfile , char *ext ) ;
   char **GetFileList(char *Folder,char *Filter) ;
@@ -121,6 +126,7 @@
       int Scroll;
       int Preserve;
       int Rgiven;
+      int Pgiven;
       int Sxres;
       int Syres;
       int Xoff;
@@ -136,6 +142,7 @@
       int Green;
       int Blue;
       float Rfact;
+      float Transp;
       int Nf;
       float fps;
       float ssec;
@@ -344,19 +351,19 @@
            break; \
            case 'h': \
            ihfac = scanint ( ( char * ) & buf [ 2 ] ) ; \
-           hfac = ( ( float ) ihfac ) /12.0; \
+           hfac = ( ( float ) ihfac ) *Szfact/12.0; \
            kgTextSize ( Img , th*hfac , tw*wfac , tg*gfac ) ; \
            break; \
            case 'w': \
            iwfac = scanint ( ( char * ) & buf [ 2 ] ) ; \
-           TxtW = iwfac;\
-           wfac = ( ( float ) iwfac ) /12.0; \
+           TxtW = iwfac*Szfact;\
+           wfac = ( ( float ) iwfac )*Szfact /12.0; \
            kgTextSize ( Img , th*hfac , tw*wfac , tg*gfac ) ; \
            width = ( tw*wfac+tg*gfac ) ; \
            break; \
            case 'g': \
            ifac = scanint ( ( char * ) & buf [ 2 ] ) ; \
-           gfac = ( ( float ) ifac ) /1.0; \
+           gfac = ( ( float ) ifac )*Szfact /1.0; \
            kgTextSize ( Img , th*hfac , tw*wfac , tg*gfac ) ; \
            width = ( tw*wfac+tg*gfac ) ; \
            break; \
@@ -462,8 +469,8 @@
        fprintf ( cfile , "$o%-d\n" , ( L_mar+5*level ) *10 ) ;\
        fprintf ( cfile , "$h%-d\n$w%-d\n" , 14-level , 14-level ) ;\
        Hd_line = 1; \
-       kgTextSize ( Img , ( 14.0-level ) *2.81/12. , \
-       ( 14.0-level ) *2.81/12. , tg ) ;\
+       kgTextSize ( Img , ( 14.0-level ) *(ConFact*0.50)/12. , \
+       ( 14.0-level ) *(ConFact*0.50)/12. , tg ) ;\
        wd = kgStringLength ( Img , " . . . . . . . . . . . . . . . . . . . ." ) ;\
        wd /= 20.;\
        dsp = kgStringLength ( Img , ln ) ;\
@@ -500,8 +507,8 @@
        pt = first_adr;\
    }
 #define Set_Defaults \
-   pglimit = 268.0/5.62;\
-   pglimit_bk = 268.0/5.62;\
+   pglimit = PGLIMIT/ConFact;\
+   pglimit_bk = PGLIMIT/ConFact;\
    Columns = 1 , Top_skip = 22 , Para_of = 10;\
    Col_shft = 0.;\
    Col_gap = 10;\
@@ -527,12 +534,10 @@
    set = 'l';\
    ipge = 1;\
    ofs = 35.;\
-   yy = 172.;\
-   yy = 174.;\
+   yy = YYBGN;\
    ofsl = 35.;\
    leftmar = 35.;\
-   yyl = 172.;\
-   yyl = 174.;\
+   yyl = YYBGN;\
    iskip = 0;\
    tlinepos = 151.0 , theadpos = 152.5;\
    blinepos = -110.0 , bheadpos = -115.5;\
@@ -2605,7 +2610,7 @@
   char *ln , int ofs , int rmg ) {
       int no , level , i , rmg1;
       float wd , dsp , rln;
-    /*  txtsize((txth)*2.81/12.,(txtw)*2.81/12.,txtg); */
+    /*  txtsize((txth)*(ConFact*0.50)/12.,(txtw)*(ConFact*0.50)/12.,txtg); */
       wd = kgStringLength ( Img , " . . . . . . . . . . . . . . . . . . . ." ) ;
       wd /= 20.;
       i = 0;
@@ -2977,7 +2982,7 @@
       gfac = 1.0;
       sfac = 1.0;
       kgTextSize ( Img , th * hfac , tw * wfac , tg * gfac ) ;
-      yybgn = 174. - sfac * space * th - Top_skip;
+      yybgn = YYBGN - sfac * space * th - Top_skip;
       yy = yy - sfac * space * th;
       ww = tw * wfac;
       wg = tg * gfac;
@@ -3001,16 +3006,16 @@
               switch ( txt [ 1 ] ) {
                   case 'h':
                   ifac = scanint ( ( char * ) & txt [ 2 ] ) ;
-                  hfac = ( ( float ) ifac ) / 12.0;
+                  hfac = ( ( float ) ifac )*Szfact / 12.0;
                   break;
                   case 'w':
                   ifac = scanint ( ( char * ) & txt [ 2 ] ) ;
-                  TxtW = ifac;
-                  wfac = ( ( float ) ifac ) / 12.0;
+                  TxtW = ifac*Szfact;
+                  wfac = ( ( float ) ifac )*Szfact / 12.0;
                   break;
                   case 'g':
                   ifac = scanint ( ( char * ) & txt [ 2 ] ) ;
-                  gfac = ( ( float ) ifac ) ;
+                  gfac = ( ( float ) ifac )*Szfact ;
                   break;
                   case 's':
                   ifac = scanint ( ( char * ) & txt [ 2 ] ) ;
@@ -3695,14 +3700,14 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
                   case 'E':
                   pglimit = ( float ) scanint ( ( char * ) & ln [ 3 ] ) ;
                   pglimit -= Top_skip;
-                  pglimit = ( pglimit / 5.62 ) ;
+                  pglimit = ( pglimit / ConFact ) ;
                   pglimit_bk = pglimit;
                   goto l100;
                   case 'S':
-                  pglimit = ( pglimit * 5.62 ) + Top_skip;
+                  pglimit = ( pglimit * ConFact ) + Top_skip;
                   Top_skip = scanint ( ( char * ) & ln [ 3 ] ) ;
                   pglimit -= Top_skip;
-                  pglimit = ( pglimit / 5.62 ) ;
+                  pglimit = ( pglimit / ConFact ) ;
                   pglimit_bk = pglimit;
                   default:
                   goto l100;
@@ -3850,10 +3855,13 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       if ( BkgrFill ) {
           void *Img = kgInitImage ( Ostr.Sxres , Ostr.Syres , Mag ) ;
           kgChangeColor ( Img , 501 , Ostr.Red , Ostr.Green , Ostr.Blue ) ;
-//          kgBoxFill ( Img , 0.0 , 0.0 , (float) Ostr.Sxres ,(float) Ostr.Syres , 501 , 0 ) ;
-          kgRoundedRectangleFill(Img , Ostr.Sxres*0.5 ,Ostr.Syres*0.5 ,(float) Ostr.Sxres ,(float) Ostr.Syres ,
+          if(Mag==1) kgBoxFill ( Img , 0.0 , 0.0 , (float) Ostr.Sxres ,(float) Ostr.Syres , 501 , 0 ) ;
+          else kgRoundedRectangleFill(Img , Ostr.Sxres*0.5 ,Ostr.Syres*0.5 ,(float) Ostr.Sxres ,
+                             (float) Ostr.Syres ,
                              0,501 , Ostr.Rfact);
+          
           Bfill = kgGetResizedImage ( Img ) ;
+          if(Ostr.Transp>0.0001) kgAddTransparency(Bfill,Ostr.Transp);
           kgCloseImage ( Img ) ;
       }
       return Bfill;
@@ -3877,23 +3885,16 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       char PngFile [ 300 ] ;
       void *Bfill = NULL , *Bkimg = NULL;
       ylow = wyl;
-      ydown = 0.0;
       yup = wyu;
-#if 0
-      fact = ( float ) Pyres/ ( float ) Pxres;
-      if ( Yend < ylow ) ylow = Yend;
-//    printf("Yend= %f wyl = %f\n",Yend,wyl);
-      ydown = wyu - ( wxu-wxl ) *fact;
-#else
-      ydown = -40.;
-#endif
-//      printf("UF: %.2f %.2f %.2f %.2f\n",wxl,wyl,wxu,wyu);
+      ydown = wyl;
+//      printf("MSG: %.2f %.2f %.2f %.2f\n",wxl,wyl,wxu,wyu);
       yup = wyu;
-      kgUserFrame ( Img , wxl , ydown , wxu , wyu ) ;
+      kgUserFrame ( Img , wxl , wyl , wxu , wyu ) ;
       kgBackupGph ( Img , GphFile ) ;
-      Pimg = kgInitImage ( Sxres , Syres , 4 ) ;
-      kgUserFrame ( Pimg , wxl , ydown , wxu , wyu ) ;
-      kgImportGphFile ( Pimg , GphFile , wxl , ydown , wxu , wyu ) ;
+      Pimg = kgInitImage ( Ostr.Sxres , Ostr.Syres , 4 ) ;
+      kgUserFrame ( Pimg , wxl ,wyl , wxu , wyu ) ;
+      kgImportGphFile ( Pimg , GphFile , wxl , wyl , wxu , wyu ) ;
+
       Png = kgGetResizedImage ( Pimg ) ;
       kgCloseImage ( Pimg ) ;
 #if 1
@@ -3932,6 +3933,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       ylow = wyl;
       ydown = wyl;
       xright = 210;
+      xright = wxu;
       yup = wyu;
 #if 0
       fact = ( float ) Pyres/ ( float ) Pxres;
@@ -3945,7 +3947,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       yup = wyu;
       kgUserFrame ( Img , wxl , wyl , xright , wyu ) ;
       kgBackupGph ( Img , GphFile ) ;
-      Pimg = kgInitImage ( Sxres , Syres , 4 ) ;
+      Pimg = kgInitImage ( Ostr.Sxres , Ostr.Syres , 4 ) ;
       kgUserFrame ( Pimg , wxl , wyl , xright , yup ) ;
       kgImportGphFile ( Pimg , GphFile , wxl , wyl , xright , wyu ) ;
       Png = kgGetResizedImage ( Pimg ) ;
@@ -4199,7 +4201,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       int txth,txtw;
       int txtg,ifac=24;
 */
-      int Vscroll = 1;
+      int Vscroll = 0;
       float pglimit_bk;
       short Col_shft = 0;
       char ftnotes [ 16 ] = { "Foot_NoT.ZzZ" };
@@ -4308,17 +4310,17 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
                   switch ( ln [ 2 ] ) {
                       case 'E':
                       pglimit = ( float ) scanint ( ( char * ) & ln [ 3 ] ) ;
-                      if ( pglimit > 268 ) Vscroll = 0;
+                      if ( pglimit >= 100000 ) Vscroll = 1;
                       pglimit -= Top_skip;
-                      pglimit = ( pglimit / 5.62 ) ;
+                      pglimit = ( pglimit / ConFact ) ;
                       pglimit_bk = pglimit;
                       goto l100;
                       break;
                       case 'S':
-                      pglimit = ( pglimit * 5.62 ) + Top_skip;
+                      pglimit = ( pglimit * ConFact ) + Top_skip;
                       Top_skip = scanint ( ( char * ) & ln [ 3 ] ) ;
                       pglimit -= Top_skip;
-                      pglimit = ( pglimit / 5.62 ) ;
+                      pglimit = ( pglimit / ConFact ) ;
                       pglimit_bk = pglimit;
                       default:
                       goto l100;
@@ -4345,14 +4347,14 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
                   fac = ( ( float ) ifac ) / 24.0;
                   break;
                   case 'h':
-                  txth = scanint ( ( char * ) & ln [ 2 ] ) ;
+                  txth = scanint ( ( char * ) & ln [ 2 ] )*Szfact ;
                   break;
                   case 'w':
-                  txtw = scanint ( ( char * ) & ln [ 2 ] ) ;
+                  txtw = scanint ( ( char * ) & ln [ 2 ] )*Szfact ;
                   TxtW = txtw;
                   break;
                   case 'g':
-                  txtg = scanint ( ( char * ) & ln [ 2 ] ) ;
+                  txtg = scanint ( ( char * ) & ln [ 2 ] )*Szfact ;
                   break;
                   case 'f':
                   ifnt = scanint ( ( char * ) & ln [ 2 ] ) ;
@@ -4575,16 +4577,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           yy = yyl;
           rmg = rmgl;
           if ( np < stpage ) goto l10;
-#if 0
-          kgViewport ( Img , 0. , 0. , 1. , 1. ) ;
-#endif
           kgGetWindow ( Img , w , w + 1 , w + 2 , w + 3 ) ;
-//        kgHardCopy(Img,"txt.ps");
           if ( RIGHT_MAR < 220 ) {
-//        kgHardCopy(Img,"txt.ps");
               wxl = w [ 0 ] , wyl = w [ 1 ] ;
-//`	    wxu = wxl + (w[2] - w[0]) * 0.5625;
-//	    wxu = wxl + (w[2] - w[0]) * 0.5303;
               wxu = wxl + ( w [ 2 ] - w [ 0 ] ) * 0.70707;
               wyu = w [ 3 ] ;
               if ( PsOut == 1 ) {
@@ -4606,7 +4601,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
                   system ( ln ) ;
               }
           }
-          printf ( "PngOut:Scroll: %d %d %d\n" , PngOut , Scroll , RIGHT_MAR ) ;
+          printf ( "MSG: PngOut:Scroll:RM:  %d %d %d\n" , PngOut , Scroll , RIGHT_MAR ) ;
           printf ("MSG: !c01Vscroll = %d\n",Vscroll);
           fflush ( stdout ) ;
           if(PsOut)return 0;
@@ -4618,21 +4613,21 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           }
           
           if ( PngOut ) {
-//              MakePngImage ( Pbkimg , wxl , wyl , wxu , wyu ) ;
+              printf("MSG: Creating Png: %f %f %f %f\n",w[0],w[1],w[2],w[3]);
+              fflush(stdout);
+              MakePngImage ( Pbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
+#if 0
               if ( RIGHT_MAR < 220 ) {
                   printf("MSG: PngA4\n");
                   fflush(stdout);
-                  sleep(5);
                   MakePngA4Image ( Pbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
-                  sleep(5);
               }
               else {
-                  printf("MSG: PngLandscaoe\n");
+                  printf("MSG: PngLandscape\n");
                   fflush(stdout);
-                  sleep(5);
                   MakePngImage ( Pbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
-                  sleep(5);
               }
+#endif
           }
           if ( Scroll ) {
               if ( RIGHT_MAR < 220 ) {
@@ -4649,12 +4644,10 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           kgUserFrame ( Img , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
           if ( ! Finish && ( np < endpage ) ) goto l10;
           else {
-//#ifdef D_KULINA
               if(Ostr.Video && PngOut) {
                 printf("MSG: Processing Video Frames\n");
                 MergeWithVideoFrames();
               }
-//#endif
               remove ( Z_DU_ZZ ) ;
               remove ( TEMP_FILE ) ;
               return ( 0 ) ;
@@ -4727,9 +4720,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           }
       }
       Buf = buf + 50000L;
-      tw = 2.81;
-      th = 2.81;
-      tg = 2*2.81 / 12.0;
+      tw = (ConFact*0.50);
+      th = (ConFact*0.50);
+      tg = 2*(ConFact*0.50) / 12.0;
       ifnt = TX_FONT;
       islant = 0;
       iuline = 0;
@@ -4863,6 +4856,16 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
               
               Ostr.PsOut = 0;
               Ostr.Rgiven = 1;
+              if(Ostr.Pgiven == 0) {
+                 Ostr.Pxu = Ostr.Sxres;
+                 Ostr.Pyu = 170;
+                 Ostr.Pxl =0;
+                 Ostr.Pyl =170 -  Ostr.Syres;
+                 PGLIMIT = Ostr.Pyu - Ostr.Pyl-10;
+//                 Szfact = 2.0;
+                 ConFact = 24;
+ //                YYBGN =  Ostr.Pyu+4;
+              }
               break;
               case 'p':
               sscanf ( apt+2 , "%s" , buff ) ;
@@ -4873,7 +4876,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
               }
               sscanf ( buff , "%d%d%d%d" , & ( Ostr.Pxu ) , & ( Ostr.Pyu ),
                             &(Ostr.Pxl),&(Ostr.Pyl));
-              
+              Ostr.Pgiven=1;
+              PGLIMIT = Ostr.Pyu - Ostr.Pyl-10;
+              YYBGN =  Ostr.Pyu;
               break;
               case 'o':
               sscanf ( apt+2 , "%s" , buff ) ;
@@ -4907,12 +4912,12 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
                   j++;
               }
               sscanf ( buff , "%d%d%d%f" , & ( Ostr.Red ) , \
-                   & ( Ostr.Green ) , & ( Ostr.Blue ) ,&(Ostr.Rfact)) ;
+                   & ( Ostr.Green ) , & ( Ostr.Blue ) ,&(Ostr.Transp)) ;
               Ostr.Red %= 256;
               Ostr.Green %= 256;
               Ostr.Blue %= 256;
-              printf("MSG: !c01Red: %d Green: %d Blue: %d Rfact: %f\n",
-                       Ostr.Red,Ostr.Green,Ostr.Blue,Ostr.Rfact);
+              printf("MSG: !c01Red: %d Green: %d Blue: %d Transp: %f\n",
+                       Ostr.Red,Ostr.Green,Ostr.Blue,Ostr.Transp);
               Ostr.Bkgr = 1;
               Ostr.PsOut = 0;
               break;
@@ -4928,8 +4933,8 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       strcpy ( PngFolder , Ostr.Folder ) ;
       Sxres = Ostr.Sxres;
       Syres = Ostr.Syres;
-      Pxres = Sxres;
-      Pyres = Syres;
+      Pxres = Ostr.Pxu - Ostr.Pxl;
+      Pyres = Ostr.Pyu - Ostr.Pyl;
       printf("Res: %d:%d %d:%d\n",Sxres,Syres,Ostr.Vxres,Ostr.Vyres);
       if ( Ostr.Video ) {
           kgCleanDir ( Ostr.Folder ) ;
@@ -4956,6 +4961,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       O->Scroll = 1;
       O->Preserve = 0;
       O->Rgiven = 0;
+      O->Pgiven = 0;
       O->Sxres = 0;
       O->Syres = 0;
       O->Xoff  =0;
@@ -4971,6 +4977,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       O->Green = 0;
       O->Blue = 0;
       O->Rfact =0.0;
+      O->Transp =0.0;
       O->ssec = 10;
       O->duration = 60;
       O->fps = 25.0;

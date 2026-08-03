@@ -15,6 +15,8 @@ int GetFolderName(char *infile,char *folder);
 int RunAndMonitor(char *);
 int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
 
+static int Vxres=400,Vyres=300;
+
 static void *Args=NULL,*Rets=NULL;
 
 static DIAINTR *It = NULL;
@@ -84,6 +86,8 @@ int textovervideoTOVinput1browsecallback(int butno,int i,void *Tmp) {
   if(mpt->Video==0) {free(mpt);return ret;}
   kgSetInt(TR,0,mpt->Axres);
   kgSetInt(TR,1,mpt->Ayres);
+  Vxres = mpt->Axres;
+  Vyres = mpt->Ayres;
   kgUpdateWidget(TR);
   DII *I= (DII *)kgGetNamedWidget(D,(char *)"TOVIbox");
   sprintf(OutFile, "Video: Xres: %d Yres %d\n",mpt->Axres,mpt->Ayres);
@@ -243,12 +247,12 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
   DIALOG *D;DIL *B; 
   int n,ret=0; 
   int Type;
-  int Sxres,Syres,Xoff,Yoff;
+  int Sxres,Syres,Xoff,Yoff,Pxres,Pyres;
   MEDIAINFO *mt;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
   int Fsel=1,Tpos=1;
-  float Rfact=0.15;
+  float Rfact=0.0,fact=1.0;
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
@@ -258,11 +262,11 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
   DIT *TR=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVtres");
   DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"TOVIbox");
   char infile1[300],infile2[300],outfile[300],Pinfile1[300],Pinfile2[300];
-  char Tfolder[30],buff[200];
+  char Tfolder[30],buff[200],Opt[200];
   Type = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVradio"));
   Fsel = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVrfact"));
   Tpos = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVpos"));
-  Rfact = (Fsel-1)*0.05;
+  Rfact = (Fsel-1)*0.1;
   strcpy(infile1,kgGetString(T,0));
   mt = GetMediaInfo(infile1);
   strcpy(infile2,kgGetString(TI,0));
@@ -296,22 +300,27 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
        case 10: Xoff=0;Yoff=-dy/2;break;
        case 11: Xoff=0;Yoff=dy/2;break;
    }
-#if 1
-
+#if 0
+  fact = Syres/(float)Vyres;
+  Pyres = 297*fact;
+  fact = Sxres/(float)Vxres;
+  Pxres = fact*297;   
+  sprintf(Opt," -p%-d:%-d:0:0",Pxres,Pyres);
+#endif
+  strcpy(Opt,(char *)" ");
   if(Type==1) {
-      sprintf(buff,"kgwrite -v%-s -s%-d:%-d:%-d:%-d -o%-s %-s",infile1,
+      sprintf(buff,"kgwrite -v%-s %s -s%-d:%-d:%-d:%-d -o%-s %-s",infile1,Opt,
            Sxres,Syres,Xoff,Yoff,outfile,infile2);
   }
   else {
-      sprintf(buff,"kgwrite -v%-s -k%-d:%-d:%-d:%-0.2f -s%-d:%-d:%-d:%-d -o%-s %-s",
-          infile1,Red,Green,Blue,Rfact,
+      sprintf(buff,"kgwrite -v%-s %s  -k%-d:%-d:%-d:%-0.2f -s%-d:%-d:%-d:%-d -o%-s %-s",
+          infile1,Opt,Red,Green,Blue,Rfact,
            Sxres,Syres,Xoff,Yoff,outfile,infile2);
   }
 //      runfunction(buff,ProcessPrint,kgwrite);
 //      ExecFunction(buff,kgwrite);
       RunFunctionAndWait(buff,kgwrite);
       kgWrite(I,buff);
-#endif
   return ret;
 }
  /* Callback for  TOVgo   */ 
@@ -411,9 +420,9 @@ int textovervideoSetup(void *Tmp,void *args) {
   void **pargs =(void **)args;
   int *ipt=NULL;
   ipt= (int *)pargs[3];
-  *ipt=100;
+  *ipt=Vxres;
   ipt= (int *)pargs[4];
-  *ipt=100;
+  *ipt=Vyres;
   ipt= (int *)pargs[5];
   *ipt=2;
 #if 0
