@@ -85,6 +85,6 @@ int VideoSideBySide(char *infile1,char *infile2,char *outfile);
 void *CreateColorImage(int Xsize,int Ysize,int red,int green,int blue);
 int kgwrite(int argc,char *argv[]);
 int GetTimeStamps(char *vfile,char *ptsfile,float start,float end);
-int UpdateVideoImages ( char *Vfile,char **L, char *Outfile );
+int UpdateVideoImages ( char *Vfile,char **L, char *Outfile,float st,float et );
 #endif
 

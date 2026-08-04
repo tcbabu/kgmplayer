@@ -1549,7 +1549,7 @@ int ExecFunction(char *job,int (*function)(int,char **)){
       if ( FileStat ( Folder ) ) kgCleanDir ( Folder ) ;
       return 1 ;
   }
-  int UpdateVideoImages ( char *Vfile,char **L, char *Outfile ) {
+  int UpdateVideoImages ( char *Vfile,char **L, char *Outfile,float st,float et ) {
 /* images must be of same size */
       char Folder [ 500 ]  , Vname [ 500 ] ;
       int id ;
@@ -1572,7 +1572,7 @@ int ExecFunction(char *job,int (*function)(int,char **)){
       sprintf(TimeStamps,"%-s/stamp.txt",Folder);
       sprintf(AudioFile,"%-s/audio.wav",Folder);
       sprintf(VtmpFile,"%-s/video.mp4",Folder);
-      GetTimeStamps(Vfile,TimeStamps,0.0,100000.0);
+      GetTimeStamps(Vfile,TimeStamps,st,et);
       tst= fopen(TimeStamps,"r");
       if(tst == NULL ){
           printf("Failed to open TimeStams\n");
@@ -1598,7 +1598,8 @@ int ExecFunction(char *job,int (*function)(int,char **)){
                break;
           }
           TotSec += tstamp;
-          fprintf(myl, "duration %f\n",tstamp);
+          if(vid==1) fprintf(myl, "duration %f\n",TotSec);
+          else  fprintf(myl, "duration %f\n",tstamp);
           fprintf ( myl , "file  \'%-s\'\n" , ipt ) ;
           printf ( "file  \'%-s\'\n" , ipt ) ;
           fflush(stdout);
@@ -1615,7 +1616,8 @@ int ExecFunction(char *job,int (*function)(int,char **)){
       fflush(stdout);
       sprintf(command,"ffmpegfun -y -i %s -f concat -safe 0 -i %s -filter_complex \"[1:v]setpts=PTS+0.0/TB[replacement_track];"
                 "[0:v][replacement_track]overlay=enable=\'between(t,%-f,%-f)\':eof_action=pass\""
-                " -c:a copy %s",Vfile,mylist,stime,TotSec,Outfile);
+                " -c:a copy %s",Vfile,mylist,st,et,Outfile);
+//                " -c:a copy %s",Vfile,mylist,stime,TotSec,Outfile);
 //                " -c:a copy %s",Vfile,mylist,stime,TotSec,VtmpFile);
       printf("MSG: %s\n",command);
       fflush(stdout);
@@ -1629,11 +1631,17 @@ int ExecFunction(char *job,int (*function)(int,char **)){
   }
 int ProcessPts(void *tpt,int pip0,int pip1,int Pid) {
      char buff[1000];
-     char *PtsFile=(char *) tpt;
+     void **args= (void **)tpt;
+     char *PtsFile=(char *) args[0];
+     float st,et,*fpt;
      int ret =0;
      int pos,i,ch;
      float per=0.0,ptime1=0,ptime2,ptime;
      char *pt;
+     fpt = (float *)args[1];
+     st = *fpt;     
+     fpt = (float *)args[2];
+     et = *fpt;     
 //     close(pip1);
      FILE *fp=fopen(PtsFile,"w");
      if(fp == NULL) return 0;
@@ -1641,10 +1649,12 @@ int ProcessPts(void *tpt,int pip0,int pip1,int Pid) {
      while((ch=GetLine(pip0,buff)) ) {
          if(ch< 0) continue;
          if((pos=SearchString(buff,(char *)"] n:"))>=0) {
-            i++;
             pos = SearchString(buff,(char *)"pts_time:");
             pt = buff+pos+9;
             sscanf(pt,"%f",&ptime2);
+            if(ptime2 < st ) continue;
+            if(ptime2 >et  ) break;
+            i++;
             fprintf(fp,"%f\n",ptime2-ptime1);
             printf("MSG: Per: %d \n",i%100);
             ptime1 = ptime2;
@@ -1655,9 +1665,13 @@ int ProcessPts(void *tpt,int pip0,int pip1,int Pid) {
 }
   int GetTimeStamps(char *vfile,char *ptsfile,float st,float et) {
      char buff[500];
+     char *args[3];
+     args[0]=ptsfile;
+     args[1]=(char *)&st;
+     args[2]=(char *)&et;
      sprintf(buff,"ffmpegfun -i %s -vf \"select=\'between(t,%-f,%-f)',showinfo\" -f null /dev/null",
                   vfile,st,et);
      printf("%s\n",buff);
-     RunFunction(buff,ProcessPts,ffmpegfun,ptsfile);
+     RunFunction(buff,ProcessPts,ffmpegfun,args);
      return 1;
   }

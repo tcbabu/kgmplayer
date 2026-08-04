@@ -147,6 +147,8 @@
       float fps;
       float ssec;
       float duration;
+      float Vstart;
+      float Vend;
       char Output [ 300 ] ;
       char Folder [ 300 ] ;
       char Vframes [ 300 ] ;
@@ -4873,6 +4875,25 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       strcpy ( Outfile , buff ) ;
       return 1;
   }
+
+int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
+     char buff[1000];
+     int ret =0,*frames;
+     int pos,i,ch;
+     frames = (int *)tpt;
+     char *pt;
+     i=0;
+     while((ch=GetLine(pip0,buff)) ) {
+         if(ch< 0) continue;
+//         printf("%s",buff);
+         if((pos=SearchString(buff,(char *)"frame= "))>=0) {
+            pt = buff+pos+8;
+            sscanf(pt,"%d",frames);
+            i++;
+         }
+     }
+     return ret;
+}
   int ProcessArgs ( char *argv [ ] ) {
       char *apt;
       int ch;
@@ -4893,7 +4914,14 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           ch = apt [ 1 ] ;
           switch ( ch ) {
               case 'v':
-              sscanf ( apt+2 , "%s" , Ostr.VideoFile ) ;
+              sscanf ( apt+2 , "%s" , buff ) ;
+              j = 0;
+              while ( buff [ j ] > ' ' ) {
+                  if ( buff [ j ] == ':' ) buff [ j ] = ' ';
+                  j++;
+              }
+              sscanf ( buff , "%s%f%f" ,Ostr.VideoFile , & ( Ostr.Vstart ) , & ( Ostr.Vend ));
+//              sscanf ( apt+2 , "%s" , Ostr.VideoFile ) ;
               Ostr.Video = 1;
               Ostr.PsOut = 0;
 #ifdef D_KULINA
@@ -5022,10 +5050,17 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           kgCleanDir ( Ostr.Folder ) ;
           mkdir ( Ostr.Folder , 0700 ) ;
 #ifdef D_KULINA
-          sprintf ( buff , "ffmpegfun -i %s %-s/%-s" , Ostr.VideoFile , \
+          float tt= Ostr.Vend -Ostr.Vstart;
+          char TimeString[30];
+          GetTimeString(Ostr.Vstart,TimeString);    
+          sprintf ( buff , "ffmpegfun -ss %s -t %f -y -i %s %-s/%-s" , 
+               TimeString,tt,Ostr.VideoFile , \
                Ostr.Folder , ( char * ) "Frame_%06d.png"  ) ;
-          printf ( "%s\n" , buff ) ;
-         runfunction ( buff , ProcessPrint , ffmpegfun ) ;
+          printf ( "MSG: %s\n" , buff ) ;
+//         runfunction ( buff , ProcessPrint , ffmpegfun ) ;
+
+         RunFunction ( buff , ProcessFrames , ffmpegfun ,&(Ostr.Nf)) ;
+         printf("MSG: !c01No of Frames: %d\n",Ostr.Nf);
 //         runfunction ( buff , ProcessSkip , ffmpegfun ) ;
 //          ExecFunction(buff,ffmpegfun);
 #else
@@ -5064,6 +5099,8 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       O->duration = 60;
       O->fps = 25.0;
       O->Nf = 1;
+      O->Vstart =0.0;
+      O->Vend   = 100000.0;
       if ( getenv ( "PWD" ) != NULL ) {
           sprintf ( O->Output , "%-s/Output.ps" , getenv ( "PWD" ) ) ;
       }
@@ -5120,7 +5157,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
          CreateImagesVideo(Imgs,(Ostr.fps),Ostr.ListFile);
          OverlayVideos(Ostr.VideoFile,Ostr.ListFile,1,Ostr.Output);
 #else
-         UpdateVideoImages(Ostr.VideoFile,Imgs,Ostr.Output);
+         UpdateVideoImages(Ostr.VideoFile,Imgs,Ostr.Output,Ostr.Vstart,Ostr.Vend);
 #endif
       }
       else CreateImagesVideo(Imgs,(Ostr.fps),Ostr.Output); 

@@ -309,11 +309,11 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
 #endif
   strcpy(Opt,(char *)" ");
   if(Type==1) {
-      sprintf(buff,"kgwrite -v%-s %s -s%-d:%-d:%-d:%-d -o%-s %-s",infile1,Opt,
+      sprintf(buff,"kgwrite -v%-s:10.0:25.0  %s -s%-d:%-d:%-d:%-d -o%-s %-s",infile1,Opt,
            Sxres,Syres,Xoff,Yoff,outfile,infile2);
   }
   else {
-      sprintf(buff,"kgwrite -v%-s %s  -k%-d:%-d:%-d:%-0.2f -s%-d:%-d:%-d:%-d -o%-s %-s",
+      sprintf(buff,"kgwrite -v%-s:10.0:25.0 %s  -k%-d:%-d:%-d:%-0.2f -s%-d:%-d:%-d:%-d -o%-s %-s",
           infile1,Opt,Red,Green,Blue,Rfact,
            Sxres,Syres,Xoff,Yoff,outfile,infile2);
   }
