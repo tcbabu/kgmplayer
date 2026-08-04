@@ -1564,7 +1564,7 @@ int ExecFunction(char *job,int (*function)(int,char **)){
       char *vnames = NULL;
       char *ipt = NULL;
       float TotSec;
-      float tsecs,tstamp;
+      float tsecs,tstamp,stime=0.0;
       MakeTmpFolderInHome ( Folder ) ;
       if ( FileStat ( Folder ) ) kgCleanDir ( Folder ) ;
       if ( L == NULL ) return 0;
@@ -1572,7 +1572,7 @@ int ExecFunction(char *job,int (*function)(int,char **)){
       sprintf(TimeStamps,"%-s/stamp.txt",Folder);
       sprintf(AudioFile,"%-s/audio.wav",Folder);
       sprintf(VtmpFile,"%-s/video.mp4",Folder);
-      GetTimeStamps(Vfile,TimeStamps);
+      GetTimeStamps(Vfile,TimeStamps,0.0,100000.0);
       tst= fopen(TimeStamps,"r");
       if(tst == NULL ){
           printf("Failed to open TimeStams\n");
@@ -1580,10 +1580,11 @@ int ExecFunction(char *job,int (*function)(int,char **)){
           return 0;
       }
       fscanf(tst,"%f",&tstamp);
+      stime= tstamp;
       sprintf ( mylist , "%-s/mylist.txt" , Folder ) ;
       myl = fopen ( mylist , "w" ) ;
       vid=0;
-      TotSec=0;
+      TotSec=stime;
       if( ( ipt = L[vid] ) != NULL ) {
           fprintf ( myl , "file  \'%-s\'\n" , ipt ) ;
           printf("MSG: %s\n",ipt);
@@ -1602,21 +1603,21 @@ int ExecFunction(char *job,int (*function)(int,char **)){
           printf ( "file  \'%-s\'\n" , ipt ) ;
           fflush(stdout);
 
-          printf("MSG: %s\n",ipt);
+          printf("MSG: %s\r",ipt);
           fflush ( myl ) ;
           vid++;
       } // while...
       fclose ( myl ) ;
       fclose (tst);
       TotSec += 0.001;
-      printf("MSG: TotSec: %f\n",TotSec);
+      printf("MSG: TotSec: %f Start: %f\n",TotSec,stime);
       printf( "TotSec: %f\n",TotSec);
       fflush(stdout);
-      sprintf(command,"ffmpegfun -i %s -f concat -safe 0 -i %s -filter_complex \"[1:v]setpts=PTS+0.0/TB[replacement_track];"
-                "[0:v][replacement_track]overlay=enable=\'between(t,0.0,%-f)\':eof_action=pass\""
-                " -c:a copy %s",Vfile,mylist,TotSec,Outfile);
-//                " -c:a copy %s",Vfile,mylist,TotSec,VtmpFile);
-      printf("%s\n",command);
+      sprintf(command,"ffmpegfun -y -i %s -f concat -safe 0 -i %s -filter_complex \"[1:v]setpts=PTS+0.0/TB[replacement_track];"
+                "[0:v][replacement_track]overlay=enable=\'between(t,%-f,%-f)\':eof_action=pass\""
+                " -c:a copy %s",Vfile,mylist,stime,TotSec,Outfile);
+//                " -c:a copy %s",Vfile,mylist,stime,TotSec,VtmpFile);
+      printf("MSG: %s\n",command);
       fflush(stdout);
       runfunction ( command , ProcessPrint , ffmpegfun ) ;
 #if 0
@@ -1652,9 +1653,10 @@ int ProcessPts(void *tpt,int pip0,int pip1,int Pid) {
      fclose(fp);
      return ret;
 }
-  int GetTimeStamps(char *vfile,char *ptsfile) {
+  int GetTimeStamps(char *vfile,char *ptsfile,float st,float et) {
      char buff[500];
-     sprintf(buff,"ffmpegfun -i %s -vf \"showinfo\" -f null /dev/null",vfile);
+     sprintf(buff,"ffmpegfun -i %s -vf \"select=\'between(t,%-f,%-f)',showinfo\" -f null /dev/null",
+                  vfile,st,et);
      printf("%s\n",buff);
      RunFunction(buff,ProcessPts,ffmpegfun,ptsfile);
      return 1;

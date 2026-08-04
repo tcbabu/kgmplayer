@@ -3978,7 +3978,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       printf("MSG: Created %s\r",PngFile);
       fflush(stdout);
   }
-  static int MakeScrollFrames ( void *Bimg , float wxl , \
+  static int MakeScrollFrames_org ( void *Bimg , float wxl , \
   float wyl , float wxu , float wyu ) {
       int j;
       float dx , fact,per;
@@ -3990,17 +3990,25 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       if ( Frames < 0 ) Frames = 1;
       dx = ( wyu-ylow ) /Frames;
       dx = ( -Yend +wyu -wyl ) /Frames;
-      ydown = -40;;
+      ydown = wyl;
       yup = wyu;
       fprintf (stderr, "Frames;%d\n" , Frames ) ;
-      printf("MSG: !c06Total Frames: %d\n",Frames);
+      printf("MSG: !c06Total Frames: %d Yend: %f\n",Frames,Yend);
       fflush(stdout);
       for ( j = 0;j < Frames;j++ ) {
-          Pimg = kgInitImage ( Sxres , Syres , 4 ) ;
+          per = 100*(float)(j+1)/Frames;
+          printf("MSG: Per: %f\n",per);
+          printf("MSG: %f\r",per);
+          fflush(stdout);
+          Pimg = kgInitImage ( Ostr.Sxres , Ostr.Syres , 4 ) ;
           kgUserFrame ( Pimg , wxl , ydown , wxu , yup ) ;
           kgUserFrame ( Img , wxl , ydown , wxu , yup ) ;
           kgBackupGph ( Img , GphFile ) ;
+          printf("MSG: !c01%f\r",per);
+          fflush(stdout);
           kgImportGphFile ( Pimg , GphFile , wxl , ydown , wxu , ydown+wyu -wyl ) ;
+          printf("MSG: !c02%f\r",per);
+          fflush(stdout);
           Png = kgGetResizedImage ( Pimg ) ;
 //        Png = kgGetSharpImage ( Pimg ) ;
           kgCloseImage ( Pimg ) ;
@@ -4023,18 +4031,89 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
               else break;
           }
 //          sprintf ( PngFrame , "Frames/Frame%-4.4d.png" , j+1 ) ;
+          printf("MSG: !c03%f\r",per);
+          fflush(stdout);
           sprintf ( PngFrame , "%-s/Frame%-6.6d.png" , Ostr.Vframes , j+1 ) ;
           kgWriteImage ( Png , PngFrame ) ;
           kgFreeImage ( Png ) ;
-          per = 100*(float)(j+1)/Frames;
-          printf("MSG: Per: %f\n",per);
-//          printf("MSG: %s %f\r",PngFrame,per);
-          fflush(stdout);
           fprintf (stderr, "%s\r" , PngFrame ) ;
           fflush ( stdout ) ;
           yup -= dx;
           ydown -= dx;
       }
+      printf ( "\n" ) ;
+  }
+  static int MakeScrollFrames ( void *Bimg , float wxl , \
+  float wyl , float wxu , float wyu ) {
+      int j;
+      int Ixres,Iyres,yshift;
+      float dx , fact,per;
+      float ylow , yup , ydown;
+      char PngFrame [ 50 ] ;
+      void *Png=NULL,*Pngfull=NULL;
+      void *Bfill = NULL , *Bkimg = NULL;
+      ylow = wyl;
+      Frames = Ostr.Nf;
+      if ( Frames < 0 ) Frames = 1;
+      dx = ( -Yend +wyu -wyl );
+      ydown = -dx;
+      dx = ( -Yend +wyu -wyl ) /Frames;
+      Ixres = Ostr.Sxres;
+      Iyres = -ydown + wyu-wyl;
+      yup = wyu;
+      fprintf (stderr, "Frames;%d\n" , Frames ) ;
+      printf("MSG: !c06Total Frames: %d Yend: %f\n",Frames,Yend);
+      printf("MSG: !c06Ixres: %d Iyres: %d\n",Ixres,Iyres);
+      fflush(stdout);
+      kgUserFrame ( Img , wxl , ydown , wxu , yup ) ;
+      kgBackupGph ( Img , GphFile ) ;
+          Pimg = kgInitImage ( Ixres , Iyres , 4 ) ;
+          kgUserFrame ( Pimg , wxl , ydown , wxu , wyu ) ;
+          kgImportGphFile ( Pimg , GphFile , wxl , ydown , wxu , wyu ) ;
+          Pngfull = kgGetResizedImage ( Pimg ) ;
+//        Pngfull = kgGetSharpImage ( Pimg ) ;
+          kgCloseImage ( Pimg ) ;
+      for ( j = 0;j < Frames;j++ ) {
+          yshift = j*dx;
+          per = 100*(float)(j+1)/Frames;
+          printf("MSG: Per: %f\n",per);
+          printf("MSG: %f\r",per);
+          fflush(stdout);
+          Bfill = GetBkgr ( ) ;
+          Png = kgCropImage(Pngfull,0,yshift,Ostr.Sxres,Ostr.Syres+yshift);
+          printf("MSG: !c01%f\r",per);
+          fflush(stdout);
+          if ( Bfill != NULL ) {
+              kgMergeImages ( Bfill , Png , 0 , 0 ) ;
+              kgFreeImage ( Png ) ;
+              Png = Bfill;
+          }
+          printf("MSG: !c02%f\r",per);
+          fflush(stdout);
+          if ( Ostr.Video ) {
+              Bkimg = GetBkgrImage ( j+1) ;
+              if ( Bkimg != NULL ) {
+                  void *Dummy = kgGetImage ( Bkimg ) ;
+                  if ( Dummy == NULL ) break;
+                  kgMergeImages ( Dummy , Png ,Ostr.Xoff ,Ostr.Yoff ) ;
+                  kgFreeImage ( Png ) ;
+                  Png = Dummy;
+                  free ( Bkimg ) ;
+              }
+              else break;
+          }
+//          sprintf ( PngFrame , "Frames/Frame%-4.4d.png" , j+1 ) ;
+          printf("MSG: !c03%f\r",per);
+          fflush(stdout);
+          sprintf ( PngFrame , "%-s/Frame%-6.6d.png" , Ostr.Vframes , j+1 ) ;
+          kgWriteImage ( Png , PngFrame ) ;
+          kgFreeImage ( Png ) ;
+          fprintf (stderr, "%s\r" , PngFrame ) ;
+          fflush ( stdout ) ;
+          yup -= dx;
+          ydown -= dx;
+      }
+      kgFreeImage ( Pngfull ) ;
       printf ( "\n" ) ;
   }
   static int MakeScrollA4Frames ( void *Bimg , float wxl , \
@@ -4630,6 +4709,8 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
 #endif
           }
           if ( Scroll ) {
+                  MakeScrollFrames ( Sbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
+#if 0
               if ( RIGHT_MAR < 220 ) {
                   printf ( "MSG: Scroll A4\n" ) ;
                   fflush ( stdout ) ;
@@ -4640,6 +4721,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
                   fflush ( stdout ) ;
                   MakeScrollFrames ( Sbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
               }
+#endif 
           }
           kgUserFrame ( Img , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
           if ( ! Finish && ( np < endpage ) ) goto l10;
