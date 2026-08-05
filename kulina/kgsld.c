@@ -4922,6 +4922,7 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
               }
               sscanf ( buff , "%s%f%f" ,Ostr.VideoFile , & ( Ostr.Vstart ) , & ( Ostr.Vend ));
 //              sscanf ( apt+2 , "%s" , Ostr.VideoFile ) ;
+              if(Ostr.Vend <0.000001) Ostr.Vend = 1000000.0;
               Ostr.Video = 1;
               Ostr.PsOut = 0;
 #ifdef D_KULINA

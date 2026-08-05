@@ -253,6 +253,7 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
 // pt[0] is args passed as inputs; pt[1] is output pointer
   int Fsel=1,Tpos=1;
   float Rfact=0.0,fact=1.0;
+  float st=0,et=0;
   D = (DIALOG *)Tmp;
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
@@ -260,12 +261,15 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
   DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVinput2");
   DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVout");
   DIT *TR=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVtres");
+  DIT *TG=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVrange");
   DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"TOVIbox");
   char infile1[300],infile2[300],outfile[300],Pinfile1[300],Pinfile2[300];
   char Tfolder[30],buff[200],Opt[200];
   Type = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVradio"));
   Fsel = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVrfact"));
   Tpos = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVpos"));
+  st = kgGetDouble(TG,0);
+  et = kgGetDouble(TG,1);
   Rfact = (Fsel-1)*0.1;
   strcpy(infile1,kgGetString(T,0));
   mt = GetMediaInfo(infile1);
@@ -309,12 +313,14 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
 #endif
   strcpy(Opt,(char *)" ");
   if(Type==1) {
-      sprintf(buff,"kgwrite -v%-s:10.0:25.0  %s -s%-d:%-d:%-d:%-d -o%-s %-s",infile1,Opt,
+      sprintf(buff,"kgwrite -v%-s:%-f:%-f  %s -s%-d:%-d:%-d:%-d -o%-s %-s",
+           infile1,st,et,Opt,
            Sxres,Syres,Xoff,Yoff,outfile,infile2);
   }
   else {
-      sprintf(buff,"kgwrite -v%-s:10.0:25.0 %s  -k%-d:%-d:%-d:%-0.2f -s%-d:%-d:%-d:%-d -o%-s %-s",
-          infile1,Opt,Red,Green,Blue,Rfact,
+      sprintf(buff,"kgwrite -v%-s:%-f:%-f  %s  -k%-d:%-d:%-d:%-0.2f "
+          " -s%-d:%-d:%-d:%-d -o%-s %-s",
+          infile1,st,et,Opt,Red,Green,Blue,Rfact,
            Sxres,Syres,Xoff,Yoff,outfile,infile2);
   }
 //      runfunction(buff,ProcessPrint,kgwrite);
@@ -627,6 +633,22 @@ int textovervideoTOVposcallback(int item ,int i,void *Tmp) {
     case 1: 
       break;
   }
+  return ret;
+}
+int textovervideoTOVrangecallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
   return ret;
 }
 int textovervideoinit(void *Tmp) {

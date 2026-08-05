@@ -16,6 +16,7 @@ int textovervideoTOVbclrcallback(int butno,int i,void *Tmp) ;
 void  textovervideoTOVbclrinit (DIN *B,void *pt) ;
 int textovervideoTOVrfactcallback(int item,int i,void *Tmp) ;
 int textovervideoTOVposcallback(int item,int i,void *Tmp) ;
+int textovervideoTOVrangecallback(int cellno,int i,void *Tmp) ;
 int textovervideoinit(void *Tmp) ;
 int textovervideocleanup(void *Tmp) ;
 void *Runtextovervideo(void *,void *) ;

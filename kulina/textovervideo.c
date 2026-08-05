@@ -14,8 +14,8 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   e0[0].img=NULL;
   DIT t0 = { 
     't',
-    9,9,  
-    377,43,
+    9,3,  
+    377,37,
     20, 
     1,1, 
     e0,
@@ -38,8 +38,8 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   butn1[0].butncode=31;
   DIN b1 = { 
     'n',
-    385,8,  
-    467,42,
+    385,2,  
+    467,36,
     2,2,  
     72, 
     24, 
@@ -61,8 +61,8 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   e2[0].img=NULL;
   DIT t2 = { 
     't',
-    26,49,  
-    376,83,
+    26,74,  
+    376,108,
     20, 
     1,1, 
     e2,
@@ -85,8 +85,8 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   butn3[0].butncode=31;
   DIN b3 = { 
     'n',
-    385,46,  
-    467,80,
+    385,74,  
+    467,108,
     2,2,  
     72, 
     24, 
@@ -106,7 +106,7 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   butn4[0].xpmp=NULL;
   butn4[0].xpmh=NULL;
   butn4[0].bkgr=-1;
-  butn4[0].butncode=16119166;
+  butn4[0].butncode=126;
   DIL h4 = { 
     'h',
     187,401,  
@@ -140,8 +140,8 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   e6[0].img=NULL;
   DIT t6 = { 
     't',
-    8,91,  
-    385,125,
+    8,112,  
+    385,146,
     20, 
     1,1, 
     e6,
@@ -164,8 +164,8 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   butn7[0].butncode=126;
   DIN b7 = { 
     'n',
-    385,90,  
-    466,123,
+    385,111,  
+    466,144,
     2,2,  
     72, 
     24, 
@@ -254,7 +254,7 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   butn11[0].xpmp=NULL;
   butn11[0].xpmh=NULL;
   butn11[0].bkgr=-255255255;
-  butn11[0].butncode=-2302945;
+  butn11[0].butncode=589950;
   DIN b11 = { 
     'n',
     107,254,  
@@ -359,12 +359,41 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   };
   strcpy(w14.Wid,(char *)"TOVpos");
   w14.item = -1;
+  T_ELMT *e15  ; 
+  e15 =(T_ELMT *)malloc(sizeof(T_ELMT)*2);
+  e15[0].fmt = (char *)malloc(15);
+  strcpy(e15[0].fmt,(char *)"Start time%10F");
+  e15[0].v=(void *)v[8];
+  e15[0].sw=1;
+  e15[0].noecho=0;
+  e15[0].img=NULL;
+  e15[1].fmt = (char *)malloc(13);
+  strcpy(e15[1].fmt,(char *)"End time%10F");
+  e15[1].v=(void *)v[9];
+  e15[1].sw=1;
+  e15[1].noecho=0;
+  e15[1].img=NULL;
+  DIT t15 = { 
+    't',
+    21,38,  
+    465,72,
+    20, 
+    2,1, 
+    e15,
+    1,1,
+    NULL,textovervideoTOVrangecallback ,0 ,0,18,9 
+  };
+    /* *args,Callback,border,hide,font,fontsize */
+  strcpy(t15.Wid,(char *)"TOVrange");
+  t15.pt=NULL;
+  t15.type = 1;
+  t15.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+16));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+17));
   d =dtmp+i; 
-  d[15].t=NULL;
+  d[16].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
   d[0].t->item = -1;
@@ -416,7 +445,10 @@ int textovervideoGroup( DIALOG *D,void **v,void *pt) {
   d[14].t = (DIT *)malloc(sizeof(DIW));
   *d[14].w = w14;
   d[14].w->item = -1;
-  d[15].t = NULL;
+  d[15].t = (DIT *)malloc(sizeof(DIT));
+  *d[15].t = t15;
+  d[15].t->item = -1;
+  d[16].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -438,6 +470,7 @@ int MaketextovervideoGroup(DIALOG *D,void *arg) {
     RadioButtons1  1 data value
     Browser2  1 data value
     Browser3  1 data value
+    Text_Box5  2 data values
 
 *************************************************/
    char  *v0 ;
@@ -464,8 +497,14 @@ int MaketextovervideoGroup(DIALOG *D,void *arg) {
    int  *v7 ;
    v7 = (int *)malloc(sizeof(int));
    *v7 = 1;
-   void** v=(void **)malloc(sizeof(void*)*9);
-   v[8]=NULL;
+   double *v8 ;
+   v8 = (double *)malloc(sizeof(double));
+   *v8 = 0.0;
+   double *v9 ;
+   v9 = (double *)malloc(sizeof(double));
+   *v9 = 0.0;
+   void** v=(void **)malloc(sizeof(void*)*11);
+   v[10]=NULL;
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
@@ -474,6 +513,8 @@ int MaketextovervideoGroup(DIALOG *D,void *arg) {
    v[5]=(void *)(v5);
    v[6]=(void *)(v6);
    v[7]=(void *)(v7);
+   v[8]=(void *)(v8);
+   v[9]=(void *)(v9);
    void *pt=NULL; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    GrpId = textovervideoGroup(D,v,pt);
@@ -499,7 +540,7 @@ int textovervideo( void *parent,void **v,void *pt) {
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 14;
+  D.df = 15;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
@@ -569,6 +610,7 @@ void *Runtextovervideo(void *parent ,void *args) {
     RadioButtons1  1 data value
     Browser2  1 data value
     Browser3  1 data value
+    Text_Box5  2 data values
 
 *************************************************/
    char  v0[500]="" ;
@@ -579,7 +621,9 @@ void *Runtextovervideo(void *parent ,void *args) {
    int   v5 = 1;
    int   v6 = 1;
    int   v7 = 1;
-   void* v[8];
+   double v8 = 0.0;
+   double v9 = 0.0;
+   void* v[10];
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
    v[2]=(void *)(v2);
@@ -588,6 +632,8 @@ void *Runtextovervideo(void *parent ,void *args) {
    v[5]=(void *)(&v5);
    v[6]=(void *)(&v6);
    v[7]=(void *)(&v7);
+   v[8]=(void *)(&v8);
+   v[9]=(void *)(&v9);
    void *pt[2]={NULL,NULL}; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    pt[0]=args;
