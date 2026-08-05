@@ -72,7 +72,8 @@
   static float Yend;
   static float tw , th , tg;
   static int Columns = 1 , Top_skip = 22 , Para_of = 10 , \
-  Lines = 0 , NOTE = 0 , REF = 0 , Col_gap = 10;
+        Lines = 0 , NOTE = 0 , REF = 0 , Col_gap = 10;
+  static int TopSkip=22;
   static int F_N_no = 0 , R_N_no = 0;
   static float Brk_pt;
   static int L_mar = 35 , R_margin = 195;
@@ -457,6 +458,7 @@
        txth+hdr , txtw+hdr , gap , ifac+hdr ) ;\
        fac = ( ( float ) ( ifac+hdr ) ) /24.0;\
    }
+//TCB need to fix for Newcode
 #define copy_heading { \
    int level , no;\
        float wd , dsp;\
@@ -479,7 +481,7 @@
        no = ( 185.-dsp-L_mar-5*level ) / ( wd ) ;\
        fprintf ( cfile , "$A0\n%s\n$m185\n$r\n" , ln ) ; \
        for ( level = 0;level < no;level++ ) fprintf ( cfile , " ." ) ;\
-       fprintf ( cfile , "\n$l\n$m195\n" ) ;\
+       fprintf ( cfile , "\n$l\n$m%-d\n",R_margin ) ;\
    }
 #define Set_background {  \
    int i = 0 , j = 0;\
@@ -511,7 +513,7 @@
 #define Set_Defaults \
    pglimit = PGLIMIT/ConFact;\
    pglimit_bk = PGLIMIT/ConFact;\
-   Columns = 1 , Top_skip = 22 , Para_of = 10;\
+   Columns = 1 , Top_skip = TopSkip, Para_of = 10;\
    Col_shft = 0.;\
    Col_gap = 10;\
    ifac = 24;\
@@ -535,10 +537,10 @@
    ibkgr = 0;\
    set = 'l';\
    ipge = 1;\
-   ofs = 35.;\
+   ofs = L_mar;\
    yy = YYBGN;\
-   ofsl = 35.;\
-   leftmar = 35.;\
+   ofsl = L_mar;\
+   leftmar = L_mar;\
    yyl = YYBGN;\
    iskip = 0;\
    tlinepos = 151.0 , theadpos = 152.5;\
@@ -3561,6 +3563,8 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       iwfac = 12 , isfac = 24 , tfnt = 0;
       int rmg = 195 , ipr = 0;
       int rmgc;
+      ofs = L_mar;
+      rmg = R_margin;
       First_ref = NULL;
       Cur_ref = First_ref;
       width = ( tw * wfac + tg * gfac ) ;
@@ -3840,13 +3844,13 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       kgTextSize ( Img , th , tw , tg ) ;
       kgTextFont ( Img , tfnt ) ;
       B_entry = 0;
-      right_margin = 195.0;
+      right_margin = R_margin;
       Bk_gr = 0 , Hd_on = 0 , Hd_line = 0 , Hd_max = 0 , \
       Hd_level = 0 , Mk_con = 0 , Con_file = 0;
       Entry = 0 , Hypn = 0 , Rjust = 1;
       Columns = 1 , Lines = 0 , NOTE = 0 , REF = 0;
       F_N_no = 0 , R_N_no = 0;
-      L_mar = 35 , R_margin = 195;
+ //     L_mar = 35 , R_margin = 195;
       G_x = 0. , G_y = 0. , G_sx = 1. , G_sy = 1. , G_shx = 0. , G_shy = 0.;
   }
   void *GetBkgr ( ) {
@@ -4968,14 +4972,23 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
               Ostr.PsOut = 0;
               Ostr.Rgiven = 1;
               if(Ostr.Pgiven == 0) {
+                 int pl,offset;
                  Ostr.Pxu = Ostr.Sxres;
                  Ostr.Pyu = 170;
                  Ostr.Pxl =0;
                  Ostr.Pyl =170 -  Ostr.Syres;
-                 PGLIMIT = Ostr.Pyu - Ostr.Pyl-10;
-//                 Szfact = 2.0;
+//                 PGLIMIT = Ostr.Pyu - Ostr.Pyl-10;
+
+                 pl = Ostr.Pyu - Ostr.Pyl-26;
+                 PGLIMIT = (pl/24)*24;
+//                 if(PGLIMIT== 0) PGLIMIT=Ostr.Pyu - Ostr.Pyl;
+                 offset = (pl -PGLIMIT)/2;
+                 if(offset < 0) offset=0;
+                 TopSkip=offset;
+                 L_mar = Ostr.Sxres*0.05;
+                 R_margin = 0.95*Ostr.Sxres;
+                 right_margin = R_margin;
                  ConFact = 24;
- //                YYBGN =  Ostr.Pyu+4;
               }
               break;
               case 'p':
