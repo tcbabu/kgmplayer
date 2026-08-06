@@ -81,7 +81,7 @@
   G_sy = 1. , G_shx = 0. , G_shy = 0.;
   static int txth , txtw;
   static int txtg , ifac = 24;
-  static int SpFac = 24 , Font = 0 , TxtClr = TX_CLR , TxtW = 16;;
+  static int SpFac = 24 , Font = 16 , TxtClr = TX_CLR , TxtW = 16;;
   long tpattern = 15 , tfill = 1 , tbodr = 1 , \
   tbkgr , tfnt = 0 , tcolor = TX_CLR , \
   tbold = 1 , tangle = 0 , tslant = 0 , tuline = 0;
