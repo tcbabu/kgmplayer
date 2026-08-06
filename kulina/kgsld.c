@@ -99,6 +99,8 @@
   static int PGLIMIT=268;
  // static int SPACE=2.0;
   static int SPACE=1.0;
+  static int CODE='l';
+  static int ICENT=0;
   static float ConFact=5.62;
   static float Szfact=1.0;
   static char rstr [ 17 ] [ 5 ] = { "   i" , \
@@ -537,7 +539,7 @@
    icolor = TX_CLR;\
    ibodr = 1;\
    ibkgr = 0;\
-   set = 'l';\
+   set = CODE;\
    ipge = 1;\
    ofs = L_mar;\
    yy = YYBGN;\
@@ -2775,8 +2777,9 @@
   static int get_block ( FILE * fp ) {
       char buf [ 500 ] ;
       FILE *tmp;
-      static char code = 'l';
+      static char code ;
       static int h = 12 , w = 12 , g = 1 , s = 22;
+      code = CODE;
       tmp = fopen ( TEMP_FILE , "w" ) ;
       if ( fgets ( buf , 490 , fp ) == NULL ) {
           fclose ( tmp ) ;
@@ -2975,7 +2978,7 @@
           goto l1100;
       };
       space = SPACE;;
-      icent = 0;
+      icent = ICENT;
       buf = & ( txt [ 2 ] ) ;
       kgTextFont ( Img , tfnt ) ;
       kgLineColor ( Img , 15 ) ;
@@ -4998,6 +5001,8 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
                  right_margin = R_margin;
                  ConFact = 24;
                  YYBGN = Ostr.Pyu ;
+                 ICENT =1;
+                 CODE = 'c';
  //                SPACE=1.0;
               }
               break;
