@@ -97,6 +97,8 @@
   static float wxmin , wymin , wxmax , wymax;
   static int Xres , Yres;
   static int PGLIMIT=268;
+ // static int SPACE=2.0;
+  static int SPACE=1.0;
   static float ConFact=5.62;
   static float Szfact=1.0;
   static char rstr [ 17 ] [ 5 ] = { "   i" , \
@@ -630,7 +632,7 @@
        , txth , txtw , txtg ) ;\
    }
 #define check_page_limit {\
-   if ( pl > pglimit ) {\
+   if ( (pl+fac*Ad_vn) > pglimit ) {\
            NewPage = 1;\
            if ( Foot_note ) {\
                fprintf ( f23 , "$f0\n$U0\n$p1\n$h14\n$w14\n$i0\n$n\n" ) ;\
@@ -2972,7 +2974,7 @@
       if ( f15 == NULL ) { /* printf ( "Error:\n" ) ; */
           goto l1100;
       };
-      space = 2.0;
+      space = SPACE;;
       icent = 0;
       buf = & ( txt [ 2 ] ) ;
       kgTextFont ( Img , tfnt ) ;
@@ -3162,7 +3164,8 @@
                       break;
                   }
                   kgMove2f ( Img , xdsp + ofs , yy ) ;
-                  yy = yy - sfac * space * th * Ad_vn;
+            //      yy = yy - sfac * space * th * Ad_vn;
+                  yy = yy - sfac * space *  Ad_vn*24;
                   Ad_vn = 1;
               }
               kgWriteText ( Img , txt ) ;
@@ -4278,8 +4281,8 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       np , i , err = 0 , bold , j , col_num;
       long stpage = 1 , endpage = 9999;
       short leftmar , cpgno , rmgl , rmg , rmgc , Finish , Od_Ev;
-      short Ad_vn , Slant_on , Bold_on , Uline_on , Oline_on;
-      float fac , pl , ofs , yy , ofsl , yyl;
+      short Ad_vn =1, Slant_on , Bold_on , Uline_on , Oline_on;
+      float fac=1.0 , pl , ofs , yy , ofsl , yyl;
       float pglimit , bspace;
       float w [ 4 ] , wxl , wyl , wxu , wyu;
 /*
@@ -4308,6 +4311,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
 	  */
 //          Reset_Defaults;
           ifac = 24;
+          fac =1.0;
           pgnum = 0;
           pgofs = 0;
           f22 = fopen ( Z_DU_ZZ , "r" ) ;
@@ -4579,7 +4583,8 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
                       pl = pl + fac * Ad_vn;
                       NewPage = 0;
                   }
-                  } else {
+              }
+              else {
                   fprintf ( f23 , "%s\n" , ln ) ;
                   pl = pl + fac * Ad_vn;
               }
@@ -4827,9 +4832,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       Bkgr = 0;
       Pbkimg = NULL;
       Sbkimg = NULL;
-      Sxres = 1520;
-      Syres = 1024;
-      Frames = 300;
+      Sxres = Ostr.Sxres;
+      Syres = Ostr.Syres;
+      Frames = Ostr.Nf;
       strcpy ( PsFile , "output.ps" ) ;
       if ( argc == 1 ) {
           PrintUsage ( argv [ 0 ] ) ;
@@ -4980,15 +4985,20 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
 //                 PGLIMIT = Ostr.Pyu - Ostr.Pyl-10;
 
                  pl = Ostr.Pyu - Ostr.Pyl-26;
+                 pl = Ostr.Pyu - Ostr.Pyl;
                  PGLIMIT = (pl/24)*24;
+                 PGLIMIT = pl -4;
 //                 if(PGLIMIT== 0) PGLIMIT=Ostr.Pyu - Ostr.Pyl;
                  offset = (pl -PGLIMIT)/2;
+//                 PGLIMIT -=24;
                  if(offset < 0) offset=0;
                  TopSkip=offset;
                  L_mar = Ostr.Sxres*0.05;
                  R_margin = 0.95*Ostr.Sxres;
                  right_margin = R_margin;
                  ConFact = 24;
+                 YYBGN = Ostr.Pyu ;
+ //                SPACE=1.0;
               }
               break;
               case 'p':
