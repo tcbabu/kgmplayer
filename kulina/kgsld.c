@@ -168,7 +168,9 @@
 #define FOREVER for(;;)
 #define Chk_Alloc(M) {\
    if ( M == NULL ) {\
-           printf ( "Error: In MALLOC...\n" ) ;\
+           printf ( "MSG: !c03Error: In MALLOC...\n" ) ;\
+          fflush(stdout);\
+          sleep(5);\
            exit ( 0 ) ;\
        }\
    }
@@ -202,15 +204,19 @@
        line [ lng++ ] = buf [ i++ ] ; \
    }
 #define check_limit if(lng==450) {\
-   printf ( " Very long string...\n" ) ;\
+   printf ( "MSG: !c03 Very long string...\n" ) ;\
        line [ 99 ] = '\0';\
-       printf ( "%-s\n" , line ) ;\
+       printf ( "MSG: !c03%-s\n" , line ) ;\
+       fflush(stdout);\
+       sleep(5);\
        exit ( 0 ) ;\
    }
 #define copy_punch
 #define copy_blanks while((buf[i]==' ')&&(i<max)) line[lng++]=buf[i++];
 #define Check_dist if(xdsp<0.) {\
-   printf ( " Error : line width < 0" ) ;\
+   printf ( "MSG: !c03 Error : line width < 0" ) ;\
+          fflush(stdout);\
+          sleep(5);\
    exit ( 0 ) ;}
 #define check_dolor if(line[0]=='$') fprintf(ot,"!g !b");
 #define no_advance  fprintf(ot,"$A0\n");
@@ -746,7 +752,7 @@
            i = oldi;\
            line [ lng ] = '\0';\
            xdsp = oldxdsp;\
-           check_never_end ( & line [ lng+1 ] , lnlng ) ;\
+           if(check_never_end ( & line [ lng+1 ] , lnlng )==0) return 0;\
        }\
        else {\
            float xdspn;\
@@ -758,7 +764,7 @@
            i = oldi;\
            ch = line [ lng ] ;\
            line [ lng ] = '\0';\
-           check_never_end ( & line [ lng+1 ] , lnlng ) ;\
+           if(check_never_end ( & line [ lng+1 ] , lnlng )==0) return 0;\
            xdsp = oldxdsp;\
            if ( ( xdsp < lnlng*0.93 ) && ( ( lngn-lng ) > 7 ) ) {\
                pos = 1;\
@@ -1464,7 +1470,9 @@
       T_L *pt , *first_adr;
       first_adr = ( T_L * ) malloc ( sizeof ( T_L ) ) ;
       if ( first_adr == NULL ) {
-          printf ( " Error : Im mem allocation\n" ) ;
+          printf ( "MSG:  Error : Im mem allocation\n" ) ;
+          fflush(stdout);
+          sleep(5);
           exit ( 0 ) ;
       }
       pt = first_adr;
@@ -1540,7 +1548,9 @@
                   } else {
                   new_adr = ( T_L * ) malloc ( sizeof ( T_L ) ) ;
                   if ( new_adr == NULL ) {
-                      printf ( " Error : In mem allocation\n" ) ;
+                      printf ( "MSG: Error : In mem allocation\n" ) ;
+          fflush(stdout);
+          sleep(5);
                       exit ( 0 ) ;
                   }
                   pt->adr = new_adr;
@@ -1554,7 +1564,9 @@
                   }
                   pt->buf [ j + 1 ] = '\0';
                   if ( i > 200 ) {
-                      printf ( " Error: too many lines in table...\n" ) ;
+                      printf ( "MSG: !c03 Error: too many lines in table...\n" ) ;
+          fflush(stdout);
+          sleep(5);
                       exit ( 0 ) ;
                   }
               }
@@ -1828,15 +1840,17 @@
       remove ( "Tbl_Txt.DuM" ) ;
       remove ( "Tbl_Draw.VeR" ) ;
   }
-  static void check_never_end ( char *l , float lnlng ) {
+  static int  check_never_end ( char *l , float lnlng ) {
       float dist;
       dist = kgStringLength ( Img , l ) ;
       if ( dist > lnlng ) {
-          printf ( " Very long word...\n" ) ;
-          printf ( " %s \n" , l ) ;
-          exit ( 0 ) ;
+          printf ( "MSG: !c03 Very long word...\n" ) ;
+          printf ( "MSG: !c03  %s \n" , l ) ;
+          fflush(stdout);
+          sleep(5);
+          return 0;;
       }
-      return;
+      return 1;
   }
   static void check_too_low ( char *l , float lnlng , float dist , float wd ) {
       char buf [ 200 ] ;
@@ -1908,9 +1922,11 @@
                   case '\\':
                   break;
                   default:
-                  printf ( " Wrong string in footnote\n" ) ;
+                  printf ( "MSG: Wrong string in footnote\n" ) ;
                   buf [ 30 ] = '\0';
-                  printf ( "$s...\n" , buf ) ;
+                  printf ( "MSG: %s...\n" , buf ) ;
+          fflush(stdout);
+          sleep(5);
                   exit ( 0 ) ;
               }
           }
@@ -1945,7 +1961,9 @@
       if ( max < lngmax ) lngmax = max;
       lnlng = rmg - ofs;
       if ( lnlng < 40.0 ) {
-          printf ( " Error: line width too narrow..\n" ) ;
+          printf ( "MSG: !c03 Error: line width too narrow..\n" ) ;
+          fflush(stdout);
+          sleep(5);
           exit ( 0 ) ;
       }
       lng = 0;
@@ -2069,7 +2087,9 @@
           if ( buf [ i ] != '/' ) {
               printf ( "Refenece name more than 5 chars..\n" ) ;
               buf [ 6 ] = '\0';
-              printf ( "%s...\n" , buf ) ;
+              printf ( "MSG: !c03%s...\n" , buf ) ;
+              fflush(stdout);
+              sleep(5);
               exit ( 0 ) ;
           }
       }
@@ -2111,9 +2131,11 @@
                   case '\\':
                   break;
                   default:
-                  printf ( " Wrong string in reference\n" ) ;
+                  printf ( "MSG:  Wrong string in reference\n" ) ;
                   buf [ 30 ] = '\0';
-                  printf ( "$s...\n" , buf ) ;
+                  printf ( "MSG: %s...\n" , buf ) ;
+                  fflush(stdout);
+                  sleep(5);
                   exit ( 0 ) ;
               }
           }
@@ -2122,14 +2144,18 @@
       if ( i <= last ) i -= 2;
       if ( i < 1 ) return ( 0 ) ;
       if ( buf [ 0 ] != '/' ) {
-          printf ( "Reference name not given\n" ) ;
+          printf ( "MSG: !c03Reference name not given\n" ) ;
           buf [ 20 ] = '\0';
-          printf ( "%s......\n" , buf ) ;
+          printf ( "MSG: %s......\n" , buf ) ;
+          fflush(stdout);
+          sleep(5);
           exit ( 0 ) ;
       }
       R_str = ( R_B * ) malloc ( sizeof ( R_B ) ) ;
       if ( R_str == NULL ) {
-          printf ( "Error: In /Ref/ .. Memory Allocation..\n" ) ;
+          printf ( "MSG: !c03Error: In /Ref/ .. Memory Allocation..\n" ) ;
+          fflush(stdout);
+          sleep(5);
           exit ( 0 ) ;
       }
       if ( Cur_ref != NULL ) {
@@ -2143,7 +2169,9 @@
       i = copy_token ( buf + 1 , R_str->token ) ;
       ot = fopen ( flname , "w" ) ;
       if ( ot == NULL ) {
-          printf ( "Error: In /Ref/ .. Opening FIle..\n" ) ;
+          printf ( "MSG: !c03Error: In /Ref/ .. Opening FIle..\n" ) ;
+          fflush(stdout);
+          sleep(5);
           exit ( 0 ) ;
       }
       pofs = width * ofchrs + 0.5;
@@ -2163,7 +2191,9 @@
       if ( max < lngmax ) lngmax = max;
       lnlng = rmg - ofs;
       if ( lnlng < 40.0 ) {
-          printf ( " Error: line width too narrow..\n" ) ;
+          printf ( "MSG: !c03Error: line width too narrow..\n" ) ;
+          fflush(stdout);
+          sleep(5);
           exit ( 0 ) ;
       }
       lng = 0;
@@ -2225,7 +2255,9 @@
               line [ j ] = '\0';
               xdsp = kgStringLength ( Img , line ) ;
               } else {
-              printf ( "Error: %s\n" , line ) ;
+              printf ( "MSG: !c03Error: %s\n" , line ) ;
+              fflush(stdout);
+              sleep(5);
               exit ( 0 ) ;
           }
           lnlng -= pofs;
@@ -2349,7 +2381,7 @@
       }
       return ( 0 ) ;
   }
-  static void mkpara ( File * fp , FILE * ot , int ofs , \
+  static int  mkpara ( File * fp , FILE * ot , int ofs , \
   int rmg , int pofs , float width ) {
       long ch , i = 0 , max , lng , lngmax , entry = 0 , \
       oldi , oldlng , e_lines , chk_line;
@@ -2357,7 +2389,7 @@
       FILE *tmp;
       if ( ( ch = Getc ( fp ) ) == '$' ) {
           Ungetc ( ch , fp ) ;
-          return;
+          return 1;
       }
       FOREVER {
           if ( ch == EOF ) break;
@@ -2375,7 +2407,7 @@
           ch = Getc ( fp ) ;
       }
       jmp:
-      if ( i < 1 ) return;
+      if ( i < 1 ) return 1;
       lng = strlen(buf)-1;
       if( buf[lng]< ' ') buf[lng]='\0';
       wid = kgStringLength ( Img , buf ) ;
@@ -2388,7 +2420,9 @@
       if ( max < lngmax ) lngmax = max;
       lnlng = rmg - ofs - 5 - pofs;
       if ( lnlng < 40.0 ) {
-          printf ( " Error: line width too narrow..\n" ) ;
+          printf ( "MSG: !c03 Error: line width too narrow..\n" ) ;
+          fflush(stdout);
+          sleep(5);
           exit ( 0 ) ;
       }
       e_lines = 0;
@@ -2399,7 +2433,7 @@
       skip_blank;
       if ( lng >= lngmax ) {
           fprintf ( ot , "\n" ) ;
-          return;
+          return 1;
       };
       tmp = fopen ( "Para_Z.ZzZ" , "w" ) ;
       fprintf ( tmp , "$RL2\n$o%-d\n$a\n" , ( int ) \
@@ -2484,14 +2518,14 @@
       fclose ( tmp ) ;
       remove ( "Para_Z.ZzZ" ) ;
   }
-  static void mklist ( File * fp , FILE * ot , \
+  static int mklist ( File * fp , FILE * ot , \
   int ofs , int rmg , float width ) {
       int pofs , ofchrs = 3;
       int ch , i = 0 , max , lng , lngmax , entry = 0 , oldi , oldlng;
       float lnlng , xdsp , oldxdsp , dsp , wid;
       if ( ( ch = Getc ( fp ) ) == '$' ) {
           Ungetc ( ch , fp ) ;
-          return;
+          return 1;
       }
       FOREVER {
           if ( ch == EOF ) break;
@@ -2509,7 +2543,7 @@
           ch = Getc ( fp ) ;
       }
       jmp:
-      if ( i < 1 ) return;
+      if ( i < 1 ) return 1;
       wid = kgStringLength ( Img , buf ) ;
       pofs = width * ofchrs + 0.5;
       max = i;
@@ -2519,7 +2553,9 @@
       if ( max < lngmax ) lngmax = max;
       lnlng = rmg - ofs;
       if ( lnlng < 40.0 ) {
-          printf ( " Error: line width too narrow..\n" ) ;
+          printf ( " MSG: !c03Error: line width too narrow..\n" ) ;
+          fflush(stdout);
+          sleep(5);
           exit ( 0 ) ;
       }
       lng = 0;
@@ -2529,7 +2565,7 @@
       skip_blank;
       if ( lng >= lngmax ) {
           fprintf ( ot , "\n" ) ;
-          return;
+          return 1;
       };
       fprintf ( ot , "$o%-d\n$a\n" , ( int ) ( ofs * 10 + 0.5 ) ) ;
       while ( ( xdsp < ( lnlng ) ) && ( i < max ) ) {
@@ -2648,7 +2684,9 @@
           if ( ( buf [ 0 ] == '$' ) ) {
               if ( ( buf [ 1 ] == 'S' ) && ( buf [ 2 ] == 'E' ) ) return 1;
               else {
-                  printf ( "ERROR:Wrong Command inside Dot aligned block\n" ) ;
+                  printf ( "MSG: !c03ERROR:Wrong Command inside Dot aligned block\n" ) ;
+                  fflush(stdout);
+                  sleep(5);
                   exit ( 0 ) ;
               }
           }
@@ -2847,7 +2885,9 @@
           default:
           remove ( Z_DU_ZZ ) ;
           remove ( TEMP_FILE ) ;
-          printf ( " Wrong code: %c \n" , txt [ 1 ] ) ;
+          printf ( "MSG: !c03 Wrong code: %c \n" , txt [ 1 ] ) ;
+          fflush(stdout);
+          sleep(5);
           exit ( 0 ) ;
       }
   }
@@ -2887,7 +2927,9 @@
           default:
           remove ( Z_DU_ZZ ) ;
           remove ( TEMP_FILE ) ;
-          printf ( " Wrong code: %c \n" , txt [ 1 ] ) ;
+          printf ( "MSG: !c03 Wrong code: %c \n" , txt [ 1 ] ) ;
+          fflush(stdout);
+          sleep(5);
           exit ( 0 ) ;
       }
   }
@@ -2975,6 +3017,9 @@
       stripblnk ( ( char * ) flname ) ;
       f15 = fopen ( flname , "r" ) ;
       if ( f15 == NULL ) { /* printf ( "Error:\n" ) ; */
+          printf("MSG: !c03Failed to open %s\n",flname);
+          fflush(stdout);
+          sleep(5);
           goto l1100;
       };
       space = SPACE;;
@@ -2992,7 +3037,8 @@
       sfac = 1.0;
       kgTextSize ( Img , th * hfac , tw * wfac , tg * gfac ) ;
       yybgn = YYBGN - sfac * space * th - Top_skip;
-      yy = yy - sfac * space * th;
+//      yy = yy - sfac * space * th;
+      yy = yy - sfac * space * 12;
       ww = tw * wfac;
       wg = tg * gfac;
       rmg = right_margin;
@@ -3110,7 +3156,9 @@
                   default:
                   remove ( Z_DU_ZZ ) ;
                   remove ( TEMP_FILE ) ;
-                  printf ( " Wrong code: %c \n" , txt [ 1 ] ) ;
+                  printf ( "MSG: !c03 Wrong code: %c \n" , txt [ 1 ] ) ;
+          fflush(stdout);
+          sleep(5);
                   exit ( 0 ) ;
               }
               kgTextSize ( Img , th * hfac , tw * wfac , tg * gfac ) ;
@@ -3168,7 +3216,7 @@
                   }
                   kgMove2f ( Img , xdsp + ofs , yy ) ;
             //      yy = yy - sfac * space * th * Ad_vn;
-                  yy = yy - sfac * space *  Ad_vn*24;
+                  yy = yy - sfac * space *  Ad_vn*12;
                   Ad_vn = 1;
               }
               kgWriteText ( Img , txt ) ;
@@ -3340,16 +3388,20 @@
       R_B *pt;
       pt = First_ref;
       if ( pt == NULL ) {
-          printf ( "Ref. not given..\n" ) ;
+          printf ( "MSG: Ref. not given..\n" ) ;
           * ( buf + 10 ) = '\0';
-          printf ( "%s...\n" , buf ) ;
+          printf ( "MSG: !c03%s...\n" , buf ) ;
+          fflush(stdout);
+          sleep(5);
           exit ( 0 ) ;
       }
       j = 0;
       if ( buf [ j ] != '/' ) {
-          printf ( "Wrong Ref...\n" ) ;
+          printf ( "MSG: Wrong Ref...\n" ) ;
           * ( buf + 30 ) = '\0';
-          printf ( "%s...\n" , buf ) ;
+          printf ( "MSG: !c03%s...\n" , buf ) ;
+          fflush(stdout);
+          sleep(5);
           exit ( 0 ) ;
       }
       j++;
@@ -3357,9 +3409,11 @@
           token [ k++ ] = buf [ j++ ] ;
       }
       if ( buf [ j ] != '/' ) {
-          printf ( "Wrong Ref...\n" ) ;
+          printf ( "MSG: Wrong Ref...\n" ) ;
           * ( buf + 30 ) = '\0';
-          printf ( "%s...\n" , buf ) ;
+          printf ( "MSG: !03%s...\n" , buf ) ;
+          fflush(stdout);
+          sleep(5);
           exit ( 0 ) ;
       }
       j++;
@@ -3381,9 +3435,11 @@
               pt = ( R_B * ) pt->adr;
           }
       }
-      printf ( "Wrong Ref...\n" ) ;
+      printf ( "MSG: !c03Wrong Ref...\n" ) ;
       * ( buf + 20 ) = '\0';
-      printf ( "No such Ref: %s...\n" , buf ) ;
+      printf ( "MSG: !c03No such Ref: %s...\n" , buf ) ;
+          fflush(stdout);
+          sleep(5);
       exit ( 0 ) ;
   }
   static long ref_code ( char *t ) {
@@ -3459,9 +3515,11 @@
                       k = 0;
                       while ( token [ k ] != '\0' ) Buf [ j++ ] = token [ k++ ] ;
                       } else {
-                      printf ( "Wrong #..\n" ) ;
+                      printf ( "MSG: Wrong #..\n" ) ;
                       buf [ 10 ] = '\0';
-                      printf ( "%s...\n" , buf ) ;
+                      printf ( "MSG: !c03%s...\n" , buf ) ;
+          fflush(stdout);
+          sleep(5);
                       exit ( 0 ) ;
                   }
               }
@@ -3577,6 +3635,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       tmp = fopen ( DUMM_FIL , "w" ) ;
     /*while( fgets(buf,200,fp)>0){ */
       while ( Get_line ( buf , fp ) > 0 ) {
+ //         printf("MSG: %s\n",buf);
+//          sleep(2);
+//          fflush(stdout);
           if ( ( buf [ 0 ] == '$' ) ) {
               switch ( buf [ 1 ] ) {
                   case 'S':
@@ -4306,7 +4367,11 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       if ( f21 != NULL ) {
           int NewPage = 0;
           kgTextSize ( Img , th , tw , tg ) ;
+          printf("MSG: !c01Preprocessing\n");
+          fflush(stdout);
           preprocess ( f21 ) ;
+          printf("MSG: !c01Preprocessing Over.\n");
+          fflush(stdout);
 	  /*
 	   * Need a relook on the following line
 	   * to check whether everything need to
@@ -4661,9 +4726,11 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           }
           fclose ( f23 ) ;
           if ( iskip <= 0 ) {
+              printf("MSG: !c01Calling read_txt\n");
+              fflush(stdout);
               read_txt ( TEMP_FILE , ofs , yy - Top_skip ) ;
               iskip = 0;
-              } else {
+          } else {
               iskip--;
           }
           ofs = ofsl;
@@ -4811,7 +4878,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       if ( buf == NULL ) {
           buf = ( char * ) malloc ( sizeof ( char ) * 90000L ) ;
           if ( buf == NULL ) {
-              printf ( " Memory allocation error \n" ) ;
+              printf ( "MSG: !c03 Memory allocation error \n" ) ;
+          fflush(stdout);
+          sleep(5);
               exit ( 0 ) ;
           }
       }
@@ -4888,6 +4957,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       return 1;
   }
 
+#ifdef D_KULINA
 int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
      char buff[1000];
      int ret =0,*frames;
@@ -4906,6 +4976,7 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
      }
      return ret;
 }
+#endif
   int ProcessArgs ( char *argv [ ] ) {
       char *apt;
       int ch;
@@ -5003,7 +5074,7 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
                  YYBGN = Ostr.Pyu ;
                  ICENT =1;
                  CODE = 'c';
- //                SPACE=1.0;
+                 SPACE=2.0;
               }
               break;
               case 'p':
