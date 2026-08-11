@@ -327,6 +327,7 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
       kgWrite(I,buff);
       RunFunctionAndWait(buff,kgwrite);
 //      ExecFunction(buff,kgwrite);
+  CleanTmpDir();
   return ret;
 }
  /* Callback for  TOVgo   */ 

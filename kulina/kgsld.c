@@ -41,11 +41,11 @@
 #define TX_CLR 15
 #define TX_FONT 0
   static char *TmpDir = NULL;
-  static char DUMM_FIL [ 100 ] ;
-  static char Z_DU_ZZ [ 100 ] ;
-  static char TEMP_FILE [ 100 ] ;
-  static char Contents [ 100 ] ;
-  static char OutFile [ 100 ] ;
+  static char DUMM_FIL [ 200 ] ;
+  static char Z_DU_ZZ [ 200 ] ;
+  static char TEMP_FILE [ 200 ] ;
+  static char Contents [ 200 ] ;
+  static char OutFile [ 200 ] ;
   static char GphFile [ 200 ] ;
   static void *Img = NULL;
   static void *Png = NULL;
@@ -750,9 +750,14 @@
    if ( Hypn != 1 ) {\
            lng = oldlng;\
            i = oldi;\
+           if(oldi == 0 ) { \
+             printf("MSG: !c03Adjust character width...\n");\
+             sleep(5);\
+             exit(0);\
+           }\
            line [ lng ] = '\0';\
            xdsp = oldxdsp;\
-           if(check_never_end ( & line [ lng+1 ] , lnlng )==0) return 0;\
+           if(check_never_end ( & line [ lng+1 ] , lnlng )==0)  exit(0);\
        }\
        else {\
            float xdspn;\
@@ -764,7 +769,7 @@
            i = oldi;\
            ch = line [ lng ] ;\
            line [ lng ] = '\0';\
-           if(check_never_end ( & line [ lng+1 ] , lnlng )==0) return 0;\
+           if(check_never_end ( & line [ lng+1 ] , lnlng )==0) exit(0);\
            xdsp = oldxdsp;\
            if ( ( xdsp < lnlng*0.93 ) && ( ( lngn-lng ) > 7 ) ) {\
                pos = 1;\
@@ -1848,7 +1853,7 @@
           printf ( "MSG: !c03  %s \n" , l ) ;
           fflush(stdout);
           sleep(5);
-          return 0;;
+          exit(0);
       }
       return 1;
   }
@@ -2065,6 +2070,7 @@
           if ( ( xdsp > ( lnlng * 1.01 ) ) && ( lng != oldlng ) ) {
               check_too_much;
           }
+//          if(i==oldi) break;
           line [ lng ] = '\0';
       }
       if ( xdsp < lnlng - 2. ) fprintf ( ot , "$l\n" ) ;
@@ -2298,6 +2304,7 @@
           if ( ( xdsp > ( lnlng * 1.01 ) ) && ( lng != oldlng ) ) {
               check_too_much;
           }
+//          if(i==oldi) break;
           line [ lng ] = '\0';
           entry = 1;
       }
@@ -2483,25 +2490,61 @@
               oldlng = lng;
               oldxdsp = xdsp;
               copy_blanks;
+              line[lng]='\0';
+              scr_strlngth ( line , & xdsp ) ;
+              if(xdsp < lnlng) {
+              oldi =i;
+              oldlng = lng;
+              oldxdsp = xdsp;
               switch ( buf [ i ] ) {
                   case '\\':
                   process_backslash;
+                  line[lng]='\0';
+                  scr_strlngth ( line , & xdsp ) ;
+                  if(xdsp < lnlng){
+                      oldi=i;
+                      oldlng = lng;
+                      oldxdsp = xdsp;
+                  }
                   break;
                   case '#':
                   process_hash;
+                  line[lng]='\0';
+                  scr_strlngth ( line , & xdsp ) ;
+                  if(xdsp < lnlng){
+                      oldi=i;
+                      oldlng = lng;
+                      oldxdsp = xdsp;
+                  }
                   break;
                   default:
                   copy_non_word;
-                  copy_word;
-                  copy_punch;
+                  line[lng]='\0';
+                  scr_strlngth ( line , & xdsp ) ;
+                  if(xdsp < lnlng){
+                     oldi=i;
+                      oldlng = lng;
+                      oldxdsp = xdsp;
+                     copy_word;
+                  }
+                  line[lng]='\0';
+                  if(xdsp < lnlng){
+                     oldi=i;
+                      oldlng = lng;
+                      oldxdsp = xdsp;
+                     copy_punch;
+                  }
+                  line[lng]='\0';
                   break;
               }
               line [ lng ] = '\0';
+              }
               scr_strlngth ( line , & xdsp ) ;
               Check_dist;
           }
           if ( ( xdsp > ( lnlng * 1.01 ) ) && ( lng != oldlng ) ) {
               check_too_much;
+              continue;
           }
           line [ lng ] = '\0';
       }
@@ -2569,6 +2612,7 @@
       };
       fprintf ( ot , "$o%-d\n$a\n" , ( int ) ( ofs * 10 + 0.5 ) ) ;
       while ( ( xdsp < ( lnlng ) ) && ( i < max ) ) {
+          
           oldi = i;
           oldlng = lng;
           oldxdsp = xdsp;
@@ -2588,6 +2632,7 @@
           }
           line [ lng ] = '\0';
           scr_strlngth ( line , & xdsp ) ;
+//          xdsp  = kgStringLength ( Img ,line ) ;
       }
       if ( xdsp > ( lnlng * 1.01 ) ) {
           check_too_much;
@@ -2612,27 +2657,65 @@
               oldlng = lng;
               oldxdsp = xdsp;
               copy_blanks;
+              line[lng]='\0';
+              scr_strlngth ( line , & xdsp ) ;
+              if(xdsp < lnlng) {
+              oldi =i;
+              oldlng = lng;
+              oldxdsp = xdsp;
               switch ( buf [ i ] ) {
                   case '\\':
                   process_backslash;
+                  line[lng]='\0';
+                  scr_strlngth ( line , & xdsp ) ;
+                  if(xdsp < lnlng){
+                      oldi=i;
+                      oldlng = lng;
+                      oldxdsp = xdsp;
+                  }
                   break;
                   case '#':
                   process_hash;
+                  line[lng]='\0';
+                  scr_strlngth ( line , & xdsp ) ;
+                  if(xdsp < lnlng){
+                      oldi=i;
+                      oldlng = lng;
+                      oldxdsp = xdsp;
+                  }
                   break;
                   default:
                   copy_non_word;
-                  copy_word;
-                  copy_punch;
+                  line[lng]='\0';
+                  scr_strlngth ( line , & xdsp ) ;
+                  if(xdsp < lnlng){
+                     oldi=i;
+                      oldlng = lng;
+                      oldxdsp = xdsp;
+                     copy_word;
+                  }
+                  line[lng]='\0';
+                  if(xdsp < lnlng){
+                     oldi=i;
+                      oldlng = lng;
+                      oldxdsp = xdsp;
+                     copy_punch;
+                  }
+                  line[lng]='\0';
                   break;
               }
               line [ lng ] = '\0';
+              }
               scr_strlngth ( line , & xdsp ) ;
+//              xdsp  = kgStringLength ( Img ,line ) ;
               Check_dist;
           }
           if ( ( xdsp > ( lnlng * 1.01 ) ) && ( lng != oldlng ) ) {
               check_too_much;
+              continue;
           }
           line [ lng ] = '\0';
+
       }
       if ( entry == 1 ) {
           if ( xdsp < lnlng - 2. ) fprintf ( ot , "$l\n" ) ;
@@ -3006,6 +3089,7 @@
       static char *txt;
       int ch;
       FILE *f15;
+      char command[300];
       float fac , space , hfac , wfac , gfac , sfac , ww , \
       wg , rmg , xx , xdsp , gap , xlngth , blngth;
       float rmgc;
@@ -3019,9 +3103,12 @@
       if ( f15 == NULL ) { /* printf ( "Error:\n" ) ; */
           printf("MSG: !c03Failed to open %s\n",flname);
           fflush(stdout);
-          sleep(5);
           goto l1100;
       };
+#if 0
+      sprintf(command,"cp %s %s/Junk",flname,getenv("HOME"));
+      system(command);
+#endif
       space = SPACE;;
       icent = ICENT;
       buf = & ( txt [ 2 ] ) ;
@@ -3052,8 +3139,9 @@
           ch = fgetc ( f15 ) ;
           i++;
       }
+      txt[i]='\0';
       if ( ch == EOF ) goto l1100;
-      if ( i == 0 ) txt [ i++ ] = ' ';
+      if ( i == 0 ){ txt [ i++ ] = ' ';txt[i]='\0';}
       while ( ( txt [ i - 1 ] == ' ' ) && ( i > 1 ) ) i--;
       txt [ i ] = '\0';
       if ( ( ch != EOF ) && ( i > 0 ) ) {
@@ -3177,10 +3265,15 @@
               if ( icent == 2 ) xdsp = 2.0 * xdsp;
               if ( icent == 3 ) {
                   int acount = 0;
+                  if(ngp== 0) ngp=1;
                   while ( 1 ) {
 // Adjusting Text
                       xdsp = 2.0 * xdsp;
+                      if(ngp==1)break;
                       acount++;
+//                      printf("MSG: !c38Adjust: xdsp %f ngp %d\n",xdsp,ngp);
+//                      printf("MSG: !c38<%s>\n",txt);
+//                      fflush(stdout);
 #if 1
                       gap = tg * gfac;
 //                  if ( ngp >= 1 ) gap = gap + ( xdsp / ( ngp ) ) ;
@@ -3189,10 +3282,11 @@
                       kgTextSize ( Img , th * hfac , tw * wfac+adjfact , gap ) ;
                       xdsp = kgStringLength ( Img , txt ) ;
                       xdsp = ( rmg - ofs - xdsp ) * 0.5;
-                      if ( xdsp < 1. ) break;
+                      if ( fabsf(xdsp) < 1. ) break;
                   }
               };
               if ( YY > -127. ) {
+
                   kgMove2f ( Img , xdsp + ofs , YY ) ;
                   YY = -1000.;
                   } else {
@@ -3635,9 +3729,6 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       tmp = fopen ( DUMM_FIL , "w" ) ;
     /*while( fgets(buf,200,fp)>0){ */
       while ( Get_line ( buf , fp ) > 0 ) {
- //         printf("MSG: %s\n",buf);
-//          sleep(2);
-//          fflush(stdout);
           if ( ( buf [ 0 ] == '$' ) ) {
               switch ( buf [ 1 ] ) {
                   case 'S':
@@ -4264,19 +4355,41 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
   }
 #endif
 #ifndef D_KULINA
-  int MakeTmpFolderInHome ( char *Tfolder ) {
-      int Fstat = 0;
-      int id = 0;
-      sprintf ( Tfolder , "%-s/%-d_%-3.3d" , getenv ( "HOME" ) , getpid ( ) , id ) ;
-      while ( FileStat ( Tfolder ) ) {
-          id++;
-          sprintf ( Tfolder , "%-s/%-d_%-3.3d" , getenv ( "HOME" ) , getpid ( ) , id ) ;
-      }
-      mkdir ( Tfolder , 0700 ) ;
-      printf ( "Created: %s\n" , Tfolder ) ;
-      Fstat = 1;
-      return Fstat;
+int MakeTmpFolderInHome(char *Tfolder) {
+  int Fstat = 0;
+  int id=1;
+  sprintf(Tfolder,"%-s/%-d",getenv("HOME"),getpid());
+  if(!FileStat(Tfolder)) mkdir(	Tfolder,0700);
+//  sprintf(Tfolder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+  sprintf(Tfolder,"%-s/%-d/%-d_%-3.3d",getenv("HOME"),getpid(),getpid(),id);
+  while(FileStat(Tfolder)) {
+    id++;
+//    sprintf(Tfolder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+     sprintf(Tfolder,"%-s/%-d/%-d_%-3.3d",getenv("HOME"),getpid(),getpid(),id);
   }
+   mkdir(Tfolder,0700);
+    printf("Created: %s\n",Tfolder);
+    Fstat=1;
+  return Fstat;
+}
+char *MakeTmpFolder(void) {
+    char Folder[500];
+    char *pt;
+#if 0
+    int id=0;
+    sprintf(Folder,"%-s/%-d",getenv("HOME"),getpid());
+//    sprintf(Folder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+    while(FileStat(Folder)) {
+      id++;
+      sprintf(Folder,"%-s/%-d/%-d_%-3.3d",getenv("HOME"),getpid(),getpid(),id);
+    }
+    mkdir(Folder,0700);
+#endif
+    MakeTmpFolderInHome(Folder);
+    pt = (char *)malloc(strlen(Folder)+1);
+    strcpy(pt,Folder);
+    return pt;
+}
 #endif
 //#ifdef D_KULINA
       int MergeWithVideoFrames() {
@@ -4368,9 +4481,11 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           int NewPage = 0;
           kgTextSize ( Img , th , tw , tg ) ;
           printf("MSG: !c01Preprocessing\n");
+          sleep(5);
           fflush(stdout);
           preprocess ( f21 ) ;
-          printf("MSG: !c01Preprocessing Over.\n");
+          printf("MSG: !c02Preprocessing Over.\n");
+          sleep(2);
           fflush(stdout);
 	  /*
 	   * Need a relook on the following line
@@ -4727,6 +4842,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           fclose ( f23 ) ;
           if ( iskip <= 0 ) {
               printf("MSG: !c01Calling read_txt\n");
+              sleep(2);
               fflush(stdout);
               read_txt ( TEMP_FILE , ofs , yy - Top_skip ) ;
               iskip = 0;
@@ -4763,6 +4879,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           }
           printf ( "MSG: PngOut:Scroll:RM:  %d %d %d\n" , PngOut , Scroll , RIGHT_MAR ) ;
           printf ("MSG: !c01Vscroll = %d\n",Vscroll);
+          sleep(1);
           fflush ( stdout ) ;
           if(PsOut)return 0;
           PngOut =1;
@@ -4867,7 +4984,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       yp[0]=Ostr.Pyl;
       yp[1]=Ostr.Pyu;
       if ( TmpDir == NULL ) {
-          TmpDir = kgMakeTmpDir ( ) ;
+          TmpDir = MakeTmpFolder ( ) ;
           sprintf ( DUMM_FIL , "%-s/DUMM_FIL" , TmpDir ) ;
           sprintf ( Z_DU_ZZ , "%-s/Z_DU_ZZ" , TmpDir ) ;
           sprintf ( TEMP_FILE , "%-s/TEMP_FILE" , TmpDir ) ;
@@ -4929,7 +5046,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       kgUserFrame ( Img , (float)Ostr.Pxl,(float)Ostr.Pyl,(float)Ostr.Pxu,(float)Ostr.Pyu);
       Reset_for_tp ( xp , yp ) ;
       strcpy ( flname , Ostr.TextFile ) ;
-      printf ( "MSG: Calling Print_process: %s\n",flname    ) ;
+      printf ( "MSG: !c05Calling Print_process: %s\n",flname    ) ;
       fflush(stdout);
       print_process ( flname , 1 ) ;
       kgCloseGph ( Img ) ;
@@ -4969,7 +5086,7 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
          if(ch< 0) continue;
 //         printf("%s",buff);
          if((pos=SearchString(buff,(char *)"frame= "))>=0) {
-            pt = buff+pos+8;
+            pt = buff+pos+7;
             sscanf(pt,"%d",frames);
             i++;
          }
@@ -5014,7 +5131,7 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
                      printf("%s not a video file\n", Ostr.VideoFile );
                      return 0;
               }
-              printf("Video file: %s\n",Ostr.VideoFile);
+              printf("MSG: Video file: %s\n",Ostr.VideoFile);
               Ostr.Vxres = mpt->Axres;
               Ostr.Vyres = mpt->Ayres;
               Ostr.duration = mpt->TotSec;
@@ -5266,5 +5383,6 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
       if(Ostr.Preserve == 0)kgCleanDir(Ostr.Vframes); 
       kgCleanDir(Ostr.Folder);
       kgCleanDir(Ostr.ListFolder);
+      CleanTmpDir();
       return 1;
   }

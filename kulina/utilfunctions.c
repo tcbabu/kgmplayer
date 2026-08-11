@@ -874,8 +874,9 @@ int GetLastFrame(char *infile,char *outfile) {
    return 1;
 }
 int JoinTwoVideos(char *infile1,char *infile2,char *outfile){
-   char buff[500],Tmp[100],Txt[100];
-   strcpy(Tmp,(char *)"/tmp");
+//   char buff[500],Tmp[100],Txt[100];
+//   strcpy(Tmp,(char *)"/tmp");
+   char buff[500],Txt[100];
    sprintf (buff,"ffmpegfun -y -i %s -i %s -filter_complex "
       "\"[0:v][1:v]concat=n=2:v=1[outv]\" -map \"[outv]\" %s",
       infile1,infile2,outfile);
@@ -1410,32 +1411,46 @@ int RunAndWait(char * job)  {
    runfunction(job,ProcessPrint,ffmpegfun);
    return 1;
 }
-char *MakeTmpFolder(void) {
-    char Folder[500];
-    char *pt;
-    int id=1;
-    sprintf(Folder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
-    while(FileStat(Folder)) {
-      id++;
-      sprintf(Folder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
-    }
-    mkdir(Folder,0700);
-    pt = (char *)malloc(strlen(Folder)+1);
-    strcpy(pt,Folder);
-    return pt;
-}
 int MakeTmpFolderInHome(char *Tfolder) {
   int Fstat = 0;
-  int id=0;
-  sprintf(Tfolder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+  int id=1;
+  sprintf(Tfolder,"%-s/%-d",getenv("HOME"),getpid());
+  if(!FileStat(Tfolder)) mkdir(	Tfolder,0700);
+//  sprintf(Tfolder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+  sprintf(Tfolder,"%-s/%-d/%-d_%-3.3d",getenv("HOME"),getpid(),getpid(),id);
   while(FileStat(Tfolder)) {
     id++;
-    sprintf(Tfolder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+//    sprintf(Tfolder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+     sprintf(Tfolder,"%-s/%-d/%-d_%-3.3d",getenv("HOME"),getpid(),getpid(),id);
   }
    mkdir(Tfolder,0700);
     printf("Created: %s\n",Tfolder);
     Fstat=1;
   return Fstat;
+}
+char *MakeTmpFolder(void) {
+    char Folder[500];
+    char *pt;
+#if 0
+    int id=0;
+    sprintf(Folder,"%-s/%-d",getenv("HOME"),getpid());
+//    sprintf(Folder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+    while(FileStat(Folder)) {
+      id++;
+      sprintf(Folder,"%-s/%-d/%-d_%-3.3d",getenv("HOME"),getpid(),getpid(),id);
+    }
+    mkdir(Folder,0700);
+#endif
+    MakeTmpFolderInHome(Folder);
+    pt = (char *)malloc(strlen(Folder)+1);
+    strcpy(pt,Folder);
+    return pt;
+}
+int CleanTmpDir(void) {
+    char Folder[500];
+    sprintf(Folder,"%-s/%-d",getenv("HOME"),getpid());
+    if (FileStat(Folder)) kgCleanDir(Folder);
+    return 1;
 }
  int FileSize(char *flname) {
   int ret;
