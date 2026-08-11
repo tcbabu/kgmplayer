@@ -2736,9 +2736,11 @@
   static int make_dot_adjusted_line ( FILE * cfile , \
   char *ln , int ofs , int rmg ) {
       int no , level , i , rmg1;
-      float wd , dsp , rln;
+      float wd , dsp , rln,xdsp;
+      char Str[500];
     /*  txtsize((txth)*(ConFact*0.50)/12.,(txtw)*(ConFact*0.50)/12.,txtg); */
       wd = kgStringLength ( Img , " . . . . . . . . . . . . . . . . . . . ." ) ;
+//      wd = kgStringLength(Img,"--------------------");
       wd /= 20.;
       i = 0;
       while ( ln [ i ] >= ' ' ) {
@@ -2749,16 +2751,45 @@
           }
           i++;
       }
+      strcpy(Str,ln+i);
+      strlen(Str);
+      Str[strlen(Str)-1]='\0';
       dsp = kgStringLength ( Img , ln ) ;
-      rln = kgStringLength ( Img , ln + i ) ;
+      rln = kgStringLength ( Img , Str ) ;
       no = ( rmg - ofs - dsp - rln ) / ( wd ) + 0.5;
-      rmg1 = ( int ) ( rln / wd + 0.5 ) * wd;
-      rmg1 = rmg - rmg1;
-      fprintf ( cfile , "$l\n$A0\n%s\n$m%-d\n$r\n$A0\n" , ln , rmg1 ) ;
-      for ( level = 1; level < no; level++ ) {
-          fprintf ( cfile , " ." ) ;
+      if(no<= 0) {
+         printf("MSG: !c03Too big to align\n");
+         printf("MSG: !c03Adjust character width\n");
+         fflush(stdout);
+         sleep(5);
+         exit(0);
       }
+      rmg1 = ( int ) (( rln / wd + 0.5 ) * wd);
+      rmg1 = ( int ) (( rln + 0.5 ) );
+//      printf("MSG: !c38Str: %s rln; %f rmg1 : %d\n",Str,rln,rmg1);
+      rmg1 = rmg - rmg1;
+//      printf("MSG: !c38rmg: %d rmg1 : %d\n",rmg,rmg1);
+      fprintf ( cfile , "$l\n$A0\n%s\n$m%-d\n$r\n$A0\n" , ln , rmg1 ) ;
+//      printf ( "MSG: $l\n$A0\n%s\n$m%-d\n$r\n$A0\n" , ln , rmg1 ) ;
+#if 1
+      for ( level = 0; level < no; level++ ) {
+          fprintf ( cfile , " ." ) ;
+//          fprintf ( cfile , "-" ) ;
+      }
+#else
+      Str[0]='\0';
+      for ( level = 1; level < no; level++ ) {
+        strcat(Str,(char *)" .");
+        xdsp = rmg-ofs- dsp -rln - kgStringLength(Img,Str);
+        if(xdsp <=0 ) break;
+      }
+      fprintf(cfile,"%-s",Str);
+
+#endif
       fprintf ( cfile , "\n$m%-d\n%s" , rmg , ln + i ) ;
+//      printf (  "MSG: .............\n$m%-d\n%s" , rmg , ln + i ) ;
+      
+//      fprintf ( cfile , "\n$m%-d\n%s" , rmg , ln + i ) ;
       fprintf ( cfile , "$l\n" ) ;
       return 1;
   }
@@ -5383,6 +5414,8 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
       if(Ostr.Preserve == 0)kgCleanDir(Ostr.Vframes); 
       kgCleanDir(Ostr.Folder);
       kgCleanDir(Ostr.ListFolder);
+#ifdef D_KULINA
       CleanTmpDir();
+#endif
       return 1;
   }
