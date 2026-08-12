@@ -96,7 +96,7 @@
   static float pagepos;
   static float wxmin , wymin , wxmax , wymax;
   static int Xres , Yres;
-  static int PGLIMIT=268;
+  static int PGLIMIT=190;
  // static int SPACE=2.0;
   static int SPACE=1.0;
   static int CODE='l';
@@ -4885,29 +4885,28 @@ char *MakeTmpFolder(void) {
           rmg = rmgl;
           if ( np < stpage ) goto l10;
           kgGetWindow ( Img , w , w + 1 , w + 2 , w + 3 ) ;
-          if ( RIGHT_MAR < 220 ) {
+          if ( PsOut == 1 ) {
+            if ( RIGHT_MAR < 220 ) {
               wxl = w [ 0 ] , wyl = w [ 1 ] ;
               wxu = wxl + ( w [ 2 ] - w [ 0 ] ) * 0.70707;
               wyu = w [ 3 ] ;
-              if ( PsOut == 1 ) {
                   kgUserFrame ( Img , wxl , wyl , wxu , wyu ) ;
                   remove ( OutFile ) ;
                   kgA4Copy ( Img , OutFile ) ;
                   sprintf ( ln , "cat %s >> %s" , OutFile , PsFile ) ;
                   system ( ln ) ;
-              }
-         } else {
+            } else {
               wxl = w [ 0 ] , wxu = w [ 2 ] ;
               wyl = w [ 3 ] - ( w [ 3 ] -w [ 1 ] ) *0.70707;
               wyu = w [ 3 ] ;
-              if ( PsOut ) {
                   kgUserFrame ( Img , wxl , wyl , wxu , wyu ) ;
                   remove ( OutFile ) ;
                   kgLandscapeCopy ( Img , OutFile ) ;
                   sprintf ( ln , "cat %s >> %s" , OutFile , PsFile ) ;
                   system ( ln ) ;
-              }
+             }
           }
+          else {
           printf ( "MSG: PngOut:Scroll:RM:  %d %d %d\n" , PngOut , Scroll , RIGHT_MAR ) ;
           printf ("MSG: !c01Vscroll = %d\n",Vscroll);
           sleep(1);
@@ -4924,33 +4923,10 @@ char *MakeTmpFolder(void) {
               printf("MSG: Creating Png: %f %f %f %f\n",w[0],w[1],w[2],w[3]);
               fflush(stdout);
               MakePngImage ( Pbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
-#if 0
-              if ( RIGHT_MAR < 220 ) {
-                  printf("MSG: PngA4\n");
-                  fflush(stdout);
-                  MakePngA4Image ( Pbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
-              }
-              else {
-                  printf("MSG: PngLandscape\n");
-                  fflush(stdout);
-                  MakePngImage ( Pbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
-              }
-#endif
           }
           if ( Scroll ) {
                   MakeScrollFrames ( Sbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
-#if 0
-              if ( RIGHT_MAR < 220 ) {
-                  printf ( "MSG: Scroll A4\n" ) ;
-                  fflush ( stdout ) ;
-                  MakeScrollA4Frames ( Sbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
-              }
-              else {
-                  printf ( "MSG: Scroll LandScape\n" ) ;
-                  fflush ( stdout ) ;
-                  MakeScrollFrames ( Sbkimg , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
-              }
-#endif 
+          }
           }
           kgUserFrame ( Img , w [ 0 ] , w [ 1 ] , w [ 2 ] , w [ 3 ] ) ;
           if ( ! Finish && ( np < endpage ) ) goto l10;
@@ -4991,15 +4967,11 @@ char *MakeTmpFolder(void) {
                "                  for video output\n"
                " -s<Sxres:Syres:Xoff:yoff> resolution of text box anf offset on video(from center),\n"
                "                 default is  video resolution and 0:0\n"
-               "                 either -v or -r must be specified\n"
-               " -p<Pxu:Pyu:Pxl:Pyl : Output paper Size,\n"
-               "                 Full size is(297:170:0:-127)\n"
-               "                 A4 is (210:170:0:-127)\n"
-               "                 Landscape is (297:170:0:0)\n"
+               "                 if given no postscript output,may use -f\n"
                " -t<secs> : slides of time 'secs'\n" 
                "            if not given text scroll is assumed\n"
                " -l<secs> : scroll time if video file is not given\n"
-               " -f<folder>: slides folder, if needs to be preserved\n"
+               " -f<folder>: slides folder, if images needs to be preserved\n"
                " -k<red:green:blue>: background color,if needed\n",name ) ;
 
       return 1;
@@ -5125,8 +5097,27 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
      return ret;
 }
 #endif
+  char * GetArgPointer(char **argv,int *ipt){
+     char *tpt ;
+     int i = *ipt-1;
+     tpt = argv[i]+2;
+     if(tpt[0]=='\0') {
+       i++;
+       *ipt =i+1;
+       tpt = argv[i];
+       if(tpt==NULL) {
+         PrintUsage(argv[0]);
+         printf("MSG: !c03Invalid arg\n");
+         fflush(stdout);
+         sleep(2);
+         exit(0);
+       }
+     }
+     return tpt;  
+  }
   int ProcessArgs ( char *argv [ ] ) {
       char *apt;
+      char *tpt;
       int ch;
       int i = 1 , j = 0;
       int error = 1;
@@ -5136,7 +5127,7 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
           i++;
           ch = apt [ 0 ] ;
           if ( ch != '-' ) {
-              if ( error == 0 ) {error = 1;break;}
+              if ( error == 0 ) {error = 2;break;}
               error = 0;
               strcpy ( Ostr.TextFile , apt ) ;
               printf("TextFile: %s\n",Ostr.TextFile );
@@ -5145,7 +5136,8 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
           ch = apt [ 1 ] ;
           switch ( ch ) {
               case 'v':
-              sscanf ( apt+2 , "%s" , buff ) ;
+              tpt= GetArgPointer(argv,&i);
+              sscanf ( tpt , "%s" , buff ) ;
               j = 0;
               while ( buff [ j ] > ' ' ) {
                   if ( buff [ j ] == ':' ) buff [ j ] = ' ';
@@ -5187,7 +5179,8 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
               }
               break;
               case 's':
-              sscanf ( apt+2 , "%s" , buff ) ;
+              tpt= GetArgPointer(argv,&i);
+              sscanf ( tpt , "%s" , buff ) ;
               j = 0;
               while ( buff [ j ] > ' ' ) {
                   if ( buff [ j ] == ':' ) buff [ j ] = ' ';
@@ -5226,7 +5219,8 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
               }
               break;
               case 'p':
-              sscanf ( apt+2 , "%s" , buff ) ;
+              tpt= GetArgPointer(argv,&i);
+              sscanf ( tpt , "%s" , buff ) ;
               j = 0;
               while ( buff [ j ] > ' ' ) {
                   if ( buff [ j ] == ':' ) buff [ j ] = ' ';
@@ -5239,12 +5233,14 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
               YYBGN =  Ostr.Pyu;
               break;
               case 'o':
-              sscanf ( apt+2 , "%s" , buff ) ;
+              tpt= GetArgPointer(argv,&i);
+              sscanf ( tpt , "%s" , buff ) ;
               strcpy ( Ostr.Output , buff ) ;
               break;
               case 'f':
               kgCleanDir ( Ostr.Vframes ) ;
-              sscanf ( apt+2 , "%s" , buff ) ;
+              tpt= GetArgPointer(argv,&i);
+              sscanf ( tpt , "%s" , buff ) ;
               strcpy ( Ostr.Vframes , buff ) ;
               printf("MSG: Frames set to %s\n", Ostr.Vframes);
               kgCleanDir ( Ostr.Vframes ) ;
@@ -5252,18 +5248,21 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
               Ostr.Preserve = 1;
               break;
               case 't':
-              sscanf ( apt+2 , "%f" , & ( Ostr.ssec ) ) ;
+              tpt= GetArgPointer(argv,&i);
+              sscanf ( tpt , "%f" , & ( Ostr.ssec ) ) ;
               Ostr.Scroll = 0;
               Ostr.PsOut = 0;
               break;
               case 'l':
-              sscanf ( apt+2 , "%f" , & ( Ostr.duration ) ) ;
+              tpt= GetArgPointer(argv,&i);
+              sscanf ( tpt , "%f" , & ( Ostr.duration ) ) ;
               Ostr.Scroll = 0;
               Ostr.PsOut = 0;
               Ostr.Nf = ( int ) ( Ostr.duration*Ostr.fps+0.1 ) ;
               break;
               case 'k':
-              sscanf ( apt+2 , "%s" , buff ) ;
+              tpt= GetArgPointer(argv,&i);
+              sscanf ( tpt , "%s" , buff ) ;
               j = 0;
               while ( buff [ j ] > ' ' ) {
                   if ( buff [ j ] == ':' ) buff [ j ] = ' ';
@@ -5283,11 +5282,13 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
               PrintUsage ( argv [ 0 ] ) ;return 0;
               break;
               default:
+              PrintUsage ( argv [ 0 ] ) ;return 0;
               break;
           }
       }
       if ( Ostr.PsOut ) Ostr.Scroll = 0;
       if ( i == 1 ) {PrintUsage ( argv [ 0 ] ) ;return 0;}
+      if ( error > 0 ) {PrintUsage ( argv [ 0 ] ) ;return 0;}
       strcpy ( PngFolder , Ostr.Folder ) ;
       Sxres = Ostr.Sxres;
       Syres = Ostr.Syres;
