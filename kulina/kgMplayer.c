@@ -6,7 +6,7 @@
 //#define S2CLR -230200050
 //#define S2CLR -69128181
 #define S2CLR -1
-char VER[]="Ver 6.3.1";
+char VER[]="Ver 6.3.2";
 //int Thred=15,Thgreen=17,Thblue=15;
 int Thred=165,Thgreen=177,Thblue=165;
 char urlstring[500];
@@ -220,7 +220,7 @@ int kgMplayerGroup( DIALOG *D,void **v,void *pt) {
     -1, /* bkgr colour */ 
       0,0 /* border hide */ 
   };
-  p5.xpm = logo(50,190);
+  p5.xpm = logo(50,220);
   strcpy(p5.Wid,(char *)"kgMplayerWidget10");
   DIHB d6 = { 
     'P',
