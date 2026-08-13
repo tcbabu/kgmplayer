@@ -156,6 +156,7 @@
       float Vend;
       char Output [ 300 ] ;
       char Folder [ 300 ] ;
+      char PngFolder[300];
       char Vframes [ 300 ] ;
       char VideoFile [ 300 ] ;
       char TextFile [ 300 ] ;
@@ -4187,7 +4188,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       dx = ( -Yend +wyu -wyl ) /Frames;
       ydown = wyl;
       yup = wyu;
-      fprintf (stderr, "Frames;%d\n" , Frames ) ;
+      fprintf (stderr, "Frames: %d\n" , Frames ) ;
       printf("MSG: !c06Total Frames: %d Yend: %f\n",Frames,Yend);
       fflush(stdout);
       for ( j = 0;j < Frames;j++ ) {
@@ -4256,7 +4257,7 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       Ixres = Ostr.Sxres;
       Iyres = -ydown + wyu-wyl;
       yup = wyu;
-      fprintf (stderr, "Frames;%d\n" , Frames ) ;
+      fprintf (stderr, "Frames: %d\n" , Frames ) ;
       printf("MSG: !c06Total Frames: %d Yend: %f\n",Frames,Yend);
       printf("MSG: !c06Ixres: %d Iyres: %d\n",Ixres,Iyres);
       fflush(stdout);
@@ -4430,7 +4431,8 @@ char *MakeTmpFolder(void) {
         char TmpDir[300],Flname[300],buff[100];
         float per;
         char **Pngs;
-        MakeTmpFolderInHome(TmpDir);
+//        MakeTmpFolderInHome(TmpDir);
+        strcpy(TmpDir,Ostr.PngFolder);
         rename(Ostr.Vframes,TmpDir);
         Pngs = GetFileList(TmpDir,(char *)"*.png");
         i=0;
@@ -4473,7 +4475,7 @@ char *MakeTmpFolder(void) {
           kgFreeImage(Img);
           i++;          
         }
-        kgCleanDir(TmpDir);
+        if(Ostr.Preserve==0)kgCleanDir(TmpDir);
         return 1;
       }
 //#endif
@@ -4971,7 +4973,8 @@ char *MakeTmpFolder(void) {
                " -t<secs> : slides of time 'secs'\n" 
                "            if not given text scroll is assumed\n"
                " -l<secs> : scroll time if video file is not given\n"
-               " -f<folder>: slides folder, if images needs to be preserved\n"
+               " -f<folder>: slides folder for text images,"
+               "             if images needs to be preserved(not for Scroll)\n"
                " -k<red:green:blue>: background color,if needed\n",name ) ;
 
       return 1;
@@ -5092,6 +5095,7 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
             pt = buff+pos+7;
             sscanf(pt,"%d",frames);
             i++;
+            printf("MSG: Per: %fn",i/100.0);
          }
      }
      return ret;
@@ -5238,13 +5242,13 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
               strcpy ( Ostr.Output , buff ) ;
               break;
               case 'f':
-              kgCleanDir ( Ostr.Vframes ) ;
+              kgCleanDir ( Ostr.PngFolder ) ;
               tpt= GetArgPointer(argv,&i);
               sscanf ( tpt , "%s" , buff ) ;
-              strcpy ( Ostr.Vframes , buff ) ;
+              strcpy ( Ostr.PngFolder , buff ) ;
               printf("MSG: Frames set to %s\n", Ostr.Vframes);
-              kgCleanDir ( Ostr.Vframes ) ;
-              mkdir ( Ostr.Vframes , 0700 ) ;
+              kgCleanDir ( Ostr.PngFolder ) ;
+              mkdir ( Ostr.PngFolder , 0700 ) ;
               Ostr.Preserve = 1;
               break;
               case 't':
@@ -5360,6 +5364,7 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
       O->TextFile [ 0 ] = '\0';
       MakeTmpFolderInHome ( O->Folder ) ;
       MakeTmpFolderInHome ( O->Vframes ) ;
+      MakeTmpFolderInHome ( O->PngFolder ) ;
       MakeTmpFolderInHome ( O->ListFolder ) ;
       strcpy(O->ListFile,O->ListFolder);
       strcat(O->ListFile,"/Output.mp4");
@@ -5381,6 +5386,14 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
       }
       return Imgs;
   }
+#ifndef D_KULINA
+int CleanTmpDir(void) {
+    char Folder[500];
+    sprintf(Folder,"%-s/%-d",getenv("HOME"),getpid());
+    if (FileStat(Folder)) kgCleanDir(Folder);
+    return 1;
+}
+#endif
   int kgwrite ( int argc , char *argv [ ] ) {
       int i=0;
       char **Imgs=NULL;      
@@ -5402,21 +5415,21 @@ int ProcessFrames(void *tpt,int pip0,int pip1,int Pid) {
       printf("MSG: Joining... \n",ImgName);
       printf("MSG: Per: 0\n");
       if(Ostr.Video) {
-#if 0
-         CreateImagesVideo(Imgs,(Ostr.fps),Ostr.ListFile);
-         OverlayVideos(Ostr.VideoFile,Ostr.ListFile,1,Ostr.Output);
-#else
          UpdateVideoImages(Ostr.VideoFile,Imgs,Ostr.Output,Ostr.Vstart,Ostr.Vend);
-#endif
       }
-      else CreateImagesVideo(Imgs,(Ostr.fps),Ostr.Output); 
+      else{
+//        CreateImagesVideo(Imgs,(Ostr.fps),Ostr.Output); 
+        if(Ostr.Preserve)rename(Ostr.Vframes,Ostr.PngFolder);
+      }
+#else
+       if(Ostr.Preserve)rename(Ostr.Vframes,Ostr.PngFolder);
 #endif
 }
-      if(Ostr.Preserve == 0)kgCleanDir(Ostr.Vframes); 
+      kgCleanDir(Ostr.Vframes); 
       kgCleanDir(Ostr.Folder);
       kgCleanDir(Ostr.ListFolder);
-#ifdef D_KULINA
+//#ifdef D_KULINA
       CleanTmpDir();
-#endif
+//#endif
       return 1;
   }

@@ -3919,7 +3919,7 @@ void *logo(int l,int w){
   logoimg = kgGetResizedImage(fid);
   kgCloseImage(fid);
 //  fprintf(stderr,"Writing logoimg to Logo.png\n");
-  kgWriteImage(logoimg,"Logo.png");
+//  kgWriteImage(logoimg,"Logo.png");
   return logoimg;
 }
   int ProcessVinfo (  int pip0,int pip1,int Pid ) {

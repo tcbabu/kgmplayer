@@ -319,7 +319,7 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
   }
   else {
       sprintf(buff,"kgwrite -v%-s:%-f:%-f  %s  -k%-d:%-d:%-d:%-0.2f "
-          " -s%-d:%-d:%-d:%-d -o%-s %-s",
+          " -s%-d:%-d:%-d:%-d -o%-s  %-s",
           infile1,st,et,Opt,Red,Green,Blue,Rfact,
            Sxres,Syres,Xoff,Yoff,outfile,infile2);
   }
