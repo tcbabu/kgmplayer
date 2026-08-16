@@ -236,6 +236,51 @@ int MakeTextOverVideo(char *infile1,char *infile2,char *outfile,DII *I) {
   return 1;
 }
 
+
+Dlink *GetTextBlocks(char *filename) {
+  Dlink *Inlist = Dreadfile(filename);
+  if(Inlist== NULL) return NULL;
+  Dlink *Listlist= Dopen();
+  Dlink *Flist=NULL;
+  Dlink *Hlist=Dopen();;
+  char *pt;
+  while( (pt=(char *)Getrecord(Inlist))!=NULL) {
+    if((pt[0]=='$')&& (pt[1]=='T')) {
+     break;
+    }
+    else {
+      Dadd(Hlist,pt);
+    }
+  }
+  Dadd(Listlist,Hlist);
+  if(pt==NULL) return Listlist;
+  Flist=Dopen();
+  Dadd(Flist,pt);
+  while( (pt=(char *)Getrecord(Inlist))!=NULL) {
+    if((pt[0]=='$')&& (pt[1]=='T')) {
+      Dadd(Listlist,Flist);
+      Flist = Dopen();
+      Dadd(Flist,pt);
+    }
+    else {
+      Dadd(Flist,pt);
+    }
+  }
+  Dadd(Listlist,Flist);
+  return Listlist;
+}
+int CopyLinksToFile(Dlink *Hlist,Dlink *Flist,char *Outfile) {
+   Dwritefile(Hlist,Outfile);
+   FILE *fp= fopen(Outfile,"a");
+   Resetlink(Flist);
+   char *pt;
+   while(( pt=Getrecord(Flist)) != NULL) {
+      fprintf(fp,"%s",pt);
+   }
+   fclose(fp);
+   return 1;
+}
+
  /* Callback for  TOVgo   */ 
 
 int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
@@ -304,14 +349,28 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
        case 10: Xoff=0;Yoff=-dy/2;break;
        case 11: Xoff=0;Yoff=dy/2;break;
    }
-#if 0
-  fact = Syres/(float)Vyres;
-  Pyres = 297*fact;
-  fact = Sxres/(float)Vxres;
-  Pxres = fact*297;   
-  sprintf(Opt," -p%-d:%-d:0:0",Pxres,Pyres);
-#endif
   strcpy(Opt,(char *)" ");
+  Dlink *Llist=GetTextBlocks(infile2);
+  Dlink *Tlist=NULL,*Hlist=NULL;
+  int Count = Dcount(Llist);
+  char Folder[200],Tmpfile[300],Ostr[500];;
+  Resetlink(Llist);
+  Hlist = (Dlink *)Dpick(Llist);
+  if(Type==1) {
+      sprintf(Ostr,"kgwrite -v%-s:%-f:%-f  %s -s%-d:%-d:%-d:%-d  ",
+           infile1,st,et,Opt,
+           Sxres,Syres,Xoff,Yoff);
+  }
+  else {
+      sprintf(Ostr,"kgwrite -v%-s:%-f:%-f  %s  -k%-d:%-d:%-d:%-0.2f "
+          " -s%-d:%-d:%-d:%-d ",
+          infile1,st,et,Opt,Red,Green,Blue,Rfact,
+           Sxres,Syres,Xoff,Yoff);
+  }
+  if(Count==1) {
+    Dempty(Hlist);
+    Dempty(Llist);  
+#if 0
   if(Type==1) {
       sprintf(buff,"kgwrite -v%-s:%-f:%-f  %s -s%-d:%-d:%-d:%-d -o%-s %-s",
            infile1,st,et,Opt,
@@ -323,10 +382,15 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
           infile1,st,et,Opt,Red,Green,Blue,Rfact,
            Sxres,Syres,Xoff,Yoff,outfile,infile2);
   }
+#endif
+      sprintf(buff,"%s -o%-s %-s ",Ostr,outfile,infile2);
 //      runfunction(buff,ProcessPrint,kgwrite);
       kgWrite(I,buff);
       RunFunctionAndWait(buff,kgwrite);
 //      ExecFunction(buff,kgwrite);
+  }
+  else {
+  }
   CleanTmpDir();
   return ret;
 }
