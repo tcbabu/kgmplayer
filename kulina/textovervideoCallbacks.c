@@ -351,46 +351,57 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
    }
   strcpy(Opt,(char *)" ");
   Dlink *Llist=GetTextBlocks(infile2);
-  Dlink *Tlist=NULL,*Hlist=NULL;
+  Dlink *Flist=NULL,*Hlist=NULL;
+  Resetlink(Llist);
   int Count = Dcount(Llist);
-  char Folder[200],Tmpfile[300],Ostr[500];;
+  char Folder[300],Tmpfile1[300],Tmpfile2[300],Ostr[500],Tmpfile3[300];
+  sprintf(Ostr,"!c01Count : %d\n",Count);
+  kgWrite(I,Ostr);
   Resetlink(Llist);
   Hlist = (Dlink *)Dpick(Llist);
   if(Type==1) {
-      sprintf(Ostr,"kgwrite -v%-s:%-f:%-f  %s -s%-d:%-d:%-d:%-d  ",
-           infile1,st,et,Opt,
+      sprintf(Ostr,"  %s -s%-d:%-d:%-d:%-d  ",
+           Opt,
            Sxres,Syres,Xoff,Yoff);
   }
   else {
-      sprintf(Ostr,"kgwrite -v%-s:%-f:%-f  %s  -k%-d:%-d:%-d:%-0.2f "
+      sprintf(Ostr," %s  -k%-d:%-d:%-d:%-0.2f "
           " -s%-d:%-d:%-d:%-d ",
-          infile1,st,et,Opt,Red,Green,Blue,Rfact,
+          Opt,Red,Green,Blue,Rfact,
            Sxres,Syres,Xoff,Yoff);
   }
   if(Count==1) {
-    Dempty(Hlist);
-    Dempty(Llist);  
-#if 0
-  if(Type==1) {
-      sprintf(buff,"kgwrite -v%-s:%-f:%-f  %s -s%-d:%-d:%-d:%-d -o%-s %-s",
-           infile1,st,et,Opt,
-           Sxres,Syres,Xoff,Yoff,outfile,infile2);
-  }
-  else {
-      sprintf(buff,"kgwrite -v%-s:%-f:%-f  %s  -k%-d:%-d:%-d:%-0.2f "
-          " -s%-d:%-d:%-d:%-d -o%-s  %-s",
-          infile1,st,et,Opt,Red,Green,Blue,Rfact,
-           Sxres,Syres,Xoff,Yoff,outfile,infile2);
-  }
-#endif
-      sprintf(buff,"%s -o%-s %-s ",Ostr,outfile,infile2);
+      sprintf(buff,"kgwrite -v%-s:%-f:%-f %s  -o%-s %-s ",infile1,st,et,Ostr,outfile,infile2);
 //      runfunction(buff,ProcessPrint,kgwrite);
       kgWrite(I,buff);
       RunFunctionAndWait(buff,kgwrite);
-//      ExecFunction(buff,kgwrite);
   }
   else {
+      char *rpt=NULL;
+      MakeTmpFolderInHome(Folder);
+      strcpy(Tmpfile1,infile1);
+      MakeFileInFolder("/tmp/outfile.mp4",Folder,Tmpfile2,".mp4");      
+      while(( Flist = (Dlink *)Dpick(Llist))!=NULL) {
+        Resetlink(Flist);
+        rpt = (char *)Dpick(Flist);
+        kgWrite(I,rpt);
+        sscanf(rpt+2,"%f%f",&st,&et);
+        free(rpt);
+        sprintf(buff,"!c06st: %f et: %f\n",st,et);
+        kgWrite(I,buff);
+        CopyLinksToFile(Hlist,Flist,Tmpfile2);
+        MakeFileInFolder("/tmp/infile.mp4",Folder,Tmpfile3,".mp4");      
+        sprintf(buff,"kgwrite -v%-s:%-f:%-f %s -o%-s %-s ",Tmpfile1,st,et,Ostr,Tmpfile3,Tmpfile2);
+        kgWrite(I,buff);
+        RunFunctionAndWait(buff,kgwrite);
+        Dempty(Flist);
+        if(strcmp(infile1,Tmpfile1)!= 0) remove(Tmpfile1);
+        strcpy(Tmpfile1,Tmpfile3);
+      }
+      rename(Tmpfile3,outfile);
   }
+  Dempty(Hlist);
+  Dempty(Llist);  
   CleanTmpDir();
   return ret;
 }
