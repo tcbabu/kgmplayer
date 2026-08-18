@@ -14,6 +14,7 @@ int MakeFileInFolder(char *Infile,char *Folder,char *Outfile,char *ext);
 int GetFolderName(char *infile,char *folder);
 int RunAndMonitor(char *);
 int ExtractVideoInfo(char *FileName,int *xres,int *yes,float *duration);
+void *Runkgedit(void *,void *);
 
 static int Vxres=400,Vyres=300;
 
@@ -306,15 +307,14 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
   DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVinput2");
   DIT *TO=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVout");
   DIT *TR=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVtres");
-  DIT *TG=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVrange");
   DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"TOVIbox");
   char infile1[300],infile2[300],outfile[300],Pinfile1[300],Pinfile2[300];
   char Tfolder[30],buff[200],Opt[200];
   Type = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVradio"));
   Fsel = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVrfact"));
   Tpos = kgGetSelection(kgGetNamedWidget(Tmp,(char *)"TOVpos"));
-  st = kgGetDouble(TG,0);
-  et = kgGetDouble(TG,1);
+  st = 0.0;
+  et = 0.0;;
   Rfact = (Fsel-1)*0.1;
   strcpy(infile1,kgGetString(T,0));
   mt = GetMediaInfo(infile1);
@@ -726,6 +726,39 @@ int textovervideoTOVrangecallback(int cellno,int i,void *Tmp) {
   T = (DIT *)kgGetWidget(Tmp,i);
   e = T->elmt;
   return ret;
+}
+int textovervideoTOVtcecallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  DIT *TI=(DIT *)kgGetNamedWidget(Tmp,(char *)"TOVinput2");
+  char TextFile[300],buff[100];
+  strcpy(TextFile,kgGetString(TI,0));  
+  if((TextFile[0]=='\0')||(TextFile[0]==' ')) {
+     DII *I= (DII *)kgGetNamedWidget(Tmp,(char *)"TOVIbox");
+     kgWrite(I,(char *)"!c03!z43Need to specify Text File name\n");
+  }
+  switch(butno) {
+    case 1: //  Create/Edit Text file 
+      Runkgedit(NULL,TextFile);
+      break;
+  }
+  return ret;
+}
+void  textovervideoTOVtceinit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
 }
 int textovervideoinit(void *Tmp) {
   /*********************************** 

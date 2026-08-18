@@ -65,6 +65,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 VideoReverse.o VideoReverseCallbacks.o \
 	 AudioReverse.o AudioReverseCallbacks.o \
 	 textovervideo.o textovervideoCallbacks.o \
+	 kgedit.o kgeditCallbacks.o Sbox.o \
 	 Overlay.o OverlayCallbacks.o \
 	 Boverlay.o BoverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \
@@ -148,6 +149,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 AudioReverse.o AudioReverseCallbacks.o \
 	 topandbottom.o topandbottomCallbacks.o \
 	 textovervideo.o textovervideoCallbacks.o \
+	 kgedit.o kgeditCallbacks.o Sbox.o \
 	 Overlay.o OverlayCallbacks.o \
 	 Boverlay.o BoverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \
@@ -389,6 +391,8 @@ topandbottom.o		: topandbottom.c
 		 $(CC) -c topandbottom.c
 textovervideo.o		: textovervideo.c
 		 $(CC) -c textovervideo.c
+kgedit.o		: kgedit.c
+		 $(CC) -c kgedit.c
 Overlay.o		: Overlay.c
 		 $(CC) -c Overlay.c
 Boverlay.o		: Boverlay.c

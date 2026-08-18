@@ -12,6 +12,8 @@ libkulina.a  : kgl.o kgui.o kgui1.o kgui2.o lowlib.o gkernel.o file_pro.o dlink.
 	keybrd.o keybrdCallbacks.o skeybrd.o skeybrdCallbacks.o keybrd0.o keybrd0Callbacks.o keybrd4.o \
 	keybrd4Callbacks.o keybrd5.o keybrd5Callbacks.o kgMakeGclr.o \
 	 FileListBrowser.o FileListBrowserCallbacks.o\
+	 kgDrawingBox.o kgDrawingBoxCallbacks.o \
+	 kgMessage.o kgMessageCallbacks.o \
 	 GetFile.o GetFileCallbacks.o ftinterface.o
 	ar -rD libkulina.a kgl.o kgui.o kgui1.o kgui2.o lowlib.o gkernel.o file_pro.o \
 	  printerdia.o shade.o PngImage.o gminterface.o makeimg.o drawimg.o dlink.o ogl.o \
@@ -19,6 +21,8 @@ libkulina.a  : kgl.o kgui.o kgui1.o kgui2.o lowlib.o gkernel.o file_pro.o dlink.
 	keybrd0Callbacks.o keybrd4.o keybrd4Callbacks.o keybrd5.o keybrd5Callbacks.o \
 	kgMakeGclr.o \
 	 FileListBrowser.o FileListBrowserCallbacks.o \
+	 kgDrawingBox.o kgDrawingBoxCallbacks.o \
+	 kgMessage.o kgMessageCallbacks.o \
 	GetFile.o GetFileCallbacks.o ftinterface.o  
 kgl.o : kgl.c kulina.h gprivate.h
 	$(CC) -c  -I$(PREFIX)/include/GraphicsMagick kgl.c
