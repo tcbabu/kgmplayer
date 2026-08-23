@@ -1,5 +1,6 @@
 #include <kulina.h>
 #include "kgeditCallbacks.h"
+#include "simages.c"
 
 static void *Args=NULL,*Rets=NULL;
 
@@ -10,7 +11,9 @@ static MODINTERFACE ModFuns[] = {
     (MODINTERFACE) NULL 
 };
 static Dlink *ModuleList=NULL;
+int GetFont(void *,int xo,int yo);
 void *RunSbox(void *,void *);
+void *kgGetFontString(void *,void *);
   static DIT *Tbl;
   static T_ELMT *E;
   static Dlink *Slist;
@@ -22,7 +25,7 @@ void *RunSbox(void *,void *);
   static DIN *GB;
   static DIN *PB;
   static DIT *MT;
-  static int NBK = 0;  //Backup Limit
+  static int NBK = 5;  //Backup Limit
   static int Tblrow;
   static int DifPos = -1;
   static int SerDir = 1;
@@ -217,6 +220,7 @@ void *RunSbox(void *,void *);
   static int Push ( ) {
       int count;
       int *dpt = NULL;
+      if(NBK == 0 ) return 0;
       if ( Compare ( ) ) return 0;
       Dlink *Bk = Dnewlist ( Slist , CopyRec ) ;
       Dpush ( BLS , Bk ) ;
@@ -483,6 +487,30 @@ void *RunSbox(void *,void *);
       Dposition ( Slist , StartLine+row ) ;
       buf = ( char * ) malloc ( strlen ( Buf1 ) +1 ) ;
       strcpy ( buf , ( char * ) Buf1 ) ;
+      Dadd ( Slist , buf ) ;
+      Count = Dcount ( Slist ) ;
+      if ( Count <= ( Tbl->ny ) ) {
+          EndLine+= 1;
+          if ( EndLine <= Nlines ) {
+              kgSetOnTableCell ( Tbl , ( EndLine-1 ) *2+1 ) ;
+          }
+      }
+      if ( row == ( Nlines-1 ) ) {
+          StartLine += 1;
+          EndLine += 1;
+      }
+      WriteTbl ( ) ;
+      SetupVbar ( ) ;
+//      kgUpdateWidget ( V ) ;
+      return 1;
+  }
+  static int AddStringAtRow ( char *Buf ) {
+      char *buf;
+      int row = kgGetTableRow ( Tbl ) ;
+      ReadTbl ( ) ;
+      Dposition ( Slist , StartLine+row ) ;
+      buf = ( char * ) malloc ( strlen ( Buf ) +1 ) ;
+      strcpy ( buf , ( char * ) Buf ) ;
       Dadd ( Slist , buf ) ;
       Count = Dcount ( Slist ) ;
       if ( Count <= ( Tbl->ny ) ) {
@@ -2122,13 +2150,22 @@ int kgeditKEDcfcallback(int butno,int i,void *Tmp) {
   int n,ret =0; 
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
+  int font,r,g,b;
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
+  char fname[200],buf[300];
   switch(butno) {
     case 1: //  !c38Colors 
+      kgGetColor(Tmp,30,30,&r,&g,&b);
+      sprintf(buf,"$tc-%-d%-3.3d%-3.3d\n",r,g,b); 
+      AddStringAtRow(buf);
       break;
     case 2: //  !f23!c01Fonts 
+        kgGetFontString(Tmp,fname);
+        sprintf(buf,"$f%-s\n",fname);
+        AddStringAtRow(buf);
+//      font = GetFont(Tmp,50,50);
       break;
   }
   return ret;
@@ -2139,7 +2176,7 @@ void  kgeditKEDcfinit (DIN *B,void *ptmp) {
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
-int kgeditKEDhelpcallback(int butno,int i,void *Tmp) {
+int kgeditKEDsavecallback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
@@ -2147,6 +2184,7 @@ int kgeditKEDhelpcallback(int butno,int i,void *Tmp) {
    ***********************************/ 
   DIALOG *D;DIN *B; 
   int n,ret =0; 
+      int  row , curpos , rcurpos;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
   D = (DIALOG *)Tmp;
@@ -2162,12 +2200,101 @@ int kgeditKEDhelpcallback(int butno,int i,void *Tmp) {
           kgCloseBusy ( Busy ) ;
           Splash("Saved File");
       break;
-    case 2: //  Help 
+    case 2: //  Undo 
+          row = kgGetTableRow ( Tbl ) ;
+          curpos = kgGetTableCurpos ( Tbl ) ;
+          rcurpos = GetRealPos ( ) ;
+          UpdateTbl ( ) ;
+#if 1  //TCB
+          row = kgGetTableRow ( Tbl ) ;
+//          MarkPos = EndLine;
+//          kgSetInt ( MT , 0 , MarkPos ) ;
+//          kgUpdateWidget ( MT ) ;
+          if ( flname != NULL ) {
+              int k;
+              Dlink *bkup = NULL;
+              bkup = Pop ( ) ;
+              if ( bkup == NULL ) {
+                  sprintf ( Msg , "Sorry!! UNDO not possible; You may ABORT if needed" ) ;
+                  Splash ( Msg ) ;
+                  break;
+              }
+              Dempty ( Slist ) ;
+              Slist = bkup;
+              LocPop ( ) ;
+              row = TblRow;
+              for ( k = 0;k < Nlines;k++ ) {
+                  kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
+                  kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
+              }
+              kgUpdateWidget ( Tbl ) ;
+//              kgUpdateOn ( Tbl->D ) ;
+#if 0
+              MarkPos = StartLine+kgGetTableRow ( Tbl ) ;
+#endif
+              kgSetInt ( MT , 0 , MarkPos ) ;
+              kgUpdateWidget ( MT ) ;
+              if ( ( Slist == NULL ) || ( Count = Dcount ( Slist ) ) == 0 ) {
+                  if ( Slist != NULL ) Dempty ( Slist ) ;
+//                  Slist = Dreadfile ( flname ) ;
+                  Slist = Dreadfile ( SaveFile ) ;
+                  if ( Dcount ( Slist ) == 0 ) Slist = Dreadfile ( flname ) ;
+              }
+              Count = Dcount ( Slist ) ;
+              if ( ( EndLine - StartLine ) > Count ) {
+                  EndLine = Count;
+              }
+              if ( EndLine >= Count ) {
+                  EndLine = Count;
+                  StartLine = EndLine-Nlines+1;
+                  if ( StartLine < 1 ) StartLine = 1;
+                  for ( k = 0;k < EndLine;k++ ) {
+                      if ( k == Nlines ) break;
+                      kgSetOnTableCell ( Tbl , k*2+1 ) ;
+                  }
+                  for ( k = EndLine;k < Nlines;k++ ) {
+                      kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
+                      kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
+                      kgSetOffTableCell ( Tbl , k*2+1 ) ;
+                  }
+              }
+              WriteTbl ( ) ;
+//              GotoLastPos ( ) ;
+//              if ( ( Count >= Nlines ) && ( StartLine > 1 ) ) row = Nlines-1;
+              kgSetTableCursorPos ( Tbl , row*Tbl->nx+1 , 0 ) ;
+//TCB              SetupVbar ( ) ;
+              kgUpdateOn ( Tbl->D ) ;
+          }
+          else printf ( "flname== NULL\n" ) ;
+#else
+          int k , chng = 0;
+          Dlink *bkup = NULL;
+          bkup = Pop ( ) ;
+          if ( bkup == NULL ) {
+              sprintf ( Msg , "Sorry!! UNDO not possible; You may ABORT if needed" ) ;
+              Splash ( Msg ) ;
+              break;
+          }
+          chng = Dcount ( Slist ) -Dcount ( bkup ) ;
+          Dempty ( Slist ) ;
+          Slist = bkup;
+          for ( k = 0;k < Nlines;k++ ) {
+              kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
+              kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
+          }
+          kgUpdateWidget ( Tbl ) ;
+          SetupVbar ( ) ;
+          WriteTbl ( ) ;
+          row = Tblrow;
+          if ( chng ) row = Tblrow-1;
+          kgSetTableCursorPos ( Tbl , row*Tbl->nx+1 , 0 ) ;
+          kgUpdateOn ( Tbl->D ) ;
+#endif
       break;
   }
   return ret;
 }
-void  kgeditKEDhelpinit (DIN *B,void *ptmp) {
+void  kgeditKEDsaveinit (DIN *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
 // may use kgChangeButtonNormalImage etc...
  BUT_STR *buts;
@@ -2467,6 +2594,143 @@ void  kgeditKEDreplaceinit (DIN *B,void *ptmp) {
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
+int kgeditKEDhelpcallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  switch(butno) {
+    case 1: //  Save 
+      break;
+    case 2: //  Undo 
+      break;
+  }
+  return ret;
+}
+void  kgeditKEDhelpinit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
+}
+int kgeditKEDdowncallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  switch(butno) {
+    case 1: //   
+      break;
+  }
+  return ret;
+}
+void  kgeditKEDdowninit (DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+// may use kgChangeButtonNormalImage etc...
+ BUT_STR *buts;
+ buts = (BUT_STR *) (B->buts);
+}
+int kgeditKEDdircallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+      DIALOG *D;DIN *B;
+      int n , ret = 0;
+      DIP *P;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      void *img;
+      D = ( DIALOG * ) Tmp;
+      B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
+      BUT_STR *buts = ( BUT_STR * ) B->buts;
+      P = ( DIP* ) kgGetNamedWidget ( D , ( char * ) "KEDarrow" ) ;
+      n = B->nx*B->ny;
+      img = buts [ 0 ] .xpmn;
+      buts [ 0 ] .xpmn = buts [ 0 ] .xpmp;
+      buts [ 0 ] .xpmp = img;
+      P->xpm = buts [ 0 ] .xpmn ;
+      kgUpdateWidget ( P ) ;
+      kgUpdateOn ( D ) ;
+      SerDir = ( SerDir+1 ) %2;
+      switch ( butno ) {
+          case 1:
+          break;
+      }
+      return ret;
+}
+void  kgeditKEDdirinit (DIN *B,void *ptmp) {
+// may use kgChangeButtonNormalImage etc...
+      void **pt = ( void ** ) ptmp; //pt [ 0 ] is arg 
+      BUT_STR *buts = ( BUT_STR * ) B->buts;
+// if(buts[0].xpmn!= NULL) free(buts[0].xpmn);
+      buts [ 0 ] .xpmp = ( void * ) kgUpdirImage ( 16 , 100 , 100 , 100 ) ;
+      buts [ 0 ] .xpmn = ( void * ) kgDowndirImage ( 16 , 100 , 100 , 100 ) ;
+}
+  void ScrollTablebutton8init ( DIN *B , void *ptmp ) {
+      void **pt = ( void ** ) ptmp; //pt [ 0 ] is arg 
+      BUT_STR *buts = ( BUT_STR * ) B->buts;
+// if(buts[0].xpmn!= NULL) free(buts[0].xpmn);
+      buts [ 0 ] .xpmp = ( void * ) kgUpdirImage ( 16 , 100 , 100 , 100 ) ;
+      buts [ 0 ] .xpmn = ( void * ) kgDowndirImage ( 16 , 100 , 100 , 100 ) ;
+  }
+
+int kgeditKEDsetupcallback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+      DIALOG *D;DIN *B;
+      int n , ret = 0;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      int *ipt;
+      Gclr *Gc;
+      D = ( DIALOG * ) Tmp;
+      Gc = & ( D->gc ) ;
+      B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
+      n = B->nx*B->ny;
+#if 0
+      if ( ( ipt = ( int * ) RunSetup ( Tmp , Tbl ) ) != NULL ) {
+          if ( Tbl->width < 2*Tbl->FontSize ) Tbl->width = 2*Tbl->FontSize;
+          DefWidth = Tbl->width;
+          Fz = Tbl->FontSize;
+          kgDefineColor ( Gc->tabl_char , ipt [ 0 ] , ipt [ 1 ] , ipt [ 2 ] ) ;
+          kgDefineColor ( Gc->tabl_hchar , ipt [ 3 ] , ipt [ 4 ] , ipt [ 5 ] ) ;
+          kgDefineColor ( Gc->tabl_fill , ipt [ 6 ] , ipt [ 7 ] , ipt [ 8 ] ) ;
+          kgDefineColor ( Gc->tabl_line , ipt [ 9 ] , ipt [ 10 ] , ipt [ 11 ] ) ;
+          free ( ipt ) ;
+          RedrawTable ( ) ;
+      }
+#endif
+      switch ( butno ) {
+          case 1:
+          break;
+      }
+      return ret;
+  }
+ void  kgeditKEDsetupinit (DIN *B,void *ptmp) {
+      void **pt = ( void ** ) ptmp; //pt [ 0 ] is arg 
+      BUT_STR *buts = ( BUT_STR * ) B->buts;
+      free ( buts [ 0 ] .xpmn ) ;
+      buts [ 0 ] .xpmn = ( void * ) & Setupimg_str;
+  }
 int kgeditinit(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
@@ -2484,6 +2748,12 @@ int kgeditinit(void *Tmp) {
       flname = ( char * ) pt [ 0 ] ;
       Tbl = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "KEDtable" ) ;
       V = ( DIV * ) kgGetNamedWidget ( D , ( char * ) "KEDscroll" ) ;
+      DIP *P;
+      P = ( DIP* ) kgGetNamedWidget ( D , ( char * ) "KEDarrow" ) ;
+      AB = ( DIN* ) kgGetNamedWidget ( D , ( char * ) "KEDdir" ) ;
+      buts = ( BUT_STR * ) AB->buts;
+      P->xpm = buts [ 0 ] .xpmn ;
+      kgUpdateWidget ( P ) ;
       SetupGrps ( ) ;
       Slist = Dreadfile ( flname ) ;
       MakeFileNames ( ) ;
@@ -2778,6 +3048,12 @@ int kgeditResizeCallBack_o(void *Tmp) {
       yl = GB->y2 - GB->y1;
       GB->y1 = D->yl-36;
       GB->y2 = GB->y1+yl;
+      DIN *H = (DIN *)kgGetNamedWidget((void *)D, (char *) "KEDhelp");
+      H->y1 = D->yl-36;
+      H->y2 = H->y1+yl;
+      DIN *S = (DIN *)kgGetNamedWidget((void *)D, (char *) "KEDsetup");
+      S->y1 = D->yl-36;
+      S->y2 = S->y1+yl;
       kgRedrawDialog ( D ) ;
  //     if(Tbl->ny !=  nyo) {
       SetupTbl ( ) ;

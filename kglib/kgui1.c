@@ -4444,6 +4444,34 @@
       kgCloseImage ( fid ) ;
       return img;
   }
+  void * kgTickImage ( int size , int red , int green , int blue ) {
+      void *fid , *img = NULL;
+      int count , count1;
+      float x [ 6 ] , y [ 6 ] , R;
+      double size1;
+      count = 6;
+      count1 = count-1;
+      R = size;
+      fid = kgInitImage ( size , size , RESIZE ) ;
+      kgUserFrame ( fid , 0. , 0., +R , +R ) ;
+      kgChangeColor ( fid , 1001 , red , green , blue ) ;
+      x [ 0 ] = R*0.2;
+      x [ 1 ] = R*0.09;
+      x [ 2 ] = R*0.5;
+      x [ 3 ] =  R*0.92;
+      x [ 4 ] =  R*0.8;
+      x [ 5 ] =  R*0.44;
+      y [ 0 ] = R*0.49;
+      y [ 1 ] = R*0.37;
+      y [ 2 ] =  R*0.04;
+      y [ 3 ] =  R*0.78;
+      y [ 4 ] =  R*0.87;
+      y [ 5 ] =  R*0.30;
+      kgPolyFill ( fid , count , x , y , 0 , 1001 ) ;
+      img = kgGetResizedImage ( fid ) ;
+      kgCloseImage ( fid ) ;
+      return img;
+  }
   void * kgGoback1Image ( int size , int red , int green , int blue ) {
       void *fid , *img = NULL;
       int count , count1;
@@ -6640,7 +6668,7 @@
       W = ( DIW * ) kgGetWidget ( Tmp , i ) ;
       M = ( DIM * ) kgGetNamedWidget ( D , ( char * ) "Msg" ) ;
       Font = item-1;
-      sprintf ( Buff , "!f%2.2d%s" , Font , ( char * ) kgGetOthFont ( Font ) ) ;
+      sprintf ( Buff , "%s" ,  ( char * ) kgGetOthFont ( Font ) ) ;
       kgWrite ( M , Buff ) ;
       kgUpdateWidget ( M ) ;
       kgUpdateOn ( D ) ;

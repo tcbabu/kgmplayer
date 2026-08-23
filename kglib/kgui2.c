@@ -699,10 +699,23 @@
       t->nx = 1;
       t->ny = 1;
       t->list = NULL;
+      tmpv = (int *)malloc(sizeof(int));
+      *tmpv=1;
       t->df = ( int * ) tmpv;
       t->arg = NULL;
       t->Update = NULL;
+      t->prompt=NULL;
       _uiReadWid ( fp , t->Wid ) ;
+      t->bwsr=NULL;
+      t->D =NULL;
+      t->D=NULL;
+      t->pt = NULL;
+      t->imgs=NULL;
+      t->nimg=NULL;
+      t->himg = NULL;
+      t->Bimg=NULL;
+      printf("Read DIX\n");
+      fflush(stdout);
       return t;
   }
   void Print_data_thumbnailbrowser ( FILE *fp , DIY *f ) {

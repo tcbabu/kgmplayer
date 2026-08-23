@@ -1316,6 +1316,180 @@
       D->TotWid = i;
       return controls;
   }
+  int kgDrawDiaDialog ( DIALOG *D ) {
+      int n , i , controls = 0 , item , ch , oldi = -1;
+      DIA *d;
+      d = D->d;
+      D->df = 0;
+      if ( D->DrawBkgr == 1 ) _ui_Draw_Dialog_Area_Transparent ( D ) ;
+      if ( D->Bkpixmap != NULL ) kgImage ( ( D ) , D->Bkpixmap , 0 , 0 , D->xl , D->yl , D->transparency , 1.0 ) ;
+          
+      i = 0;
+      while ( d [ i ] .t != NULL ) {
+          ch = ( d [ i ] .t->code ) ;
+          printf("switch= %c\n",ch);
+          fflush(stdout);
+          switch ( ( int ) ch ) {
+              case 'o': /* progress bar */
+              _uiDrawO ( D , i ) ;
+              break;
+              case 'p': /* new for xpm display */
+//         _uiDrawTransparentPicture(D,i);
+              _uiDrawP ( D , i ) ;
+              break;
+              case 'i': /* info box */
+//         _uiDrawInfo(D,i);
+              _uiDrawI ( D , i ) ;
+              break;
+              case 'x': // new type browser
+              _uiDrawX ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'v': // Vert scroll bar
+              _uiDrawV ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'z': // Vert scroll bar
+              _uiDrawZ ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'y': // new type browser
+              _uiDrawY ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'r': // new type browser
+              _uiDrawRadioButton ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'c': // new type browser
+              _uiDrawCheckBox ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 't':
+#if 1
+              _uiDrawTextBox ( D , i ) ;
+#endif
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+                  if ( D->InputWid < 0 ) D->InputWid = i;
+              }
+              break;
+              case 'T':
+              _uiDrawTableBox ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+                  if ( D->InputWid < 0 ) D->InputWid = i;
+              }
+              break;
+              case 'h':
+              _uiDrawN ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'H':
+              _uiDrawHoriButtons ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'n':
+              _uiDrawN ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'b':
+              case 'N':
+              _uiDrawB ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'f':
+              _uiDrawSlideFloat ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'P':
+              _uiDrawHbar ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'd':
+              _uiDrawSlideInteger ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'w':
+              _uiDrawBrowser ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'e':
+              _uiDrawE ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 's':
+              _uiDrawScrollMsgItem ( D , i ) ;
+              if ( kgGetWidgetVisibility ( kgGetWidget ( D , i ) ) != 0 ) {
+                  controls++;
+                  D->df = i;
+              }
+              break;
+              case 'g':
+              _uiDrawGraphicsArea ( D , i ) ;
+              break;
+              case 'm':
+              case 'M':
+              case 'B':
+              _uiDrawMessage ( D , i ) ;
+              break;
+              default:
+              printf ( "Error: in dialog : wrong code |%c| \n" , ch ) ;
+              exit ( 0 ) ;
+          }
+          i++;
+      }
+      D->controls = controls;
+      D->TotWid = i;
+      return controls;
+  }
   int kgGetWidgetId ( DIALOG *D , void *Widget ) {
       int i , k , ret = -1;
       DIA *d;
@@ -5817,6 +5991,30 @@
       pthread_mutex_unlock ( & _Tmplock ) ;
       return pt;
   }
+ int kgFileStat(char *flname) {
+  int ret;
+  struct stat buff;
+  ret = stat(flname,&buff);
+  if(ret < 0) return 0;
+  else return 1;
+}
+int kgMakeTmpFolderInHome(char *Tfolder) {
+  int Fstat = 0;
+  int id=1;
+  sprintf(Tfolder,"%-s/%-d",getenv("HOME"),getpid());
+  if(!kgFileStat(Tfolder)) mkdir(	Tfolder,0700);
+//  sprintf(Tfolder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+  sprintf(Tfolder,"%-s/%-d/%-d_%-3.3d",getenv("HOME"),getpid(),getpid(),id);
+  while(kgFileStat(Tfolder)) {
+    id++;
+//    sprintf(Tfolder,"%-s/%-d_%-3.3d",getenv("HOME"),getpid(),id);
+     sprintf(Tfolder,"%-s/%-d/%-d_%-3.3d",getenv("HOME"),getpid(),getpid(),id);
+  }
+   mkdir(Tfolder,0700);
+//    printf("Created: %s\n",Tfolder);
+    Fstat=1;
+  return Fstat;
+}
   char * ui_mktmpdir ( void ) {
       static int pid = 0;
       static char dir [ 200 ] ;
@@ -5828,11 +6026,15 @@
       pid = getpid ( ) ;
       sprintf ( dir , "/tmp/%-d" , pid ) ;
       sprintf ( dirname , "%-s_%-d" , dir , entry ) ;
+#if 0
       dp = opendir ( dirname ) ;
       if ( dp == NULL ) {
           mkdir ( dirname , 0700 ) ;
       }
       else closedir ( dp ) ;
+#else
+      if(kgFileStat(dirname)==0 ) mkdir(dirname,0700);
+#endif
       pt = ( char * ) Malloc ( strlen ( dirname ) +1 ) ;
       strcpy ( pt , dirname ) ;
       entry++;

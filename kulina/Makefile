@@ -66,6 +66,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 AudioReverse.o AudioReverseCallbacks.o \
 	 textovervideo.o textovervideoCallbacks.o \
 	 kgedit.o kgeditCallbacks.o Sbox.o \
+	 GetFontString.o GetFontStringCallbacks.o  \
 	 Overlay.o OverlayCallbacks.o \
 	 Boverlay.o BoverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \
@@ -150,6 +151,7 @@ kgMplayer.a	: kgMplayer.o kgMplayerCallbacks.o main.o FullScreen.o \
 	 topandbottom.o topandbottomCallbacks.o \
 	 textovervideo.o textovervideoCallbacks.o \
 	 kgedit.o kgeditCallbacks.o Sbox.o \
+	 GetFontString.o GetFontStringCallbacks.o  \
 	 Overlay.o OverlayCallbacks.o \
 	 Boverlay.o BoverlayCallbacks.o \
 	 Crop.o CropCallbacks.o \

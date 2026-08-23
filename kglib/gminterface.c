@@ -1023,8 +1023,6 @@ static ExceptionInfo exception;
       else rect.x = xu;
       if ( yl < yu ) rect.y = yl;
       else rect.y = yu;
-      rect.width = abs ( xu-xl ) +1;
-      rect.height = abs ( yu-yl ) +1;
       rect.width = abs ( xu-xl ) ;
       rect.height = abs ( yu-yl ) ;
       w = png->image_width;
