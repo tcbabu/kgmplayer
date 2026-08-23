@@ -7078,8 +7078,8 @@ void transch(int c) {
                   kgTextColor ( fid , color ) ;
                   kgMove2f ( fid , width1+0.2*FontSize , xp+0.3*BxSize ) ;
                   kgTextSize ( fid , th , tw , GAP*tw ) ;
-//                  kgWriteText ( fid , "!f354" ) ;
-                  kgDrawTick(fid,width1+0.2*FontSize , xp+0.3*BxSize ,BxSize,60,80,60);
+//MSG: DIX                  kgWriteText ( fid , "!f354" ) ;
+                  kgDrawTick(fid,width1+0.2*FontSize , xp+0.3*BxSize ,BxSize,60,110,60);
               }
           }
 //      img=kgGetResizedImage(fid);
@@ -7174,8 +7174,9 @@ void transch(int c) {
 #endif
               kgMove2f ( fid , ( float ) BxSize-0.4*FontSize , yp+0.1*BxSize ) ;
               if ( status > 0 ) {
-//                    kgWriteText ( fid , "!z34!f354" ) ;
-                  kgDrawTick(fid,( float ) BxSize-0.4*FontSize , yp+0.1*BxSize ,BxSize,60,80,60);
+//MSG: checking                    kgWriteText ( fid , "!z34!f354" ) ;
+                  kgDrawTick(fid,( float ) BxSize-0.8*FontSize ,
+                               yp-0.1*BxSize ,BxSize*0.85,60,100,60);
               }
           }
           img = kgGetResizedImage ( fid ) ;
