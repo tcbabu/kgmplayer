@@ -10677,9 +10677,22 @@ void transch(int c) {
       EVGAY = D->evgay;
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
+#if 0
       uiShadedString ( D , "!f35t" , x-3 , EVGAY-y-1 , \
            w , w+1 , 35 , D->gc.scroll_fill , \
       0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
+#endif
+      void *uimg,*img;     
+//      uimg = kgUpdirImage(w-2,60,80,60);
+      uimg = kgRightImage(w-2,60,80,60);
+      img  = kgShadedImage(uimg,w,w,D->gc.scroll_fill); 
+      if ( img != NULL ) {
+              kgImage ( D , img , x , EVGAY-y , w,w, 0.0 , 1.0 ) ;
+              uiFreeImage ( img ) ;
+      }
+      uiFreeImage ( uimg ) ;
+//      printf("MSG: shaded string\n");
+//      fflush(stdout);
       uiRest_clip_limits ( wc ) ;
   }
   void _ui_right_dir ( DIALOG *D , int x , int y , int w , int bright ) {
@@ -10694,10 +10707,22 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       uiset_clr ( D , tmp ) ;
-//   uiShadedString(D,"!f35!w32!xs", x+3, EVGAY-y-1, w,w+1,35,D->gc.fill_clr,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
+#if 0
       uiShadedString ( D , "!f35s" , x+3 , EVGAY-y-1 , \
            w , w+1 , 35 , D->gc.scroll_fill , \
       0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
+#endif
+      void *uimg,*img;     
+//      uimg = kgUpdirImage(w-2,60,80,60);
+      uimg = kgLeftImage(w-2,60,80,60);
+      img  = kgShadedImage(uimg,w,w,D->gc.scroll_fill); 
+      if ( img != NULL ) {
+              kgImage ( D , img , x , EVGAY-y , w,w, 0.0 , 1.0 ) ;
+              uiFreeImage ( img ) ;
+      }
+      uiFreeImage ( uimg ) ;
+//      printf("MSG: shaded string\n");
+//      fflush(stdout);
       uiRest_clip_limits ( wc ) ;
   }
   void _dvleft_dir ( DIALOG *D , int x , int y , \
@@ -10711,8 +10736,21 @@ void transch(int c) {
       wc = WC ( D ) ;
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
+#if 0
       uiShadedString ( D , "!f35t" , x , y , w-1 , w , 35 , D->gc.scroll_fill , \
       0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
+#endif
+      void *uimg,*img;     
+//      uimg = kgUpdirImage(w-2,60,80,60);
+      uimg = kgRightImage(w-2,60,80,60);
+      img  = kgShadedImage(uimg,w,w,D->gc.scroll_fill); 
+      if ( img != NULL ) {
+              kgImage ( D , img , x , y , w,w, 0.0 , 1.0 ) ;
+              uiFreeImage ( img ) ;
+      }
+      uiFreeImage ( uimg ) ;
+//      printf("MSG: shaded string\n");
+//      fflush(stdout);
       uiRest_clip_limits ( wc ) ;
   }
   void _dvright_dir ( DIALOG *D , int x , int y , \
@@ -10727,9 +10765,21 @@ void transch(int c) {
       uiBkup_clip_limits ( wc ) ;
       uiSet_full_scrn ( wc ) ;
       uiset_clr ( D , tmp ) ;
-//   uiShadedString(D,"!f35!w32!xs", x+3, EVGAY-y-1, w,w+1,35,D->gc.fill_clr,0,D->gc.v_dim,D->gc.FontSize-1,0,rfac,1,type);
+#if 0
       uiShadedString ( D , "!f35s" , x , y , w-1 , w , 35 , D->gc.scroll_fill , \
       0 , D->gc.v_dim , D->gc.FontSize-1 , 0 , rfac , 1 , type ) ;
+#endif
+      void *uimg,*img;     
+//      uimg = kgUpdirImage(w-2,60,80,60);
+      uimg = kgLeftImage(w-2,60,80,60);
+      img  = kgShadedImage(uimg,w,w,D->gc.scroll_fill); 
+      if ( img != NULL ) {
+              kgImage ( D , img , x , y , w,w, 0.0 , 1.0 ) ;
+              uiFreeImage ( img ) ;
+      }
+      uiFreeImage ( uimg ) ;
+//      printf("MSG: shaded string\n");
+//      fflush(stdout);
       uiRest_clip_limits ( wc ) ;
   }
   void _ui_slidebar_o ( DIALOG *D , S_STR *pt ) {
@@ -23255,7 +23305,8 @@ void transch(int c) {
            ( D , y->Bimg , x1+1 , y1+1 , 1 , 1 , \
            ( x2-x1-1 ) , ( y2-y1-1 ) ) ;
 #endif
-          _ui_vert_scroll_vbar ( y ) ;
+//         printf("MSG: ui_vert_scroll_zbar \n");
+//          _ui_vert_scroll_vbar ( y ) ;
           _ui_vert_scroll_zbar ( y ) ;
           _uiMoveZVertPointer ( y ) ;
       }

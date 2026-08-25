@@ -265,6 +265,7 @@ Dlink *GetTextBlocks(char *filename) {
     }
     else {
       Dadd(Flist,pt);
+
     }
   }
   Dadd(Listlist,Flist);
@@ -359,6 +360,7 @@ int textovervideoTOVgocallback( int butno,int i,void *Tmp) {
   kgWrite(I,Ostr);
   Resetlink(Llist);
   Hlist = (Dlink *)Dpick(Llist);
+  Resetlink(Hlist);
   if(Type==1) {
       sprintf(Ostr,"  %s -s%-d:%-d:%-d:%-d  ",
            Opt,

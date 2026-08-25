@@ -277,13 +277,26 @@
        while ( ln [ i ] >= ' ' ) {\
            if ( ln [ i ] == '!' ) {\
                switch ( ln [ i+1 ] ) {\
-                   case 'f': ifnt = ( ln [ i+2 ] -'0' ) *10 + ( ln [ i+3 ] -'0' ) ;\
-                   fprintf ( f23 , "$f%-d\n" , ifnt ) ;\
-                   i+= 2;\
+                   case 'f': \
+                   ifnt = ( ln [ i+2 ] -'0' ) *10 + ( ln [ i+3 ] -'0' ) ;\
+                   fprintf ( f23 , "$f%-s\n" , &(ln[i+2]) ) ;\
+                   ifnt = GetFontNo(&(ln[i+2]));\
+                   printf("ln: %s\n",ln+i);\
+                   fflush(stdout);\
+                   while(ln[i] >= ' ') i++;\
+                   i--;\
+                   printf("ln: %s\n",ln+i);\
+                   fflush(stdout);\
                    break;\
-                   case 'c': icolor = ( ln [ i+2 ] -'0' ) *10 + ( ln [ i+3 ] -'0' ) ;\
-                   fprintf ( f23 , "$tc%-d\n" , icolor ) ;\
-                   i+= 2;\
+                   case 'c': \
+                   icolor = ( ln [ i+2 ] -'0' ) *10 + ( ln [ i+3 ] -'0' ) ;\
+                   fprintf ( f23 , "$tc%-s\n" , &(ln[i+2]) ) ;\
+                   printf("ln: %s\n",ln+i);\
+                   fflush(stdout);\
+                   while(ln[i] >= ' ') i++;\
+                   i--;\
+                   printf("ln: %s\n",ln+i);\
+                   fflush(stdout);\
                    break;\
                    case 'I': Slant_on = 1; break;\
                    case 'B': Bold_on = 1; break;\
@@ -323,11 +336,26 @@
            break; \
        } \
    }
+static int GetFontNo(char * txt){
+      int tfill=0;
+      char FontName[300];
+          while(txt[0]== ' ') txt++;
+          printf("Font String: %s\n",txt);
+          if(txt[0]>= 'A'){
+            sscanf(txt,"%s",FontName);
+            tfill = kgGetFontNumber(FontName);
+            printf("MSG: Font: %s No: %d\n",FontName,tfill);
+          }
+          else sscanf(txt,"%d",&tfill) ;
+      return tfill;
+}
 #define pro_other_commands {\
+   float fval;\
+   int ival;\
    switch ( buf [ 1 ] ) \
        { \
            case 'f':\
-           tfnt = scanint ( ( char * ) & buf [ 2 ] ) ; \
+           tfnt = GetFontNo ( ( char * ) (buf+2) ) ; \
            Font = tfnt; \
            kgTextFont ( Img , ( long ) tfnt ) ;\
            break;\
@@ -383,7 +411,39 @@
            break; \
            default : break; \
        } \
-       if ( buf [ 1 ] != 'o' ) fprintf ( tmp , "%s" , buf ) ;\
+       if ( buf [ 1 ] != 'o' ){\
+          switch ( buf [ 1 ] ) \
+           { \
+           case 'O':\
+            sscanf(buf+2,"%f",&fval);\
+            ival = Ostr.Sxres*fval/100.0;\
+            fprintf(tmp, "$o%-d\n",ival);\
+           break;\
+           case 'R':\
+            sscanf(buf+2,"%f",&fval);\
+            ival = Ostr.Sxres - Ostr.Sxres*fval/100.0;\
+            fprintf(tmp, "$m%-d\n",ival);\
+           break;\
+           case 'B':\
+            sscanf(buf+2,"%f",&fval);\
+            ival = Ostr.Syres*fval/100.0;\
+            fprintf(tmp, "$LS%-d\n",ival);\
+           break;\
+           case 'E':\
+            sscanf(buf+2,"%f",&fval);\
+            ival = Ostr.Syres - Ostr.Syres*fval/100.0;\
+            fprintf(tmp, "$LE%-d\n",ival);\
+           break;\
+           case 'Z':\
+            fprintf(tmp, "$LE100001\n");\
+           break;\
+           case 'T':\
+           break;\
+                default:\
+                fprintf ( tmp , "%s" , buf ) ;\
+                break;\
+            }\
+       }\
        else fprintf ( tmp , "$o%-d\n" , ( int ) ( ofs*10+0.5 ) ) ; \
    }
 #define pro_para_list_table {  \
@@ -3009,6 +3069,8 @@
   static void settextsetting ( char *txt ) {
       char ch;
       ch = *txt;
+      static int Color=200;
+      static char FontName[300];
       switch ( ch ) {
           case 'p':
           tpattern = scanint ( ++txt ) ;
@@ -3028,6 +3090,18 @@
           break;
           case 'c':
           tcolor = scanint ( ++txt ) ;
+          if(tcolor < 0) {
+              unsigned char  r,g,b;
+              tcolor = -tcolor;
+              b = tcolor%1000;
+              tcolor = tcolor/1000;
+              g = tcolor%1000;
+              r = tcolor/1000;
+              Color++;
+              kgDefineColor(Color,r,g,b);
+              tcolor = Color;
+          }
+          else tcolor =tcolor%1000;
           TxtClr = tcolor;
           kgTextColor ( Img , tcolor ) ;
           break;
@@ -3243,7 +3317,8 @@
                   case 'n':
                   break;
                   case 'f':
-                  tfnt = scanint ( ( char * ) & txt [ 2 ] ) ;
+//                  tfnt = scanint ( ( char * ) & txt [ 2 ] ) ;
+                  tfnt = GetFontNo ( ( char * ) & txt [ 2 ] ) ;
                   kgTextFont ( Img , ( long ) tfnt ) ;
                   break;
                   case 'i':
@@ -4662,7 +4737,8 @@ char *MakeTmpFolder(void) {
                   txtg = scanint ( ( char * ) & ln [ 2 ] )*Szfact ;
                   break;
                   case 'f':
-                  ifnt = scanint ( ( char * ) & ln [ 2 ] ) ;
+//                  ifnt = scanint ( ( char * ) & ln [ 2 ] ) ;
+                  ifnt = GetFontNo ( ( char * ) & ln [ 2 ] ) ;
                   break;
                   case 'i':
                   islant = scanint ( ( char * ) & ln [ 2 ] ) ;

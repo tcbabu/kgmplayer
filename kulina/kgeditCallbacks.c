@@ -14,6 +14,7 @@ static Dlink *ModuleList=NULL;
 int GetFont(void *,int xo,int yo);
 void *RunSbox(void *,void *);
 void *kgGetFontString(void *,void *);
+void *RunMsg(void *parent ,void *args);
   static DIT *Tbl;
   static T_ELMT *E;
   static Dlink *Slist;
@@ -2607,10 +2608,91 @@ int kgeditKEDhelpcallback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
+  char *hmsg[]=  {
+    " Text file is normal text file and by default each line is",
+    " placed within the slected text box in a centered manner.",
+    " Once the line crosses the selected text box a new image",
+    " is started for the next text box. However one can ",
+    " introduce command lines to direct the text processing.",
+    "",
+    " All text processing commands start in a new line with'$'",
+    " as the first character, hence normal lines  cannot",
+    " start with '$'.",
+    "",
+    " Plese note that multiple parametrers are seperated by",
+    " a space character.",
+    "",
+    " !c33Multiple text blocks for diffrent time ranges of the",
+    " !c33video can be put together using '$T' command as given",
+    " !c33below. By default it is a single block for the full",
+    " !c33range of the video. Henec each '$T' command defines ",
+    " !c33a new block.",
+    "",
+    " !c33Commands defined above the first '$T' is considered",
+    " !c33common to all blocks.",
+    "",
+    " !c38!z43Basic Commands:",
+    " !z34!c38(all in a newline starting with '$')",
+    "",
+    " !c60$T(float> <float> : time range ",
+    "           !c60(0.0 for second parameter means end of video)",
+    " !c60$Z : Force text scrolling",
+    "",
+    " $O<float>: float value of left margin as percentage of ",
+    "            text box 'xres'.",
+    " $R<float>: float value of right margin as percentage of ",
+    "            text box 'xres'.",
+    " $B<float>: float value of top  margin as percentage of ",
+    "            text box 'yres'.",
+    " $E<float>: float value of bottom  margin as percentage of ",
+    "            text box 'yres'.",
+    "",
+    " $f<int/string>  : select font (there is a button to define font)",
+    " $tc<int> : text color (there is button to add this)",
+    "",
+    " $h<int>  : character height in points; default 12",
+    " $w<int>  : character width in points,  default 12",
+    " $s<int>  : line space in points; default is 24",
+    " $l : left justify",
+    " $r : right justify",
+    " $c : center",
+    " $U<int>  : Start/stop under lining text <int> 1 to start;0 to stop",
+    " $A<int>  : Advance in no of lines",
+    "",
+    " $X : Store current line position",
+    " $Y : return to stored position",
+    "",
+    " $P : force new page",
+    "",
+    " $DL   : Draw line",
+    " $DI<string> <int> <int>  : ",
+    "       import image file; <file name> <width> <height>",
+    "",
+    " !c38!z43Advanced Commands:",
+    "",
+    " $SP   : start para; ends with a new line starting with $SE",
+    " $SB   : similar to para, but with out offset",
+    " $SL   : List item end with new line with $SE",
+    "   multiple item can be added in similar way",
+    "   Starting characters can be used to decide list type",
+    "   and '!!%' can be used to align first line and separating",
+    "   the list symbol",
+    " $SA   : align the line with dots inserted; adjust to ",
+    "        left-right   margins. The character pair '||' are ",
+    "        used for identifying dots position.",
+    " $SO<int> : para offset",
+    " $SH<int> <char>  : Heading <int> heading Level",
+    "    Level 7 to 1 and <char> c,r,l for justification",
+    " $SY<int> : Hyphenation <int> 1 or 0 for on/off; default off",
+    "",
+    " $SJ<int> : 0 means no right justification for para, ",
+    "            list etc; 1 default",
+    " $SE   : end para list table block doted lines",
+    "",
+   NULL};
   switch(butno) {
-    case 1: //  Save 
-      break;
-    case 2: //  Undo 
+    case 1: //  Help 
+      RunMsg(Tmp,hmsg);
       break;
   }
   return ret;
