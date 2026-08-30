@@ -1042,6 +1042,8 @@ int    kgSetSelection(void *tmp,int val);
 int    kgSetSwitch(void *Widget,int item, int val);
 int    kgGetSwitch(void *Widget,int item);
 void **kgSetList(void *Widget,void **list);
+
+char **kgAllocStrings(char **menu);
 void **kgGetList(void *Widget);
 int    kgAddThumbNail(void *Widget,void *th,int pos);
 int    kgDeleteThumbNail(void *Widget,int pos);
