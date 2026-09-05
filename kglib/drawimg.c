@@ -246,6 +246,53 @@ extern Dlink *FontList;
       }
       return;
   }
+  void imgUpdateImage ( DIG *G , int x0 , int y0 , GMIMG *img ) {
+      GMIMG *Dimg , *Simg;
+      kgDC *dc;
+      kgWC *wc;
+      PixelPacket *pixels , *spixels;
+      int w , h , iw , ih , i , j , ii , jj , sloc , dloc , cx0 , cx1 , cy0 , cy1;
+      int channels;
+      float fs,fd;
+      dc = G->dc;
+      wc = G->wc;
+      Simg = ( GMIMG * ) img;
+      Dimg = G->img;
+      iw = Dimg->image_width;
+      ih = Dimg->image_height;
+      w = Simg->image_width;
+      h = Simg->image_height;
+      channels = Simg->image_channels;
+      cx0 = wc->c_v_x1;
+      cx1 = wc->c_v_x2;
+      cy0 = dc->EVGAY-1-wc->c_v_y2;
+      cy1 = dc->EVGAY-1-wc->c_v_y1;
+//  printf("%d %d %d %d\n",cx0,cy0,cx1,cy1);
+      spixels = GetImagePixels ( ( Image * ) ( Simg->image ) , 0 , 0 , ( ( Image * )  \
+          ( Simg->image ) )->columns , ( ( Image * ) ( Simg->image ) )->rows ) ;
+      pixels = G->pixels;
+//      printf("Channels = %d\n",channels);
+      for ( j = 0;j < ( h ) ;j++ ) {
+          jj = j+y0;
+          if ( jj < cy0 ) continue;
+          if ( jj >= cy1 ) break;
+          if ( jj >= ih ) break;
+          for ( i = 0;i < w;i++ ) {
+              ii = i+x0;
+              if ( ii < cx0 ) continue;
+              if ( ii > cx1 ) continue;
+              if ( ii >= iw ) continue;
+              sloc = j*w+i;
+              dloc = jj*iw+ii;
+                  pixels [ dloc ] = spixels [ sloc ] ;
+                  pixels [ dloc ] .blue = spixels [ sloc ] .blue;
+                  pixels [ dloc ] .green = spixels [ sloc ] .green;
+                  pixels [ dloc ] .red = spixels [ sloc ] .red;
+                  pixels [ dloc ] .opacity = 255;
+          }
+      }
+      return;
+  }
 //function plot(x, y, c) is
 //     plot the pixel at (x, y) with brightness c (where 0 
 #define Ipart(x) ((int)(x))
@@ -573,6 +620,8 @@ extern Dlink *FontList;
       }
   }
 #endif
+  int uiConvertBox(DIG *G,float x1,float y1,float x2,float y2,int *x1new,
+       int *y1new,int *x2new,int *y2new);
   void img_move ( DIG *G , float x , float y ) {
       int x1 , y1;
       kgDC *dc;
@@ -2740,7 +2789,7 @@ extern Dlink *FontList;
       GMIMG *img=NULL;
       int tsize =16,strln =16;
       float t_angle;
-   
+      int X1V,X2V,Y1V,Y2V;
       dc = G->dc;
       wc = G->wc;
       tx = ( unsigned char * ) txt;
@@ -2785,7 +2834,12 @@ extern Dlink *FontList;
  //       printf("img_txt_wr Font= %d\n",dc->t_font);
         IMG = (IMG_STR *)ftGrStringImage ( dc->t_font , dc->t_color ,(float)t_angle, txt ,w,h,g,cfx,cfy);
         uiUserImageBox(IMG, t_angle,x1,y1, cfx,cfy,&X1,&Y1,&X2,&Y2);
-        img_drawimage(G,IMG->img,X1,Y1,X2,Y2); 
+        uiConvertBox(G,X1,Y1,X2,Y2,&X1V,&Y1V,&X2V,&Y2V);
+        void *crpimg = kgCropImage(G->img,X1V,Y1V,X2V,Y2V); 
+        kgMergeImages(crpimg,IMG->img,0,0);
+        img_drawimage(G,crpimg,X1,Y1,X2,Y2); 
+//        imgUpdateImage(G,X1V,Y1V,crpimg);
+        kgFreeGmImage(crpimg);
         kgFreeGmImage(IMG->img);
         free(IMG);
         return;
@@ -3898,6 +3952,27 @@ extern Dlink *FontList;
       free ( G->wc ) ;
       free ( Gtmp ) ;
 #endif
+  }
+  int uiConvertBox(DIG *G,float x1,float y1,float x2,float y2,int *x1new,
+       int *y1new,int *x2new,int *y2new) {
+  /*   
+      Converts to Screen coordinate
+  */
+      int X1 , Y1 , X2 , Y2 , EVGAY,temp;
+      kgDC *dc;
+      dc = G->dc;
+      EVGAY = dc->EVGAY-1;
+      X1 = scr_x ( x1 ) ;
+      Y1 = EVGAY-scr_y ( y1 ) ;
+      X2 = scr_x ( x2 ) ;
+      Y2 = EVGAY-scr_y ( y2 ) ;
+      if ( Y1 > Y2 ) {temp = Y2; Y2 = Y1;Y1 = temp;}
+      if ( X1 > X2 ) {temp = X2; X2 = X1;X1 = temp;}
+      *x1new = X1;
+      *y1new = Y1;
+      *x2new = X2;
+      *y2new = Y2;
+      return 1;
   }
   void img_drawimage ( DIG *G , void *imgfile , float x1 , \
        float y1 , float x2 , float y2 ) {

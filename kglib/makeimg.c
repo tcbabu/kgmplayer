@@ -5938,6 +5938,7 @@ void *uiGphtogmImage(char *flname,int xsize,int ysize,unsigned long bkcolor) {
   void *img=NULL,*rzimg;
   Image *image;
   GMIMG *png=NULL;
+  void *fid;
   Lock;
   EVGAX=xsize;
   EVGAY = ysize;
@@ -5952,6 +5953,7 @@ void *uiGphtogmImage(char *flname,int xsize,int ysize,unsigned long bkcolor) {
     SetIcode();
 //    if((bkcolor&0xffffff) != 0 ) changebw();
     if((bkcolor&0xffffff) == 0xffffff ) changebw();
+#if 0
     initialise();
     png = (GMIMG *)uiCreateCleangmImage(EVGAX,EVGAY,0,0,0,255);
     image =(Image *)(png->image);
@@ -5961,6 +5963,12 @@ void *uiGphtogmImage(char *flname,int xsize,int ysize,unsigned long bkcolor) {
     img = png;
 //    free(buffer);
     buffer=NULL;
+#else
+    fid = kgInitImage(xsize,ysize,1);
+    kgImportGphFile(fid,flname,0.,0.,(float)xsize,(float)ysize);
+    img = kgGetResizedImage(fid); 
+    kgCloseImage(fid);
+#endif
   }
   else  {
      printf("Failed open %s\n",flname);

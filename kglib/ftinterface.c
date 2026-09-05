@@ -7,6 +7,8 @@
  void * uiInitGraphicFontLists ( int font,int FontSize );
 #include FT_FREETYPE_H
 static int Xshft=2;
+int uiSetFsize(int val);
+static int Fsize = 64;
 #if 0
   typedef struct _img_str {
       int xln;
@@ -1039,7 +1041,7 @@ static int Xshft=2;
       return ln;
   }
   int ftGetWarray(int font,float *wd) {
-      IMG_STR **IMG = (IMG_STR **)uiInitGraphicFontLists(font,64);
+      IMG_STR **IMG = (IMG_STR **)uiInitGraphicFontLists(font,Fsize);
       int ln =0;
       int i=0;
       if(wd == NULL) return 0;
@@ -1183,7 +1185,7 @@ static int Ival(char *str) {
       typedef struct _ypos {
           float yp , hfact , wfact,xp ;
       } YPOS;
-      int Fsize = 64;
+      uiSetFsize(Fsize);
       if ( txt == NULL ) return NULL;
       if ( txt [ 0 ] == '\0' ) return NULL;
       YPOS *ypt = NULL;
@@ -1373,7 +1375,7 @@ static int Ival(char *str) {
       typedef struct _ypos {
           float yp , hfact , wfact,xp ;
       } YPOS;
-      int Fsize = 64;
+      uiSetFsize(Fsize);
       if ( txt == NULL ) return 0.0;
       if ( txt [ 0 ] == '\0' ) return 0.0;
       YPOS *ypt = NULL;

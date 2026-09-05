@@ -13,6 +13,7 @@ static MODINTERFACE ModFuns[] = {
 static Dlink *ModuleList=NULL;
 int GetFont(void *,int xo,int yo);
 void *RunSbox(void *,void *);
+void *RunSetup(void *,void *);
 void *kgGetFontString(void *,void *);
 void *RunMsg(void *parent ,void *args);
   static DIT *Tbl;
@@ -26,7 +27,7 @@ void *RunMsg(void *parent ,void *args);
   static DIN *GB;
   static DIN *PB;
   static DIT *MT;
-  static int NBK = 5;  //Backup Limit
+  static int NBK = 10;  //Backup Limit
   static int Tblrow;
   static int DifPos = -1;
   static int SerDir = 1;
@@ -280,6 +281,21 @@ void *RunMsg(void *parent ,void *args);
       PositionAt ( DifPos ) ;
       free ( dpt ) ;
       return bk;
+  }
+  static int CleanupLinks ( ) {
+      Dlink *bk = ( Dlink * ) Dpop ( BLS ) ;
+      int *dpt;
+      POSVEC *lpt;
+      Dempty(DLS);
+      DLS=Dopen();
+      while ( bk != NULL ){
+        Dempty(bk);
+        bk=NULL;
+        bk =( Dlink * ) Dpop ( BLS ) ; 
+      }
+      DifPos=1;
+      PositionAt ( DifPos ) ;
+      return 1;
   }
   static int Splash ( char *Msg ) {
 //    kgSplashMessage ( Tbl->D , 50 , 100 , 400 , 25 , Msg , 23 , 0 , 15 ) ;
@@ -892,6 +908,51 @@ void *RunMsg(void *parent ,void *args);
       WriteTbl ( ) ;
       return 1;
   }
+  static int CleanTableAndRedraw (char *newfile  ) {
+      int k;
+      char *spt;
+      MarkPos=1;
+      ReadTbl ( ) ;
+      Resetlink(Slist);
+      Dempty(Slist);
+      Slist = Dreadfile(newfile);
+      if(Slist == NULL) {
+        Slist = Dopen();
+        spt = (char *)malloc(3);
+        strcpy(spt," \n");
+        Dadd(Slist,spt);
+      }
+          Count = Dcount ( Slist ) ;
+          EndLine=Count;
+          StartLine =1;
+          if ( EndLine > Nlines ) {
+              EndLine = Nlines;
+          }
+          for ( k = 0;k < Nlines;k++ ) {
+              kgSetOnTableCell ( Tbl , k*2+1 ) ;
+              kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
+              kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
+          }
+          for ( k = EndLine;k < Nlines;k++ ) {
+              kgSetOffTableCell ( Tbl , k*2+1 ) ;
+              kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
+              kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
+          }
+#if 0
+      if ( Count <= Nlines ) kgSetWidgetVisibility ( V , 0 ) ;
+      else {
+          Vsize = ( double ) ( Nlines ) /Count*100.0;
+          Vpos = 0;
+          kgSetScrollLength ( V , Vsize ) ;
+          kgSetScrollPos ( V , Vpos ) ;
+          kgSetScrollMovement ( V , ( double ) Nlines/Count*100.0 ) ;
+      }
+#endif
+      SetupVbar();
+      kgUpdateWidget ( V ) ;
+      WriteTbl ( ) ;
+      return 1;
+  }
   static int GotoMark ( ) {
       MarkPos = kgGetInt ( MT , 0 ) ;
       if ( MarkPos < 1 ) {
@@ -1491,7 +1552,8 @@ int kgeditKEDfinishcallback( int butno,int i,void *Tmp) {
       switch ( butno ) {
           case 1:
           if ( ! kgCheckMenu ( D , 50 , 200 , ( char * ) "Want to !c03ABORT ?" , \
-          0 ) ) {\
+              0 ) ) {\
+              kgSetAttnWidget ( Tbl->D , Tbl ) ;
               return 0;
           }
           pt [ 1 ] = NULL;
@@ -1531,6 +1593,7 @@ int kgeditKEDfinishcallback( int butno,int i,void *Tmp) {
           kgCloseBusy ( Busy ) ;
           break;
       }
+      kgSetAttnWidget ( Tbl->D , Tbl ) ;
       remove ( Bkup ) ;
       remove ( SaveFile ) ;
       return ret;
@@ -2177,6 +2240,13 @@ void  kgeditKEDcfinit (DIN *B,void *ptmp) {
  BUT_STR *buts;
  buts = (BUT_STR *) (B->buts);
 }
+static int FileMenu(void *Parent) {
+   int   v0 = 1;
+   char *fmenu[]={(char *)"Open",(char *)"Save",(char *)"Save as",
+                  (char *)"Save&Quit",(char *)"Quit",NULL};
+   v0 = kgMenu1(Parent,15,63,0,fmenu,5,NULL,NULL);
+   return v0;
+}
 int kgeditKEDsavecallback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
@@ -2191,15 +2261,74 @@ int kgeditKEDsavecallback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
+  void *Busy=NULL;
+  char Buf[300];
   switch(butno) {
     case 1: //  Save 
-          void *Busy=NULL;
-          kgDisableSelection ( D ) ;
-          Busy = kgOpenBusy ( D , B->x1+10 , B->y1 ) ;
-          ReadTbl ( ) ;
-          Dwritefile ( Slist , flname ) ;
-          kgCloseBusy ( Busy ) ;
-          Splash("Saved File");
+          int opt = FileMenu(Tmp);
+          switch(opt) {
+            case 1:
+            char FileName[300];
+            if( kgCheckMenu(Tmp,50,50,
+               "Open New File (if needed save before opening) ?",0)) {
+              strcpy(FileName,getenv("PWD"));
+              strcat(FileName,"/");
+              if(!kgFolderBrowser(Tmp,50,50,FileName,"*")) break;
+              DII *I = (DII *)kgGetNamedWidget(Tmp,(char *)"KEDtitle");
+              sprintf(Buf,"!z34!f12File : %-s",FileName);
+              kgWrite(I,Buf);
+              CleanTableAndRedraw(FileName);
+              strcpy(flname,FileName);
+              CleanupLinks();
+            }
+            break;
+            case 2:
+            kgDisableSelection ( D ) ;
+            Busy = kgOpenBusy ( D , B->x1+10 , B->y1 ) ;
+            ReadTbl ( ) ;
+            Dwritefile ( Slist , flname ) ;
+            kgCloseBusy ( Busy ) ;
+            Splash("Saved File");
+            break;
+            case 3:
+            char File[300];
+            strcpy(File,getenv("PWD"));
+            strcat(File,"/");
+            if(kgFolderBrowser(Tmp,50,50,File,(char *)"*")){
+              kgDisableSelection ( D ) ;
+              Busy = kgOpenBusy ( D , B->x1+10 , B->y1 ) ;
+              ReadTbl ( ) ;
+              Dwritefile ( Slist , File ) ;
+              kgCloseBusy ( Busy ) ;
+              Splash("Saved File");
+            }
+            break;
+            case 5:
+            if (  kgCheckMenu ( D , 50 , 200 ,
+                ( char * ) "Want to !c03ABORT ?" , 0 ) ) { 
+              pt [ 1 ] = NULL;
+              Dempty ( Slist ) ;
+              kgDisableSelection ( D ) ;
+              remove ( Bkup ) ;
+              remove ( SaveFile ) ;
+              kgSetExit(Tmp);
+            }
+            break;
+            case 4:
+            kgDisableSelection ( D ) ;
+            Busy = kgOpenBusy ( D , B->x1+10 , B->y1 ) ;
+            ReadTbl ( ) ;
+            Dwritefile ( Slist , flname ) ;
+            pt [ 1 ] = pt [ 0 ] ;
+            Dempty ( Slist ) ;
+            kgCloseBusy ( Busy ) ;
+            remove ( Bkup ) ;
+            remove ( SaveFile ) ;
+            kgSetExit(Tmp);
+            break;
+            default:
+            break;
+          }
       break;
     case 2: //  Undo 
           row = kgGetTableRow ( Tbl ) ;
@@ -2293,6 +2422,7 @@ int kgeditKEDsavecallback(int butno,int i,void *Tmp) {
 #endif
       break;
   }
+  kgSetAttnWidget ( Tbl->D , Tbl ) ;
   return ret;
 }
 void  kgeditKEDsaveinit (DIN *B,void *ptmp) {
@@ -2322,6 +2452,7 @@ int kgeditKEDstringscallback(int butno,int i,void *Tmp) {
       RunSbox(Tmp,Strs);
       break;
   }
+  kgSetAttnWidget ( Tbl->D , Tbl ) ;
   return ret;
 }
 void  kgeditKEDsearchinit (DIN *B,void *ptmp) {
@@ -2346,12 +2477,16 @@ int kgeditKEDreplacecallback(int butno,int i,void *Tmp) {
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
+      DIT *TS=(DIT *)kgGetNamedWidget(Tmp,(char *)"KEDstbox");
+      DIT *TR=(DIT *)kgGetNamedWidget(Tmp,(char *)"KEDrtbox");
+      strcpy(SrString,(char *)kgGetString(TS,0));
+      strcpy(ReString,(char *)kgGetString(TR,0));
       spt = SrString ;
       rpt = ReString ;
       rln = strlen ( rpt ) ;
       k = 0;
       while ( spt [ k ] >= ' ' ) k++;
-      fprintf ( stderr , "Nlines + %d %d\n" , Nlines , Tbl->ny ) ;
+//      fprintf ( stderr , "Nlines + %d %d\n" , Nlines , Tbl->ny ) ;
       Nlines = Tbl->ny;
       ReadTbl ( ) ;
       LocPush ( ) ;
@@ -2498,6 +2633,8 @@ int kgeditKEDsearchcallback(int butno,int i,void *Tmp) {
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
+      DIT *TS=(DIT *)kgGetNamedWidget(Tmp,(char *)"KEDstbox");
+      strcpy(SrString,(char *)kgGetString(TS,0));
       spt = SrString ;
       k = 0;
       while ( spt [ k ] == ' ' ) k++;
@@ -2609,92 +2746,36 @@ int kgeditKEDhelpcallback(int butno,int i,void *Tmp) {
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
   char *hmsg[]=  {
-    " Text file is normal text file and by default each line is",
-    " placed within the slected text box in a centered manner.",
-    " Once the line crosses the selected text box a new image",
-    " is started for the next text box. However one can ",
-    " introduce command lines to direct the text processing.",
+    "Kit (!c16K!c00ulina ed!c16IT!c00or) is supposed to be a simple graphical",
+    "editor for Linux. It is aimed as an editor which be can be",
+    "used with a few trials. However few tips may be useful.",
     "",
-    " All text processing commands start in a new line with'$'",
-    " as the first character, hence normal lines  cannot",
-    " start with '$'.",
+    "!c381. Markpos",
+    "This position is used by operations like ,!c38'write to'!c00, !c38'cut'!c00",
+    "and !c38'copy'!c00. It is used as the start position for these commands.",
+    "Also the !c38'Go'!c00 button (int the lower bar) can take the cursor",
+    "to !c38Markpos!c00. The !c38Markpos!c00 can be set either by pressing the !c38'Mark'!c00",
+    "button in the top bar or by typing explicitly at the",
+    "!c38'MarkPos'!c00 text box in bottom bar.",
     "",
-    " Plese note that multiple parametrers are seperated by",
-    " a space character.",
+    "!c382. Search and Replace strings.",
+    "These strings are set at the respective text boxes in top",
+    "bar. Either of the strings can be empty. The search string",
+    "is used for searching the pattern. A !c38'Replace'!c00 will",
+    "replace the next search string with the replace string.",
+    "If the search string is empty, a !c38'Replace'!c00 will insert the",
+    "replace string at the current cursor position.",
+    "If the replace string is empty , a !c38'Replace'!c00 will remove the",
+    "next search string.",
     "",
-    " !c33Multiple text blocks for diffrent time ranges of the",
-    " !c33video can be put together using '$T' command as given",
-    " !c33below. By default it is a single block for the full",
-    " !c33range of the video. Henec each '$T' command defines ",
-    " !c33a new block.",
-    "",
-    " !c33Commands defined above the first '$T' is considered",
-    " !c33common to all blocks.",
-    "",
-    " !c38!z43Basic Commands:",
-    " !z34!c38(all in a newline starting with '$')",
-    "",
-    " !c60$T(float> <float> : time range ",
-    "           !c60(0.0 for second parameter means end of video)",
-    " !c60$Z : Force text scrolling",
-    "",
-    " $O<float>: float value of left margin as percentage of ",
-    "            text box 'xres'.",
-    " $R<float>: float value of right margin as percentage of ",
-    "            text box 'xres'.",
-    " $B<float>: float value of top  margin as percentage of ",
-    "            text box 'yres'.",
-    " $E<float>: float value of bottom  margin as percentage of ",
-    "            text box 'yres'.",
-    "",
-    " $f<int/string>  : select font (there is a button to define font)",
-    " $tc<int> : text color (there is button to add this)",
-    "",
-    " $h<int>  : character height in points; default 12",
-    " $w<int>  : character width in points,  default 12",
-    " $s<int>  : line space in points; default is 24",
-    " $l : left justify",
-    " $r : right justify",
-    " $c : center",
-    " $U<int>  : Start/stop under lining text <int> 1 to start;0 to stop",
-    " $A<int>  : Advance in no of lines",
-    "",
-    " $X : Store current line position",
-    " $Y : return to stored position",
-    "",
-    " $P : force new page",
-    "",
-    " $DL   : Draw line",
-    " $DI<string> <int> <int>  : ",
-    "       import image file; <file name> <width> <height>",
-    "",
-    " !c38!z43Advanced Commands:",
-    "",
-    " $SP   : start para; ends with a new line starting with $SE",
-    " $SB   : similar to para, but with out offset",
-    " $SL   : List item end with new line with $SE",
-    "   multiple item can be added in similar way",
-    "   Starting characters can be used to decide list type",
-    "   and '!!%' can be used to align first line and separating",
-    "   the list symbol",
-    " $SA   : align the line with dots inserted; adjust to ",
-    "        left-right   margins. The character pair '||' are ",
-    "        used for identifying dots position.",
-    " $SO<int> : para offset",
-    " $SH<int> <char>  : Heading <int> heading Level",
-    "    Level 7 to 1 and <char> c,r,l for justification",
-    " $SY<int> : Hyphenation <int> 1 or 0 for on/off; default off",
-    "",
-    " $SJ<int> : 0 means no right justification for para, ",
-    "            list etc; 1 default",
-    " $SE   : end para list table block doted lines",
-    "",
+    "!c38Note: Text input box  can be cleared by typing an !c33'Esc'!c38 character.",
    NULL};
   switch(butno) {
     case 1: //  Help 
       RunMsg(Tmp,hmsg);
       break;
   }
+  kgSetAttnWidget ( Tbl->D , Tbl ) ;
   return ret;
 }
 void  kgeditKEDhelpinit (DIN *B,void *ptmp) {
@@ -2720,6 +2801,7 @@ int kgeditKEDdowncallback(int butno,int i,void *Tmp) {
     case 1: //   
       break;
   }
+  kgSetAttnWidget ( Tbl->D , Tbl ) ;
   return ret;
 }
 void  kgeditKEDdowninit (DIN *B,void *ptmp) {
@@ -2755,6 +2837,7 @@ int kgeditKEDdircallback(int butno,int i,void *Tmp) {
           case 1:
           break;
       }
+      kgSetAttnWidget ( Tbl->D , Tbl ) ;
       return ret;
 }
 void  kgeditKEDdirinit (DIN *B,void *ptmp) {
@@ -2788,7 +2871,7 @@ int kgeditKEDsetupcallback(int butno,int i,void *Tmp) {
       Gc = & ( D->gc ) ;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
-#if 0
+#if 1
       if ( ( ipt = ( int * ) RunSetup ( Tmp , Tbl ) ) != NULL ) {
           if ( Tbl->width < 2*Tbl->FontSize ) Tbl->width = 2*Tbl->FontSize;
           DefWidth = Tbl->width;
@@ -2805,6 +2888,7 @@ int kgeditKEDsetupcallback(int butno,int i,void *Tmp) {
           case 1:
           break;
       }
+      kgSetAttnWidget ( Tbl->D , Tbl ) ;
       return ret;
   }
  void  kgeditKEDsetupinit (DIN *B,void *ptmp) {
@@ -2813,6 +2897,42 @@ int kgeditKEDsetupcallback(int butno,int i,void *Tmp) {
       free ( buts [ 0 ] .xpmn ) ;
       buts [ 0 ] .xpmn = ( void * ) & Setupimg_str;
   }
+int kgeditKEDstboxcallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+      DIALOG *D;DIT *T;T_ELMT *e;
+      int ret = 1;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      D = ( DIALOG * ) Tmp;
+      T = ( DIT * ) kgGetWidget ( Tmp , i ) ;
+      e = T->elmt;
+      strcpy(SrString,kgGetString(T,0));
+      if ( SerDir ) SearchTbl ( ) ;
+      else SearchTblRev ( ) ;
+      kgSetAttnWidget ( Tbl->D , Tbl ) ;
+      return ret;
+}
+int kgeditKEDrtboxcallback(int cellno,int i,void *Tmp) {
+  /************************************************* 
+   cellno: current cell counted along column strting with 0 
+           ie 0 to (nx*ny-1) 
+   i     : widget id starting from 0 
+   Tmp   : Pointer to DIALOG 
+   *************************************************/ 
+  DIALOG *D;DIT *T;T_ELMT *e; 
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+// pt[0] is args passed as inputs; pt[1] is output pointer
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  kgSetAttnWidget ( Tbl->D , Tbl ) ;
+  return ret;
+}
 int kgeditinit(void *Tmp) {
   /*********************************** 
     Tmp :  Pointer to DIALOG  
@@ -2822,14 +2942,22 @@ int kgeditinit(void *Tmp) {
       int nlines ;
       DIALOG *D;
       D = ( DIALOG * ) Tmp;
-      char **Strs;
+      char **Strs,Buf[300];
       char *cpt;
       BUT_STR *buts;
       DIN *AB;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       flname = ( char * ) pt [ 0 ] ;
+      if(flname[0]=='\0') {
+        strcpy(flname,getenv("PWD"));
+        strcat(flname,"/");
+        if(!kgFolderBrowser(Tmp,50,50,flname,"*")) exit(0);
+      }
       Tbl = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "KEDtable" ) ;
       V = ( DIV * ) kgGetNamedWidget ( D , ( char * ) "KEDscroll" ) ;
+      DII *I = (DII *)kgGetNamedWidget(Tmp,(char *)"KEDtitle");
+      sprintf(Buf,"!z34!f12File : %-s",flname);
+      kgWrite(I,Buf);
       DIP *P;
       P = ( DIP* ) kgGetNamedWidget ( D , ( char * ) "KEDarrow" ) ;
       AB = ( DIN* ) kgGetNamedWidget ( D , ( char * ) "KEDdir" ) ;
@@ -2937,8 +3065,8 @@ int Modifykgedit(void *Tmp,int GrpId) {
      i++;
   };
   n=1;
-//  strcpy(D->name,"Kulina Designer ver 3.0");    /*  Dialog name you may change */
-    sprintf(D->name,"%-s",(char *)pt[0]);
+  strcpy(D->name,"Kit (Kulina edITor) Ver. 4.0");    /*  Dialog name you may change */
+//    sprintf(D->name,"%-s",(char *)pt[0]);
 #if 0
   if(D->fullscreen!=1) {    /*  if not fullscreen mode */
      int xres,yres; 

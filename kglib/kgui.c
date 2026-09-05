@@ -3030,7 +3030,7 @@
               {
                   DIX *w;
                   w = d [ i ] .x;
-                  if ( ( D->VerId == 1401010200 ) || ( D->VerId == 2107030000 ) ) {
+                  if ( ( D->VerId == 1401010200 ) || ( D->VerId >= 2107030000 ) ) {
                       kgFreeDouble ( ( void ** ) ( w->pt ) ) ;
                       w->pt = NULL;
                   }
@@ -3042,7 +3042,7 @@
               {
                   DIY *w;
                   w = d [ i ] .y;
-                  if ( ( D->VerId == 1401010200 ) || ( D->VerId == 2107030000 ) ) {
+                  if ( ( D->VerId == 1401010200 ) || ( D->VerId >= 2107030000 ) ) {
                       kgFreeDouble ( ( void ** ) ( w->pt ) ) ;
                       w->pt = NULL;
                   }
@@ -5099,6 +5099,13 @@
           D->d = NULL;
           break;
           case 2107030000:
+          if ( D->Cleanupfun != NULL ) D->Cleanupfun ( D ) ;
+          uiFreeWidgetMem ( D ) ;
+          Free ( ( D->Kbrd ) ) ;
+          kgFreeDouble ( ( void ** ) ( D->d ) ) ;
+          D->d = NULL;
+          break;
+          case 2609040000:
           if ( D->Cleanupfun != NULL ) D->Cleanupfun ( D ) ;
           uiFreeWidgetMem ( D ) ;
           Free ( ( D->Kbrd ) ) ;

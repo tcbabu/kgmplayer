@@ -3386,7 +3386,8 @@ static int GetFontNo(char * txt){
 //                  if ( ngp >= 1 ) gap = gap + ( xdsp / ( ngp ) ) ;
                       if ( ngp >= 1 ) adjfact += ( xdsp / ( ngp ) ) ;
 #endif
-                      kgTextSize ( Img , th * hfac , tw * wfac+adjfact , gap ) ;
+//                      kgTextSize ( Img , th * hfac , tw * wfac+adjfact , gap ) ;
+                      kgTextSize ( Img , th * hfac , tw * wfac , gap+adjfact ) ;
                       xdsp = kgStringLength ( Img , txt ) ;
                       xdsp = ( rmg - ofs - xdsp ) * 0.5;
                       if ( fabsf(xdsp) < 1. ) break;
@@ -4173,7 +4174,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       if ( Bfill != NULL ) {
           kgMergeImages ( Bfill , Png , 0 , 0 ) ;
           kgFreeImage ( Png ) ;
-          Png = Bfill;
+          Png = kgEnhanceImage(Bfill);
+//          Png = Bfill;
+          kgFreeImage ( Bfill ) ;
       }
 #endif
 #if 0
@@ -4228,7 +4231,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
       if ( Bfill != NULL ) {
           kgMergeImages ( Bfill , Png , 0 , 0 ) ;
           kgFreeImage ( Png ) ;
-          Png = Bfill;
+          Png = kgEnhanceImage(Bfill);
+//          Png = Bfill;
+          kgFreeImage ( Bfill ) ;
       }
 #endif
 #if 0
@@ -4287,7 +4292,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           if ( Bfill != NULL ) {
               kgMergeImages ( Bfill , Png , 0 , 0 ) ;
               kgFreeImage ( Png ) ;
-              Png = Bfill;
+          Png = kgEnhanceImage(Bfill);
+//          Png = Bfill;
+          kgFreeImage ( Bfill ) ;
           }
           if ( Ostr.Video ) {
               Bkimg = GetBkgrImage ( j+1) ;
@@ -4357,7 +4364,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           if ( Bfill != NULL ) {
               kgMergeImages ( Bfill , Png , 0 , 0 ) ;
               kgFreeImage ( Png ) ;
-              Png = Bfill;
+          Png = kgEnhanceImage(Bfill);
+//          Png = Bfill;
+          kgFreeImage ( Bfill ) ;
           }
           printf("MSG: !c02%f\r",per);
           fflush(stdout);
@@ -4422,7 +4431,9 @@ void ProcessParaListTable(File *fp,FILE *tmp,int ofs,
           // Freeing Dummy creates problem;
               kgMergeImages ( Bfill , Png , 0 , 0 ) ;
               kgFreeImage ( Png ) ;
-              Png = Bfill;
+          Png = kgEnhanceImage(Bfill);
+//          Png = Bfill;
+          kgFreeImage ( Bfill ) ;
           }
           if ( Ostr.Video ) {
               Bkimg = GetBkgrImage (j+1 ) ;
