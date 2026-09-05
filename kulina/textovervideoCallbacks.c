@@ -752,6 +752,9 @@ int textovervideoTOVtcecallback(int butno,int i,void *Tmp) {
   switch(butno) {
     case 1: //  Create/Edit Text file 
       Runkgedit(NULL,TextFile);
+      kgSetString(TI,0,TextFile);
+      kgUpdateWidget(TI);
+      kgUpdateOn(Tmp);
       break;
   }
   return ret;
